@@ -1,0 +1,6 @@
+packages:
+  # executable/launch-able applications
+  - 'apps/*'
+
+  # all packages
+  - 'packages/*'
