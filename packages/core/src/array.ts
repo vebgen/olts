@@ -1,4 +1,3 @@
-
 /**
  * A function that returns 0 if the arguments are equal, 1 if the first argument
  * is greater, and -1 if the second argument is greater.
@@ -26,7 +25,7 @@ export type Comparator<T = any> = (a: T, b: T) => number;
  * @return The index of the item if found, -1 if not.
  */
 export function binarySearch<T = any>(
-    haystack: Array<T>, needle: T, comparator?: Comparator<T>
+    haystack: T[], needle: T, comparator?: Comparator<T>
 ): number {
     let mid: number, cmp: number;
     const finalComparator = comparator || ascending<T>;
@@ -79,7 +78,7 @@ export function ascending<T = any>(a: T, b: T): number {
  *
  * @param a The first object to be compared.
  * @param b The second object to be compared.
- * @return {number} A negative number, zero, or a positive number as the first
+ * @return A negative number, zero, or a positive number as the first
  *     argument is greater than, equal to, or less than the second.
  */
 export function descending<T = any>(a: T, b: T): number {
@@ -117,7 +116,7 @@ export type NearestDirectionFunction = (
  *    * `0` means return the nearest,
  *    * `> 0` means return the largest nearest,
  *    * `< 0` means return the smallest nearest.
- * @return {number} Index.
+ * @return Index.
  */
 export function linearFindNearest(
     arr: number[],
@@ -207,7 +206,7 @@ export function linearFindNearest(
  * @param end The index of the last element to be reversed (inclusive).
  */
 export function reverseSubArray<T = any>(
-    arr: Array<T>, begin: number, end: number
+    arr: T[], begin: number, end: number
 ) {
     while (begin < end) {
         const tmp = arr[begin];

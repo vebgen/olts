@@ -1,5 +1,5 @@
-import { Coordinate } from "../defs";
-import BaseEvent from "./event";
+import { Coordinate } from "@olts/core/coordinate";
+import { BaseEvent } from "./event";
 
 
 /**
@@ -18,7 +18,7 @@ export const SnapEventType = {
 /**
  * Options for the snap event.
  */
-export interface Options {
+export interface Options<F> {
 
     /**
      * The snapped vertex.
@@ -33,7 +33,7 @@ export interface Options {
     /**
      * The feature being snapped.
      */
-    feature: Feature;
+    feature: F;
 
     /**
      * Segment, or `null` if snapped to a vertex.
@@ -46,7 +46,7 @@ export interface Options {
  * Events emitted by {@link module:olts/interaction/Snap~Snap} instances are
  * instances of this
  */
-export class SnapEvent extends BaseEvent {
+export class SnapEvent<F> extends BaseEvent {
 
     /**
      * The snapped vertex.
@@ -64,7 +64,7 @@ export class SnapEvent extends BaseEvent {
      * The feature being snapped.
      * @api
      */
-    feature: Feature;
+    feature: F;
 
     /**
      * Segment, or `null` if snapped to a vertex.
@@ -76,10 +76,10 @@ export class SnapEvent extends BaseEvent {
     segment: Coordinate[] | null;
 
     /**
-     * @param {SnapEventType} type Type.
-     * @param {Object} options Options.
+     * @param type Type.
+     * @param options Options.
      */
-    constructor(type: typeof SnapEventType, options: Options) {
+    constructor(type: typeof SnapEventType, options: Options<F>) {
         super(type);
 
         this.vertex = options.vertex;

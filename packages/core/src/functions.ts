@@ -45,7 +45,7 @@ export function memoizeOne<ReturnType>(
 
     let called = false;
     let lastResult: ReturnType;
-    let lastArgs: Array<any>;
+    let lastArgs: any[];
     let lastThis: any;
 
     return function (this: any) {
@@ -64,7 +64,7 @@ export function memoizeOne<ReturnType>(
 /**
  * Wrap the function so that it returns a promise that resolves to the value
  * that the function returns.
- * 
+ *
  * @param getter A function that returns a value or a promise for a value.
  * @return A promise for the value.
  */

@@ -65,7 +65,7 @@ export function scale(size: Size, ratio: number, dest?: Size): Size {
  * @return The original object of it is an array or a new array with two members.
  * @api
  */
-export function toSize(size: number | Size, dest: Size): Size {
+export function toSize(size: number | Size, dest?: Size): Size {
     if (Array.isArray(size)) {
         return size;
     }

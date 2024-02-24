@@ -26,7 +26,7 @@ let uidCounter_: number = 0;
  * @return The unique ID for the object.
  * @api
  */
-export function getUid(obj: object): string {
+export function getUid(obj: any): string {
     return (obj as any).ol_uid || ((obj as any).ol_uid = String(++uidCounter_));
 }
 

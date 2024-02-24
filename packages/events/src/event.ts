@@ -7,7 +7,7 @@
  * for higher level events defined in the library, and works with
  * {@link Target}.
  */
-class BaseEvent {
+export class BaseEvent {
 
     /**
      * Prevent event propagation.
@@ -26,7 +26,7 @@ class BaseEvent {
      * The event type.
      * @api
      */
-    type: string;
+    type: any;
 
     /**
      * The event target.
@@ -35,7 +35,7 @@ class BaseEvent {
     target: null | object;
 
 
-    constructor(type: string) {
+    constructor(type: any) {
         this.type = type;
         this.target = null;
         this.propagationStopped = false;
@@ -65,6 +65,7 @@ class BaseEvent {
 
 /**
  * Stop event propagation.
+ *
  * @param evt The event to change.
  */
 export function stopPropagation(evt: BaseEvent) {
@@ -74,6 +75,7 @@ export function stopPropagation(evt: BaseEvent) {
 
 /**
  * Prevent the default action.
+ *
  * @param evt The event to change.
  */
 export function preventDefault(evt: BaseEvent) {
