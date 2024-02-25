@@ -48,7 +48,8 @@
             "@olts/events": ["packages/events/src/index.ts"],
             "@olts/expr": ["packages/expressions/src/index.ts"],
             "@olts/geometry": ["packages/geometry/src/index.ts"],
-            "@olts/style": ["packages/style/src/index.ts"]
+            "@olts/style": ["packages/style/src/index.ts"],
+            "@olts/top": ["packages/top/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]
