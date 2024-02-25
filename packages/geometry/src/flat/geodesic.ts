@@ -14,7 +14,7 @@ export type InterpolateFunction = (arg0: number) => Coordinate;
  * @param squaredTolerance Squared tolerance.
  * @return Flat coordinates.
  */
-function line(
+export function line(
     interpolate: InterpolateFunction,
     transform: TransformFunction,
     squaredTolerance: number
@@ -165,7 +165,8 @@ export function meridian(
         function (frac: number): Coordinate {
             return [lon, lat1 + (lat2 - lat1) * frac];
         },
-        getTransform(epsg4326Projection, projection),
+        // Wrong types. Maybe wrong get?
+        getTransform(epsg4326Projection, projection)!,
         squaredTolerance,
     );
 }
@@ -190,7 +191,8 @@ export function parallel(lat: number, lon1: number, lon2: number, projection: Pr
         function (frac: number): Coordinate {
             return [lon1 + (lon2 - lon1) * frac, lat];
         },
-        getTransform(epsg4326Projection, projection),
+        // Wrong types. Maybe wrong get?
+        getTransform(epsg4326Projection, projection)!,
         squaredTolerance,
     );
 }

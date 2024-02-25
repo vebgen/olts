@@ -21,6 +21,7 @@ export function lineStringLength(
     return length;
 }
 
+
 /**
  * @param flatCoordinates Flat coordinates.
  * @param offset Offset.

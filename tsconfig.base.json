@@ -48,6 +48,8 @@
             "@olts/events": ["packages/events/src/index.ts"],
             "@olts/expr": ["packages/expressions/src/index.ts"],
             "@olts/geometry": ["packages/geometry/src/index.ts"],
+            "@olts/geometry/flat": ["packages/geometry/src/flat/index.ts"],
+            "@olts/geometry/sphere": ["packages/geometry/src/sphere/index.ts"],
             "@olts/style": ["packages/style/src/index.ts"],
             "@olts/top": ["packages/top/src/index.ts"]
         }

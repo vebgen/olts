@@ -5,6 +5,7 @@ import { lerp, squaredDistance as squaredDx } from '@olts/core/math';
  * Returns the point on the 2D line segment flatCoordinates[offset1] to
  * flatCoordinates[offset2] that is closest to the point (x, y).  Extra
  * dimensions are linearly interpolated.
+ *
  * @param flatCoordinates Flat coordinates.
  * @param offset1 Offset 1.
  * @param offset2 Offset 2.
@@ -13,7 +14,7 @@ import { lerp, squaredDistance as squaredDx } from '@olts/core/math';
  * @param y Y.
  * @param closestPoint Closest point.
  */
-function assignClosest(
+export function assignClosest(
     flatCoordinates: number[],
     offset1: number,
     offset2: number,

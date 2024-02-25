@@ -1,4 +1,5 @@
 import Proj4 from 'proj4';
+
 import Projection from './projection';
 import {
     addCoordinateTransforms,
@@ -94,6 +95,7 @@ export function register(proj4: typeof Proj4) {
 
 
 export type LookupEpsg = (code: number) => Promise<string>;
+
 
 /**
  * @param code The EPSG code.

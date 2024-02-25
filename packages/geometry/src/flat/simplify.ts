@@ -149,6 +149,7 @@ export function douglasPeucker(
     return simplifiedOffset;
 }
 
+
 /**
  * @param flatCoordinates Flat coordinates.
  * @param offset Offset.
@@ -187,6 +188,7 @@ export function douglasPeuckerArray(
     }
     return simplifiedOffset;
 }
+
 
 /**
  * @param flatCoordinates Flat coordinates.
@@ -285,6 +287,7 @@ export function radialDistance(
     return simplifiedOffset;
 }
 
+
 /**
  * @param value Value.
  * @param tolerance Tolerance.
@@ -293,6 +296,7 @@ export function radialDistance(
 export function snap(value: number, tolerance: number): number {
     return tolerance * Math.round(value / tolerance);
 }
+
 
 /**
  * Simplifies a line string using an algorithm designed by Tim Schaub.
@@ -394,6 +398,7 @@ export function quantize(
     return simplifiedOffset;
 }
 
+
 /**
  * @param flatCoordinates Flat coordinates.
  * @param offset Offset.
@@ -432,6 +437,7 @@ export function quantizeArray(
     }
     return simplifiedOffset;
 }
+
 
 /**
  * @param flatCoordinates Flat coordinates.

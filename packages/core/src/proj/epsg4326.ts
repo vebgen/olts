@@ -25,7 +25,7 @@ export const METERS_PER_UNIT: number = (Math.PI * RADIUS) / 180;
  * The EPSG registry defines 4326 as a CRS for Latitude,Longitude (y,x).
  * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
  */
-class EPSG4326Projection extends Projection {
+export class EPSG4326Projection extends Projection {
     /**
      * Constructor
      *
