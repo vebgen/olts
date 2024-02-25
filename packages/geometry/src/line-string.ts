@@ -1,60 +1,62 @@
+import { extend } from '@olts/core/array';
+import { Coordinate } from '@olts/core/coordinate';
+import { Extent } from '@olts/core/extent';
+import { closestSquaredDistanceXY } from '@olts/core/extent';
 
-import SimpleGeometry from './simple-geometry';
+import { SimpleGeometry } from './simple-geometry';
 import { assignClosestPoint, maxSquaredDelta } from './flat/closest';
-import { closestSquaredDistanceXY } from '../extent';
 import { deflateCoordinates } from './flat/deflate';
 import { douglasPeucker } from './flat/simplify';
-import { extend } from '../array';
 import { forEach as forEachSegment } from './flat/segments';
 import { inflateCoordinates } from './flat/inflate';
 import { interpolatePoint, lineStringCoordinateAtM } from './flat/interpolate';
 import { intersectsLineString } from './flat/intersects-extent';
 import { lineStringLength } from './flat/length';
-import { Coordinate } from '@olts/core/coordinate';
-import { Extent } from '@olts/core/extent';
+import { GeometryLayout, Type } from './geometry';
+
 
 /**
  * Line-string geometry.
  *
  * @api
  */
-class LineString extends SimpleGeometry {
+export class LineString extends SimpleGeometry {
+
+    /**
+     *
+     */
+    private flatMidpoint_: Coordinate | null = null;
+
+    /**
+     *
+     */
+    private flatMidpointRevision_: number = -1;
+
+    /**
+     *
+     */
+    private maxDelta_: number = -1;
+
+    /**
+     *
+     */
+    private maxDeltaRevision_: number = -1;
+
     /**
      * @param coordinates Coordinates. For internal use, flat coordinates
      *   in combination with `layout` are also accepted.
      * @param layout Layout.
      */
-    constructor(coordinates: Coordinate[] | number[], layout?: GeometryLayout) {
+    constructor(
+        coordinates: Coordinate[] | number[],
+        layout?: GeometryLayout
+    ) {
         super();
 
-        /**
-         * @private
-         * @type {Coordinate|null}
-         */
-        this.flatMidpoint_ = null;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.flatMidpointRevision_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDelta_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDeltaRevision_ = -1;
-
         if (layout !== undefined && !Array.isArray(coordinates[0])) {
-            this.setFlatCoordinates(layout, coordinates);
+            this.setFlatCoordinates(layout, coordinates as number[]);
         } else {
-            this.setCoordinates(coordinates, layout,);
+            this.setCoordinates(coordinates as Coordinate[], layout,);
         }
     }
 
@@ -71,6 +73,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -91,10 +94,15 @@ class LineString extends SimpleGeometry {
      * @return Minimum squared distance.
      */
     closestPointXY(
-        x: number, y: number, closestPoint: Coordinate,
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
         minSquaredDistance: number
     ): number {
-        if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+        if (
+            minSquaredDistance <
+            closestSquaredDistanceXY(this.getExtent(), x, y)
+        ) {
             return minSquaredDistance;
         }
         if (this.maxDeltaRevision_ != this.getRevision()) {
@@ -125,6 +133,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * Iterate over each segment, calling the provided callback.
+     *
      * If the callback returns a truthy value the function returns that
      * value immediately. Otherwise the function returns `false`.
      *
@@ -146,8 +155,8 @@ class LineString extends SimpleGeometry {
     }
 
     /**
-     * Returns the coordinate at `m` using linear interpolation, or `null` if no
-     * such coordinate exists.
+     * Returns the coordinate at `m` using linear interpolation, or `null` if
+     * no such coordinate exists.
      *
      * `extrapolate` controls extrapolation beyond the range of Ms in the
      * MultiLineString. If `extrapolate` is `true` then Ms less than the first
@@ -176,6 +185,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * Return the coordinates of the linestring.
+     *
      * @return Coordinates.
      * @api
      */
@@ -190,11 +200,13 @@ class LineString extends SimpleGeometry {
 
     /**
      * Return the coordinate at the provided fraction along the linestring.
+     *
      * The `fraction` is a number between 0 and 1, where 0 is the start of the
      * linestring and 1 is the end.
+     *
      * @param fraction Fraction.
-     * @param dest Optional coordinate whose values will
-     *     be modified. If not provided, a new coordinate will be returned.
+     * @param dest Optional coordinate whose values will be modified. If not
+     *     provided, a new coordinate will be returned.
      * @return Coordinate of the interpolated point.
      * @api
      */
@@ -212,6 +224,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * Return the length of the linestring on projected plane.
+     *
      * @return Length (on projected plane).
      * @api
      */
@@ -235,7 +248,7 @@ class LineString extends SimpleGeometry {
             );
             this.flatMidpointRevision_ = this.getRevision();
         }
-        return /** @type */ (this.flatMidpoint_);
+        return this.flatMidpoint_ as number[];
     }
 
     /**
@@ -243,8 +256,9 @@ class LineString extends SimpleGeometry {
      * @return Simplified LineString.
      * @protected
      */
-    getSimplifiedGeometryInternal(squaredTolerance: number): LineString {
-        /** @type */
+    override getSimplifiedGeometryInternal(
+        squaredTolerance: number
+    ): LineString {
         const simplifiedFlatCoordinates: number[] = [];
         simplifiedFlatCoordinates.length = douglasPeucker(
             this.flatCoordinates,
@@ -263,12 +277,13 @@ class LineString extends SimpleGeometry {
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'LineString';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
@@ -285,6 +300,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * Set the coordinates of the linestring.
+     *
      * @param coordinates Coordinates.
      * @param layout Layout.
      * @api
@@ -303,5 +319,6 @@ class LineString extends SimpleGeometry {
         this.changed();
     }
 }
+
 
 export default LineString;

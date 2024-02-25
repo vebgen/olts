@@ -1,17 +1,20 @@
+import { squaredDistance as squaredDx } from '@olts/core/math';
+import { Coordinate } from '@olts/core/coordinate';
+import {
+    Extent, containsXY, createOrUpdateFromCoordinate
+} from '@olts/core/extent';
 
 import SimpleGeometry from './simple-geometry';
-import { containsXY, createOrUpdateFromCoordinate } from '../extent';
 import { deflateCoordinate } from './flat/deflate';
-import { squaredDistance as squaredDx } from '../math';
-import { Coordinate } from '@olts/core/coordinate';
-import { Extent } from '@olts/core/extent';
+import { GeometryLayout, Type } from './geometry';
+
 
 /**
  * Point geometry.
  *
  * @api
  */
-class Point extends SimpleGeometry {
+export class Point extends SimpleGeometry {
     /**
      * @param coordinates Coordinates.
      * @param layout Layout.
@@ -23,6 +26,7 @@ class Point extends SimpleGeometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -39,7 +43,12 @@ class Point extends SimpleGeometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x: number, y: number, closestPoint: Coordinate, minSquaredDistance: number): number {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ): number {
         const flatCoordinates = this.flatCoordinates;
         const squaredDistance = squaredDx(
             x,
@@ -60,6 +69,7 @@ class Point extends SimpleGeometry {
 
     /**
      * Return the coordinate of the point.
+     *
      * @return Coordinates.
      * @api
      */
@@ -72,27 +82,31 @@ class Point extends SimpleGeometry {
      * @protected
      * @return extent Extent.
      */
-    computeExtent(extent: Extent): Extent {
+    override computeExtent(extent: Extent): Extent {
         return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
     }
 
     /**
      * Get the type of this geometry.
+     *
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'Point';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
      */
     intersectsExtent(extent: Extent): boolean {
-        return containsXY(extent, this.flatCoordinates[0], this.flatCoordinates[1]);
+        return containsXY(
+            extent, this.flatCoordinates[0], this.flatCoordinates[1]
+        );
     }
 
     /**
@@ -114,5 +128,6 @@ class Point extends SimpleGeometry {
         this.changed();
     }
 }
+
 
 export default Point;

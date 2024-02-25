@@ -64,7 +64,7 @@ export interface Options {
  *
  * @api
  */
-class CircleStyle extends RegularShape {
+export class CircleStyle extends RegularShape {
     /**
      * @param options Options.
      */

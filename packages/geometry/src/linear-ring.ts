@@ -1,3 +1,5 @@
+import { Coordinate } from '@olts/core/coordinate';
+import { Extent, closestSquaredDistanceXY } from '@olts/core/extent';
 
 import SimpleGeometry from './simple-geometry';
 import { assignClosestPoint, maxSquaredDelta } from './flat/closest';
@@ -5,46 +7,47 @@ import { deflateCoordinates } from './flat/deflate';
 import { douglasPeucker } from './flat/simplify';
 import { inflateCoordinates } from './flat/inflate';
 import { linearRing as linearRingArea } from './flat/area';
-import { Coordinate } from '@olts/core/coordinate';
-import { Extent, closestSquaredDistanceXY } from '@olts/core/extent';
+import { GeometryLayout, Type } from './geometry';
+
 
 /**
- * Linear ring geometry. Only used as part of polygon; cannot be rendered
- * on its own.
+ * Linear ring geometry.
+ *
+ * Only used as part of polygon; cannot be rendered on its own.
  *
  * @api
  */
-class LinearRing extends SimpleGeometry {
+export class LinearRing extends SimpleGeometry {
+
+    /**
+     *
+     */
+    private maxDelta_: number = -1;
+
+    /**
+     *
+     */
+    private maxDeltaRevision_: number = -1;
+
     /**
      * @param coordinates Coordinates. For internal use, flat coordinates
      *     in combination with `layout` are also accepted.
      * @param layout Layout.
      */
-    constructor(coordinates: Coordinate[] | number[], layout?: GeometryLayout) {
+    constructor(
+        coordinates: Coordinate[] | number[],
+        layout?: GeometryLayout
+    ) {
         super();
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDelta_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDeltaRevision_ = -1;
 
         if (layout !== undefined && !Array.isArray(coordinates[0])) {
             this.setFlatCoordinates(
                 layout,
-        /** @type */(coordinates),
+                coordinates as number[],
             );
         } else {
             this.setCoordinates(
-        /** @type */(
-                    coordinates
-                ),
+                coordinates as Coordinate[],
                 layout,
             );
         }
@@ -52,6 +55,7 @@ class LinearRing extends SimpleGeometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -66,8 +70,16 @@ class LinearRing extends SimpleGeometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x: number, y: number, closestPoint: Coordinate, minSquaredDistance: number): number {
-        if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ): number {
+        if (
+            minSquaredDistance <
+            closestSquaredDistanceXY(this.getExtent(), x, y)
+        ) {
             return minSquaredDistance;
         }
         if (this.maxDeltaRevision_ != this.getRevision()) {
@@ -98,6 +110,7 @@ class LinearRing extends SimpleGeometry {
 
     /**
      * Return the area of the linear ring on projected plane.
+     *
      * @return Area (on projected plane).
      * @api
      */
@@ -112,6 +125,7 @@ class LinearRing extends SimpleGeometry {
 
     /**
      * Return the coordinates of the linear ring.
+     *
      * @return Coordinates.
      * @api
      */
@@ -129,8 +143,9 @@ class LinearRing extends SimpleGeometry {
      * @return Simplified LinearRing.
      * @protected
      */
-    getSimplifiedGeometryInternal(squaredTolerance: number): LinearRing {
-        /** @type */
+    override getSimplifiedGeometryInternal(
+        squaredTolerance: number
+    ): LinearRing {
         const simplifiedFlatCoordinates: number[] = [];
         simplifiedFlatCoordinates.length = douglasPeucker(
             this.flatCoordinates,
@@ -146,15 +161,17 @@ class LinearRing extends SimpleGeometry {
 
     /**
      * Get the type of this geometry.
+     *
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'LinearRing';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
@@ -165,6 +182,7 @@ class LinearRing extends SimpleGeometry {
 
     /**
      * Set the coordinates of the linear ring.
+     *
      * @param coordinates Coordinates.
      * @param layout Layout.
      * @api

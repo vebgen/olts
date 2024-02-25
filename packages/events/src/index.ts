@@ -1,5 +1,3 @@
-import exp = require('constants');
-
 export { EventType } from './event-type';
 
 export {
@@ -22,6 +20,10 @@ export {
 } from './events';
 
 export { Key } from './key';
+
+export { BaseObject, ObjectEvent } from './object';
+
+export { Observable, unByKey } from './observable';
 
 export type { Options } from './snap';
 export { SnapEventType, SnapEvent } from './snap';

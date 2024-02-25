@@ -298,7 +298,7 @@ export class IconImage extends EventTarget {
     }
 
     /**
-     * @return {Promise<void>} Promise that resolves when the image is loaded.
+     * @return Promise that resolves when the image is loaded.
      */
     ready(): Promise<void> {
         if (!this.ready_) {
@@ -344,28 +344,30 @@ export function get(
     color: Color | string | null,
     pattern?: boolean
 ): IconImage {
-    let iconImage =
-        cacheKey === undefined
-            ? undefined
-            : iconImageCache.get(cacheKey, crossOrigin, color);
+    let iconImage = cacheKey === undefined
+        ? undefined
+        : iconImageCache.get(cacheKey, crossOrigin, color);
     if (!iconImage) {
         iconImage = new IconImage(
             image,
-            image instanceof HTMLImageElement ? image.src || undefined : cacheKey,
+            image instanceof HTMLImageElement
+                ? image.src || undefined
+                : cacheKey,
             crossOrigin,
             imageState,
             color,
         );
-        iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+        iconImageCache.set(cacheKey!, crossOrigin, color, iconImage, pattern);
     }
     if (
         pattern &&
         iconImage &&
-        !iconImageCache.getPattern(cacheKey, crossOrigin, color)
+        !iconImageCache.getPattern(cacheKey!, crossOrigin, color)
     ) {
-        iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+        iconImageCache.set(cacheKey!, crossOrigin, color, iconImage, pattern);
     }
     return iconImage;
 }
+
 
 export default IconImage;

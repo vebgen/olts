@@ -1,26 +1,43 @@
+import { extend } from '@olts/core/array';
+import { Coordinate } from '@olts/core/coordinate';
+import { Extent, closestSquaredDistanceXY } from '@olts/core/extent';
 
-import LineString from './LineString';
-import SimpleGeometry from './simple-geometry';
+import { LineString } from './line-string';
+import { SimpleGeometry } from './simple-geometry';
 import { arrayMaxSquaredDelta, assignClosestArrayPoint } from './flat/closest';
-import { closestSquaredDistanceXY } from '../extent';
 import { deflateCoordinatesArray } from './flat/deflate';
 import { douglasPeuckerArray } from './flat/simplify';
-import { extend } from '../array';
 import { inflateCoordinatesArray } from './flat/inflate';
 import {
     interpolatePoint,
     lineStringsCoordinateAtM,
 } from './flat/interpolate';
 import { intersectsLineStringArray } from './flat/intersects-extent';
-import { Coordinate } from '@olts/core/coordinate';
-import { Extent } from '@olts/core/extent';
+import { GeometryLayout, Type } from './geometry';
+
 
 /**
  * Multi-line-string geometry.
  *
  * @api
  */
-class MultiLineString extends SimpleGeometry {
+export class MultiLineString extends SimpleGeometry {
+    /**
+     *
+     */
+    private ends_: number[] = [];
+
+    /**
+     *
+     */
+    private maxDelta_: number = -1;
+
+    /**
+     *
+     */
+    private maxDeltaRevision_: number = -1;
+
+
     /**
      * @param coordinates Coordinates or LineString geometries. (For internal
      *     use, flat coordinates in combination with `layout` and `ends` are
@@ -35,40 +52,20 @@ class MultiLineString extends SimpleGeometry {
     ) {
         super();
 
-        /**
-         * @type {number[]}
-         * @private
-         */
-        this.ends_ = [];
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDelta_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDeltaRevision_ = -1;
 
         if (Array.isArray(coordinates[0])) {
             this.setCoordinates(
-        /** @type {Array<Coordinate[]>} */(
-                    coordinates
-                ),
+                coordinates as Coordinate[][],
                 layout,
             );
         } else if (layout !== undefined && ends) {
             this.setFlatCoordinates(
                 layout,
-        /** @type */(coordinates),
+                coordinates as number[],
             );
             this.ends_ = ends;
         } else {
-            const lineStrings = /** @type {Array<LineString>} */ (coordinates);
-            /** @type */
+            const lineStrings = coordinates as LineString[];
             const flatCoordinates: number[] = [];
             const ends = [];
             for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
@@ -87,6 +84,7 @@ class MultiLineString extends SimpleGeometry {
 
     /**
      * Append the passed line-string to the multiline-string.
+     *
      * @param lineString LineString.
      * @api
      */
@@ -98,6 +96,7 @@ class MultiLineString extends SimpleGeometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -118,8 +117,16 @@ class MultiLineString extends SimpleGeometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x: number, y: number, closestPoint: Coordinate, minSquaredDistance: number): number {
-        if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ): number {
+        if (
+            minSquaredDistance <
+            closestSquaredDistanceXY(this.getExtent(), x, y)
+        ) {
             return minSquaredDistance;
         }
         if (this.maxDeltaRevision_ != this.getRevision()) {
@@ -149,8 +156,8 @@ class MultiLineString extends SimpleGeometry {
     }
 
     /**
-     * Returns the coordinate at `m` using linear interpolation, or `null` if no
-     * such coordinate exists.
+     * Returns the coordinate at `m` using linear interpolation, or `null` if
+     * no such coordinate exists.
      *
      * `extrapolate` controls extrapolation beyond the range of Ms in the
      * MultiLineString. If `extrapolate` is `true` then Ms less than the first
@@ -159,10 +166,10 @@ class MultiLineString extends SimpleGeometry {
      *
      * `interpolate` controls interpolation between consecutive LineStrings
      * within the MultiLineString. If `interpolate` is `true` the coordinates
-     * will be linearly interpolated between the last coordinate of one LineString
-     * and the first coordinate of the next LineString.  If `interpolate` is
-     * `false` then the function will return `null` for Ms falling between
-     * LineStrings.
+     * will be linearly interpolated between the last coordinate of one
+     * LineString and the first coordinate of the next LineString.  If
+     * `interpolate` is `false` then the function will return `null` for Ms
+     * falling between LineStrings.
      *
      * @param m M.
      * @param extrapolate Extrapolate. Default is `false`.
@@ -194,6 +201,7 @@ class MultiLineString extends SimpleGeometry {
 
     /**
      * Return the coordinates of the multiline-string.
+     *
      * @return Coordinates.
      * @api
      */
@@ -215,11 +223,12 @@ class MultiLineString extends SimpleGeometry {
 
     /**
      * Return the line-string at the specified index.
+     *
      * @param index Index.
      * @return LineString.
      * @api
      */
-    getLineString(index: number): LineString {
+    getLineString(index: number): LineString | null {
         if (index < 0 || this.ends_.length <= index) {
             return null;
         }
@@ -242,8 +251,8 @@ class MultiLineString extends SimpleGeometry {
         const flatCoordinates = this.flatCoordinates;
         const ends = this.ends_;
         const layout = this.layout;
-        /** @type {Array<LineString>} */
-        const lineStrings: Array<LineString> = [];
+
+        const lineStrings: LineString[] = [];
         let offset = 0;
         for (let i = 0, ii = ends.length; i < ii; ++i) {
             const end = ends[i];
@@ -261,7 +270,6 @@ class MultiLineString extends SimpleGeometry {
      * @return Flat midpoints.
      */
     getFlatMidpoints(): number[] {
-        /** @type */
         const midpoints: number[] = [];
         const flatCoordinates = this.flatCoordinates;
         let offset = 0;
@@ -287,10 +295,10 @@ class MultiLineString extends SimpleGeometry {
      * @return Simplified MultiLineString.
      * @protected
      */
-    getSimplifiedGeometryInternal(squaredTolerance: number): MultiLineString {
-        /** @type */
+    override getSimplifiedGeometryInternal(
+        squaredTolerance: number
+    ): MultiLineString {
         const simplifiedFlatCoordinates: number[] = [];
-        /** @type */
         const simplifiedEnds: number[] = [];
         simplifiedFlatCoordinates.length = douglasPeuckerArray(
             this.flatCoordinates,
@@ -302,20 +310,24 @@ class MultiLineString extends SimpleGeometry {
             0,
             simplifiedEnds,
         );
-        return new MultiLineString(simplifiedFlatCoordinates, 'XY', simplifiedEnds);
+        return new MultiLineString(
+            simplifiedFlatCoordinates, 'XY', simplifiedEnds
+        );
     }
 
     /**
      * Get the type of this geometry.
+     *
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'MultiLineString';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
@@ -332,6 +344,7 @@ class MultiLineString extends SimpleGeometry {
 
     /**
      * Set the coordinates of the multiline-string.
+     *
      * @param coordinates Coordinates.
      * @param layout Layout.
      * @api
@@ -350,9 +363,12 @@ class MultiLineString extends SimpleGeometry {
             this.stride,
             this.ends_,
         );
-        this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
+        this.flatCoordinates.length = ends.length === 0
+            ? 0
+            : ends[ends.length - 1];
         this.changed();
     }
 }
+
 
 export default MultiLineString;

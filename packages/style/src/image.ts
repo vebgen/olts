@@ -339,4 +339,5 @@ export abstract class ImageStyle {
     }
 }
 
+
 export default ImageStyle;

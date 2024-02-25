@@ -404,7 +404,7 @@ export class RegularShape extends ImageStyle {
     /**
      * Get the (primary) radius for the shape.
      *
-     * @return {number} Radius.
+     * @return Radius.
      * @api
      */
     getRadius(): number {
@@ -463,7 +463,7 @@ export class RegularShape extends ImageStyle {
     override load() { }
 
     /**
-     * @param {function(import("../events/Event").default): void} listener Listener function.
+     * @param listener Listener function.
      */
     override unlistenImageChange(listener: ListenImageChange) { }
 
@@ -751,5 +751,6 @@ export class RegularShape extends ImageStyle {
         return this.fill_ ? this.fill_.ready() : Promise.resolve();
     }
 }
+
 
 export default RegularShape;

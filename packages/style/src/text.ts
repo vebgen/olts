@@ -22,11 +22,9 @@ export type TextJustify = 'left' | 'center' | 'right';
  */
 const DEFAULT_FILL_COLOR = '#333';
 
+
 /**
- * @property {import("./Stroke").default} [backgroundStroke] Stroke style for the text background  when `placement`
- * is `'point'`. Default is no stroke.
- * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
- * values in the array is `[top, right, bottom, left]`.
+ * Options for the text style.
  */
 export interface Options {
     /**
@@ -211,7 +209,7 @@ export interface Options {
  *
  * @api
  */
-class Text {
+export class Text {
     /**
      * The font name.
      */

@@ -1,28 +1,66 @@
+import { Coordinate } from '@olts/core/coordinate';
+import { Extent, closestSquaredDistanceXY, getCenter, isEmpty } from '@olts/core/extent';
+import { extend } from '@olts/core/array';
 
-import LinearRing from './LinearRing';
-import Point from './Point';
-import SimpleGeometry from './simple-geometry';
+import { LinearRing } from './linear-ring';
+import { Point } from './point';
+import { SimpleGeometry } from './simple-geometry';
 import { arrayMaxSquaredDelta, assignClosestArrayPoint } from './flat/closest';
-import { closestSquaredDistanceXY, getCenter, isEmpty } from '../extent';
 import { deflateCoordinatesArray } from './flat/deflate';
-import { extend } from '../array';
 import { getInteriorPointOfArray } from './flat/interior-point';
 import { inflateCoordinatesArray } from './flat/inflate';
 import { intersectsLinearRingArray } from './flat/intersects-extent';
 import { linearRingsAreOriented, orientLinearRings } from './flat/orient';
 import { linearRings as linearRingsArea } from './flat/area';
 import { linearRingsContainsXY } from './flat/contains';
-import { modulo } from '../math';
+import { modulo } from '@olts/core/math';
 import { quantizeArray } from './flat/simplify';
-import { offset as sphereOffset } from '../sphere';
-import { Coordinate } from '@olts/core/coordinate';
+import { offset as sphereOffset } from './sphere';
+import { GeometryLayout, Type } from './geometry';
+import Circle from './circle';
+
 
 /**
  * Polygon geometry.
  *
  * @api
  */
-class Polygon extends SimpleGeometry {
+export class Polygon extends SimpleGeometry {
+    /**
+     *
+     */
+    private ends_: number[] = [];
+
+    /**
+     *
+     */
+    private flatInteriorPointRevision_: number = -1;
+
+    /**
+     *
+     */
+    private flatInteriorPoint_: Coordinate | null = null;
+
+    /**
+     *
+     */
+    private maxDelta_: number = -1;
+
+    /**
+     *
+     */
+    private maxDeltaRevision_: number = -1;
+
+    /**
+     *
+     */
+    private orientedRevision_: number = -1;
+
+    /**
+     *
+     */
+    private orientedFlatCoordinates_: number[] | null = null;
+
     /**
      * @param coordinates Array of linear rings that define the polygon. The
      *     first linear ring of the array defines the outer-boundary or surface
@@ -40,59 +78,15 @@ class Polygon extends SimpleGeometry {
     ) {
         super();
 
-        /**
-         * @type {number[]}
-         * @private
-         */
-        this.ends_ = [];
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.flatInteriorPointRevision_ = -1;
-
-        /**
-         * @private
-         * @type {Coordinate|null}
-         */
-        this.flatInteriorPoint_ = null;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDelta_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.maxDeltaRevision_ = -1;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.orientedRevision_ = -1;
-
-        /**
-         * @private
-         * @type {number[]|null}
-         */
-        this.orientedFlatCoordinates_ = null;
-
         if (layout !== undefined && ends) {
             this.setFlatCoordinates(
                 layout,
-        /** @type */(coordinates),
+                coordinates as number[],
             );
             this.ends_ = ends;
         } else {
             this.setCoordinates(
-        /** @type {Array<Coordinate[]>} */(
-                    coordinates
-                ),
+                coordinates as Coordinate[][],
                 layout,
             );
         }
@@ -100,6 +94,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * Append the passed linear ring to this polygon.
+     *
      * @param linearRing Linear ring.
      * @api
      */
@@ -115,6 +110,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -135,8 +131,16 @@ class Polygon extends SimpleGeometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x: number, y: number, closestPoint: Coordinate, minSquaredDistance: number): number {
-        if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ): number {
+        if (
+            minSquaredDistance <
+            closestSquaredDistanceXY(this.getExtent(), x, y)
+        ) {
             return minSquaredDistance;
         }
         if (this.maxDeltaRevision_ != this.getRevision()) {
@@ -170,7 +174,7 @@ class Polygon extends SimpleGeometry {
      * @param y Y.
      * @return Contains (x, y).
      */
-    containsXY(x: number, y: number): boolean {
+    override containsXY(x: number, y: number): boolean {
         return linearRingsContainsXY(
             this.getOrientedFlatCoordinates(),
             0,
@@ -183,6 +187,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * Return the area of the polygon on projected plane.
+     *
      * @return Area (on projected plane).
      * @api
      */
@@ -196,15 +201,16 @@ class Polygon extends SimpleGeometry {
     }
 
     /**
-     * Get the coordinate array for this geometry.  This array has the structure
-     * of a GeoJSON coordinate array for polygons.
+     * Get the coordinate array for this geometry.
      *
-     * @param right Orient coordinates according to the right-hand
-     *     rule (counter-clockwise for exterior and clockwise for interior rings).
-     *     If `false`, coordinates will be oriented according to the left-hand rule
-     *     (clockwise for exterior and counter-clockwise for interior rings).
-     *     By default, coordinate orientation will depend on how the geometry was
-     *     constructed.
+     * This array has the structure of a GeoJSON coordinate array for polygons.
+     *
+     * @param right Orient coordinates according to the right-hand rule
+     *     (counter-clockwise for exterior and clockwise for interior rings).
+     *     If `false`, coordinates will be oriented according to the left-hand
+     *     rule (clockwise for exterior and counter-clockwise for interior
+     *     rings). By default, coordinate orientation will depend on how the
+     *     geometry was constructed.
      * @return Coordinates.
      * @api
      */
@@ -212,12 +218,16 @@ class Polygon extends SimpleGeometry {
         let flatCoordinates;
         if (right !== undefined) {
             flatCoordinates = this.getOrientedFlatCoordinates().slice();
-            orientLinearRings(flatCoordinates, 0, this.ends_, this.stride, right);
+            orientLinearRings(
+                flatCoordinates, 0, this.ends_, this.stride, right
+            );
         } else {
             flatCoordinates = this.flatCoordinates;
         }
 
-        return inflateCoordinatesArray(flatCoordinates, 0, this.ends_, this.stride);
+        return inflateCoordinatesArray(
+            flatCoordinates, 0, this.ends_, this.stride
+        );
     }
 
     /**
@@ -243,15 +253,14 @@ class Polygon extends SimpleGeometry {
             );
             this.flatInteriorPointRevision_ = this.getRevision();
         }
-        return /** @type */ (
-            this.flatInteriorPoint_
-        );
+        return this.flatInteriorPoint_ as number[];
     }
 
     /**
      * Return an interior point of the polygon.
-     * @return Interior point as XYM coordinate, where M is the
-     * length of the horizontal intersection that the point belongs to.
+     *
+     * @return Interior point as XYM coordinate, where M is the length of the
+     *     horizontal intersection that the point belongs to.
      * @api
      */
     getInteriorPoint(): Point {
@@ -259,7 +268,7 @@ class Polygon extends SimpleGeometry {
     }
 
     /**
-     * Return the number of rings of the polygon,  this includes the exterior
+     * Return the number of rings of the polygon; this includes the exterior
      * ring and any interior rings.
      *
      * @return Number of rings.
@@ -270,13 +279,11 @@ class Polygon extends SimpleGeometry {
     }
 
     /**
-     * Return the Nth linear ring of the polygon geometry. Return `null` if the
-     * given index is out of range.
-     * The exterior linear ring is available at index `0` and the interior rings
-     * at index `1` and beyond.
+     * Return the Nth linear ring of the polygon geometry.
      *
-     * @param index Index.
-     * @return Linear ring.
+     * @param index Index. The exterior linear ring is available at index `0`
+     *     and the interior rings at index `1` and beyond.
+     * @return Linear ring or `null` if the index is out of range.
      * @api
      */
     getLinearRing(index: number): LinearRing | null {
@@ -294,6 +301,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * Return the linear rings of the polygon.
+     *
      * @return Linear rings.
      * @api
      */
@@ -321,7 +329,9 @@ class Polygon extends SimpleGeometry {
     getOrientedFlatCoordinates(): number[] {
         if (this.orientedRevision_ != this.getRevision()) {
             const flatCoordinates = this.flatCoordinates;
-            if (linearRingsAreOriented(flatCoordinates, 0, this.ends_, this.stride)) {
+            if (linearRingsAreOriented(
+                flatCoordinates, 0, this.ends_, this.stride
+            )) {
                 this.orientedFlatCoordinates_ = flatCoordinates;
             } else {
                 this.orientedFlatCoordinates_ = flatCoordinates.slice();
@@ -334,7 +344,7 @@ class Polygon extends SimpleGeometry {
             }
             this.orientedRevision_ = this.getRevision();
         }
-        return /** @type */ (this.orientedFlatCoordinates_);
+        return this.orientedFlatCoordinates_ as number[];
     }
 
     /**
@@ -342,7 +352,7 @@ class Polygon extends SimpleGeometry {
      * @return Simplified Polygon.
      * @protected
      */
-    getSimplifiedGeometryInternal(squaredTolerance: number): Polygon {
+    override getSimplifiedGeometryInternal(squaredTolerance: number): Polygon {
         /** @type */
         const simplifiedFlatCoordinates: number[] = [];
         /** @type */
@@ -362,15 +372,17 @@ class Polygon extends SimpleGeometry {
 
     /**
      * Get the type of this geometry.
+     *
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'Polygon';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
@@ -403,15 +415,19 @@ class Polygon extends SimpleGeometry {
             this.stride,
             this.ends_,
         );
-        this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
+        this.flatCoordinates.length = ends.length === 0
+            ? 0
+            : ends[ends.length - 1];
         this.changed();
     }
 }
 
 export default Polygon;
 
+
 /**
  * Create an approximation of a circle on the surface of a sphere.
+ *
  * @param center Center (`[lon, lat]` in degrees).
  * @param radius The great-circle distance from the center to
  *     the polygon vertices in meters.
@@ -438,8 +454,12 @@ export function circular(
     return new Polygon(flatCoordinates, 'XY', [flatCoordinates.length]);
 }
 
+
 /**
- * Create a polygon from an extent. The layout used is `XY`.
+ * Create a polygon from an extent.
+ *
+ * The layout used is `XY`.
+ *
  * @param extent The extent.
  * @return The polygon.
  * @api
@@ -467,8 +487,10 @@ export function fromExtent(extent: Extent): Polygon {
     return new Polygon(flatCoordinates, 'XY', [flatCoordinates.length]);
 }
 
+
 /**
  * Create a regular polygon from a circle.
+ *
  * @param circle Circle geometry.
  * @param sides Number of sides of the polygon. Default is 32.
  * @param angle Start angle for the first vertex of the polygon in
@@ -477,7 +499,7 @@ export function fromExtent(extent: Extent): Polygon {
  * @api
  */
 export function fromCircle(
-    circle: import("./Circle").default, sides?: number, angle?: number
+    circle: Circle, sides?: number, angle?: number
 ): Polygon {
     sides = sides ? sides : 32;
     const stride = circle.getStride();
@@ -498,8 +520,10 @@ export function fromCircle(
     return polygon;
 }
 
+
 /**
  * Modify the coordinates of a polygon to make it a regular polygon.
+ *
  * @param polygon Polygon geometry.
  * @param center Center of the regular polygon.
  * @param radius Radius of the regular polygon.

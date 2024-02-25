@@ -1,3 +1,4 @@
+import { asArray } from '@olts/core/color';
 import PaletteTexture from '../webgl/PaletteTexture';
 import {
     BooleanType,
@@ -15,7 +16,6 @@ import {
     typeName,
 } from './expression';
 import { Uniforms } from '../renderer/webgl/TileLayer';
-import { asArray } from '../color';
 
 /**
  * @param {string} operator Operator
@@ -57,7 +57,7 @@ export function arrayToGlsl(array: Array<number>): string {
  * Note that the final array will always have 4 components.
  * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
-export function colorToGlsl(color: string | import("../color").Color): string {
+export function colorToGlsl(color: string | import("../../core/src/color").Color): string {
     const array = asArray(color);
     const alpha = array.length > 3 ? array[3] : 1;
     // all components are premultiplied with alpha value

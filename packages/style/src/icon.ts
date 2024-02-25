@@ -178,7 +178,7 @@ export interface Options {
  * @param wantedHeight The wanted height.
  * @return The scale.
  */
-function calculateScale(
+export function calculateScale(
     width: number,
     height: number,
     wantedWidth: number | undefined,
@@ -202,7 +202,7 @@ function calculateScale(
  *
  * @api
  */
-class Icon extends ImageStyle {
+export class Icon extends ImageStyle {
     /**
      * The anchor point in pixels.
      *
@@ -561,12 +561,15 @@ class Icon extends ImageStyle {
 
     /**
      * Get the image icon.
+     *
      * @param pixelRatio Pixel ratio.
-     * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
-     * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
+     * @return Image or Canvas element. If the Icon style was configured with
+     * `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
      * @api
      */
-    getImage(pixelRatio: number): HTMLImageElement | HTMLCanvasElement | ImageBitmap {
+    getImage(
+        pixelRatio: number
+    ): HTMLImageElement | HTMLCanvasElement | ImageBitmap {
         return this.iconImage_.getImage(pixelRatio);
     }
 

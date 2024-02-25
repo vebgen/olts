@@ -18,20 +18,22 @@
             "@olts/core": ["packages/core/src/index.ts"],
             "@olts/core/array": ["packages/core/src/array.ts"],
             "@olts/core/asserts": ["packages/core/src/asserts.ts"],
+            "@olts/core/canvas-defaults": [
+                "packages/core/src/canvas-defaults.ts"
+            ],
             "@olts/core/color": ["packages/core/src/color.ts"],
             "@olts/core/color-like": ["packages/core/src/color-like.ts"],
             "@olts/core/console": ["packages/core/src/console.ts"],
             "@olts/core/coordinate": ["packages/core/src/coordinate.ts"],
             "@olts/core/css": ["packages/core/src/css.ts"],
-            "@olts/core/canvas-defaults": ["packages/core/src/canvas-defaults.ts"],
             "@olts/core/disposable": ["packages/core/src/disposable.ts"],
             "@olts/core/dom": ["packages/core/src/dom.ts"],
             "@olts/core/easing": ["packages/core/src/easing.ts"],
             "@olts/core/extent": ["packages/core/src/extent.ts"],
             "@olts/core/functions": ["packages/core/src/functions.ts"],
             "@olts/core/has": ["packages/core/src/has.ts"],
-            "@olts/core/index": ["packages/core/src/index.ts"],
             "@olts/core/image-state": ["packages/core/src/image-state.ts"],
+            "@olts/core/index": ["packages/core/src/index.ts"],
             "@olts/core/js-obj": ["packages/core/src/js-obj.ts"],
             "@olts/core/math": ["packages/core/src/math.ts"],
             "@olts/core/net": ["packages/core/src/net.ts"],
@@ -44,6 +46,7 @@
             "@olts/core/webgl": ["packages/core/src/webgl.ts"],
             "@olts/core/xml": ["packages/core/src/xml.ts"],
             "@olts/events": ["packages/events/src/index.ts"],
+            "@olts/expr": ["packages/expressions/src/index.ts"],
             "@olts/geometry": ["packages/geometry/src/index.ts"],
             "@olts/style": ["packages/style/src/index.ts"]
         }

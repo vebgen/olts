@@ -8,7 +8,7 @@ import { IconImage } from './icon-image';
 /**
  * Singleton class. Available through {@linkIconImageCache.shared}.
  */
-class IconImageCache {
+export class IconImageCache {
     /**
      *
      */

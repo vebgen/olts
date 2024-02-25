@@ -6,13 +6,15 @@ import {
 import SimpleGeometry from './simple-geometry';
 import { deflateCoordinate } from './flat/deflate';
 import { rotate } from './flat/transform';
+import { GeometryLayout, Type } from './geometry';
+
 
 /**
  * Circle geometry.
  *
  * @api
  */
-class Circle extends SimpleGeometry {
+export class Circle extends SimpleGeometry {
     /**
      * @param center Center. For internal use, flat coordinates in combination
      *     with `layout` and no `radius` are also accepted.
@@ -52,7 +54,12 @@ class Circle extends SimpleGeometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x: number, y: number, closestPoint: Coordinate, minSquaredDistance: number): number {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ): number {
         const flatCoordinates = this.flatCoordinates;
         const dx = x - flatCoordinates[0];
         const dy = y - flatCoordinates[1];
@@ -81,7 +88,7 @@ class Circle extends SimpleGeometry {
      * @param y Y.
      * @return Contains (x, y).
      */
-    containsXY(x: number, y: number): boolean {
+    override containsXY(x: number, y: number): boolean {
         const flatCoordinates = this.flatCoordinates;
         const dx = x - flatCoordinates[0];
         const dy = y - flatCoordinates[1];
@@ -89,7 +96,7 @@ class Circle extends SimpleGeometry {
     }
 
     /**
-     * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+     * Return the center of the circle as {@link Coordinate coordinate}.
      * @return Center.
      * @api
      */
@@ -102,7 +109,7 @@ class Circle extends SimpleGeometry {
      * @protected
      * @return extent Extent.
      */
-    computeExtent(extent: Extent): Extent {
+    override computeExtent(extent: Extent): Extent {
         const flatCoordinates = this.flatCoordinates;
         const radius = flatCoordinates[this.stride] - flatCoordinates[0];
         return createOrUpdate(
@@ -116,6 +123,7 @@ class Circle extends SimpleGeometry {
 
     /**
      * Return the radius of the circle.
+     *
      * @return Radius.
      * @api
      */
@@ -128,8 +136,14 @@ class Circle extends SimpleGeometry {
      * @return Radius squared.
      */
     getRadiusSquared_(): number {
-        const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
-        const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
+        const dx = (
+            this.flatCoordinates[this.stride] -
+            this.flatCoordinates[0]
+        );
+        const dy = (
+            this.flatCoordinates[this.stride + 1] -
+            this.flatCoordinates[1]
+        );
         return dx * dx + dy * dy;
     }
 
@@ -215,11 +229,12 @@ class Circle extends SimpleGeometry {
         return null;
     }
 
-    setCoordinates(coordinates, layout) { }
+    setCoordinates(coordinates: Coordinate[], layout?: GeometryLayout) { }
 
     /**
-     * Set the radius of the circle. The radius is in the units of the projection.
-     * @param radius Radius.
+     * Set the radius of the circle.
+     *
+     * @param radius Radius in the units of the projection.
      * @api
      */
     setRadius(radius: number) {
@@ -228,13 +243,15 @@ class Circle extends SimpleGeometry {
     }
 
     /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
+     * Rotate the geometry around a given coordinate.
+     *
+     * This modifies the geometry coordinates in place.
+     *
      * @param angle Rotation angle in counter-clockwise radians.
      * @param anchor The rotation center.
      * @api
      */
-    rotate(angle: number, anchor: Coordinate) {
+    override rotate(angle: number, anchor: Coordinate) {
         const center = this.getCenter();
         const stride = this.getStride();
         this.setCenter(
@@ -246,23 +263,23 @@ class Circle extends SimpleGeometry {
 
 /**
  * Transform each coordinate of the circle from one coordinate reference system
- * to another. The geometry is modified in place.
- * If you do not want the geometry modified in place, first clone() it and
- * then use this function on the clone.
+ * to another.
+ *
+ * The geometry is modified in place. If you do not want the geometry modified
+ * in place, first clone() it and then use this function on the clone.
  *
  * Internally a circle is currently represented by two points: the center of
- * the circle `[cx, cy]`, and the point to the right of the circle
- * `[cx + r, cy]`. This `transform` function just transforms these two points.
- * So the resulting geometry is also a circle, and that circle does not
- * correspond to the shape that would be obtained by transforming every point
- * of the original circle.
+ * the circle `[cx, cy]`, and the point to the right of the circle `[cx + r,
+ * cy]`. This `transform` function just transforms these two points. So the
+ * resulting geometry is also a circle, and that circle does not correspond to
+ * the shape that would be obtained by transforming every point of the original
+ * circle.
  *
- * @param source The current projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @param destination The desired projection.  Can be a
- *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {Circle} This geometry.  Note that original geometry is
- *     modified in place.
+ * @param source The current projection.  Can be a string identifier or a
+ *     {@link Projection} object.
+ * @param destination The desired projection.  Can be a string identifier or a
+ *     {@link Projection} object.
+ * @return This geometry.  Note that original geometry is modified in place.
  * @function
  * @api
  */

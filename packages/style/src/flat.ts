@@ -57,6 +57,7 @@ import { Color } from "@olts/core/color";
 import { IconAnchorUnits, IconOrigin } from "./icon";
 import { Size } from "@olts/core/size";
 import { DeclutterMode } from "./image";
+import { EncodedExpression } from "./defs";
 
 
 /**
@@ -446,7 +447,7 @@ export interface FlatText {
  * @property {"declutter"|"obstacle"|"none"|undefined} [icon-declutter-mode] Declutter mode
  * @property {NumberExpression} [z-index] The zIndex of the style.
 */
-interface FlatIcon {
+export interface FlatIcon {
     /**
      * The URI source of the icon.
      */

@@ -1,0 +1,37 @@
+{
+    "name": "expressions",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/expressions/src",
+    "projectType": "library",
+    "targets": {
+        "build": {
+            "executor": "@nx/rollup:rollup",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/packages/expressions",
+                "main": "packages/expressions/src/index.ts",
+                "tsConfig": "packages/expressions/tsconfig.lib.json",
+                "assets": [],
+                "project": "packages/expressions/package.json",
+                "compiler": "swc",
+                "format": ["cjs", "esm"]
+            }
+        },
+        "publish": {
+            "command": "node tools/scripts/publish.mjs expressions {args.ver} {args.tag}",
+            "dependsOn": ["build"]
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{options.outputFile}"]
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "packages/expressions/jest.config.ts"
+            }
+        }
+    },
+    "tags": []
+}

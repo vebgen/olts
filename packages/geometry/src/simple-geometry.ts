@@ -1,48 +1,42 @@
-
-import Geometry from './geometry';
-import { abstract } from '../util';
-import { createOrUpdateFromFlatCoordinates, getCenter } from '@olts/core/extent';
-import { rotate, scale, transform2D, translate } from './flat/transform';
 import { Transform } from '@olts/core/transform';
 import { Coordinate } from '@olts/core/coordinate';
-import { Extent } from '@olts/core/extent';
+import {
+    createOrUpdateFromFlatCoordinates, getCenter, Extent
+} from '@olts/core/extent';
+
+import { Geometry, GeometryLayout } from './geometry';
+import { rotate, scale, transform2D, translate } from './flat/transform';
+import { TransformFunction } from '@olts/core/proj';
+
 
 /**
  * Abstract base class; only used for creating subclasses; do not instantiate
  * in apps, as cannot be rendered.
  *
- * @abstract
  * @api
  */
-class SimpleGeometry extends Geometry {
-    constructor() {
-        super();
+export abstract class SimpleGeometry extends Geometry {
 
-        /**
-         * @protected
-         * @type {GeometryLayout}
-         */
-        this.layout = 'XY';
+    /**
+     *
+     */
+    protected layout: GeometryLayout = 'XY';
 
-        /**
-         * @protected
-         * @type {number}
-         */
-        this.stride = 2;
+    /**
+     *
+     */
+    protected stride: number = 2;
 
-        /**
-         * @protected
-         * @type {number[]}
-         */
-        this.flatCoordinates;
-    }
+    /**
+     *
+     */
+    protected flatCoordinates: number[] = [];
 
     /**
      * @param extent Extent.
-     * @protected
      * @return extent Extent.
      */
-    computeExtent(extent: Extent): Extent {
+    protected computeExtent(extent: Extent): Extent {
         return createOrUpdateFromFlatCoordinates(
             this.flatCoordinates,
             0,
@@ -53,15 +47,14 @@ class SimpleGeometry extends Geometry {
     }
 
     /**
-     * @abstract
+     *
      * @return Coordinates.
      */
-    getCoordinates(): any[] | null {
-        return abstract();
-    }
+    abstract getCoordinates(): any[] | null;
 
     /**
      * Return the first coordinate of the geometry.
+     *
      * @return First coordinate.
      * @api
      */
@@ -78,6 +71,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * Return the last coordinate of the geometry.
+     *
      * @return Last point.
      * @api
      */
@@ -89,6 +83,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * Return the {@link GeometryLayout layout} of the geometry.
+     *
      * @return Layout.
      * @api
      */
@@ -97,7 +92,9 @@ class SimpleGeometry extends Geometry {
     }
 
     /**
-     * Create a simplified version of this geometry using the Douglas Peucker algorithm.
+     * Create a simplified version of this geometry using the Douglas Peucker
+     * algorithm.
+     *
      * @param squaredTolerance Squared tolerance.
      * @return Simplified geometry.
      */
@@ -106,19 +103,22 @@ class SimpleGeometry extends Geometry {
             this.simplifiedGeometryMaxMinSquaredTolerance = 0;
             this.simplifiedGeometryRevision = this.getRevision();
         }
-        // If squaredTolerance is negative or if we know that simplification will not
-        // have any effect then just return this.
+        // If squaredTolerance is negative or if we know that simplification
+        // will not have any effect then just return this.
         if (
             squaredTolerance < 0 ||
-            (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-                squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)
+            (
+                this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+                squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance
+            )
         ) {
             return this;
         }
 
         const simplifiedGeometry =
             this.getSimplifiedGeometryInternal(squaredTolerance);
-        const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
+        const simplifiedFlatCoordinates =
+            simplifiedGeometry.getFlatCoordinates();
         if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
             return simplifiedGeometry;
         }
@@ -135,9 +135,10 @@ class SimpleGeometry extends Geometry {
     /**
      * @param squaredTolerance Squared tolerance.
      * @return Simplified geometry.
-     * @protected
      */
-    getSimplifiedGeometryInternal(squaredTolerance: number): SimpleGeometry {
+    protected getSimplifiedGeometryInternal(
+        squaredTolerance: number
+    ): SimpleGeometry {
         return this;
     }
 
@@ -159,21 +160,22 @@ class SimpleGeometry extends Geometry {
     }
 
     /**
-     * @abstract
+     *
      * @param coordinates Coordinates.
      * @param layout Layout.
      */
-    setCoordinates(coordinates: any[], layout?: GeometryLayout) {
-        abstract();
-    }
+    abstract setCoordinates(coordinates: any[], layout?: GeometryLayout): void;
 
     /**
      * @param layout Layout.
      * @param coordinates Coordinates.
      * @param nesting Nesting.
-     * @protected
      */
-    setLayout(layout: GeometryLayout | undefined, coordinates: any[], nesting: number) {
+    protected setLayout(
+        layout: GeometryLayout | undefined,
+        coordinates: any[],
+        nesting: number
+    ) {
         let stride;
         if (layout) {
             stride = getStrideForLayout(layout);
@@ -195,23 +197,29 @@ class SimpleGeometry extends Geometry {
 
     /**
      * Apply a transform function to the coordinates of the geometry.
-     * The geometry is modified in place.
-     * If you do not want the geometry modified in place, first `clone()` it and
-     * then use this function on the clone.
-     * @param transformFn Transform function.
-     * Called with a flat array of geometry coordinates.
+     *
+     * The geometry is modified in place. If you do not want the geometry
+     * modified in place, first `clone()` it and then use this function on the
+     * clone.
+     *
+     * @param transformFn Transform function. Called with a flat array of
+     * geometry coordinates.
      * @api
      */
     applyTransform(transformFn: TransformFunction) {
         if (this.flatCoordinates) {
-            transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+            transformFn(
+                this.flatCoordinates, this.flatCoordinates, this.stride
+            );
             this.changed();
         }
     }
 
     /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
+     * Rotate the geometry around a given coordinate.
+     *
+     * This modifies the geometry coordinates in place.
+     *
      * @param angle Rotation angle in counter-clockwise radians.
      * @param anchor The rotation center.
      * @api
@@ -234,12 +242,14 @@ class SimpleGeometry extends Geometry {
     }
 
     /**
-     * Scale the geometry (with an optional origin).  This modifies the geometry
-     * coordinates in place.
+     * Scale the geometry (with an optional origin).
+     *
+     * This modifies the geometry coordinates in place.
+     *
      * @param sx The scaling factor in the x-direction.
      * @param sy The scaling factor in the y-direction (defaults to sx).
-     * @param anchor The scale origin (defaults to the center
-     *     of the geometry extent).
+     * @param anchor The scale origin (defaults to the center of the geometry
+     *     extent).
      * @api
      */
     scale(sx: number, sy?: number, anchor?: Coordinate) {
@@ -267,8 +277,11 @@ class SimpleGeometry extends Geometry {
     }
 
     /**
-     * Translate the geometry.  This modifies the geometry coordinates in place.  If
-     * instead you want a new geometry, first `clone()` this geometry.
+     * Translate the geometry.
+     *
+     * This modifies the geometry coordinates in place. If instead you want a
+     * new geometry, first `clone()` this geometry.
+     *
      * @param deltaX Delta X.
      * @param deltaY Delta Y.
      * @api
@@ -297,13 +310,15 @@ class SimpleGeometry extends Geometry {
  * @return layout Layout.
  */
 export function getLayoutForStride(stride: number): GeometryLayout {
-    let layout;
+    let layout: GeometryLayout;
     if (stride == 2) {
         layout = 'XY';
     } else if (stride == 3) {
         layout = 'XYZ';
     } else if (stride == 4) {
         layout = 'XYZM';
+    } else {
+        throw new Error('unsupported stride: ' + stride);
     }
     return layout;
 }
@@ -321,6 +336,8 @@ export function getStrideForLayout(layout: GeometryLayout): number {
         stride = 3;
     } else if (layout == 'XYZM') {
         stride = 4;
+    } else {
+        throw new Error('unsupported layout: ' + layout);
     }
     return stride;
 }

@@ -1,19 +1,25 @@
 import {
+    CallExpression,
     ColorType,
+    EncodedExpression,
+    Expression,
     LiteralExpression,
     LiteralValue,
     Ops,
+    ParsingContext,
     overlapsType,
     parse,
     typeName,
 } from './expression';
 import {
+    Color,
     fromString,
     lchaToRgba,
     normalize,
     rgbaToLcha,
     withAlpha,
-} from '../color';
+} from '@olts/core/color';
+
 
 /**
  * @fileoverview This module includes functions to build expressions for
@@ -29,13 +35,19 @@ import {
 export interface EvaluationContext {
     /**
      * The values for properties used in 'get' expressions.
+     *
+     * @todo initial type was object. If LiteralValue is too restrictive
+     * change it to any.
      */
-    properties: Object;
+    properties: Record<string, LiteralValue>;
 
     /**
      * The values for variables used in 'var' expressions.
+     *
+     * @todo initial type was object. If LiteralValue is too restrictive
+     * change it to any.
      */
-    variables: Object;
+    variables: Record<string, LiteralValue>;
 
     /**
      * The map resolution.
@@ -145,12 +157,16 @@ export type SizeLikeEvaluator = (
 
 
 /**
- * @param {EncodedExpression} encoded The encoded expression.
- * @param {number} type The expected type.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The expression evaluator.
+ * @param encoded The encoded expression.
+ * @param type The expected type.
+ * @param context The parsing context.
+ * @return The expression evaluator.
  */
-export function buildExpression(encoded: EncodedExpression, type: number, context: ParsingContext): ExpressionEvaluator {
+export function buildExpression(
+    encoded: EncodedExpression,
+    type: number,
+    context: ParsingContext
+): ExpressionEvaluator {
     const expression = parse(encoded, context);
     if (!overlapsType(type, expression.type)) {
         const expected = typeName(type);
@@ -162,12 +178,15 @@ export function buildExpression(encoded: EncodedExpression, type: number, contex
     return compileExpression(expression, context);
 }
 
+
 /**
- * @param {Expression} expression The expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileExpression(expression: Expression, context: ParsingContext): ExpressionEvaluator {
+function compileExpression(
+    expression: Expression, context: ParsingContext
+): ExpressionEvaluator {
     if (expression instanceof LiteralExpression) {
         // convert colors to array if possible
         if (expression.type === ColorType && typeof expression.value === 'string') {
@@ -192,7 +211,9 @@ function compileExpression(expression: Expression, context: ParsingContext): Exp
             return compileAccessorExpression(expression, context);
         }
         case Ops.Id: {
-            return (context) => context.featureId;
+            // TODO: context.featureId can be NULL but LiteralValue does not
+            // support NULL.
+            return (context) => context.featureId as LiteralValue;
         }
         case Ops.GeometryType: {
             return (context) => context.geometryType;
@@ -259,12 +280,15 @@ function compileExpression(expression: Expression, context: ParsingContext): Exp
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileAssertionExpression(expression: CallExpression, context: ParsingContext): ExpressionEvaluator {
+function compileAssertionExpression(
+    expression: CallExpression, context: ParsingContext
+): ExpressionEvaluator {
     const type = expression.operator;
     const length = expression.args.length;
 
@@ -302,14 +326,18 @@ function compileAssertionExpression(expression: CallExpression, context: Parsing
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileAccessorExpression(expression: CallExpression, context: ParsingContext): ExpressionEvaluator {
-    const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
-    const name = /** @type {string} */ (nameExpression.value);
+function compileAccessorExpression(
+    expression: CallExpression,
+    context: ParsingContext
+): ExpressionEvaluator {
+    const nameExpression = expression.args[0] as LiteralExpression;
+    const name = nameExpression.value as string;
     switch (expression.operator) {
         case Ops.Get: {
             return (context) => context.properties[name];
@@ -318,17 +346,22 @@ function compileAccessorExpression(expression: CallExpression, context: ParsingC
             return (context) => context.variables[name];
         }
         default: {
-            throw new Error(`Unsupported accessor operator ${expression.operator}`);
+            throw new Error(
+                `Unsupported accessor operator ${expression.operator}`
+            );
         }
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {BooleanEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileComparisonExpression(expression: CallExpression, context: ParsingContext): BooleanEvaluator {
+function compileComparisonExpression(
+    expression: CallExpression, context: ParsingContext
+): BooleanEvaluator {
     const op = expression.operator;
     const left = compileExpression(expression.args[0], context);
     const right = compileExpression(expression.args[1], context);
@@ -357,12 +390,15 @@ function compileComparisonExpression(expression: CallExpression, context: Parsin
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {BooleanEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileLogicalExpression(expression: CallExpression, context: ParsingContext): BooleanEvaluator {
+function compileLogicalExpression(
+    expression: CallExpression, context: ParsingContext
+): BooleanEvaluator {
     const op = expression.operator;
     const length = expression.args.length;
 
@@ -400,12 +436,15 @@ function compileLogicalExpression(expression: CallExpression, context: ParsingCo
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {NumberEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileNumericExpression(expression: CallExpression, context: ParsingContext): NumberEvaluator {
+function compileNumericExpression(
+    expression: CallExpression, context: ParsingContext
+): NumberEvaluator {
     const op = expression.operator;
     const length = expression.args.length;
 
@@ -478,7 +517,9 @@ function compileNumericExpression(expression: CallExpression, context: ParsingCo
         }
         case Ops.Atan: {
             if (length === 2) {
-                return (context) => Math.atan2(args[0](context), args[1](context));
+                return (context) => (
+                    Math.atan2(args[0](context), args[1](context))
+                );
             }
             return (context) => Math.atan(args[0](context));
         }
@@ -491,12 +532,15 @@ function compileNumericExpression(expression: CallExpression, context: ParsingCo
     }
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileCaseExpression(expression: CallExpression, context: ParsingContext): ExpressionEvaluator {
+function compileCaseExpression(
+    expression: CallExpression, context: ParsingContext
+): ExpressionEvaluator {
     const length = expression.args.length;
     const args = new Array(length);
     for (let i = 0; i < length; ++i) {
@@ -513,12 +557,15 @@ function compileCaseExpression(expression: CallExpression, context: ParsingConte
     };
 }
 
+
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileMatchExpression(expression: CallExpression, context: ParsingContext): ExpressionEvaluator {
+function compileMatchExpression(
+    expression: CallExpression, context: ParsingContext
+): ExpressionEvaluator {
     const length = expression.args.length;
     const args = new Array(length);
     for (let i = 0; i < length; ++i) {
@@ -536,11 +583,13 @@ function compileMatchExpression(expression: CallExpression, context: ParsingCont
 }
 
 /**
- * @param {CallExpression} expression The call expression.
- * @param {ParsingContext} context The parsing context.
- * @return {ExpressionEvaluator} The evaluator function.
+ * @param expression The call expression.
+ * @param context The parsing context.
+ * @return The evaluator function.
  */
-function compileInterpolateExpression(expression: CallExpression, context: ParsingContext): ExpressionEvaluator {
+function compileInterpolateExpression(
+    expression: CallExpression, context: ParsingContext
+): ExpressionEvaluator {
     const length = expression.args.length;
     const args = new Array(length);
     for (let i = 0; i < length; ++i) {
@@ -590,15 +639,22 @@ function compileInterpolateExpression(expression: CallExpression, context: Parsi
 }
 
 /**
- * @param {number} base The base.
- * @param {number} value The value.
- * @param {number} input1 The first input value.
- * @param {number} output1 The first output value.
- * @param {number} input2 The second input value.
- * @param {number} output2 The second output value.
- * @return {number} The interpolated value.
+ * @param base The base.
+ * @param value The value.
+ * @param input1 The first input value.
+ * @param output1 The first output value.
+ * @param input2 The second input value.
+ * @param output2 The second output value.
+ * @return The interpolated value.
  */
-function interpolateNumber(base: number, value: number, input1: number, output1: number, input2: number, output2: number): number {
+function interpolateNumber(
+    base: number,
+    value: number,
+    input1: number,
+    output1: number,
+    input2: number,
+    output2: number
+): number {
     const delta = input2 - input1;
     if (delta === 0) {
         return output1;
@@ -612,15 +668,22 @@ function interpolateNumber(base: number, value: number, input1: number, output1:
 }
 
 /**
- * @param {number} base The base.
- * @param {number} value The value.
- * @param {number} input1 The first input value.
- * @param {import('../color').Color} rgba1 The first output value.
- * @param {number} input2 The second input value.
- * @param {import('../color').Color} rgba2 The second output value.
- * @return {import('../color').Color} The interpolated color.
+ * @param base The base.
+ * @param value The value.
+ * @param input1 The first input value.
+ * @param rgba1 The first output value.
+ * @param input2 The second input value.
+ * @param rgba2 The second output value.
+ * @return The interpolated color.
  */
-function interpolateColor(base: number, value: number, input1: number, rgba1: import('../color').Color, input2: number, rgba2: import('../color').Color): import('../color').Color {
+function interpolateColor(
+    base: number,
+    value: number,
+    input1: number,
+    rgba1: Color,
+    input2: number,
+    rgba2: Color
+): Color {
     const delta = input2 - input1;
     if (delta === 0) {
         return rgba1;
@@ -634,7 +697,7 @@ function interpolateColor(base: number, value: number, input1: number, rgba1: im
         deltaHue += 360;
     }
 
-    const lcha = [
+    const lcha: Color = [
         interpolateNumber(base, value, input1, lcha1[0], input2, lcha2[0]),
         interpolateNumber(base, value, input1, lcha1[1], input2, lcha2[1]),
         lcha1[2] + interpolateNumber(base, value, input1, 0, input2, deltaHue),

@@ -1,5 +1,8 @@
-import { ascending } from '../array';
-import { Color, isStringColor } from '../color';
+import { ascending } from '@olts/core/array';
+import { Color, isStringColor } from '@olts/core/color';
+import { Geometry, GeometryCollection } from '@olts/geometry';
+import { FlatStyle, WebGLStyle } from '@olts/style';
+
 
 /**
  * @fileoverview This module includes types and functions for parsing array
@@ -410,7 +413,7 @@ export type EncodedExpression = LiteralValue | ExpressionValue[];
  * @return The parsed expression result.
  */
 export function parse(
-    encoded: EncodedExpression, context: ParsingContext, typeHint?: number
+    encoded: EncodedExpression, context: ParsingContext, typeHint: number = 0
 ): Expression {
     switch (typeof encoded) {
         case 'boolean': {
@@ -425,8 +428,8 @@ export function parse(
                 type |= ColorType;
             }
             // apply the given type hint only if it won't result in an empty type
-            if (!isType(type & typeHint, NoneType)) {
-                type &= typeHint;
+            if (typeHint && !isType(type & typeHint, NoneType)) {
+                type &= typeHint!;
             }
             return new LiteralExpression(type, encoded);
         }
@@ -460,7 +463,7 @@ export function parse(
     if (typeHint) {
         type &= typeHint;
     }
-    return new LiteralExpression(type, encoded);
+    return new LiteralExpression(type, encoded as LiteralValue);
 }
 
 
@@ -515,18 +518,416 @@ export const Ops = {
 /**
  *
  * Third argument is a type hint
+ *
+ * @todo changed type hint to be optional as it is used in code; original code
+ *      had it as required
  */
 export type Parser = (
     encoded: EncodedExpression,
-    context: ParsingContext, typeHint: number
+    context: ParsingContext,
+    typeHint?: number
 ) => Expression;
+
+
+/**
+ *
+ */
+const withGetArgs: ArgValidator = (encoded, context) => {
+    const arg = parse(encoded[1], context);
+    if (!(arg instanceof LiteralExpression)) {
+        throw new Error('Expected a literal argument for get operation');
+    }
+    if (typeof arg.value !== 'string') {
+        throw new Error('Expected a string argument for get operation');
+    }
+    context.properties.add(arg.value);
+    if (encoded.length === 3) {
+        const hint = parse(encoded[2], context);
+        return [arg, hint];
+    }
+    return [arg];
+}
+
+
+/**
+ *
+ */
+const withVarArgs: ArgValidator = (encoded, context, parsedArgs, typeHint) => {
+    const varName = encoded[1];
+    if (typeof varName !== 'string') {
+        throw new Error('Expected a string argument for var operation');
+    }
+    context.variables.add(varName);
+    if (
+        !('variables' in context.style) ||
+        context.style.variables[varName] === undefined
+    ) {
+        return [new LiteralExpression(AnyType, varName)];
+    }
+    const initialValue = context.style.variables[varName];
+    const arg = parse(initialValue, context) as LiteralExpression;
+    arg.value = varName;
+    if (typeHint && !overlapsType(typeHint, arg.type)) {
+        throw new Error(
+            `The variable ${varName} has type ${typeName(
+                arg.type,
+            )} but the following type was expected: ${typeName(typeHint)}`,
+        );
+    }
+    return [arg];
+}
+
+
+/**
+ *
+ */
+const withNoArgs: ArgValidator = (encoded, context) => {
+    const operation = encoded[0];
+    if (encoded.length !== 1) {
+        throw new Error(`Expected no arguments for ${operation} operation`);
+    }
+    return [];
+}
+
+
+/**
+ *
+ */
+const usesFeatureId: ArgValidator = (encoded, context) => {
+    context.featureId = true;
+}
+
+
+/**
+ *
+ */
+const usesGeometryType: ArgValidator = (encoded, context) => {
+    context.geometryType = true;
+}
+
+
+/**
+ *
+ */
+const narrowArgsType: ArgValidator = (encoded, context, parsedArgs) => {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+
+    // first pass to determine a narrowed down type
+    let sameType = AnyType;
+    for (let i = 0; i < parsedArgs.length; ++i) {
+        sameType &= parsedArgs[i].type;
+    }
+
+    if (sameType === NoneType) {
+        throw new Error(
+            `No common type could be found for arguments of ${operation} operation`,
+        );
+    }
+
+    // re-parse args
+    const args = new Array(argCount);
+    for (let i = 0; i < argCount; ++i) {
+        args[i] = parse(encoded[i + 1], context, sameType);
+    }
+    return args;
+}
+
+
+/**
+ *
+ */
+const withEvenArgs: ArgValidator = (encoded, context) => {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+    if (argCount % 2 === 1) {
+        throw new Error(
+            `An even amount of arguments was expected for ` +
+            `operation ${operation}, got ${JSON.stringify(argCount)} instead`,
+        );
+    }
+}
+
+
+/**
+ *
+ */
+const parseMatchArgs: ArgValidator = (
+    encoded, context, parsedArgs, typeHint
+) => {
+    const argsCount = encoded.length - 1;
+
+    const input = parse(encoded[1], context);
+    let inputType = input.type;
+    const fallback = parse(encoded[encoded.length - 1], context);
+    let outputType =
+        typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+
+    // first parse args to figure out possible types
+    const args = new Array(argsCount - 2);
+    for (let i = 0; i < argsCount - 2; i += 2) {
+        const match = parse(encoded[i + 2], context);
+        const output = parse(encoded[i + 3], context);
+        inputType &= match.type;
+        outputType &= output.type;
+        args[i] = match;
+        args[i + 1] = output;
+    }
+
+    // check input and output types validity
+    const expectedInputType = StringType | NumberType | BooleanType;
+    if (!overlapsType(expectedInputType, inputType)) {
+        throw new Error(
+            `Expected an input of type ${typeName(
+                expectedInputType,
+            )} for the interpolate operation` +
+            `, got ${typeName(inputType)} instead`,
+        );
+    }
+    if (isType(outputType, NoneType)) {
+        throw new Error(
+            `Could not find a common output type for the following match operation: ` +
+            JSON.stringify(encoded),
+        );
+    }
+
+    // parse again inputs and outputs with common type
+    for (let i = 0; i < argsCount - 2; i += 2) {
+        const match = parse(encoded[i + 2], context, inputType);
+        const output = parse(encoded[i + 3], context, outputType);
+        args[i] = match;
+        args[i + 1] = output;
+    }
+
+    return [
+        parse(encoded[1], context, inputType),
+        ...args,
+        parse(encoded[encoded.length - 1], context, outputType),
+    ];
+}
+
+
+/**
+ *
+ */
+const parseInterpolateArgs: ArgValidator = (
+    encoded, context, parsedArgs, typeHint
+) => {
+    const interpolationType = encoded[1] as ExpressionValue[];
+    let interpolation;
+    switch (interpolationType[0]) {
+        case 'linear':
+            interpolation = 1;
+            break;
+        case 'exponential':
+            interpolation = interpolationType[1];
+            if (typeof interpolation !== 'number') {
+                throw new Error(
+                    `Expected a number base for exponential interpolation` +
+                    `, got ${JSON.stringify(interpolation)} instead`,
+                );
+            }
+            break;
+        default:
+            interpolation = null;
+    }
+    if (!interpolation) {
+        throw new Error(
+            `Invalid interpolation type: ${JSON.stringify(interpolationType)}`,
+        );
+    }
+    interpolation = parse(interpolation, context);
+
+    // check input types
+    let input = parse(encoded[2], context);
+    if (!overlapsType(NumberType, input.type)) {
+        throw new Error(
+            `Expected an input of type number for the interpolate operation` +
+            `, got ${typeName(input.type)} instead`,
+        );
+    }
+    input = parse(encoded[2], context, NumberType); // parse again with narrower output
+
+    const args = new Array(encoded.length - 3);
+    for (let i = 0; i < args.length; i += 2) {
+        let stop = parse(encoded[i + 3], context);
+        if (!overlapsType(NumberType, stop.type)) {
+            throw new Error(
+                `Expected all stop input values in the interpolate operation to be of type number` +
+                `, got ${typeName(stop.type)} at position ${i + 2} instead`,
+            );
+        }
+        let output = parse(encoded[i + 4], context);
+        if (!overlapsType(NumberType | ColorType, output.type)) {
+            throw new Error(
+                `Expected all stop output values in the interpolate operation to be a number or color` +
+                `, got ${typeName(output.type)} at position ${i + 3} instead`,
+            );
+        }
+        // parse again with narrower types
+        stop = parse(encoded[i + 3], context, NumberType);
+        output = parse(encoded[i + 4], context, NumberType | ColorType);
+        args[i] = stop;
+        args[i + 1] = output;
+    }
+
+    return [interpolation, input, ...args];
+}
+
+
+/**
+ *
+ */
+const withOddArgs: ArgValidator = (encoded, context) => {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+    if (argCount % 2 === 0) {
+        throw new Error(
+            `An odd amount of arguments was expected for ` +
+            `operation ${operation}, got ${JSON.stringify(argCount,)} instead`,
+        );
+    }
+}
+
+
+
+/**
+ *
+ */
+const parseCaseArgs: ArgValidator = (
+    encoded, context, parsedArgs, typeHint
+) => {
+    const fallback = parse(encoded[encoded.length - 1], context);
+    let outputType =
+        typeHint !== undefined ? typeHint & fallback.type : fallback.type;
+
+    // first parse args to figure out possible types
+    const args = new Array(encoded.length - 1);
+    for (let i = 0; i < args.length - 1; i += 2) {
+        const condition = parse(encoded[i + 1], context);
+        const output = parse(encoded[i + 2], context);
+        if (!overlapsType(BooleanType, condition.type)) {
+            throw new Error(
+                `Expected all conditions in the case operation to be of type boolean` +
+                `, got ${typeName(condition.type)} at position ${i} instead`,
+            );
+        }
+        outputType &= output.type;
+        args[i] = condition;
+        args[i + 1] = output;
+    }
+
+    if (isType(outputType, NoneType)) {
+        throw new Error(
+            `Could not find a common output type for the following ` +
+            `case operation: ${JSON.stringify(encoded)}`
+        );
+    }
+
+    // parse again args with common output type
+    for (let i = 0; i < args.length - 1; i += 2) {
+        args[i + 1] = parse(encoded[i + 2], context, outputType);
+    }
+    args[args.length - 1] = parse(
+        encoded[encoded.length - 1],
+        context,
+        outputType,
+    );
+
+    return args;
+}
+
+
+
+/**
+ *
+ */
+const parseInArgs: ArgValidator = (encoded, context) => {
+    let haystack: (number | string)[] = encoded[2] as (number | string)[];
+    if (!Array.isArray(haystack)) {
+        throw new Error(
+            `The "in" operator was provided a literal value which was not ` +
+            `an array as second argument.`,
+        );
+    }
+    if (typeof haystack[0] === 'string') {
+        if (haystack[0] !== 'literal') {
+            throw new Error(
+                `For the "in" operator, a string array should be wrapped in ` +
+                `a "literal" operator to disambiguate from expressions.`,
+            );
+        }
+        if (!Array.isArray(haystack[1])) {
+            throw new Error(
+                `The "in" operator was provided a literal value which was ` +
+                `not an array as second argument.`,
+            );
+        }
+        haystack = haystack[1];
+    }
+
+    let needleType = StringType | NumberType;
+    const args = new Array(haystack.length);
+    for (let i = 0; i < args.length; i++) {
+        const arg = parse(haystack[i], context);
+        needleType &= arg.type;
+        args[i] = arg;
+    }
+    if (isType(needleType, NoneType)) {
+        throw new Error(
+            `Could not find a common type for the following in operation: ` +
+            JSON.stringify(encoded),
+        );
+    }
+
+    const needle = parse(encoded[1], context, needleType);
+    return [needle, ...args];
+}
+
+
+/**
+ *
+ */
+const parsePaletteArgs: ArgValidator = (encoded, context) => {
+    const index = parse(encoded[1], context, NumberType);
+    if (index.type !== NumberType) {
+        throw new Error(
+            `The first argument of palette must be an number, got ${typeName(
+                index.type,
+            )} instead`,
+        );
+    }
+    const colors = encoded[2];
+    if (!Array.isArray(colors)) {
+        throw new Error('The second argument of palette must be an array');
+    }
+    const parsedColors = new Array(colors.length);
+    for (let i = 0; i < parsedColors.length; i++) {
+        const color = parse(colors[i], context, ColorType);
+        if (!(color instanceof LiteralExpression)) {
+            throw new Error(
+                `The palette color at index ${i} must be a literal value`,
+            );
+        }
+        if (!overlapsType(color.type, ColorType)) {
+            throw new Error(
+                `The palette color at index ${i} should be of type color, ` +
+                `got ${typeName(color.type)} instead`,
+            );
+        }
+        parsedColors[i] = color;
+    }
+    return [index, ...parsedColors];
+}
 
 
 const parsers: Record<string, Parser> = {
     [Ops.Get]: createParser(
         ([_, typeHint]) => {
             if (typeHint !== undefined) {
-                return getTypeFromHint((typeHint as LiteralExpression).value);
+                return getTypeFromHint(
+                    (typeHint as LiteralExpression).value as string
+                );
             }
             return AnyType;
         },
@@ -770,6 +1171,7 @@ const parsers: Record<string, Parser> = {
     [Ops.Palette]: createParser(ColorType, withArgsCount(2, 2), parsePaletteArgs),
 };
 
+
 /**
  * An argument validator applies various checks to an encoded expression arguments
  *
@@ -787,81 +1189,9 @@ type ArgValidator = (
 
 
 /**
- * @type ArgValidator
- */
-function withGetArgs(encoded, context) {
-    const arg = parse(encoded[1], context);
-    if (!(arg instanceof LiteralExpression)) {
-        throw new Error('Expected a literal argument for get operation');
-    }
-    if (typeof arg.value !== 'string') {
-        throw new Error('Expected a string argument for get operation');
-    }
-    context.properties.add(arg.value);
-    if (encoded.length === 3) {
-        const hint = parse(encoded[2], context);
-        return [arg, hint];
-    }
-    return [arg];
-}
-
-/**
- * @type ArgValidator
- */
-function withVarArgs(encoded, context, parsedArgs, typeHint) {
-    const varName = encoded[1];
-    if (typeof varName !== 'string') {
-        throw new Error('Expected a string argument for var operation');
-    }
-    context.variables.add(varName);
-    if (
-        !('variables' in context.style) ||
-        context.style.variables[varName] === undefined
-    ) {
-        return [new LiteralExpression(AnyType, varName)];
-    }
-    const initialValue = context.style.variables[varName];
-    const arg = /** @type {LiteralExpression} */ (parse(initialValue, context));
-    arg.value = varName;
-    if (typeHint && !overlapsType(typeHint, arg.type)) {
-        throw new Error(
-            `The variable ${varName} has type ${typeName(
-                arg.type,
-            )} but the following type was expected: ${typeName(typeHint)}`,
-        );
-    }
-    return [arg];
-}
-
-/**
- * @type ArgValidator
- */
-function usesFeatureId(encoded, context) {
-    context.featureId = true;
-}
-
-/**
- * @type ArgValidator
- */
-function usesGeometryType(encoded, context) {
-    context.geometryType = true;
-}
-
-/**
- * @type ArgValidator
- */
-function withNoArgs(encoded, context) {
-    const operation = encoded[0];
-    if (encoded.length !== 1) {
-        throw new Error(`Expected no arguments for ${operation} operation`);
-    }
-    return [];
-}
-
-/**
  * @param minArgs The minimum number of arguments.
  * @param maxArgs The maximum number of arguments.
- * @return {ArgValidator} The argument validator
+ * @return The argument validator
  */
 function withArgsCount(minArgs: number, maxArgs: number): ArgValidator {
     return function (encoded, context) {
@@ -871,7 +1201,8 @@ function withArgsCount(minArgs: number, maxArgs: number): ArgValidator {
             if (argCount !== minArgs) {
                 const plural = minArgs === 1 ? '' : 's';
                 throw new Error(
-                    `Expected ${minArgs} argument${plural} for ${operation}, got ${argCount}`,
+                    `Expected ${minArgs} argument${plural} ` +
+                    `for ${operation}, got ${argCount}`,
                 );
             }
         } else if (argCount < minArgs || argCount > maxArgs) {
@@ -886,18 +1217,16 @@ function withArgsCount(minArgs: number, maxArgs: number): ArgValidator {
     };
 }
 
+
 /**
  * @param argType The argument type.
- * @return {ArgValidator} The argument validator
+ * @return The argument validator
  */
 function parseArgsOfType(argType: number): ArgValidator {
     return function (encoded, context) {
         const operation = encoded[0];
         const argCount = encoded.length - 1;
-        /**
-         * @type {Array<Expression>}
-         */
-        const args: Array<Expression> = new Array(argCount);
+        const args: Expression[] = new Array(argCount);
         for (let i = 0; i < argCount; ++i) {
             const expression = parse(encoded[i + 1], context);
             if (!overlapsType(argType, expression.type)) {
@@ -915,353 +1244,67 @@ function parseArgsOfType(argType: number): ArgValidator {
     };
 }
 
-/**
- * @type {ArgValidator}
- */
-function narrowArgsType(encoded, context, parsedArgs) {
-    const operation = encoded[0];
-    const argCount = encoded.length - 1;
-
-    // first pass to determine a narrowed down type
-    let sameType = AnyType;
-    for (let i = 0; i < parsedArgs.length; ++i) {
-        sameType &= parsedArgs[i].type;
-    }
-
-    if (sameType === NoneType) {
-        throw new Error(
-            `No common type could be found for arguments of ${operation} operation`,
-        );
-    }
-
-    // re-parse args
-    const args = new Array(argCount);
-    for (let i = 0; i < argCount; ++i) {
-        args[i] = parse(encoded[i + 1], context, sameType);
-    }
-    return args;
-}
-
-/**
- * @type {ArgValidator}
- */
-function withOddArgs(encoded, context) {
-    const operation = encoded[0];
-    const argCount = encoded.length - 1;
-    if (argCount % 2 === 0) {
-        throw new Error(
-            `An odd amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-                argCount,
-            )} instead`,
-        );
-    }
-}
-
-/**
- * @type {ArgValidator}
- */
-function withEvenArgs(encoded, context) {
-    const operation = encoded[0];
-    const argCount = encoded.length - 1;
-    if (argCount % 2 === 1) {
-        throw new Error(
-            `An even amount of arguments was expected for operation ${operation}, got ${JSON.stringify(
-                argCount,
-            )} instead`,
-        );
-    }
-}
-
-/**
- * @type ArgValidator
- */
-function parseMatchArgs(encoded, context, parsedArgs, typeHint) {
-    const argsCount = encoded.length - 1;
-
-    const input = parse(encoded[1], context);
-    let inputType = input.type;
-    const fallback = parse(encoded[encoded.length - 1], context);
-    let outputType =
-        typeHint !== undefined ? typeHint & fallback.type : fallback.type;
-
-    // first parse args to figure out possible types
-    const args = new Array(argsCount - 2);
-    for (let i = 0; i < argsCount - 2; i += 2) {
-        const match = parse(encoded[i + 2], context);
-        const output = parse(encoded[i + 3], context);
-        inputType &= match.type;
-        outputType &= output.type;
-        args[i] = match;
-        args[i + 1] = output;
-    }
-
-    // check input and output types validity
-    const expectedInputType = StringType | NumberType | BooleanType;
-    if (!overlapsType(expectedInputType, inputType)) {
-        throw new Error(
-            `Expected an input of type ${typeName(
-                expectedInputType,
-            )} for the interpolate operation` +
-            `, got ${typeName(inputType)} instead`,
-        );
-    }
-    if (isType(outputType, NoneType)) {
-        throw new Error(
-            `Could not find a common output type for the following match operation: ` +
-            JSON.stringify(encoded),
-        );
-    }
-
-    // parse again inputs and outputs with common type
-    for (let i = 0; i < argsCount - 2; i += 2) {
-        const match = parse(encoded[i + 2], context, inputType);
-        const output = parse(encoded[i + 3], context, outputType);
-        args[i] = match;
-        args[i + 1] = output;
-    }
-
-    return [
-        parse(encoded[1], context, inputType),
-        ...args,
-        parse(encoded[encoded.length - 1], context, outputType),
-    ];
-}
-
-/**
- * @type ArgValidator
- */
-function parseInterpolateArgs(encoded, context, parsedArgs, typeHint) {
-    const interpolationType = encoded[1];
-    let interpolation;
-    switch (interpolationType[0]) {
-        case 'linear':
-            interpolation = 1;
-            break;
-        case 'exponential':
-            interpolation = interpolationType[1];
-            if (typeof interpolation !== 'number') {
-                throw new Error(
-                    `Expected a number base for exponential interpolation` +
-                    `, got ${JSON.stringify(interpolation)} instead`,
-                );
-            }
-            break;
-        default:
-            interpolation = null;
-    }
-    if (!interpolation) {
-        throw new Error(
-            `Invalid interpolation type: ${JSON.stringify(interpolationType)}`,
-        );
-    }
-    interpolation = parse(interpolation, context);
-
-    // check input types
-    let input = parse(encoded[2], context);
-    if (!overlapsType(NumberType, input.type)) {
-        throw new Error(
-            `Expected an input of type number for the interpolate operation` +
-            `, got ${typeName(input.type)} instead`,
-        );
-    }
-    input = parse(encoded[2], context, NumberType); // parse again with narrower output
-
-    const args = new Array(encoded.length - 3);
-    for (let i = 0; i < args.length; i += 2) {
-        let stop = parse(encoded[i + 3], context);
-        if (!overlapsType(NumberType, stop.type)) {
-            throw new Error(
-                `Expected all stop input values in the interpolate operation to be of type number` +
-                `, got ${typeName(stop.type)} at position ${i + 2} instead`,
-            );
-        }
-        let output = parse(encoded[i + 4], context);
-        if (!overlapsType(NumberType | ColorType, output.type)) {
-            throw new Error(
-                `Expected all stop output values in the interpolate operation to be a number or color` +
-                `, got ${typeName(output.type)} at position ${i + 3} instead`,
-            );
-        }
-        // parse again with narrower types
-        stop = parse(encoded[i + 3], context, NumberType);
-        output = parse(encoded[i + 4], context, NumberType | ColorType);
-        args[i] = stop;
-        args[i + 1] = output;
-    }
-
-    return [interpolation, input, ...args];
-}
-
-/**
- * @type ArgValidator
- */
-function parseCaseArgs(encoded, context, parsedArgs, typeHint) {
-    const fallback = parse(encoded[encoded.length - 1], context);
-    let outputType =
-        typeHint !== undefined ? typeHint & fallback.type : fallback.type;
-
-    // first parse args to figure out possible types
-    const args = new Array(encoded.length - 1);
-    for (let i = 0; i < args.length - 1; i += 2) {
-        const condition = parse(encoded[i + 1], context);
-        const output = parse(encoded[i + 2], context);
-        if (!overlapsType(BooleanType, condition.type)) {
-            throw new Error(
-                `Expected all conditions in the case operation to be of type boolean` +
-                `, got ${typeName(condition.type)} at position ${i} instead`,
-            );
-        }
-        outputType &= output.type;
-        args[i] = condition;
-        args[i + 1] = output;
-    }
-
-    if (isType(outputType, NoneType)) {
-        throw new Error(
-            `Could not find a common output type for the following case operation: ` +
-            JSON.stringify(encoded),
-        );
-    }
-
-    // parse again args with common output type
-    for (let i = 0; i < args.length - 1; i += 2) {
-        args[i + 1] = parse(encoded[i + 2], context, outputType);
-    }
-    args[args.length - 1] = parse(
-        encoded[encoded.length - 1],
-        context,
-        outputType,
-    );
-
-    return args;
-}
-
-/**
- * @type ArgValidator
- */
-function parseInArgs(encoded, context) {
-    /** @type {Array<number|string>} */
-    let haystack: Array<number | string> = /** @type {any} */ (encoded[2]);
-    if (!Array.isArray(haystack)) {
-        throw new Error(
-            `The "in" operator was provided a literal value which was not an array as second argument.`,
-        );
-    }
-    if (typeof haystack[0] === 'string') {
-        if (haystack[0] !== 'literal') {
-            throw new Error(
-                `For the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions.`,
-            );
-        }
-        if (!Array.isArray(haystack[1])) {
-            throw new Error(
-                `The "in" operator was provided a literal value which was not an array as second argument.`,
-            );
-        }
-        haystack = haystack[1];
-    }
-
-    let needleType = StringType | NumberType;
-    const args = new Array(haystack.length);
-    for (let i = 0; i < args.length; i++) {
-        const arg = parse(haystack[i], context);
-        needleType &= arg.type;
-        args[i] = arg;
-    }
-    if (isType(needleType, NoneType)) {
-        throw new Error(
-            `Could not find a common type for the following in operation: ` +
-            JSON.stringify(encoded),
-        );
-    }
-
-    const needle = parse(encoded[1], context, needleType);
-    return [needle, ...args];
-}
-
-/**
- * @type ArgValidator
- */
-function parsePaletteArgs(encoded, context) {
-    const index = parse(encoded[1], context, NumberType);
-    if (index.type !== NumberType) {
-        throw new Error(
-            `The first argument of palette must be an number, got ${typeName(
-                index.type,
-            )} instead`,
-        );
-    }
-    const colors = encoded[2];
-    if (!Array.isArray(colors)) {
-        throw new Error('The second argument of palette must be an array');
-    }
-    const parsedColors = new Array(colors.length);
-    for (let i = 0; i < parsedColors.length; i++) {
-        const color = parse(colors[i], context, ColorType);
-        if (!(color instanceof LiteralExpression)) {
-            throw new Error(
-                `The palette color at index ${i} must be a literal value`,
-            );
-        }
-        if (!overlapsType(color.type, ColorType)) {
-            throw new Error(
-                `The palette color at index ${i} should be of type color, got ${typeName(
-                    color.type,
-                )} instead`,
-            );
-        }
-        parsedColors[i] = color;
-    }
-    return [index, ...parsedColors];
-}
 
 /**
  * @param {number|function(Array<Expression>):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
  * arguments
  * @param {Array<ArgValidator>} argValidators A chain of argument validators; the return value of the last validator
  * will be used as parsed arguments
- * @return {Parser} The parser.
+ * @return The parser.
  */
-function createParser(returnType: number | ((arg0: Array<Expression>) => number), ...argValidators: Array<ArgValidator>): Parser {
-    return function (encoded, context, typeHint) {
-        const operator = encoded[0];
-        let parsedArgs = [];
+function createParser(
+    returnType: number | ((arg0: Expression[]) => number),
+    ...argValidators: Array<ArgValidator>
+): Parser {
+    return function (
+        encoded: EncodedExpression,
+        context: ParsingContext,
+        typeHint?: number
+    ) {
+        const operator = (encoded as ExpressionValue[])[0];
+        let parsedArgs: Expression[] = [];
         for (let i = 0; i < argValidators.length; i++) {
-            parsedArgs =
-                argValidators[i](encoded, context, parsedArgs, typeHint) || parsedArgs;
+            parsedArgs = argValidators[i](
+                encoded as ExpressionValue[], context, parsedArgs, typeHint
+            ) || parsedArgs;
         }
-        let actualType =
-            typeof returnType === 'function' ? returnType(parsedArgs) : returnType;
+        let actualType = typeof returnType === 'function'
+            ? returnType(parsedArgs)
+            : returnType;
         if (typeHint !== undefined) {
             if (!overlapsType(actualType, typeHint)) {
                 throw new Error(
-                    `The following expression was expected to return ${typeName(
-                        typeHint,
-                    )}, but returns ${typeName(actualType)} instead: ${JSON.stringify(
-                        encoded,
-                    )}`,
+                    `The following expression was expected to return ` +
+                    `${typeName(typeHint)}, but returns ` +
+                    `${typeName(actualType)} instead: ` +
+                    `${JSON.stringify(encoded)}.`,
                 );
             }
             actualType &= typeHint;
         }
         if (actualType === NoneType) {
             throw new Error(
-                `No matching type was found for the following expression: ${JSON.stringify(
-                    encoded,
-                )}`,
+                `No matching type was found for the following ` +
+                `expression: ${JSON.stringify(encoded,)}`,
             );
         }
-        return new CallExpression(actualType, operator, ...parsedArgs);
+        return new CallExpression(
+            actualType,
+            operator as string,
+            ...parsedArgs
+        );
     };
 }
 
 /**
- * @param {Array} encoded The encoded expression.
- * @param {ParsingContext} context The parsing context.
- * @param [typeHint] Optional type hint
- * @return {Expression} The parsed expression.
+ * @param encoded The encoded expression.
+ * @param context The parsing context.
+ * @param typeHint Optional type hint
+ * @return The parsed expression.
  */
-function parseCallExpression(encoded: Array<any>, context: ParsingContext, typeHint: number): Expression {
+function parseCallExpression(
+    encoded: any[], context: ParsingContext, typeHint?: number
+): Expression {
     const operator = encoded[0];
 
     const parser = parsers[operator];
@@ -1271,12 +1314,16 @@ function parseCallExpression(encoded: Array<any>, context: ParsingContext, typeH
     return parser(encoded, context, typeHint);
 }
 
+
 /**
- * Returns a simplified geometry type suited for the `geometry-type` operator
- * @param {import('../geom/Geometry').default|import('../render/Feature').default} geometry Geometry object
- * @return {'Point'|'LineString'|'Polygon'|''} Simplified geometry type; empty string of no geometry found
+ * Returns a simplified geometry type suited for the `geometry-type` operator.
+ *
+ * @param geometry Geometry object
+ * @return Simplified geometry type; empty string of no geometry found
  */
-export function computeGeometryType(geometry: import('../geom/Geometry').default | import('../render/Feature').default): 'Point' | 'LineString' | 'Polygon' | '' {
+export function computeGeometryType(
+    geometry: Geometry | Feature
+): 'Point' | 'LineString' | 'Polygon' | '' {
     if (!geometry) {
         return '';
     }
@@ -1289,13 +1336,12 @@ export function computeGeometryType(geometry: import('../geom/Geometry').default
         case 'MultiPoint':
         case 'MultiLineString':
         case 'MultiPolygon':
-            return /** @type {'Point'|'LineString'|'Polygon'} */ (type.substring(5));
+            return type.substring(5) as 'Point'|'LineString'|'Polygon';
         case 'Circle':
             return 'Polygon';
         case 'GeometryCollection':
-            return computeGeometryType(
-        /** @type {import("../geom/GeometryCollection").default} */(
-                    geometry
+            return computeGeometryType((
+                    geometry as GeometryCollection
                 ).getGeometries()[0],
             );
         default:

@@ -14,17 +14,16 @@ import {
 import {
     ProjectionLike, TransformFunction, getProjection, getTransform
 } from '@olts/core/proj';
-
-import BaseObject from '../Object';
+import { BaseObject } from '@olts/events';
 import {
     compose as composeTransform,
     create as createTransform,
-} from '../transform';
+} from '@olts/core/transform';
 
 
 /**
- * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
- * or measure ('M') coordinate is available.
+ * The coordinate layout for geometries, indicating whether a 3rd or 4th z
+ * ('Z') or measure ('M') coordinate is available.
  */
 export type GeometryLayout = 'XY' | 'XYZ' | 'XYM' | 'XYZM';
 
@@ -45,6 +44,7 @@ export type Type =
 
 
 const tmpTransform: Transform = createTransform();
+
 
 /**
  * Get a transformed and simplified version of the geometry.
@@ -72,12 +72,12 @@ export type SimplifyTransformedInternal = (
  * @abstract
  * @api
  */
-abstract class Geometry extends BaseObject {
+export abstract class Geometry extends BaseObject {
 
     private extent_: Extent;
     private extentRevision_: number;
-    private simplifiedGeometryMaxMinSquaredTolerance: number;
-    private simplifiedGeometryRevision: number;
+    protected simplifiedGeometryMaxMinSquaredTolerance: number;
+    protected simplifiedGeometryRevision: number;
     private simplifyTransformedInternal: SimplifyTransformedInternal;
 
     constructor() {
@@ -210,8 +210,9 @@ abstract class Geometry extends BaseObject {
     }
 
     /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
+     * Rotate the geometry around a given coordinate.
+     *
+     * This modifies the geometry coordinates in place.
      *
      * @param angle Rotation angle in radians.
      * @param anchor The rotation center.
@@ -220,8 +221,9 @@ abstract class Geometry extends BaseObject {
     abstract rotate(angle: number, anchor: Coordinate): void;
 
     /**
-     * Scale the geometry (with an optional origin).  This modifies the geometry
-     * coordinates in place.
+     * Scale the geometry (with an optional origin).
+     *
+     * This modifies the geometry coordinates in place.
      *
      * @param sx The scaling factor in the x-direction.
      * @param sy The scaling factor in the y-direction (defaults to sx).
@@ -299,61 +301,82 @@ abstract class Geometry extends BaseObject {
 
     /**
      * Transform each coordinate of the geometry from one coordinate reference
-     * system to another. The geometry is modified in place.
-     * For example, a line will be transformed to a line and a circle to a circle.
-     * If you do not want the geometry modified in place, first `clone()` it and
-     * then use this function on the clone.
+     * system to another.
+     *
+     * The geometry is modified in place.
+     *
+     * For example, a line will be transformed to a line and a circle to a
+     * circle. If you do not want the geometry modified in place, first
+     * `clone()` it and then use this function on the clone.
      *
      * @param source The current projection.  Can be a string identifier or a
      *     {@link Projection} object.
-     * @param destination The desired projection.  Can be a string identifier or
-     *     a {@link Projection} object.
+     * @param destination The desired projection.  Can be a string identifier
+     *     or a {@link Projection} object.
      * @return This geometry. Note that original geometry is modified in place.
      * @api
      */
     transform(source: ProjectionLike, destination: ProjectionLike): this {
         const sourceProj: Projection = getProjection(source)!;
         assert(sourceProj, "sourceProj must be a valid Projection");
-        const transformFn =
-            sourceProj.getUnits() == 'tile-pixels'
-                ? function (
-                    inCoordinates: number[], outCoordinates: number[], stride: number
-                ) {
-                    const pixelExtent = sourceProj.getExtent()!;
-                    assert(pixelExtent, "pixelExtent must be a valid");
 
-                    const projectedExtent = sourceProj.getWorldExtent()!;
-                    assert(projectedExtent, "projectedExtent must be a valid");
+        let transformFn: TransformFunction;
+        if (sourceProj.getUnits() == 'tile-pixels') {
+            transformFn = function (
+                inCoordinates: number[],
+                outCoordinates: number[] | undefined,
+                stride: number | undefined
+            ) {
+                const pixelExtent = sourceProj.getExtent()!;
+                assert(pixelExtent, "pixelExtent must be a valid");
 
-                    const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-                    composeTransform(
-                        tmpTransform,
-                        projectedExtent[0],
-                        projectedExtent[3],
-                        scale,
-                        -scale,
-                        0,
-                        0,
-                        0,
-                    );
-                    transform2D(
-                        inCoordinates,
-                        0,
-                        inCoordinates.length,
-                        stride,
-                        tmpTransform,
-                        outCoordinates,
-                    );
-                    return getTransform(sourceProj, destination)(
-                        inCoordinates,
-                        outCoordinates,
-                        stride,
-                    );
-                }
-                : getTransform(sourceProj, destination);
-        this.applyTransform(transformFn);
+                const projectedExtent = sourceProj.getWorldExtent()!;
+                assert(projectedExtent, "projectedExtent must be a valid");
+
+                const scale = (
+                    getHeight(projectedExtent) /
+                    getHeight(pixelExtent)
+                );
+                composeTransform(
+                    tmpTransform,
+                    projectedExtent[0],
+                    projectedExtent[3],
+                    scale,
+                    -scale,
+                    0,
+                    0,
+                    0,
+                );
+                transform2D(
+                    inCoordinates,
+                    0,
+                    inCoordinates.length,
+                    stride!,
+                    tmpTransform,
+                    outCoordinates,
+                );
+                // TODO: This is an inconsistency here. getProjection
+                // returns a projection object, not string. But the
+                // transform function is expected to receive a string.
+                return getTransform(
+                    sourceProj as unknown as string,
+                    destination as string
+                )!(
+                    inCoordinates,
+                    outCoordinates,
+                    stride,
+                );
+            }
+        } else {
+            transformFn = getTransform(
+                sourceProj as unknown as string,
+                destination as string
+            )!;
+        }
+        this.applyTransform(transformFn!);
         return this;
     }
 }
+
 
 export default Geometry;

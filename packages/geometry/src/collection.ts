@@ -1,6 +1,6 @@
 
 import { Coordinate } from '@olts/core/coordinate';
-import { EventType, listen, unlistenByKey } from '@olts/events';
+import { EventType, EventsKey, listen, unlistenByKey } from '@olts/events';
 import {
     closestSquaredDistanceXY,
     createOrUpdateEmpty,
@@ -8,8 +8,9 @@ import {
     getCenter,
     Extent,
 } from '@olts/core/extent';
+import { TransformFunction } from '@olts/core/proj';
 
-import Geometry from './geometry';
+import Geometry, { Type } from './geometry';
 
 
 /**
@@ -17,39 +18,39 @@ import Geometry from './geometry';
  *
  * @api
  */
-class GeometryCollection extends Geometry {
+export class GeometryCollection extends Geometry {
+    /**
+     *
+     */
+    private geometries_: Geometry[];
+
+    /**
+     *
+     */
+    private changeEventsKeys_: EventsKey[] = [];
+
+
     /**
      * @param geometries Geometries.
      */
     constructor(geometries: Geometry[]) {
         super();
-
-        /**
-         * @private
-         * @type
-         */
         this.geometries_ = geometries;
-
-        /**
-         * @type {Array<EventsKey>}
-         */
-        this.changeEventsKeys_ = [];
-
         this.listenGeometriesChange_();
     }
 
     /**
-     * @private
+     *
      */
-    unlistenGeometriesChange_() {
+    private unlistenGeometriesChange_() {
         this.changeEventsKeys_.forEach(unlistenByKey);
         this.changeEventsKeys_.length = 0;
     }
 
     /**
-     * @private
+     *
      */
-    listenGeometriesChange_() {
+    private listenGeometriesChange_() {
         const geometries = this.geometries_;
         for (let i = 0, ii = geometries.length; i < ii; ++i) {
             this.changeEventsKeys_.push(
@@ -60,6 +61,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * Make a complete copy of the geometry.
+     *
      * @return Clone.
      * @api
      */
@@ -78,8 +80,16 @@ class GeometryCollection extends Geometry {
      * @param minSquaredDistance Minimum squared distance.
      * @return Minimum squared distance.
      */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-        if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
+    closestPointXY(
+        x: number,
+        y: number,
+        closestPoint: Coordinate,
+        minSquaredDistance: number
+    ) {
+        if (
+            minSquaredDistance <
+            closestSquaredDistanceXY(this.getExtent(), x, y)
+        ) {
             return minSquaredDistance;
         }
         const geometries = this.geometries_;
@@ -99,7 +109,7 @@ class GeometryCollection extends Geometry {
      * @param y Y.
      * @return Contains (x, y).
      */
-    containsXY(x, y) {
+    override containsXY(x: number, y: number) {
         const geometries = this.geometries_;
         for (let i = 0, ii = geometries.length; i < ii; ++i) {
             if (geometries[i].containsXY(x, y)) {
@@ -125,6 +135,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * Return the geometries that make up this geometry collection.
+     *
      * @return Geometries.
      * @api
      */
@@ -148,8 +159,8 @@ class GeometryCollection extends Geometry {
         for (let i = 0, ii = geometries.length; i < ii; ++i) {
             if (geometries[i].getType() === this.getType()) {
                 geometriesArray = geometriesArray.concat(
-          /** @type {GeometryCollection} */(
-                        geometries[i]
+                    (
+                        geometries[i] as GeometryCollection
                     ).getGeometriesArrayRecursive(),
                 );
             } else {
@@ -160,19 +171,23 @@ class GeometryCollection extends Geometry {
     }
 
     /**
-     * Create a simplified version of this geometry using the Douglas Peucker algorithm.
+     * Create a simplified version of this geometry using the Douglas Peucker
+     * algorithm.
+     *
      * @param squaredTolerance Squared tolerance.
      * @return Simplified GeometryCollection.
      */
-    getSimplifiedGeometry(squaredTolerance): GeometryCollection {
+    getSimplifiedGeometry(squaredTolerance: number): GeometryCollection {
         if (this.simplifiedGeometryRevision !== this.getRevision()) {
             this.simplifiedGeometryMaxMinSquaredTolerance = 0;
             this.simplifiedGeometryRevision = this.getRevision();
         }
         if (
             squaredTolerance < 0 ||
-            (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-                squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)
+            (
+                this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+                squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance
+            )
         ) {
             return this;
         }
@@ -204,12 +219,13 @@ class GeometryCollection extends Geometry {
      * @return Geometry type.
      * @api
      */
-    getType(): import("./Geometry").Type {
+    getType(): Type {
         return 'GeometryCollection';
     }
 
     /**
      * Test if the geometry and the passed extent intersect.
+     *
      * @param extent Extent.
      * @return `true` if the geometry and the extent intersect.
      * @api
@@ -238,7 +254,7 @@ class GeometryCollection extends Geometry {
      * @param anchor The rotation center.
      * @api
      */
-    rotate(angle: number, anchor?: Coordinate) {
+    rotate(angle: number, anchor: Coordinate) {
         const geometries = this.geometries_;
         for (let i = 0, ii = geometries.length; i < ii; ++i) {
             geometries[i].rotate(angle, anchor);
@@ -247,13 +263,15 @@ class GeometryCollection extends Geometry {
     }
 
     /**
-     * Scale the geometry (with an optional origin).  This modifies the geometry
-     * coordinates in place.
+     * Scale the geometry (with an optional origin).
+     *
+     * This modifies the geometry coordinates in place.
+     *
      * @abstract
      * @param sx The scaling factor in the x-direction.
      * @param sy The scaling factor in the y-direction (defaults to sx).
-     * @param anchor The scale origin (defaults to the center
-     *     of the geometry extent).
+     * @param anchor The scale origin (defaults to the center of the geometry
+     *     extent).
      * @api
      */
     scale(sx: number, sy?: number, anchor?: Coordinate) {
@@ -269,6 +287,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * Set the geometries that make up this geometry collection.
+     *
      * @param geometries Geometries.
      * @api
      */
@@ -288,9 +307,11 @@ class GeometryCollection extends Geometry {
 
     /**
      * Apply a transform function to the coordinates of the geometry.
-     * The geometry is modified in place.
-     * If you do not want the geometry modified in place, first `clone()` it and
-     * then use this function on the clone.
+     *
+     * The geometry is modified in place. If you do not want the geometry
+     * modified in place, first `clone()` it and then use this function on the
+     * clone.
+     *
      * @param transformFn Transform function. Called with a flat array of
      *    geometry coordinates.
      * @api
@@ -304,8 +325,11 @@ class GeometryCollection extends Geometry {
     }
 
     /**
-     * Translate the geometry.  This modifies the geometry coordinates in place.  If
-     * instead you want a new geometry, first `clone()` this geometry.
+     * Translate the geometry.
+     *
+     * This modifies the geometry coordinates in place.  If instead you want a
+     * new geometry, first `clone()` this geometry.
+     *
      * @param deltaX Delta X.
      * @param deltaY Delta Y.
      * @api
@@ -321,7 +345,7 @@ class GeometryCollection extends Geometry {
     /**
      * Clean up.
      */
-    disposeInternal() {
+    override disposeInternal() {
         this.unlistenGeometriesChange_();
         super.disposeInternal();
     }
