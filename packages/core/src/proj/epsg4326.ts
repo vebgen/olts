@@ -1,5 +1,5 @@
 
-import { Extent } from '../extent';
+import { Extent } from '@olts/core/extent';
 import { Projection } from './projection';
 
 

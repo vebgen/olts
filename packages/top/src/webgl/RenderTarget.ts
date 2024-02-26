@@ -8,14 +8,13 @@ import {equals} from '@olts/core/array';
 const tmpArray4 = new Uint8Array(4);
 
 /**
- * @classdesc
  * This class is a wrapper around the association of both a `WebGLTexture` and a `WebGLFramebuffer` instances,
  * simplifying initialization and binding for rendering.
  */
-class WebGLRenderTarget {
+export class WebGLRenderTarget {
   /**
    * @param {import("./Helper.js").default} helper WebGL helper; mandatory.
-   * @param {Array<number>} [size] Expected size of the render target texture; note: this can be changed later on.
+   * @param {number[]} [size] Expected size of the render target texture; note: this can be changed later on.
    */
   constructor(helper, size) {
     /**
@@ -44,7 +43,7 @@ class WebGLRenderTarget {
     this.depthbuffer_ = gl.createRenderbuffer();
 
     /**
-     * @type {Array<number>}
+     * @type {number[]}
      * @private
      */
     this.size_ = size || [1, 1];
@@ -67,7 +66,7 @@ class WebGLRenderTarget {
   /**
    * Changes the size of the render target texture. Note: will do nothing if the size
    * is already the same.
-   * @param {Array<number>} size Expected size of the render target texture
+   * @param {number[]} size Expected size of the render target texture
    */
   setSize(size) {
     if (equals(size, this.size_)) {
@@ -80,7 +79,7 @@ class WebGLRenderTarget {
 
   /**
    * Returns the size of the render target texture
-   * @return {Array<number>} Size of the render target texture
+   * @return {number[]} Size of the render target texture
    */
   getSize() {
     return this.size_;

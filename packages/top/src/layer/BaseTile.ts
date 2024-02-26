@@ -1,4 +1,5 @@
 
+import { EventsKey } from '@olts/events';
 import Layer from './Layer.js';
 import TileProperty from './TileProperty.js';
 
@@ -8,7 +9,7 @@ import TileProperty from './TileProperty.js';
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *   CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
  *   import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} BaseTileLayerOnSignature
  */
 
@@ -44,7 +45,6 @@ import TileProperty from './TileProperty.js';
  */
 
 /**
- * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
  * organized by zoom levels for specific resolutions.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -56,103 +56,107 @@ import TileProperty from './TileProperty.js';
  * @extends {Layer<TileSourceType, RendererType>}
  * @api
  */
-class BaseTileLayer extends Layer {
-  /**
-   * @param {Options<TileSourceType>} [options] Tile layer options.
-   */
-  constructor(options) {
-    options = options ? options : {};
+export class BaseTileLayer extends Layer {
 
-    const baseOptions = Object.assign({}, options);
-
-    delete baseOptions.preload;
-    delete baseOptions.useInterimTilesOnError;
-    super(baseOptions);
-
-    /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+    /**
+     * 
      */
-    this.on;
+    override on: BaseTileLayerOnSignature<EventsKey>;
 
-    /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+    /**
+     * 
      */
-    this.once;
+    override once: BaseTileLayerOnSignature<EventsKey>;
 
-    /***
-     * @type {BaseTileLayerOnSignature<void>}
+    /**
+     * 
      */
-    this.un;
+    override un: BaseTileLayerOnSignature<void>;
 
-    this.setPreload(options.preload !== undefined ? options.preload : 0);
-    this.setUseInterimTilesOnError(
-      options.useInterimTilesOnError !== undefined
-        ? options.useInterimTilesOnError
-        : true,
-    );
-  }
+    /**
+     * @param {Options<TileSourceType>} [options] Tile layer options.
+     */
+    constructor(options: Options<TileSourceType>) {
+        options = options ? options : {};
 
-  /**
-   * Return the level as number to which we will preload tiles up to.
-   * @return {number} The level to preload tiles up to.
-   * @observable
-   * @api
-   */
-  getPreload() {
-    return /** @type {number} */ (this.get(TileProperty.PRELOAD));
-  }
+        const baseOptions = Object.assign({}, options);
 
-  /**
-   * Set the level as number to which we will preload tiles up to.
-   * @param {number} preload The level to preload tiles up to.
-   * @observable
-   * @api
-   */
-  setPreload(preload) {
-    this.set(TileProperty.PRELOAD, preload);
-  }
+        delete baseOptions.preload;
+        delete baseOptions.useInterimTilesOnError;
+        super(baseOptions);
+        this.on = this.onInternal as BaseTileLayerOnSignature<EventsKey>;
+        this.once = this.onceInternal as BaseTileLayerOnSignature<EventsKey>;
+        this.un = this.unInternal as BaseTileLayerOnSignature<void>;
 
-  /**
-   * Whether we use interim tiles on error.
-   * @return {boolean} Use interim tiles on error.
-   * @observable
-   * @api
-   */
-  getUseInterimTilesOnError() {
-    return /** @type {boolean} */ (
-      this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
-    );
-  }
+        this.setPreload(options.preload !== undefined ? options.preload : 0);
+        this.setUseInterimTilesOnError(
+            options.useInterimTilesOnError !== undefined
+                ? options.useInterimTilesOnError
+                : true,
+        );
+    }
 
-  /**
-   * Set whether we use interim tiles on error.
-   * @param {boolean} useInterimTilesOnError Use interim tiles on error.
-   * @observable
-   * @api
-   */
-  setUseInterimTilesOnError(useInterimTilesOnError) {
-    this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
-  }
+    /**
+     * Return the level as number to which we will preload tiles up to.
+     * @return {number} The level to preload tiles up to.
+     * @observable
+     * @api
+     */
+    getPreload(): number {
+        return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+    }
 
-  /**
-   * Get data for a pixel location.  The return type depends on the source data.  For image tiles,
-   * a four element RGBA array will be returned.  For data tiles, the array length will match the
-   * number of bands in the dataset.  For requests outside the layer extent, `null` will be returned.
-   * Data for a image tiles can only be retrieved if the source's `crossOrigin` property is set.
-   *
-   * ```js
-   * // display layer data on every pointer move
-   * map.on('pointermove', (event) => {
-   *   console.log(layer.getData(event.pixel));
-   * });
-   * ```
-   * @param {import("../pixel").Pixel} pixel Pixel.
-   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
-   * @api
-   */
-  getData(pixel) {
-    return super.getData(pixel);
-  }
+    /**
+     * Set the level as number to which we will preload tiles up to.
+     * @param {number} preload The level to preload tiles up to.
+     * @observable
+     * @api
+     */
+    setPreload(preload: number) {
+        this.set(TileProperty.PRELOAD, preload);
+    }
+
+    /**
+     * Whether we use interim tiles on error.
+     * @return {boolean} Use interim tiles on error.
+     * @observable
+     * @api
+     */
+    getUseInterimTilesOnError(): boolean {
+        return /** @type {boolean} */ (
+            this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
+        );
+    }
+
+    /**
+     * Set whether we use interim tiles on error.
+     * @param {boolean} useInterimTilesOnError Use interim tiles on error.
+     * @observable
+     * @api
+     */
+    setUseInterimTilesOnError(useInterimTilesOnError: boolean) {
+        this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    }
+
+    /**
+     * Get data for a pixel location.  The return type depends on the source data.  For image tiles,
+     * a four element RGBA array will be returned.  For data tiles, the array length will match the
+     * number of bands in the dataset.  For requests outside the layer extent, `null` will be returned.
+     * Data for a image tiles can only be retrieved if the source's `crossOrigin` property is set.
+     *
+     * ```js
+     * // display layer data on every pointer move
+     * map.on('pointermove', (event) => {
+     *   console.log(layer.getData(event.pixel));
+     * });
+     * ```
+     * @param {import("../pixel").Pixel} pixel Pixel.
+     * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
+     * @api
+     */
+    getData(pixel: import("../pixel").Pixel): Uint8ClampedArray | Uint8Array | Float32Array | DataView | null {
+        return super.getData(pixel);
+    }
 }
 
 export default BaseTileLayer;

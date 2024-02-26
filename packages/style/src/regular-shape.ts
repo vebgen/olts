@@ -58,7 +58,7 @@ export interface Options {
      *
      * @default [0, 0]
      */
-    displacement?: Array<number>;
+    displacement?: number[];
 
     /**
      * Stroke style.
@@ -120,7 +120,7 @@ export interface RenderOptions {
     /**
      * Line Dash.
      */
-    lineDash: Array<number> | null;
+    lineDash: number[] | null;
 
     /**
      * Line Dash Offset.

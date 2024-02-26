@@ -1,4 +1,4 @@
-import { extend } from './array';
+import { extend } from '@olts/core/array';
 
 /**
  * When using {@link makeChildAppender} or {@link makeSimpleNodeFactory}, the
@@ -24,7 +24,7 @@ export type Parser = (elem: Element, objectStack: any[]) => void;
 export type MakeArrayExtender<T> = (
     this: T,
     node: Node,
-    objectStack: Array<any>
+    objectStack:any[]
 ) => (Array<T> | undefined);
 
 
@@ -155,7 +155,7 @@ export function makeArrayExtender<T>(
     thisArg?: T
 ): Parser {
     return (
-        function (this: T, node: Node, objectStack: Array<any>) {
+        function (this: T, node: Node, objectStack:any[]) {
             const value = valueReader.call(
                 thisArg !== undefined ? thisArg : this,
                 node,
@@ -195,7 +195,7 @@ export function makeArrayPusher<T>(
     thisArg?: T
 ): Parser {
     return (
-        function (this: T, node: Element, objectStack: Array<any>) {
+        function (this: T, node: Element, objectStack:any[]) {
             const value = valueReader.call(
                 thisArg !== undefined ? thisArg : this,
                 node,
@@ -238,7 +238,7 @@ export function makeReplacer<T>(
     thisArg?: T
 ): Parser {
     return (
-        function (this: T, node: Node, objectStack: Array<any>) {
+        function (this: T, node: Node, objectStack:any[]) {
             const value = valueReader.call(
                 thisArg !== undefined ? thisArg : this,
                 node,
@@ -280,7 +280,7 @@ export function makeObjectPropertyPusher<T>(
     thisArg?: T
 ): Parser {
     return (
-        function (this: T, node: Element, objectStack: Array<any>) {
+        function (this: T, node: Element, objectStack:any[]) {
             const value = valueReader.call(
                 thisArg !== undefined ? thisArg : this,
                 node,
@@ -332,7 +332,7 @@ export function makeObjectPropertySetter<T>(
     thisArg?: T
 ): Parser {
     return (
-        function (this: T, node: Element, objectStack: Array<any>) {
+        function (this: T, node: Element, objectStack:any[]) {
             const value = valueReader.call(
                 thisArg !== undefined ? thisArg : this,
                 node,

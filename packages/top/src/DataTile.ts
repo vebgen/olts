@@ -92,7 +92,7 @@ const defaultSize = [256, 256];
  * @api
  */
 
-class DataTile extends Tile {
+export class DataTile extends Tile {
   /**
    * @param {Options} options Tile options.
    */

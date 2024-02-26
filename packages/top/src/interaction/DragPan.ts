@@ -25,11 +25,10 @@ import {
  */
 
 /**
- * @classdesc
  * Allows the user to pan the map by dragging the map.
  * @api
  */
-class DragPan extends PointerInteraction {
+export class DragPan extends PointerInteraction {
   /**
    * @param {Options} [options] Options.
    */

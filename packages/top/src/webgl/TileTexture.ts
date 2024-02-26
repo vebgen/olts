@@ -133,7 +133,7 @@ function createPixelContext() {
 /**
  * @extends {BaseTileRepresentation<TileType>}
  */
-class TileTexture extends BaseTileRepresentation {
+export class TileTexture extends BaseTileRepresentation {
   /**
    * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
    */

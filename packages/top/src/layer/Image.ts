@@ -2,7 +2,6 @@ import BaseImageLayer from './BaseImage.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 
 /**
- * @classdesc
  * Server-rendered images that are available for arbitrary extents and
  * resolutions.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -13,7 +12,7 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * @extends {BaseImageLayer<ImageSourceType, CanvasImageLayerRenderer>}
  * @api
  */
-class ImageLayer extends BaseImageLayer {
+export class ImageLayer extends BaseImageLayer {
   /**
    * @param {import("./BaseImage.js").Options<ImageSourceType>} [options] Layer options.
    */

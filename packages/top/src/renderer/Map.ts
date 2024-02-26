@@ -21,7 +21,7 @@ import {wrapX} from '../coordinate.js';
 /**
  * @abstract
  */
-class MapRenderer extends Disposable {
+export class MapRenderer extends Disposable {
   /**
    * @param {import("../Map.js").default} map Map.
    */

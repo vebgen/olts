@@ -72,7 +72,7 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
+ * @typedef {number|number[]|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
  */
 
 /**
@@ -185,7 +185,6 @@ function releaseCanvas(key) {
 }
 
 /**
- * @classdesc
  * This class is intended to provide low-level functions related to WebGL rendering, so that accessing
  * directly the WebGL API should not be required anymore.
  *
@@ -308,7 +307,7 @@ function releaseCanvas(key) {
  *
  * For an example usage of this class, refer to {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  */
-class WebGLHelper extends Disposable {
+export class WebGLHelper extends Disposable {
   /**
    * @param {Options} [options] Options.
    */
@@ -386,7 +385,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {number[]}
      */
     this.tmpMat4_ = create();
 
@@ -991,7 +990,7 @@ class WebGLHelper extends Disposable {
   /**
    * Give a value for a vec2 uniform
    * @param {string} uniform Uniform name
-   * @param {Array<number>} value Array of length 4.
+   * @param {number[]} value Array of length 4.
    */
   setUniformFloatVec2(uniform, value) {
     this.gl_.uniform2fv(this.getUniformLocation(uniform), value);
@@ -1000,7 +999,7 @@ class WebGLHelper extends Disposable {
   /**
    * Give a value for a vec4 uniform
    * @param {string} uniform Uniform name
-   * @param {Array<number>} value Array of length 4.
+   * @param {number[]} value Array of length 4.
    */
   setUniformFloatVec4(uniform, value) {
     this.gl_.uniform4fv(this.getUniformLocation(uniform), value);
@@ -1009,7 +1008,7 @@ class WebGLHelper extends Disposable {
   /**
    * Give a value for a standard matrix4 uniform
    * @param {string} uniform Uniform name
-   * @param {Array<number>} value Matrix value
+   * @param {number[]} value Matrix value
    */
   setUniformMatrixValue(uniform, value) {
     this.gl_.uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
@@ -1090,7 +1089,7 @@ class WebGLHelper extends Disposable {
    * specified, the texture will be empty, otherwise image data will be used and the `size`
    * parameter will be ignored.
    * Note: wrap parameters are set to clamp to edge, min filter is set to linear.
-   * @param {Array<number>} size Expected size of the texture
+   * @param {number[]} size Expected size of the texture
    * @param {ImageData|HTMLImageElement|HTMLCanvasElement} [data] Image data/object to bind to the texture
    * @param {WebGLTexture} [texture] Existing texture to reuse
    * @return {WebGLTexture} The generated texture

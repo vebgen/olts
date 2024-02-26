@@ -26,7 +26,7 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata),
 });
 
-class OWS extends XML {
+export class OWS extends XML {
   constructor() {
     super();
   }

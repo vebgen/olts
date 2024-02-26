@@ -1,12 +1,11 @@
 import Spatial from './Spatial.js';
 
 /**
- * @classdesc
  * Represents a `<Intersects>` operator to test whether a geometry-valued property
  * intersects a given geometry.
  * @api
  */
-class Intersects extends Spatial {
+export class Intersects extends Spatial {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Geometry} geometry Geometry.

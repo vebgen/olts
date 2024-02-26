@@ -3,14 +3,13 @@ import FeatureFormat from '../format/Feature.js';
 import {abstract} from '@olts/core/util';
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for text feature formats.
  *
  * @abstract
  */
-class TextFeature extends FeatureFormat {
+export class TextFeature extends FeatureFormat {
   constructor() {
     super();
   }

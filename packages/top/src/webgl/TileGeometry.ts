@@ -16,7 +16,7 @@ import {
 /**
  * @extends {BaseTileRepresentation<TileType>}
  */
-class TileGeometry extends BaseTileRepresentation {
+export class TileGeometry extends BaseTileRepresentation {
   /**
    * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
    * @param {Array<import("../render/webgl/VectorStyleRenderer.js").default>} styleRenderers Array of vector style renderers

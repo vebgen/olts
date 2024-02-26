@@ -1,11 +1,10 @@
 
 /**
- * @classdesc
  * Implementation of inertial deceleration for map movement.
  *
  * @api
  */
-class Kinetic {
+export class Kinetic {
   /**
    * @param {number} decay Rate of decay (must be negative).
    * @param {number} minVelocity Minimum velocity (pixels/millisecond).
@@ -33,7 +32,7 @@ class Kinetic {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {number[]}
      */
     this.points_ = [];
 

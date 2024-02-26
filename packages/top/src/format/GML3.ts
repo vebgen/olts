@@ -50,14 +50,13 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
 };
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the GML format
  * version 3.1.1.
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
  * @api
  */
-class GML3 extends GMLBase {
+export class GML3 extends GMLBase {
   /**
    * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */
@@ -130,7 +129,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} Polygon.
+   * @return {number[]|undefined} Polygon.
    */
   readFlatCurveRing(node, objectStack) {
     /** @type {Array<LineString>} */
@@ -186,7 +185,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<(Array<number>)>|undefined} flat coordinates.
+   * @return {Array<(number[])>|undefined} flat coordinates.
    */
   readPatch(node, objectStack) {
     return pushParseAndPop(
@@ -201,7 +200,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} flat coordinates.
+   * @return {number[]|undefined} flat coordinates.
    */
   readSegment(node, objectStack) {
     return pushParseAndPop([], this.SEGMENTS_PARSERS, node, objectStack, this);
@@ -210,7 +209,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<(Array<number>)>|undefined} flat coordinates.
+   * @return {Array<(number[])>|undefined} flat coordinates.
    */
   readPolygonPatch(node, objectStack) {
     return pushParseAndPop(
@@ -225,7 +224,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} flat coordinates.
+   * @return {number[]|undefined} flat coordinates.
    */
   readLineStringSegment(node, objectStack) {
     return pushParseAndPop(
@@ -242,7 +241,7 @@ class GML3 extends GMLBase {
    * @param {Array<*>} objectStack Object stack.
    */
   interiorParser(node, objectStack) {
-    /** @type {Array<number>|undefined} */
+    /** @type {number[]|undefined} */
     const flatLinearRing = pushParseAndPop(
       undefined,
       this.RING_PARSERS,
@@ -252,7 +251,7 @@ class GML3 extends GMLBase {
     );
     if (flatLinearRing) {
       const flatLinearRings =
-        /** @type {Array<Array<number>>} */
+        /** @type {Array<number[]>} */
         (objectStack[objectStack.length - 1]);
       flatLinearRings.push(flatLinearRing);
     }
@@ -263,7 +262,7 @@ class GML3 extends GMLBase {
    * @param {Array<*>} objectStack Object stack.
    */
   exteriorParser(node, objectStack) {
-    /** @type {Array<number>|undefined} */
+    /** @type {number[]|undefined} */
     const flatLinearRing = pushParseAndPop(
       undefined,
       this.RING_PARSERS,
@@ -273,7 +272,7 @@ class GML3 extends GMLBase {
     );
     if (flatLinearRing) {
       const flatLinearRings =
-        /** @type {Array<Array<number>>} */
+        /** @type {Array<number[]>} */
         (objectStack[objectStack.length - 1]);
       flatLinearRings[0] = flatLinearRing;
     }
@@ -285,7 +284,7 @@ class GML3 extends GMLBase {
    * @return {Polygon|undefined} Polygon.
    */
   readSurface(node, objectStack) {
-    /** @type {Array<Array<number>>} */
+    /** @type {Array<number[]>} */
     const flatLinearRings = pushParseAndPop(
       [null],
       this.SURFACE_PARSERS,
@@ -312,7 +311,7 @@ class GML3 extends GMLBase {
    * @return {LineString|undefined} LineString.
    */
   readCurve(node, objectStack) {
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     const flatCoordinates = pushParseAndPop(
       [null],
       this.CURVE_PARSERS,
@@ -333,7 +332,7 @@ class GML3 extends GMLBase {
    * @return {Extent|undefined} Envelope.
    */
   readEnvelope(node, objectStack) {
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     const flatCoordinates = pushParseAndPop(
       [null],
       this.ENVELOPE_PARSERS,
@@ -352,12 +351,12 @@ class GML3 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} Flat coordinates.
+   * @return {number[]|undefined} Flat coordinates.
    */
   readFlatPos(node, objectStack) {
     let s = getAllTextContent(node, false);
     const re = /^\s*([+\-]?\d*\.?\d+(?:[eE][+\-]?\d+)?)\s*/;
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     const flatCoordinates = [];
     let m;
     while ((m = re.exec(s))) {
@@ -396,7 +395,7 @@ class GML3 extends GMLBase {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} Flat coordinates.
+   * @return {number[]|undefined} Flat coordinates.
    */
   readFlatPosList(node, objectStack) {
     const s = getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
@@ -472,7 +471,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Array<number>} point Point geometry.
+   * @param {number[]} point Point geometry.
    * @param {string} [srsName] Optional srsName
    * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.

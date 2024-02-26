@@ -61,11 +61,10 @@ import {equivalent, get as getProjection, transformExtent} from '../proj.js';
  */
 
 /**
- * @classdesc
  * Layer source for tile data from WMTS servers.
  * @api
  */
-class WMTS extends TileImage {
+export class WMTS extends TileImage {
   /**
    * @param {Options} options WMTS options.
    */

@@ -93,14 +93,14 @@ export type ColorExpression = Color | string | any[];
  * An array of numbers (e.g. `[1, 2, 3]`) or an expression that evaluates to
  * the same (e.g. `['get', 'values']`).
  */
-export type NumberArrayExpression = Array<number> | any[];
+export type NumberArrayExpression = number[] | any[];
 
 
 /**
  * An array of two numbers (e.g. `[10, 20]`) or an expression that evaluates to
  * the same (e.g. `['get', 'size']`).
  */
-export type SizeExpression = number | Array<number> | any[];
+export type SizeExpression = number | number[] | any[];
 
 
 /**
@@ -121,7 +121,7 @@ export type FlatStyle =
 /**
  * A flat style literal or an array of the same.
  */
-export type FlatStyleLike = FlatStyle | Array<FlatStyle> | Rule[];
+export type FlatStyleLike = FlatStyle |FlatStyle[] | Rule[];
 
 
 /**

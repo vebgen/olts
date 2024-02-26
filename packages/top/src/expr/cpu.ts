@@ -63,23 +63,23 @@ export function newEvaluationContext() {
  */
 
 /**
- * @typedef {function(EvaluationContext):(Array<number>|string)} ColorLikeEvaluator
+ * @typedef {function(EvaluationContext):(number[]|string)} ColorLikeEvaluator
  */
 
 /**
- * @typedef {function(EvaluationContext):Array<number>} NumberArrayEvaluator
+ * @typedef {function(EvaluationContext):number[]} NumberArrayEvaluator
  */
 
 /**
- * @typedef {function(EvaluationContext):Array<number>} CoordinateEvaluator
+ * @typedef {function(EvaluationContext):number[]} CoordinateEvaluator
  */
 
 /**
- * @typedef {function(EvaluationContext):(Array<number>)} SizeEvaluator
+ * @typedef {function(EvaluationContext):(number[])} SizeEvaluator
  */
 
 /**
- * @typedef {function(EvaluationContext):(Array<number>|number)} SizeLikeEvaluator
+ * @typedef {function(EvaluationContext):(number[]|number)} SizeLikeEvaluator
  */
 
 /**

@@ -116,7 +116,7 @@ export function createXYZ(options) {
  * @param {number|Size} [tileSize] Tile size (default uses
  *     DEFAULT_TILE_SIZE).
  * @param {number} [maxResolution] Resolution at level zero.
- * @return {!Array<number>} Resolutions array.
+ * @return {!number[]} Resolutions array.
  */
 function resolutionsFromExtent(extent, maxZoom, tileSize, maxResolution) {
   maxZoom = maxZoom !== undefined ? maxZoom : DEFAULT_MAX_ZOOM;

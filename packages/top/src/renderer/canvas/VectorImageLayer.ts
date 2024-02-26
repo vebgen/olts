@@ -11,11 +11,10 @@ import {fromResolutionLike} from '../../resolution.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '@olts/core/extent';
 
 /**
- * @classdesc
  * Canvas renderer for image layers.
  * @api
  */
-class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
+export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    * @param {import("../../layer/VectorImage.js").default} layer Vector image layer.
    */

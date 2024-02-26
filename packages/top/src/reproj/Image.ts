@@ -24,11 +24,10 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
- * @classdesc
  * Class encapsulating single reprojected image.
  * See {@link module:ol/source/Image~ImageSource}.
  */
-class ReprojImage extends ImageWrapper {
+export class ReprojImage extends ImageWrapper {
   /**
    * @param {import("../proj/Projection.js").default} sourceProj Source projection (of the data).
    * @param {import("../proj/Projection.js").default} targetProj Target projection.

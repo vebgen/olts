@@ -105,15 +105,14 @@ const TOS_ATTRIBUTION =
  * @typedef {Object} CoverageArea
  * @property {number} zoomMin The minimum zoom
  * @property {number} zoomMax The maximum zoom
- * @property {Array<number>} bbox The coverage bounding box
+ * @property {number[]} bbox The coverage bounding box
  */
 
 /**
- * @classdesc
  * Layer source for Bing Maps tile data.
  * @api
  */
-class BingMaps extends TileImage {
+export class BingMaps extends TileImage {
   /**
    * @param {Options} options Bing Maps options.
    */

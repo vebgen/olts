@@ -73,7 +73,7 @@ function readRGB(preference, image) {
  * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
  * will include information about nodata values, so you should only need to set this property if
  * you find that it is not already extracted from the metadata.
- * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
+ * @property {number[]} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
  * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
  * near-infrared band, configure `bands: [4]`.
  */
@@ -125,7 +125,7 @@ function getWorkerPool() {
  * Get the bounding box of an image.  If the image does not have an affine transform,
  * the pixel bounds are returned.
  * @param {GeoTIFFImage} image The image.
- * @return {Array<number>} The image bounding box.
+ * @return {number[]} The image bounding box.
  */
 function getBoundingBox(image) {
   try {
@@ -139,7 +139,7 @@ function getBoundingBox(image) {
  * Get the origin of an image.  If the image does not have an affine transform,
  * the top-left corner of the pixel bounds is returned.
  * @param {GeoTIFFImage} image The image.
- * @return {Array<number>} The image origin.
+ * @return {number[]} The image origin.
  */
 function getOrigin(image) {
   try {
@@ -154,7 +154,7 @@ function getOrigin(image) {
  * the width of the image is compared with the reference image.
  * @param {GeoTIFFImage} image The image.
  * @param {GeoTIFFImage} referenceImage The reference image.
- * @return {Array<number>} The map x and y units per pixel.
+ * @return {number[]} The map x and y units per pixel.
  */
 function getResolutions(image, referenceImage) {
   try {
@@ -245,8 +245,8 @@ function getImagesForSource(source, options) {
 }
 
 /**
- * @param {number|Array<number>|Array<Array<number>>} expected Expected value.
- * @param {number|Array<number>|Array<Array<number>>} got Actual value.
+ * @param {number|number[]|Array<number[]>} expected Expected value.
+ * @param {number|number[]|Array<number[]>} got Actual value.
  * @param {number} tolerance Accepted tolerance in fraction of expected between expected and got.
  * @param {string} message The error message.
  * @param {function(Error):void} rejector A function to be called with any error.
@@ -367,14 +367,13 @@ function getMaxForDataType(array) {
  */
 
 /**
- * @classdesc
  * A source for working with GeoTIFF data.
  * **Note for users of the full build**: The `GeoTIFF` source requires the
  * [geotiff.js](https://github.com/geotiffjs/geotiff.js) library to be loaded as well.
  *
  * @api
  */
-class GeoTIFFSource extends DataTile {
+export class GeoTIFFSource extends DataTile {
   /**
    * @param {Options} options Data tile options.
    */
@@ -416,19 +415,19 @@ class GeoTIFFSource extends DataTile {
     this.sourceMasks_ = new Array(numSources);
 
     /**
-     * @type {Array<number>}
+     * @type {number[]}
      * @private
      */
     this.resolutionFactors_ = new Array(numSources);
 
     /**
-     * @type {Array<number>}
+     * @type {number[]}
      * @private
      */
     this.samplesPerPixel_;
 
     /**
-     * @type {Array<Array<number>>}
+     * @type {Array<number[]>}
      * @private
      */
     this.nodataValues_;
@@ -792,7 +791,7 @@ class GeoTIFFSource extends DataTile {
         });
       }
 
-      /** @type {number|Array<number>} */
+      /** @type {number|number[]} */
       let fillValue;
       if ('nodata' in source && source.nodata !== null) {
         fillValue = source.nodata;

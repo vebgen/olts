@@ -64,7 +64,7 @@ const tmpTransform: Transform = createTransform();
  * Geometry access through the API is limited to getting the type and extent of
  * the geometry.
  */
-class RenderFeature {
+export class RenderFeature {
     /**
      *
      */

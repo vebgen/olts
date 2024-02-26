@@ -17,7 +17,7 @@ import {get as getProjection} from '../proj.js';
  * given, the array length should match the length of the `resolutions` array, i.e.
  * each resolution can have a different origin. Tile coordinates increase left to
  * right and downwards. If not specified, `extent` or `origin` must be provided.
- * @property {!Array<number>} resolutions Resolutions. The array index of each
+ * @property {!number[]} resolutions Resolutions. The array index of each
  * resolution needs to match the zoom level. This means that even if a `minZoom`
  * is configured, the resolutions array will have a length of `maxZoom + 1`
  * @property {!Array<string>} matrixIds matrix IDs. The length of this array needs
@@ -36,11 +36,10 @@ import {get as getProjection} from '../proj.js';
  */
 
 /**
- * @classdesc
  * Set the grid pattern for sources accessing WMTS tiled-image servers.
  * @api
  */
-class WMTSTileGrid extends TileGrid {
+export class WMTSTileGrid extends TileGrid {
   /**
    * @param {Options} options WMTS options.
    */
@@ -99,7 +98,7 @@ export function createFromCapabilitiesMatrixSet(
   extent,
   matrixLimits,
 ) {
-  /** @type {!Array<number>} */
+  /** @type {!number[]} */
   const resolutions = [];
   /** @type {!Array<string>} */
   const matrixIds = [];

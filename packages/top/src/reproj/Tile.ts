@@ -20,12 +20,11 @@ import {releaseCanvas} from '@olts/core/dom';
  */
 
 /**
- * @classdesc
  * Class encapsulating single reprojected tile.
  * See {@link module:ol/source/TileImage~TileImage}.
  *
  */
-class ReprojTile extends Tile {
+export class ReprojTile extends Tile {
   /**
    * @param {import("../proj/Projection.js").default} sourceProj Source projection.
    * @param {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.

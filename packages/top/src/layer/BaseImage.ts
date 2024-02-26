@@ -29,7 +29,6 @@ import Layer from './Layer.js';
  */
 
 /**
- * @classdesc
  * Server-rendered images that are available for arbitrary extents and
  * resolutions.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -41,7 +40,7 @@ import Layer from './Layer.js';
  * @extends {Layer<ImageSourceType, RendererType>}
  * @api
  */
-class BaseImageLayer extends Layer {
+export class BaseImageLayer extends Layer {
   /**
    * @param {Options<ImageSourceType>} [options] Layer options.
    */

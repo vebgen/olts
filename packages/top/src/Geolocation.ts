@@ -1,67 +1,66 @@
 
 import BaseEvent from './events/Event.js';
-import BaseObject from './Object.js';
-import {circular as circularPolygon} from '@olts/geometry';
+import { BaseObject, EventsKey } from '@olts/events';
+import { circular as circularPolygon } from '@olts/geometry';
 import {
-  get as getProjection,
-  getTransformFromProjections,
-  identityTransform,
+    get as getProjection,
+    getTransformFromProjections,
+    identityTransform,
 } from './proj.js';
-import {toRadians} from '@olts/core/math';
+import { toRadians } from '@olts/core/math';
 
 /**
  * @enum {string}
  */
 const Property = {
-  ACCURACY: 'accuracy',
-  ACCURACY_GEOMETRY: 'accuracyGeometry',
-  ALTITUDE: 'altitude',
-  ALTITUDE_ACCURACY: 'altitudeAccuracy',
-  HEADING: 'heading',
-  POSITION: 'position',
-  PROJECTION: 'projection',
-  SPEED: 'speed',
-  TRACKING: 'tracking',
-  TRACKING_OPTIONS: 'trackingOptions',
+    ACCURACY: 'accuracy',
+    ACCURACY_GEOMETRY: 'accuracyGeometry',
+    ALTITUDE: 'altitude',
+    ALTITUDE_ACCURACY: 'altitudeAccuracy',
+    HEADING: 'heading',
+    POSITION: 'position',
+    PROJECTION: 'projection',
+    SPEED: 'speed',
+    TRACKING: 'tracking',
+    TRACKING_OPTIONS: 'trackingOptions',
 };
 
 /**
  * @enum string
  */
 const GeolocationErrorType = {
-  /**
-   * Triggered when a `GeolocationPositionError` occurs.
-   * @event module:ol/Geolocation.GeolocationError#error
-   * @api
-   */
-  ERROR: 'error',
+    /**
+     * Triggered when a `GeolocationPositionError` occurs.
+     * @event module:ol/Geolocation.GeolocationError#error
+     * @api
+     */
+    ERROR: 'error',
 };
 
 /**
- * @classdesc
  * Events emitted on [GeolocationPositionError](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError).
  */
 export class GeolocationError extends BaseEvent {
-  /**
-   * @param {GeolocationPositionError} error error object.
-   */
-  constructor(error) {
-    super(GeolocationErrorType.ERROR);
-
     /**
-     * Code of the underlying `GeolocationPositionError`.
-     * @type {number}
-     * @api
+     * @param {GeolocationPositionError} error error object.
      */
-    this.code = error.code;
+    constructor(error: GeolocationPositionError) {
+        super(GeolocationErrorType.ERROR);
 
-    /**
-     * Message of the underlying `GeolocationPositionError`.
-     * @type {string}
-     * @api
-     */
-    this.message = error.message;
-  }
+        /**
+         * Code of the underlying `GeolocationPositionError`.
+         * @type {number}
+         * @api
+         */
+        this.code = error.code;
+
+        /**
+         * Message of the underlying `GeolocationPositionError`.
+         * @type {string}
+         * @api
+         */
+        this.message = error.message;
+    }
 }
 
 /**
@@ -75,21 +74,20 @@ export class GeolocationError extends BaseEvent {
  */
 
 /**
- * @typedef {import("./ObjectEventType").Types|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
+ * @typedef {ObjectEventType|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
  *    'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|
  *    'change:trackingOptions'} GeolocationObjectEventTypes
  */
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
- *   import("./Observable").OnSignature<'error', GeolocationError, Return> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes, Return> &
- *   import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return>} GeolocationOnSignature
+ * @typedef {OnSignature<GeolocationObjectEventTypes, ObjectEvent, Return> &
+ *   OnSignature<'error', GeolocationError, Return> &
+ *   CombinedOnSignature<EventTypes|GeolocationObjectEventTypes, Return> &
+ *   OnSignature<EventTypes, Event, Return>} GeolocationOnSignature
  */
 
 /**
- * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
  * The [Geolocation API](https://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
@@ -115,301 +113,304 @@ export class GeolocationError extends BaseEvent {
  * @fires GeolocationError
  * @api
  */
-class Geolocation extends BaseObject {
-  /**
-   * @param {Options} [options] Options.
-   */
-  constructor(options) {
-    super();
-
-    /***
-     * @type {GeolocationOnSignature<import("./events").EventsKey>}
+export class Geolocation extends BaseObject {
+    /**
+     * 
      */
-    this.on;
-
-    /***
-     * @type {GeolocationOnSignature<import("./events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {GeolocationOnSignature<void>}
-     */
-    this.un;
-
-    options = options || {};
+    override on: GeolocationOnSignature<EventsKey>;
 
     /**
-     * The unprojected (EPSG:4326) device position.
-     * @private
-     * @type {?Coordinate}
+     * 
      */
-    this.position_ = null;
+    override once: GeolocationOnSignature<EventsKey>;
 
     /**
-     * @private
-     * @type {import("./proj.js").TransformFunction}
+     * 
      */
-    this.transform_ = identityTransform;
+    override un: GeolocationOnSignature<void>;
 
     /**
-     * @private
-     * @type {number|undefined}
+     * @param {Options} [options] Options.
      */
-    this.watchId_ = undefined;
+    constructor(options: Options) {
+        super();
+        this.on = this.onInternal as GeolocationOnSignature<EventsKey>;
+        this.once = this.onceInternal as GeolocationOnSignature<EventsKey>;
+        this.un = this.unInternal as GeolocationOnSignature<void>;
 
-    this.addChangeListener(Property.PROJECTION, this.handleProjectionChanged_);
-    this.addChangeListener(Property.TRACKING, this.handleTrackingChanged_);
+        options = options || {};
 
-    if (options.projection !== undefined) {
-      this.setProjection(options.projection);
-    }
-    if (options.trackingOptions !== undefined) {
-      this.setTrackingOptions(options.trackingOptions);
-    }
+        /**
+         * The unprojected (EPSG:4326) device position.
+         * @private
+         * @type {?Coordinate}
+         */
+        this.position_ = null;
 
-    this.setTracking(options.tracking !== undefined ? options.tracking : false);
-  }
+        /**
+         * @private
+         * @type {import("./proj.js").TransformFunction}
+         */
+        this.transform_ = identityTransform;
 
-  /**
-   * Clean up.
-   */
-  disposeInternal() {
-    this.setTracking(false);
-    super.disposeInternal();
-  }
-
-  /**
-   * @private
-   */
-  handleProjectionChanged_() {
-    const projection = this.getProjection();
-    if (projection) {
-      this.transform_ = getTransformFromProjections(
-        getProjection('EPSG:4326'),
-        projection,
-      );
-      if (this.position_) {
-        this.set(Property.POSITION, this.transform_(this.position_));
-      }
-    }
-  }
-
-  /**
-   * @private
-   */
-  handleTrackingChanged_() {
-    if ('geolocation' in navigator) {
-      const tracking = this.getTracking();
-      if (tracking && this.watchId_ === undefined) {
-        this.watchId_ = navigator.geolocation.watchPosition(
-          this.positionChange_.bind(this),
-          this.positionError_.bind(this),
-          this.getTrackingOptions(),
-        );
-      } else if (!tracking && this.watchId_ !== undefined) {
-        navigator.geolocation.clearWatch(this.watchId_);
+        /**
+         * @private
+         * @type {number|undefined}
+         */
         this.watchId_ = undefined;
-      }
+
+        this.addChangeListener(Property.PROJECTION, this.handleProjectionChanged_);
+        this.addChangeListener(Property.TRACKING, this.handleTrackingChanged_);
+
+        if (options.projection !== undefined) {
+            this.setProjection(options.projection);
+        }
+        if (options.trackingOptions !== undefined) {
+            this.setTrackingOptions(options.trackingOptions);
+        }
+
+        this.setTracking(options.tracking !== undefined ? options.tracking : false);
     }
-  }
 
-  /**
-   * @private
-   * @param {GeolocationPosition} position position event.
-   */
-  positionChange_(position) {
-    const coords = position.coords;
-    this.set(Property.ACCURACY, coords.accuracy);
-    this.set(
-      Property.ALTITUDE,
-      coords.altitude === null ? undefined : coords.altitude,
-    );
-    this.set(
-      Property.ALTITUDE_ACCURACY,
-      coords.altitudeAccuracy === null ? undefined : coords.altitudeAccuracy,
-    );
-    this.set(
-      Property.HEADING,
-      coords.heading === null ? undefined : toRadians(coords.heading),
-    );
-    if (!this.position_) {
-      this.position_ = [coords.longitude, coords.latitude];
-    } else {
-      this.position_[0] = coords.longitude;
-      this.position_[1] = coords.latitude;
+    /**
+     * Clean up.
+     */
+    disposeInternal() {
+        this.setTracking(false);
+        super.disposeInternal();
     }
-    const projectedPosition = this.transform_(this.position_);
-    this.set(Property.POSITION, projectedPosition.slice());
-    this.set(Property.SPEED, coords.speed === null ? undefined : coords.speed);
-    const geometry = circularPolygon(this.position_, coords.accuracy);
-    geometry.applyTransform(this.transform_);
-    this.set(Property.ACCURACY_GEOMETRY, geometry);
-    this.changed();
-  }
 
-  /**
-   * @private
-   * @param {GeolocationPositionError} error error object.
-   */
-  positionError_(error) {
-    this.dispatchEvent(new GeolocationError(error));
-  }
+    /**
+     * @private
+     */
+    handleProjectionChanged_() {
+        const projection = this.getProjection();
+        if (projection) {
+            this.transform_ = getTransformFromProjections(
+                getProjection('EPSG:4326'),
+                projection,
+            );
+            if (this.position_) {
+                this.set(Property.POSITION, this.transform_(this.position_));
+            }
+        }
+    }
 
-  /**
-   * Get the accuracy of the position in meters.
-   * @return {number|undefined} The accuracy of the position measurement in
-   *     meters.
-   * @observable
-   * @api
-   */
-  getAccuracy() {
-    return /** @type {number|undefined} */ (this.get(Property.ACCURACY));
-  }
+    /**
+     * @private
+     */
+    handleTrackingChanged_() {
+        if ('geolocation' in navigator) {
+            const tracking = this.getTracking();
+            if (tracking && this.watchId_ === undefined) {
+                this.watchId_ = navigator.geolocation.watchPosition(
+                    this.positionChange_.bind(this),
+                    this.positionError_.bind(this),
+                    this.getTrackingOptions(),
+                );
+            } else if (!tracking && this.watchId_ !== undefined) {
+                navigator.geolocation.clearWatch(this.watchId_);
+                this.watchId_ = undefined;
+            }
+        }
+    }
 
-  /**
-   * Get a geometry of the position accuracy.
-   * @return {?Polygon} A geometry of the position accuracy.
-   * @observable
-   * @api
-   */
-  getAccuracyGeometry() {
-    return /** @type {?Polygon} */ (
-      this.get(Property.ACCURACY_GEOMETRY) || null
-    );
-  }
+    /**
+     * @private
+     * @param {GeolocationPosition} position position event.
+     */
+    positionChange_(position: GeolocationPosition) {
+        const coords = position.coords;
+        this.set(Property.ACCURACY, coords.accuracy);
+        this.set(
+            Property.ALTITUDE,
+            coords.altitude === null ? undefined : coords.altitude,
+        );
+        this.set(
+            Property.ALTITUDE_ACCURACY,
+            coords.altitudeAccuracy === null ? undefined : coords.altitudeAccuracy,
+        );
+        this.set(
+            Property.HEADING,
+            coords.heading === null ? undefined : toRadians(coords.heading),
+        );
+        if (!this.position_) {
+            this.position_ = [coords.longitude, coords.latitude];
+        } else {
+            this.position_[0] = coords.longitude;
+            this.position_[1] = coords.latitude;
+        }
+        const projectedPosition = this.transform_(this.position_);
+        this.set(Property.POSITION, projectedPosition.slice());
+        this.set(Property.SPEED, coords.speed === null ? undefined : coords.speed);
+        const geometry = circularPolygon(this.position_, coords.accuracy);
+        geometry.applyTransform(this.transform_);
+        this.set(Property.ACCURACY_GEOMETRY, geometry);
+        this.changed();
+    }
 
-  /**
-   * Get the altitude associated with the position.
-   * @return {number|undefined} The altitude of the position in meters above mean
-   *     sea level.
-   * @observable
-   * @api
-   */
-  getAltitude() {
-    return /** @type {number|undefined} */ (this.get(Property.ALTITUDE));
-  }
+    /**
+     * @private
+     * @param {GeolocationPositionError} error error object.
+     */
+    positionError_(error: GeolocationPositionError) {
+        this.dispatchEvent(new GeolocationError(error));
+    }
 
-  /**
-   * Get the altitude accuracy of the position.
-   * @return {number|undefined} The accuracy of the altitude measurement in
-   *     meters.
-   * @observable
-   * @api
-   */
-  getAltitudeAccuracy() {
-    return /** @type {number|undefined} */ (
-      this.get(Property.ALTITUDE_ACCURACY)
-    );
-  }
+    /**
+     * Get the accuracy of the position in meters.
+     * @return {number|undefined} The accuracy of the position measurement in
+     *     meters.
+     * @observable
+     * @api
+     */
+    getAccuracy(): number | undefined {
+        return /** @type {number|undefined} */ (this.get(Property.ACCURACY));
+    }
 
-  /**
-   * Get the heading as radians clockwise from North.
-   * Note: depending on the browser, the heading is only defined if the `enableHighAccuracy`
-   * is set to `true` in the tracking options.
-   * @return {number|undefined} The heading of the device in radians from north.
-   * @observable
-   * @api
-   */
-  getHeading() {
-    return /** @type {number|undefined} */ (this.get(Property.HEADING));
-  }
+    /**
+     * Get a geometry of the position accuracy.
+     * @return {?Polygon} A geometry of the position accuracy.
+     * @observable
+     * @api
+     */
+    getAccuracyGeometry(): Polygon | null {
+        return /** @type {?Polygon} */ (
+            this.get(Property.ACCURACY_GEOMETRY) || null
+        );
+    }
 
-  /**
-   * Get the position of the device.
-   * @return {Coordinate|undefined} The current position of the device reported
-   *     in the current projection.
-   * @observable
-   * @api
-   */
-  getPosition() {
-    return /** @type {Coordinate|undefined} */ (
-      this.get(Property.POSITION)
-    );
-  }
+    /**
+     * Get the altitude associated with the position.
+     * @return {number|undefined} The altitude of the position in meters above mean
+     *     sea level.
+     * @observable
+     * @api
+     */
+    getAltitude(): number | undefined {
+        return /** @type {number|undefined} */ (this.get(Property.ALTITUDE));
+    }
 
-  /**
-   * Get the projection associated with the position.
-   * @return {import("./proj/Projection.js").default|undefined} The projection the position is
-   *     reported in.
-   * @observable
-   * @api
-   */
-  getProjection() {
-    return /** @type {import("./proj/Projection.js").default|undefined} */ (
-      this.get(Property.PROJECTION)
-    );
-  }
+    /**
+     * Get the altitude accuracy of the position.
+     * @return {number|undefined} The accuracy of the altitude measurement in
+     *     meters.
+     * @observable
+     * @api
+     */
+    getAltitudeAccuracy(): number | undefined {
+        return /** @type {number|undefined} */ (
+            this.get(Property.ALTITUDE_ACCURACY)
+        );
+    }
 
-  /**
-   * Get the speed in meters per second.
-   * @return {number|undefined} The instantaneous speed of the device in meters
-   *     per second.
-   * @observable
-   * @api
-   */
-  getSpeed() {
-    return /** @type {number|undefined} */ (this.get(Property.SPEED));
-  }
+    /**
+     * Get the heading as radians clockwise from North.
+     * Note: depending on the browser, the heading is only defined if the `enableHighAccuracy`
+     * is set to `true` in the tracking options.
+     * @return {number|undefined} The heading of the device in radians from north.
+     * @observable
+     * @api
+     */
+    getHeading(): number | undefined {
+        return /** @type {number|undefined} */ (this.get(Property.HEADING));
+    }
 
-  /**
-   * Determine if the device location is being tracked.
-   * @return {boolean} The device location is being tracked.
-   * @observable
-   * @api
-   */
-  getTracking() {
-    return /** @type {boolean} */ (this.get(Property.TRACKING));
-  }
+    /**
+     * Get the position of the device.
+     * @return {Coordinate|undefined} The current position of the device reported
+     *     in the current projection.
+     * @observable
+     * @api
+     */
+    getPosition(): Coordinate | undefined {
+        return /** @type {Coordinate|undefined} */ (
+            this.get(Property.POSITION)
+        );
+    }
 
-  /**
-   * Get the tracking options.
-   * See https://www.w3.org/TR/geolocation-API/#position-options.
-   * @return {PositionOptions|undefined} PositionOptions as defined by
-   *     the [HTML5 Geolocation spec
-   *     ](https://www.w3.org/TR/geolocation-API/#position_options_interface).
-   * @observable
-   * @api
-   */
-  getTrackingOptions() {
-    return /** @type {PositionOptions|undefined} */ (
-      this.get(Property.TRACKING_OPTIONS)
-    );
-  }
+    /**
+     * Get the projection associated with the position.
+     * @return {import("./proj/Projection.js").default|undefined} The projection the position is
+     *     reported in.
+     * @observable
+     * @api
+     */
+    getProjection(): import("./proj/Projection.js").default | undefined {
+        return /** @type {import("./proj/Projection.js").default|undefined} */ (
+            this.get(Property.PROJECTION)
+        );
+    }
 
-  /**
-   * Set the projection to use for transforming the coordinates.
-   * @param {import("./proj.js").ProjectionLike} projection The projection the position is
-   *     reported in.
-   * @observable
-   * @api
-   */
-  setProjection(projection) {
-    this.set(Property.PROJECTION, getProjection(projection));
-  }
+    /**
+     * Get the speed in meters per second.
+     * @return {number|undefined} The instantaneous speed of the device in meters
+     *     per second.
+     * @observable
+     * @api
+     */
+    getSpeed(): number | undefined {
+        return /** @type {number|undefined} */ (this.get(Property.SPEED));
+    }
 
-  /**
-   * Enable or disable tracking.
-   * @param {boolean} tracking Enable tracking.
-   * @observable
-   * @api
-   */
-  setTracking(tracking) {
-    this.set(Property.TRACKING, tracking);
-  }
+    /**
+     * Determine if the device location is being tracked.
+     * @return {boolean} The device location is being tracked.
+     * @observable
+     * @api
+     */
+    getTracking(): boolean {
+        return /** @type {boolean} */ (this.get(Property.TRACKING));
+    }
 
-  /**
-   * Set the tracking options.
-   * See http://www.w3.org/TR/geolocation-API/#position-options.
-   * @param {PositionOptions} options PositionOptions as defined by the
-   *     [HTML5 Geolocation spec
-   *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
-   * @observable
-   * @api
-   */
-  setTrackingOptions(options) {
-    this.set(Property.TRACKING_OPTIONS, options);
-  }
+    /**
+     * Get the tracking options.
+     * See https://www.w3.org/TR/geolocation-API/#position-options.
+     * @return {PositionOptions|undefined} PositionOptions as defined by
+     *     the [HTML5 Geolocation spec
+     *     ](https://www.w3.org/TR/geolocation-API/#position_options_interface).
+     * @observable
+     * @api
+     */
+    getTrackingOptions(): PositionOptions | undefined {
+        return /** @type {PositionOptions|undefined} */ (
+            this.get(Property.TRACKING_OPTIONS)
+        );
+    }
+
+    /**
+     * Set the projection to use for transforming the coordinates.
+     * @param {import("./proj.js").ProjectionLike} projection The projection the position is
+     *     reported in.
+     * @observable
+     * @api
+     */
+    setProjection(projection: import("./proj.js").ProjectionLike) {
+        this.set(Property.PROJECTION, getProjection(projection));
+    }
+
+    /**
+     * Enable or disable tracking.
+     * @param {boolean} tracking Enable tracking.
+     * @observable
+     * @api
+     */
+    setTracking(tracking: boolean) {
+        this.set(Property.TRACKING, tracking);
+    }
+
+    /**
+     * Set the tracking options.
+     * See http://www.w3.org/TR/geolocation-API/#position-options.
+     * @param {PositionOptions} options PositionOptions as defined by the
+     *     [HTML5 Geolocation spec
+     *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
+     * @observable
+     * @api
+     */
+    setTrackingOptions(options: PositionOptions) {
+        this.set(Property.TRACKING_OPTIONS, options);
+    }
 }
 
 export default Geolocation;

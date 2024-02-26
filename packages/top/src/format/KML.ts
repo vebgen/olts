@@ -59,8 +59,8 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} GxTrackObject
- * @property {Array<Array<number>>} coordinates Coordinates.
- * @property {Array<number>} whens Whens.
+ * @property {Array<number[]>} coordinates Coordinates.
+ * @property {number[]} whens Whens.
  */
 
 /**
@@ -182,7 +182,7 @@ const REGION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const KML_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['Document', 'Placemark']);
@@ -421,7 +421,6 @@ function defaultIconUrlFunction(href) {
  */
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the KML format.
  *
  * {@link module:ol/format/KML~KML#readFeature} will read the first feature from
@@ -433,7 +432,7 @@ function defaultIconUrlFunction(href) {
  *
  * @api
  */
-class KML extends XMLFeature {
+export class KML extends XMLFeature {
   /**
    * @param {Options} [options] Options.
    */
@@ -1184,7 +1183,7 @@ function readColor(node) {
 
 /**
  * @param {Node} node Node.
- * @return {Array<number>|undefined} Flat coordinates.
+ * @return {number[]|undefined} Flat coordinates.
  */
 export function readFlatCoordinates(node) {
   let s = getAllTextContent(node, false);
@@ -1393,7 +1392,7 @@ function iconStyleParser(node, objectStack) {
 
   const scale = /** @type {number|undefined} */ (object['scale']);
 
-  const color = /** @type {Array<number>|undefined} */ (object['color']);
+  const color = /** @type {number[]|undefined} */ (object['color']);
 
   if (drawIcon) {
     if (src == DEFAULT_IMAGE_STYLE_SRC) {
@@ -1568,7 +1567,7 @@ const FLAT_LINEAR_RING_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<number>} LinearRing flat coordinates.
+ * @return {number[]} LinearRing flat coordinates.
  */
 function readFlatLinearRing(node, objectStack) {
   return pushParseAndPop(null, FLAT_LINEAR_RING_PARSERS, node, objectStack);
@@ -1720,7 +1719,7 @@ const GEOMETRY_FLAT_COORDINATES_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<number>} Flat coordinates.
+ * @return {number[]} Flat coordinates.
  */
 function readFlatCoordinatesFromNode(node, objectStack) {
   return pushParseAndPop(
@@ -2325,14 +2324,14 @@ const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  */
 function innerBoundaryIsParser(node, objectStack) {
   const innerBoundaryFlatLinearRings = pushParseAndPop(
-    /** @type {Array<Array<number>>} */ ([]),
+    /** @type {Array<number[]>} */ ([]),
     INNER_BOUNDARY_IS_PARSERS,
     node,
     objectStack,
   );
   if (innerBoundaryFlatLinearRings.length > 0) {
     const flatLinearRings =
-      /** @type {Array<Array<number>>} */
+      /** @type {Array<number[]>} */
       (objectStack[objectStack.length - 1]);
     flatLinearRings.push(...innerBoundaryFlatLinearRings);
   }
@@ -2352,7 +2351,7 @@ const OUTER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function outerBoundaryIsParser(node, objectStack) {
-  /** @type {Array<number>|undefined} */
+  /** @type {number[]|undefined} */
   const flatLinearRing = pushParseAndPop(
     undefined,
     OUTER_BOUNDARY_IS_PARSERS,
@@ -2361,7 +2360,7 @@ function outerBoundaryIsParser(node, objectStack) {
   );
   if (flatLinearRing) {
     const flatLinearRings =
-      /** @type {Array<Array<number>>} */
+      /** @type {Array<number[]>} */
       (objectStack[objectStack.length - 1]);
     flatLinearRings[0] = flatLinearRing;
   }
@@ -2407,7 +2406,7 @@ function writeColorTextNode(node, color) {
 
 /**
  * @param {Node} node Node to append a TextNode with the coordinates to.
- * @param {Array<number>} coordinates Coordinates.
+ * @param {number[]} coordinates Coordinates.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeCoordinatesTextNode(node, coordinates, objectStack) {
@@ -2562,7 +2561,7 @@ const DATA_NODE_FACTORY = makeSimpleNodeFactory('Data');
 
 /**
  * @param {Element} node Node.
- * @param {{names: Array<string>, values: (Array<*>)}} namesAndValues Names and values.
+ * @param {{names:string[], values: (Array<*>)}} namesAndValues Names and values.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeExtendedData(node, namesAndValues, objectStack) {
@@ -2584,7 +2583,7 @@ function writeExtendedData(node, namesAndValues, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const ICON_SEQUENCE = makeStructureNS(
@@ -2654,7 +2653,7 @@ function writeIcon(node, icon, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const ICON_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -2755,7 +2754,7 @@ function writeIconStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const LABEL_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -2804,7 +2803,7 @@ function writeLabelStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const LINE_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['color', 'width']);
@@ -3028,7 +3027,7 @@ const PLACEMARK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const PLACEMARK_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3203,7 +3202,7 @@ function writePlacemark(node, feature, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3255,7 +3254,7 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const POLY_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3364,7 +3363,7 @@ function writeScaleTextNode(node, scale) {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3388,7 +3387,7 @@ const STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @param {Element} node Node.
- * @param {Object<string, Array<Style>>} styles Styles.
+ * @param {Object<string,Style[]>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeStyle(node, styles, objectStack) {

@@ -81,7 +81,7 @@ export interface ObjectWithGeometry<G = Geometry> {
  *
  * @api
  */
-class Feature<G extends Geometry = Geometry> extends BaseObject {
+export class Feature<G extends Geometry = Geometry> extends BaseObject {
     override on: FeatureOnSignature<EventsKey>;
     override once: FeatureOnSignature<EventsKey>;
     override un: FeatureOnSignature<void>;
@@ -340,12 +340,12 @@ class Feature<G extends Geometry = Geometry> extends BaseObject {
  * @return {StyleFunction} A style function.
  */
 export function createStyleFunction(
-    obj: StyleFunction | Array<any> | any
+    obj: StyleFunction |any[] | any
 ): StyleFunction {
     if (typeof obj === 'function') {
         return obj;
     }
-    let styles: Array<any>;
+    let styles:any[];
     if (Array.isArray(obj)) {
         styles = obj;
     } else {

@@ -26,7 +26,7 @@ import {
 } from '@olts/geometry/flat';
 import { Extent } from '@olts/core/extent';
 
-class CanvasBuilder extends VectorContext {
+export class CanvasBuilder extends VectorContext {
     /**
      * @param {number} tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.
@@ -94,7 +94,7 @@ class CanvasBuilder extends VectorContext {
 
         /**
          * @protected
-         * @type {Array<number>}
+         * @type {number[]}
          */
         this.coordinates = [];
 
@@ -119,10 +119,10 @@ class CanvasBuilder extends VectorContext {
 
     /**
      * @protected
-     * @param {Array<number>} dashArray Dash array.
-     * @return {Array<number>} Dash array with pixel ratio applied
+     * @param {number[]} dashArray Dash array.
+     * @return {number[]} Dash array with pixel ratio applied
      */
-    applyPixelRatio(dashArray: Array<number>): Array<number> {
+    applyPixelRatio(dashArray: number[]): number[] {
         const pixelRatio = this.pixelRatio;
         return pixelRatio == 1
             ? dashArray
@@ -132,12 +132,12 @@ class CanvasBuilder extends VectorContext {
     }
 
     /**
-     * @param {Array<number>} flatCoordinates Flat coordinates.
+     * @param {number[]} flatCoordinates Flat coordinates.
      * @param {number} stride Stride.
      * @protected
      * @return {number} My end
      */
-    appendFlatPointCoordinates(flatCoordinates: Array<number>, stride: number): number {
+    appendFlatPointCoordinates(flatCoordinates: number[], stride: number): number {
         const extent = this.getBufferedMaxExtent();
         const tmpCoord = this.tmpCoordinate_;
         const coordinates = this.coordinates;
@@ -154,7 +154,7 @@ class CanvasBuilder extends VectorContext {
     }
 
     /**
-     * @param {Array<number>} flatCoordinates Flat coordinates.
+     * @param {number[]} flatCoordinates Flat coordinates.
      * @param {number} offset Offset.
      * @param {number} end End.
      * @param {number} stride Stride.
@@ -164,7 +164,7 @@ class CanvasBuilder extends VectorContext {
      * @return {number} My end.
      */
     appendFlatLineCoordinates(
-        flatCoordinates: Array<number>,
+        flatCoordinates: number[],
         offset: number,
         end: number,
         stride: number,
@@ -216,14 +216,14 @@ class CanvasBuilder extends VectorContext {
     }
 
     /**
-     * @param {Array<number>} flatCoordinates Flat coordinates.
+     * @param {number[]} flatCoordinates Flat coordinates.
      * @param {number} offset Offset.
-     * @param {Array<number>} ends Ends.
+     * @param {number[]} ends Ends.
      * @param {number} stride Stride.
-     * @param {Array<number>} builderEnds Builder ends.
+     * @param {number[]} builderEnds Builder ends.
      * @return {number} Offset.
      */
-    drawCustomCoordinates_(flatCoordinates: Array<number>, offset: number, ends: Array<number>, stride: number, builderEnds: Array<number>): number {
+    drawCustomCoordinates_(flatCoordinates: number[], offset: number, ends: number[], stride: number, builderEnds: number[]): number {
         for (let i = 0, ii = ends.length; i < ii; ++i) {
             const end = ends[i];
             const builderEnd = this.appendFlatLineCoordinates(
@@ -536,10 +536,10 @@ class CanvasBuilder extends VectorContext {
      * @param {import("../canvas").FillStrokeState} state State.
      * @return {Array<*>} Fill instruction.
      */
-    createFill(state: import("../canvas").FillStrokeState): Array<any> {
+    createFill(state: import("../canvas").FillStrokeState):any[] {
         const fillStyle = state.fillStyle;
         /** @type {Array<*>} */
-        const fillInstruction: Array<any> = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
+        const fillInstruction:any[] = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
         if (typeof fillStyle !== 'string') {
             // Fill is a pattern or gradient - align and scale it!
             fillInstruction.push(state.fillPatternScale);
@@ -558,7 +558,7 @@ class CanvasBuilder extends VectorContext {
      * @param {import("../canvas").FillStrokeState} state State.
      * @return {Array<*>} Stroke instruction.
      */
-    createStroke(state: import("../canvas").FillStrokeState): Array<any> {
+    createStroke(state: import("../canvas").FillStrokeState):any[] {
         return [
             CanvasInstruction.SET_STROKE_STYLE,
             state.strokeStyle,

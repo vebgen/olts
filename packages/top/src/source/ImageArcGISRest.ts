@@ -27,14 +27,13 @@ import {decode} from '../Image.js';
  * or the entire code must form a valid ArcGIS SpatialReference definition.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
+ * @property {number[]} [resolutions] Resolutions. If specified, requests will be made for
  * these resolutions only.
  * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
  */
 
 /**
- * @classdesc
  * Source for data from ArcGIS Rest services providing single, untiled images.
  * Useful when underlying map service has labels.
  *
@@ -45,7 +44,7 @@ import {decode} from '../Image.js';
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
-class ImageArcGISRest extends ImageSource {
+export class ImageArcGISRest extends ImageSource {
   /**
    * @param {Options} [options] Image ArcGIS Rest Options.
    */

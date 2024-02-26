@@ -3,7 +3,6 @@ import FeatureFormat from './Feature.js';
 import {abstract} from '@olts/core/util';
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for JSON feature formats.
@@ -12,7 +11,7 @@ import {abstract} from '@olts/core/util';
  * @extends {FeatureFormat<T>}
  * @abstract
  */
-class JSONFeature extends FeatureFormat {
+export class JSONFeature extends FeatureFormat {
   constructor() {
     super();
   }

@@ -1,3 +1,6 @@
+import { ValueOf } from ".";
+
+
 /**
  * The state of image loading.
  */
@@ -9,5 +12,4 @@ export const ImageState = {
     EMPTY: 4,
 } as const;
 
-type ValueOf<T> = T[keyof T];
 export type ImageStateType = ValueOf<typeof ImageState>;

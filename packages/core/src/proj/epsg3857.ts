@@ -1,4 +1,4 @@
-import { Extent } from '../extent';
+import { Extent } from '@olts/core/extent';
 import { Projection } from './projection';
 
 
@@ -35,7 +35,7 @@ export const MAX_SAFE_Y: number = RADIUS * Math.log(Math.tan(Math.PI / 2));
 /**
  * Projection object for web/spherical Mercator (EPSG:3857).
  */
-class EPSG3857Projection extends Projection {
+export class EPSG3857Projection extends Projection {
     /**
      * Constructor.
      *

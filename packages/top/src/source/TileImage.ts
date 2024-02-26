@@ -56,13 +56,12 @@ import {getUid} from '@olts/core/util';
  */
 
 /**
- * @classdesc
  * Base class for sources providing images divided into a tile grid.
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
  */
-class TileImage extends UrlTile {
+export class TileImage extends UrlTile {
   /**
    * @param {!Options} options Image tile options.
    */

@@ -51,7 +51,6 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 
 /**
- * @classdesc
  * Layer source for tile data with URLs in a set XYZ format that are
  * defined in a URL template. By default, this follows the widely-used
  * Google grid where `x` 0 and `y` 0 are in the top left. Grids like
@@ -67,7 +66,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * ```
  * @api
  */
-class XYZ extends TileImage {
+export class XYZ extends TileImage {
   /**
    * @param {Options} [options] XYZ options.
    */

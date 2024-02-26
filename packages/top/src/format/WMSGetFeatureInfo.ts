@@ -22,13 +22,12 @@ const featureIdentifier = '_feature';
 const layerIdentifier = '_layer';
 
 /**
- * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
  * {@link module:ol/format/GML2~GML2} to read features.
  *
  * @api
  */
-class WMSGetFeatureInfo extends XMLFeature {
+export class WMSGetFeatureInfo extends XMLFeature {
   /**
    * @param {Options} [options] Options.
    */

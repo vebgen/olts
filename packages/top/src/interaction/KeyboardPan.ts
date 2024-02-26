@@ -17,7 +17,6 @@ import {rotate as rotateCoordinate} from '../coordinate.js';
  */
 
 /**
- * @classdesc
  * Allows the user to pan the map using keyboard arrows.
  * Note that, although this interaction is by default included in maps,
  * the keys can only be used when browser focus is on the element to which
@@ -29,7 +28,7 @@ import {rotate as rotateCoordinate} from '../coordinate.js';
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
  * @api
  */
-class KeyboardPan extends Interaction {
+export class KeyboardPan extends Interaction {
   /**
    * @param {Options} [options] Options.
    */

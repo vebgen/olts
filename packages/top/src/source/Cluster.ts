@@ -37,7 +37,7 @@ import {getUid} from '@olts/core/util';
  * ```
  * See {@link Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {function(Point, Array<Feature>):Feature} [createCluster]
+ * @property {function(Point,Feature[]):Feature} [createCluster]
  * Function that takes the cluster's center {@link Point} and an array
  * of {@link module:ol/Feature~Feature} included in this cluster. Must return a
  * {@link module:ol/Feature~Feature} that will be used to render. Default implementation is:
@@ -54,7 +54,6 @@ import {getUid} from '@olts/core/util';
  */
 
 /**
- * @classdesc
  * Layer source to cluster vector data. Works out of the box with point
  * geometries. For other geometry types, or if not all geometries should be
  * considered for clustering, a custom `geometryFunction` can be defined.
@@ -64,7 +63,7 @@ import {getUid} from '@olts/core/util';
  * from the wrapped source.
  * @api
  */
-class Cluster extends VectorSource {
+export class Cluster extends VectorSource {
   /**
    * @param {Options} options Cluster options.
    */
@@ -121,7 +120,7 @@ class Cluster extends VectorSource {
       };
 
     /**
-     * @type {function(Point, Array<Feature>):Feature}
+     * @type {function(Point,Feature[]):Feature}
      * @private
      */
     this.createCustomCluster_ = options.createCluster;

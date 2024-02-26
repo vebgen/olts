@@ -7,7 +7,7 @@ import TileState from './TileState.js';
  * @typedef {function(import("./Tile.js").default, string, Coordinate, number): number} PriorityFunction
  */
 
-class TileQueue extends PriorityQueue {
+export class TileQueue extends PriorityQueue {
   /**
    * @param {PriorityFunction} tilePriorityFunction Tile priority function.
    * @param {function(): ?} tileChangeCallback Function called on each tile change event.
@@ -73,7 +73,7 @@ class TileQueue extends PriorityQueue {
   }
 
   /**
-   * @param {import("./events/Event.js").default} event Event.
+   * @param {Event} event Event.
    * @protected
    */
   handleTileChange(event) {

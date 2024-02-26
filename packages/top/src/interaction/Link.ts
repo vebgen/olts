@@ -42,8 +42,8 @@ function differentNumber(a, b) {
 }
 
 /**
- * @param {Array<number>} a An array of two numbers.
- * @param {Array<number>} b An array of two numbers.
+ * @param {number[]} a An array of two numbers.
+ * @param {number[]} b An array of two numbers.
  * @return {boolean} The arrays are different.
  */
 function differentArray(a, b) {
@@ -69,12 +69,11 @@ function differentArray(a, b) {
  */
 
 /**
- * @classdesc
  * An interaction that synchronizes the map state with the URL.
  *
  * @api
  */
-class Link extends Interaction {
+export class Link extends Interaction {
   /**
    * @param {Options} [options] Link options.
    */

@@ -39,7 +39,7 @@ export function numberToGlsl(v) {
 
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
- * @param {Array<number>} array Numerical values array.
+ * @param {number[]} array Numerical values array.
  * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function arrayToGlsl(array) {
@@ -414,7 +414,7 @@ ${ifBlocks}
     const numColors = colors.length;
     const palette = new Uint8Array(numColors * 4);
     for (let i = 0; i < colors.length; i++) {
-      const parsedValue = /** @type {string | Array<number>} */ (
+      const parsedValue = /** @type {string | number[]} */ (
         /** @type {LiteralExpression} */ (colors[i]).value
       );
       const color = asArray(parsedValue);
@@ -474,12 +474,12 @@ function compile(expression, returnType, context) {
 
   if ((expression.type & ColorType) > 0) {
     return colorToGlsl(
-      /** @type {Array<number> | string} */ (expression.value),
+      /** @type {number[] | string} */ (expression.value),
     );
   }
 
   if ((expression.type & NumberArrayType) > 0) {
-    return arrayToGlsl(/** @type {Array<number>} */ (expression.value));
+    return arrayToGlsl(/** @type {number[]} */ (expression.value));
   }
 
   throw new Error(

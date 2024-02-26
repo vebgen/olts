@@ -247,7 +247,7 @@ export class MultiLineString extends SimpleGeometry {
      * @return LineStrings.
      * @api
      */
-    getLineStrings(): Array<LineString> {
+    getLineStrings():LineString[] {
         const flatCoordinates = this.flatCoordinates;
         const ends = this.ends_;
         const layout = this.layout;

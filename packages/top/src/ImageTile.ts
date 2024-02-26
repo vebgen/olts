@@ -4,7 +4,7 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from '@olts/core/dom';
 import {listenImage} from './Image.js';
 
-class ImageTile extends Tile {
+export class ImageTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.

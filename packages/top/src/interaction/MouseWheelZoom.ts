@@ -29,11 +29,10 @@ import {clamp} from '@olts/core/math';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
  * @api
  */
-class MouseWheelZoom extends Interaction {
+export class MouseWheelZoom extends Interaction {
   /**
    * @param {Options} [options] Options.
    */

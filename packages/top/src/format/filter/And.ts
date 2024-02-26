@@ -1,12 +1,11 @@
 import LogicalNary from './LogicalNary.js';
 
 /**
- * @classdesc
  * Represents a logical `<And>` operator between two or more filter conditions.
  *
  * @abstract
  */
-class And extends LogicalNary {
+export class And extends LogicalNary {
   /**
    * @param {...import("./Filter.js").default} conditions Conditions.
    */

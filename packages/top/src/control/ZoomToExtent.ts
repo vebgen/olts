@@ -18,13 +18,12 @@ import {fromExtent as polygonFromExtent} from '@olts/geometry';
  */
 
 /**
- * @classdesc
  * A button control which, when pressed, changes the map view to a specific
  * extent. To style this control use the css selector `.ol-zoom-extent`.
  *
  * @api
  */
-class ZoomToExtent extends Control {
+export class ZoomToExtent extends Control {
   /**
    * @param {Options} [options] Options.
    */

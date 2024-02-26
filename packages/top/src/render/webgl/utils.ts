@@ -5,8 +5,8 @@ import {clamp} from '@olts/core/math';
 
 export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
 
-/** @type {Array<number>} */
-const tmpArray_: Array<number> = [];
+/** @type {number[]} */
+const tmpArray_: number[] = [];
 
 /**
  * An object holding positions both in an index and a vertex buffer.
@@ -128,9 +128,9 @@ export function writePointFeatureToBuffers(
  * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
- * @param {Array<number>} vertexArray Array containing vertices.
- * @param {Array<number>} indexArray Array containing indices.
- * @param {Array<number>} customAttributes Array of custom attributes value
+ * @param {number[]} vertexArray Array containing vertices.
+ * @param {number[]} indexArray Array containing indices.
+ * @param {number[]} customAttributes Array of custom attributes value
  * @param {import('../../transform').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
  * @param {number} currentLength Cumulated length of segments processed so far
  * @param {number} currentAngleTangentSum Cumulated tangents of the join angles processed so far
@@ -143,9 +143,9 @@ export function writeLineSegmentToBuffers(
   segmentEndIndex: number,
   beforeSegmentIndex: number | null,
   afterSegmentIndex: number | null,
-  vertexArray: Array<number>,
-  indexArray: Array<number>,
-  customAttributes: Array<number>,
+  vertexArray: number[],
+  indexArray: number[],
+  customAttributes: number[],
   toWorldTransform: import('../../transform').Transform,
   currentLength: number,
   currentAngleTangentSum: number,
@@ -321,8 +321,8 @@ export function writeLineSegmentToBuffers(
  * Pushes several triangles to form a polygon, including holes
  * @param {Float32Array} instructions Array of render instructions for lines.
  * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
- * @param {Array<number>} vertexArray Array containing vertices.
- * @param {Array<number>} indexArray Array containing indices.
+ * @param {number[]} vertexArray Array containing vertices.
+ * @param {number[]} indexArray Array containing indices.
  * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @return {number} Next polygon instructions index
  * @private
@@ -330,8 +330,8 @@ export function writeLineSegmentToBuffers(
 export function writePolygonTrianglesToBuffers(
   instructions: Float32Array,
   polygonStartIndex: number,
-  vertexArray: Array<number>,
-  indexArray: Array<number>,
+  vertexArray: number[],
+  indexArray: number[],
   customAttributesSize: number,
 ): number {
   const instructionsPerVertex = 2; // x, y
@@ -387,10 +387,10 @@ export function getBlankImageData(): ImageData {
  * Generates a color array based on a numerical id
  * Note: the range for each component is 0 to 1 with 256 steps
  * @param {number} id Id
- * @param {Array<number>} [array] Reusable array
- * @return {Array<number>} Color array containing the encoded id
+ * @param {number[]} [array] Reusable array
+ * @return {number[]} Color array containing the encoded id
  */
-export function colorEncodeId(id: number, array: Array<number>): Array<number> {
+export function colorEncodeId(id: number, array: number[]): number[] {
   array = array || [];
   const radix = 256;
   const divide = radix - 1;
@@ -404,10 +404,10 @@ export function colorEncodeId(id: number, array: Array<number>): Array<number> {
 /**
  * Reads an id from a color-encoded array
  * Note: the expected range for each component is 0 to 1 with 256 steps.
- * @param {Array<number>} color Color array containing the encoded id
+ * @param {number[]} color Color array containing the encoded id
  * @return {number} Decoded id
  */
-export function colorDecodeId(color: Array<number>): number {
+export function colorDecodeId(color: number[]): number {
   let id = 0;
   const radix = 256;
   const mult = radix - 1;

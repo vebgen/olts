@@ -183,7 +183,7 @@ export function isType(type, expected) {
 }
 
 /**
- * @typedef {boolean|number|string|Array<number>} LiteralValue
+ * @typedef {boolean|number|string|number[]} LiteralValue
  */
 
 export class LiteralExpression {
@@ -630,7 +630,7 @@ const parsers = {
 };
 
 /**
- * @typedef {function(Array<EncodedExpression>, ParsingContext, Array<Expression>, number?):Array<Expression>|void} ArgValidator
+ * @typedef {function(Array<EncodedExpression>, ParsingContext,Expression[], number?):Array<Expression>|void} ArgValidator
  * An argument validator applies various checks to an encoded expression arguments
  * Returns the parsed arguments if any.
  * Third argument is the array of parsed arguments from previous validators

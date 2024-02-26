@@ -185,9 +185,9 @@ export function createHitDetectionImageData(
  * @return Features.
  */
 export function hitDetect<F extends FeatureLike>(
-    pixel: Pixel, features: Array<F>, imageData: ImageData
-): Array<F> {
-    const resultFeatures: Array<F> = [];
+    pixel: Pixel, features:F[], imageData: ImageData
+):F[] {
+    const resultFeatures:F[] = [];
     if (imageData) {
         const x = Math.floor(Math.round(pixel[0]) * HIT_DETECT_RESOLUTION);
         const y = Math.floor(Math.round(pixel[1]) * HIT_DETECT_RESOLUTION);

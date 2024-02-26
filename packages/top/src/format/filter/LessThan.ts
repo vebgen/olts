@@ -1,11 +1,10 @@
 import ComparisonBinary from './ComparisonBinary.js';
 
 /**
- * @classdesc
  * Represents a `<PropertyIsLessThan>` comparison operator.
  * @api
  */
-class LessThan extends ComparisonBinary {
+export class LessThan extends ComparisonBinary {
   /**
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!number} expression The value to compare.

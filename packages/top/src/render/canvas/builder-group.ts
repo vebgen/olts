@@ -28,7 +28,7 @@ type BuildersByZIndex = Record<string, Record<BuilderType, Builder>>;
 /**
  *
  */
-class BuilderGroup {
+export class BuilderGroup {
     /**
      * Tolerance
      */

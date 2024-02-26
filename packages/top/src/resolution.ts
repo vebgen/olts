@@ -1,7 +1,7 @@
 
 
 /**
- * @typedef {number|Array<number>} ResolutionLike
+ * @typedef {number|number[]} ResolutionLike
  */
 
 /**

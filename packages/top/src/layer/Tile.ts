@@ -2,7 +2,6 @@ import BaseTileLayer from './BaseTile.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 
 /**
- * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
  * organized by zoom levels for specific resolutions.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -13,7 +12,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  * @extends BaseTileLayer<TileSourceType, CanvasTileLayerRenderer>
  * @api
  */
-class TileLayer extends BaseTileLayer {
+export class TileLayer extends BaseTileLayer {
   /**
    * @param {import("./BaseTile.js").Options<TileSourceType>} [options] Tile layer options.
    */

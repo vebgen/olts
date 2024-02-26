@@ -20,7 +20,6 @@ export const BufferUsage = {
 };
 
 /**
- * @classdesc
  * Object used to store an array of data as well as usage information for that data.
  * Stores typed arrays internally, either Float32Array or Uint16/32Array depending on
  * the buffer type (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER) and available extensions.
@@ -34,7 +33,7 @@ export const BufferUsage = {
  * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)
  * for more info on buffer usage.
  */
-class WebGLArrayBuffer {
+export class WebGLArrayBuffer {
   /**
    * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
    * @param {number} [usage] Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
@@ -77,7 +76,7 @@ class WebGLArrayBuffer {
 
   /**
    * Populates the buffer with an array of the given size.
-   * @param {Array<number>} array Numerical array
+   * @param {number[]} array Numerical array
    * @return {WebGLArrayBuffer} This
    */
   fromArray(array) {

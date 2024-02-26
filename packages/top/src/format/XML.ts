@@ -3,12 +3,11 @@ import {abstract} from '@olts/core/util';
 import {isDocument, parse} from '../xml.js';
 
 /**
- * @classdesc
  * Generic format for reading non-feature XML data
  *
  * @abstract
  */
-class XML {
+export class XML {
   /**
    * Read the source document.
    *

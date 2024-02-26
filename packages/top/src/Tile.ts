@@ -67,12 +67,11 @@ import {easeIn} from './easing.js';
  */
 
 /**
- * @classdesc
  * Base class for tiles.
  *
  * @abstract
  */
-class Tile extends EventTarget {
+export class Tile extends EventTarget {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.

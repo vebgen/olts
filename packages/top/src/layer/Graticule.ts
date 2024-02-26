@@ -43,7 +43,7 @@ const DEFAULT_STROKE_STYLE = new Stroke({
 });
 
 /**
- * @type {Array<number>}
+ * @type {number[]}
  * @private
  */
 const INTERVALS = [
@@ -161,7 +161,7 @@ const INTERVALS = [
  * Note that the default's `textAlign` configuration will not work well for
  * `latLabelPosition` configurations that position labels close to the left of
  * the viewport.
- * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 30/60, 20/60, 10/60, 5/60, 2/60, 1/60, 30/3600, 20/3600, 10/3600, 5/3600, 2/3600, 1/3600]]
+ * @property {number[]} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 30/60, 20/60, 10/60, 5/60, 2/60, 1/60, 30/3600, 20/3600, 10/3600, 5/3600, 2/3600, 1/3600]]
  * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
  * ```js
  * [30, 10]
@@ -171,7 +171,6 @@ const INTERVALS = [
  */
 
 /**
- * @classdesc
  * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
  * Note that the view projection must define both extent and worldExtent.
  *
@@ -179,7 +178,7 @@ const INTERVALS = [
  * @extends {VectorLayer<import("../source/Vector.js").default>}
  * @api
  */
-class Graticule extends VectorLayer {
+export class Graticule extends VectorLayer {
   /**
    * @param {Options} [options] Options.
    */
@@ -457,7 +456,7 @@ class Graticule extends VectorLayer {
     }
 
     /**
-     * @type {Array<number>}
+     * @type {number[]}
      * @private
      */
     this.intervals_ =
@@ -1010,9 +1009,9 @@ class Graticule extends VectorLayer {
     const centerLat = this.projectionCenterLonLat_[1];
     let interval = -1;
     const target = Math.pow(this.targetSize_ * resolution, 2);
-    /** @type {Array<number>} **/
+    /** @type {number[]} **/
     const p1 = [];
-    /** @type {Array<number>} **/
+    /** @type {number[]} **/
     const p2 = [];
     for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
       const delta = clamp(this.intervals_[i] / 2, 0, 90);

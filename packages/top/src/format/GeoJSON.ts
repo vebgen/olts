@@ -49,14 +49,13 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
  *
  * @template {import('../Feature.js').FeatureClass} [T=typeof Feature]
  * @extends {JSONFeature<T>}
  * @api
  */
-class GeoJSON extends JSONFeature {
+export class GeoJSON extends JSONFeature {
   /**
    * @param {Options<T>} [options] Options.
    */

@@ -336,7 +336,7 @@ export function createOrUpdateFromCoordinates(
  * @return The extent.
  */
 export function createOrUpdateFromFlatCoordinates(
-    flatCoordinates: Array<number>,
+    flatCoordinates: number[],
     offset: number,
     end: number,
     stride: number,

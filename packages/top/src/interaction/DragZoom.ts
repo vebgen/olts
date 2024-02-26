@@ -17,7 +17,6 @@ import {shiftKeyOnly} from '../events/condition.js';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
  * normally combined with an {@link module:ol/events/condition} that limits
  * it to when a key, shift by default, is held down.
@@ -26,7 +25,7 @@ import {shiftKeyOnly} from '../events/condition.js';
  * your custom one configured with `className`.
  * @api
  */
-class DragZoom extends DragBox {
+export class DragZoom extends DragBox {
   /**
    * @param {Options} [options] Options.
    */

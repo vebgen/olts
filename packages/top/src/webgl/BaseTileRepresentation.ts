@@ -19,12 +19,11 @@ import {abstract} from '@olts/core/util';
  */
 
 /**
- * @classdesc
  * Base class for representing a tile in a webgl context
  * @template {import("../Tile.js").default} TileType
  * @abstract
  */
-class BaseTileRepresentation extends EventTarget {
+export class BaseTileRepresentation extends EventTarget {
   /**
    * @param {TileRepresentationOptions<TileType>} options The tile representation options.
    */

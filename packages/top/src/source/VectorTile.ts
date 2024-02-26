@@ -86,7 +86,6 @@ import {toSize} from '../size.js';
  */
 
 /**
- * @classdesc
  * Class for layer sources providing vector data divided into a tile grid, to be
  * used with {@link module:ol/layer/VectorTile~VectorTileLayer}. Although this source receives tiles
  * with vector features from the server, it is not meant for feature editing.
@@ -99,7 +98,7 @@ import {toSize} from '../size.js';
  * @api
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  */
-class VectorTile extends UrlTile {
+export class VectorTile extends UrlTile {
   /**
    * @param {!Options<FeatureType>} options Vector tile options.
    */

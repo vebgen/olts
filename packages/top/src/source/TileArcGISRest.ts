@@ -55,7 +55,6 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 
 /**
- * @classdesc
  * Layer source for tile data from ArcGIS Rest services. Map and Image
  * Services are supported.
  *
@@ -63,7 +62,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * {@link module:ol/source/XYZ~XYZ} data source.
  * @api
  */
-class TileArcGISRest extends TileImage {
+export class TileArcGISRest extends TileImage {
   /**
    * @param {Options} [options] Tile ArcGIS Rest options.
    */

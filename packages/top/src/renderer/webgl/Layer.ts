@@ -25,13 +25,12 @@ import {
  */
 
 /**
- * @classdesc
  * Base WebGL renderer class.
  * Holds all logic related to data manipulation & some common rendering logic
  * @template {import("../../layer/Layer.js").default} LayerType
  * @extends {LayerRenderer<LayerType>}
  */
-class WebGLLayerRenderer extends LayerRenderer {
+export class WebGLLayerRenderer extends LayerRenderer {
   /**
    * @param {LayerType} layer Layer.
    * @param {Options} [options] Options.

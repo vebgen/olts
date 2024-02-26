@@ -1,12 +1,11 @@
 import Spatial from './Spatial.js';
 
 /**
- * @classdesc
  * Represents a `<Disjoint>` operator to test whether a geometry-valued property
  * is disjoint to a given geometry.
  * @api
  */
-class Disjoint extends Spatial {
+export class Disjoint extends Spatial {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Geometry} geometry Geometry.

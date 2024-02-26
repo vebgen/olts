@@ -45,12 +45,11 @@ const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @classdesc
  * Format for reading WMS capabilities data
  *
  * @api
  */
-class WMSCapabilities extends XML {
+export class WMSCapabilities extends XML {
   constructor() {
     super();
 

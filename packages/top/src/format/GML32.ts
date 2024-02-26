@@ -10,12 +10,11 @@ import {
 } from '../xml.js';
 import {writeStringTextNode} from '../format/xsd.js';
 
-/**
- * @classdesc Feature format for reading and writing data in the GML format
+/** Feature format for reading and writing data in the GML format
  *            version 3.2.1.
  * @api
  */
-class GML32 extends GML3 {
+export class GML32 extends GML3 {
   /**
    * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */

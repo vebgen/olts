@@ -25,8 +25,8 @@ import {jsonp as requestJSONP} from '../net.js';
  * @property {Array<string>} [grids] Optional grids.
  * @property {number} [minzoom] Minimum zoom level.
  * @property {number} [maxzoom] Maximum zoom level.
- * @property {Array<number>} [bounds] Optional bounds.
- * @property {Array<number>} [center] Optional center.
+ * @property {number[]} [bounds] Optional bounds.
+ * @property {number[]} [center] Optional center.
  */
 
 /**
@@ -62,11 +62,10 @@ import {jsonp as requestJSONP} from '../net.js';
  */
 
 /**
- * @classdesc
  * Layer source for tile data in TileJSON format.
  * @api
  */
-class TileJSON extends TileImage {
+export class TileJSON extends TileImage {
   /**
    * @param {Options} options TileJSON options.
    */

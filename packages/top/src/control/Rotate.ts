@@ -22,14 +22,13 @@ import {easeOut} from '../easing.js';
  */
 
 /**
- * @classdesc
  * A button control to reset rotation to 0.
  * To style this control use css selector `.ol-rotate`. A `.ol-hidden` css
  * selector is added to the button when the rotation is 0.
  *
  * @api
  */
-class Rotate extends Control {
+export class Rotate extends Control {
   /**
    * @param {Options} [options] Rotate options.
    */

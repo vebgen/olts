@@ -2,7 +2,6 @@ import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
 /**
- * @classdesc
  * Vector data is rendered client-side, as vectors. This layer type provides most accurate rendering
  * even during animations. Points and labels stay upright on rotated views. For very large
  * amounts of vector data, performance may suffer during pan and zoom animations. In this case,
@@ -16,7 +15,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorLayerRenderer>}
  * @api
  */
-class VectorLayer extends BaseVectorLayer {
+export class VectorLayer extends BaseVectorLayer {
   /**
    * @param {import("./BaseVector.js").Options<VectorSourceType>} [options] Options.
    */

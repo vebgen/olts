@@ -20,11 +20,10 @@ import {
 import {fromUserExtent} from '../../proj.js';
 
 /**
- * @classdesc
  * Canvas renderer for image layers.
  * @api
  */
-class CanvasImageLayerRenderer extends CanvasLayerRenderer {
+export class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../layer/Image.js").default} imageLayer Image layer.
    */

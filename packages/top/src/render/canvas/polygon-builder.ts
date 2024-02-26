@@ -14,7 +14,7 @@ import {
 import { snap } from '@olts/geometry/flat';
 import { Extent } from '@olts/core/extent';
 
-class CanvasPolygonBuilder extends CanvasBuilder {
+export class CanvasPolygonBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.
@@ -30,14 +30,14 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
 
     /**
-     * @param {Array<number>} flatCoordinates Flat coordinates.
+     * @param {number[]} flatCoordinates Flat coordinates.
      * @param {number} offset Offset.
-     * @param {Array<number>} ends Ends.
+     * @param {number[]} ends Ends.
      * @param {number} stride Stride.
      * @private
      * @return {number} End.
      */
-    drawFlatCoordinatess_(flatCoordinates: Array<number>, offset: number, ends: Array<number>, stride: number): number {
+    drawFlatCoordinatess_(flatCoordinates: number[], offset: number, ends: number[], stride: number): number {
         const state = this.state;
         const fill = state.fillStyle !== undefined;
         const stroke = state.strokeStyle !== undefined;
@@ -174,7 +174,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         this.drawFlatCoordinatess_(
             flatCoordinates,
             0,
-      /** @type {Array<number>} */(ends),
+      /** @type {number[]} */(ends),
             stride,
         );
         this.endGeometry(feature);

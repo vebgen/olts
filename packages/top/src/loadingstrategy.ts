@@ -28,7 +28,7 @@ export function bbox(extent, resolution) {
 /**
  * Creates a strategy function for loading features based on a tile grid.
  * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
- * @return {function(Extent, number, import("./proj.js").Projection): Array<Extent>} Loading strategy.
+ * @return {function(Extent, number, import("./proj.js").Projection):Extent[]} Loading strategy.
  * @api
  */
 export function tile(tileGrid) {

@@ -69,11 +69,10 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  */
 
 /**
- * @classdesc
  * Layer source for tile data from WMS servers.
  * @api
  */
-class TileWMS extends TileImage {
+export class TileWMS extends TileImage {
   /**
    * @param {Options} [options] Tile WMS options.
    */

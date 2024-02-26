@@ -24,12 +24,12 @@ export const Instructions = {
 export type Instruction = typeof Instructions[keyof typeof Instructions];
 
 
-export const fillInstruction: Array<Instruction> = [Instructions.FILL];
-export const strokeInstruction: Array<Instruction> = [Instructions.STROKE];
-export const beginPathInstruction: Array<Instruction> = [
+export const fillInstruction:Instruction[] = [Instructions.FILL];
+export const strokeInstruction:Instruction[] = [Instructions.STROKE];
+export const beginPathInstruction:Instruction[] = [
     Instructions.BEGIN_PATH
 ];
-export const closePathInstruction: Array<Instruction> = [
+export const closePathInstruction:Instruction[] = [
     Instructions.CLOSE_PATH
 ];
 

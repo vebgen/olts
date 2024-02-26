@@ -1,5 +1,5 @@
 
-import BaseObject from '../Object.js';
+import { BaseObject  } from '@olts/events';
 import MapEventType from '../MapEventType.js';
 import {VOID} from '@olts/core/functions';
 import {listen, unlistenByKey} from '../events.js';
@@ -18,7 +18,6 @@ import {removeNode} from '@olts/core/dom';
  */
 
 /**
- * @classdesc
  * A control is a visible widget with a DOM element in a fixed position on the
  * screen. They can involve user input (buttons), or be informational only;
  * the position is determined using CSS. By default these are placed in the
@@ -34,14 +33,14 @@ import {removeNode} from '@olts/core/dom';
  *
  * The main advantage of having this as a control rather than a simple separate
  * DOM element is that preventing propagation is handled for you. Controls
- * will also be objects in a {@link module:ol/Collection~Collection}, so you can use their methods.
+ * will also be objects in a {@link Collection}, so you can use their methods.
  *
  * You can also extend this base for your own control class. See
  * examples/custom-controls for an example of how to do this.
  *
  * @api
  */
-class Control extends BaseObject {
+export class Control extends BaseObject {
   /**
    * @param {Options} options Control options.
    */

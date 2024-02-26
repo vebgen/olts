@@ -1181,11 +1181,11 @@ const parsers: Record<string, Parser> = {
  * @returns The parsed arguments if any
  */
 type ArgValidator = (
-    encodedExpressions: Array<EncodedExpression>,
+    encodedExpressions:EncodedExpression[],
     context: ParsingContext,
-    prevArgs: Array<Expression>,
+    prevArgs:Expression[],
     typeHint?: number
-) => Array<Expression> | void;
+) =>Expression[] | void;
 
 
 /**
@@ -1254,7 +1254,7 @@ function parseArgsOfType(argType: number): ArgValidator {
  */
 function createParser(
     returnType: number | ((arg0: Expression[]) => number),
-    ...argValidators: Array<ArgValidator>
+    ...argValidators:ArgValidator[]
 ): Parser {
     return function (
         encoded: EncodedExpression,

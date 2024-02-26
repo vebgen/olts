@@ -120,7 +120,7 @@ export type StringEvaluator = (
  */
 export type ColorLikeEvaluator = (
     context: EvaluationContext
-) => (Array<number> | string);
+) => (number[] | string);
 
 
 /**
@@ -129,7 +129,7 @@ export type ColorLikeEvaluator = (
  */
 export type NumberArrayEvaluator = (
     context: EvaluationContext
-) => Array<number>;
+) => number[];
 
 
 /**
@@ -137,7 +137,7 @@ export type NumberArrayEvaluator = (
  */
 export type CoordinateEvaluator = (
     context: EvaluationContext
-) => Array<number>;
+) => number[];
 
 
 /**
@@ -145,7 +145,7 @@ export type CoordinateEvaluator = (
  */
 export type SizeEvaluator = (
     context: EvaluationContext
-) => (Array<number>);
+) => (number[]);
 
 
 /**
@@ -153,7 +153,7 @@ export type SizeEvaluator = (
  */
 export type SizeLikeEvaluator = (
     context: EvaluationContext
-) => (Array<number> | number);
+) => (number[] | number);
 
 
 /**

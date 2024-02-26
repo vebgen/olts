@@ -4,7 +4,7 @@ import {getWidth} from '@olts/core/extent';
  * Compute world params
  * @param {import("../../Map.js").FrameState} frameState Frame state.
  * @param {any} layer The layer
- * @return {Array<number>} The world start, end and width.
+ * @return {number[]} The world start, end and width.
  */
 export function getWorldParameters(frameState, layer) {
   const projection = frameState.viewState.projection;

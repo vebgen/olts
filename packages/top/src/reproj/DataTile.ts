@@ -38,12 +38,11 @@ import {listen, unlistenByKey} from '../events.js';
  */
 
 /**
- * @classdesc
  * Class encapsulating single reprojected data tile.
  * See {@link module:ol/source/DataTile~DataTileSource}.
  *
  */
-class ReprojDataTile extends DataTile {
+export class ReprojDataTile extends DataTile {
   /**
    * @param {Options} options Tile options.
    */

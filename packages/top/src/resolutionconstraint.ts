@@ -61,7 +61,7 @@ function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
 }
 
 /**
- * @param {Array<number>} resolutions Resolutions.
+ * @param {number[]} resolutions Resolutions.
  * @param {boolean} [smooth] If true, the view will be able to slightly exceed resolution limits. Default: true.
  * @param {Extent} [maxExtent] Maximum allowed extent.
  * @param {boolean} [showFullExtent] If true, allows us to show the full extent. Default: false.

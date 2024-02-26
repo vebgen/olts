@@ -38,7 +38,7 @@ function createPixelContext() {
  * @template {import("../../layer/Layer.js").default} LayerType
  * @extends {LayerRenderer<LayerType>}
  */
-class CanvasLayerRenderer extends LayerRenderer {
+export class CanvasLayerRenderer extends LayerRenderer {
   /**
    * @param {LayerType} layer Layer.
    */

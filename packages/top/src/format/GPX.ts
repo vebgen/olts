@@ -115,7 +115,7 @@ const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @property {GPXLink} [link] link
  * @property {number} [time] time
  * @property {string} [keywords] keywords
- * @property {Array<number>} [bounds] bounds
+ * @property {number[]} [bounds] bounds
  * @property {Object} [extensions] extensions
  *
  */
@@ -182,7 +182,6 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
  * Note that {@link module:ol/format/GPX~GPX#readFeature} only reads the first
@@ -197,7 +196,7 @@ const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  *
  * @api
  */
-class GPX extends XMLFeature {
+export class GPX extends XMLFeature {
   /**
    * @param {Options} [options] Options.
    */
@@ -484,7 +483,7 @@ const LINK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const RTE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -516,14 +515,14 @@ const RTE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const RTEPT_TYPE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['ele', 'time']);
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const TRK_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -570,7 +569,7 @@ const TRKSEG_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Array<string>>}
+ * @type {Object<string,string[]>}
  */
 // @ts-ignore
 const WPT_TYPE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -648,11 +647,11 @@ function GPX_NODE_FACTORY(value, objectStack, nodeName) {
 }
 
 /**
- * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {number[]} flatCoordinates Flat coordinates.
  * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Element} node Node.
  * @param {!Object} values Values.
- * @return {Array<number>} Flat coordinates.
+ * @return {number[]} Flat coordinates.
  */
 function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
   flatCoordinates.push(
@@ -681,8 +680,8 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * and ends arrays by shrinking them accordingly (removing unused zero entries).
  *
  * @param {LayoutOptions} layoutOptions Layout options.
- * @param {Array<number>} flatCoordinates Flat coordinates.
- * @param {Array<number>} [ends] Ends.
+ * @param {number[]} flatCoordinates Flat coordinates.
+ * @param {number[]} [ends] Ends.
  * @return {GeometryLayout} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
@@ -818,7 +817,7 @@ function parseRtePt(node, objectStack) {
     const rteValues = /** @type {!Object} */ (
       objectStack[objectStack.length - 1]
     );
-    const flatCoordinates = /** @type {Array<number>} */ (
+    const flatCoordinates = /** @type {number[]} */ (
       rteValues['flatCoordinates']
     );
     const layoutOptions = /** @type {LayoutOptions} */ (
@@ -838,7 +837,7 @@ function parseTrkPt(node, objectStack) {
     const trkValues = /** @type {!Object} */ (
       objectStack[objectStack.length - 1]
     );
-    const flatCoordinates = /** @type {Array<number>} */ (
+    const flatCoordinates = /** @type {number[]} */ (
       trkValues['flatCoordinates']
     );
     const layoutOptions = /** @type {LayoutOptions} */ (
@@ -856,9 +855,9 @@ function parseTrkSeg(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   parseNode(TRKSEG_PARSERS, node, objectStack);
   const flatCoordinates =
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     (values['flatCoordinates']);
-  const ends = /** @type {Array<number>} */ (values['ends']);
+  const ends = /** @type {number[]} */ (values['ends']);
   ends.push(flatCoordinates.length);
 }
 
@@ -884,7 +883,7 @@ function readRte(node, objectStack) {
     return undefined;
   }
   const flatCoordinates =
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     (values['flatCoordinates']);
   delete values['flatCoordinates'];
   const layoutOptions = /** @type {LayoutOptions} */ (values['layoutOptions']);
@@ -920,10 +919,10 @@ function readTrk(node, objectStack) {
     return undefined;
   }
   const flatCoordinates =
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     (values['flatCoordinates']);
   delete values['flatCoordinates'];
-  const ends = /** @type {Array<number>} */ (values['ends']);
+  const ends = /** @type {number[]} */ (values['ends']);
   delete values['ends'];
   const layoutOptions = /** @type {LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];

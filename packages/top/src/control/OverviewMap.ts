@@ -62,7 +62,7 @@ const MIN_RATIO = 0.1;
  *
  * @api
  */
-class OverviewMap extends Control {
+export class OverviewMap extends Control {
   /**
    * @param {Options} [options] OverviewMap options.
    */

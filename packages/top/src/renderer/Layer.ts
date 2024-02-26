@@ -7,7 +7,7 @@ import {abstract} from '@olts/core/util';
 /**
  * @template {import("../layer/Layer.js").default} LayerType
  */
-class LayerRenderer extends Observable {
+export class LayerRenderer extends Observable {
   /**
    * @param {LayerType} layer Layer.
    */

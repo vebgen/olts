@@ -10,12 +10,11 @@ import {FALSE} from '@olts/core/functions';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
  * @api
  */
-class PinchZoom extends PointerInteraction {
+export class PinchZoom extends PointerInteraction {
   /**
    * @param {Options} [options] Options.
    */

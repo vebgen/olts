@@ -42,7 +42,7 @@ export function expressionToGlsl(compilationContext, value, expectedType) {
 /**
  * Packs all components of a color into a two-floats array
  * @param {import("../color.js").Color|string} color Color as array of numbers or string
- * @return {Array<number>} Vec2 array containing the color in compressed form
+ * @return {number[]} Vec2 array containing the color in compressed form
  */
 export function packColor(color) {
   const array = asArray(color);
@@ -939,7 +939,7 @@ export function parseLiteralStyle(style) {
       callback = () =>
         packColor([
           ...asArray(
-            /** @type {string|Array<number>} */ (
+            /** @type {string|number[]} */ (
               style.variables[variable.name]
             ) || '#eee',
           ),

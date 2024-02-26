@@ -91,7 +91,7 @@ const wktTypeLookup = {
 /**
  * Class to tokenize a WKT string.
  */
-class Lexer {
+export class Lexer {
   /**
    * @param {string} wkt WKT string.
    */
@@ -225,7 +225,7 @@ class Lexer {
 /**
  * Class to parse the tokens from the WKT string.
  */
-class Parser {
+export class Parser {
   /**
    * @param {Lexer} lexer The lexer.
    */
@@ -334,7 +334,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<number>} All values in a point.
+   * @return {number[]} All values in a point.
    * @private
    */
   parsePointText_() {
@@ -348,7 +348,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<number>>} All points in a linestring.
+   * @return {Array<number[]>} All points in a linestring.
    * @private
    */
   parseLineStringText_() {
@@ -362,7 +362,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<Array<number>>>} All points in a polygon.
+   * @return {Array<Array<number[]>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -376,7 +376,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<number>>} All points in a multipoint.
+   * @return {Array<number[]>} All points in a multipoint.
    * @private
    */
   parseMultiPointText_() {
@@ -395,7 +395,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<Array<number>>>} All linestring points
+   * @return {Array<Array<number[]>>} All linestring points
    *                                          in a multilinestring.
    * @private
    */
@@ -410,7 +410,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<Array<Array<number>>>>} All polygon points in a multipolygon.
+   * @return {Array<Array<Array<number[]>>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -424,7 +424,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<number>} A point.
+   * @return {number[]} A point.
    * @private
    */
   parsePoint_() {
@@ -445,7 +445,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<number>>} An array of points.
+   * @return {Array<number[]>} An array of points.
    * @private
    */
   parsePointList_() {
@@ -457,7 +457,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<number>>} An array of points.
+   * @return {Array<number[]>} An array of points.
    * @private
    */
   parsePointTextList_() {
@@ -469,7 +469,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<Array<number>>>} An array of points.
+   * @return {Array<Array<number[]>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -481,7 +481,7 @@ class Parser {
   }
 
   /**
-   * @return {Array<Array<Array<Array<number>>>>} An array of points.
+   * @return {Array<Array<Array<number[]>>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
@@ -590,13 +590,12 @@ class Parser {
 }
 
 /**
- * @classdesc
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
  * format.
  *
  * @api
  */
-class WKT extends TextFeature {
+export class WKT extends TextFeature {
   /**
    * @param {Options} [options] Options.
    */

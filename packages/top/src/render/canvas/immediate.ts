@@ -29,7 +29,6 @@ import {transform2D} from '@olts/geometry/flat';
 import {transformGeom2D} from '@olts/geometry';
 
 /**
- * @classdesc
  * A concrete subclass of {@link module:ol/render/VectorContext~VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
@@ -37,7 +36,7 @@ import {transformGeom2D} from '@olts/geometry';
  * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
  * render events emitted by layers and maps.
  */
-class CanvasImmediateRenderer extends VectorContext {
+export class CanvasImmediateRenderer extends VectorContext {
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} pixelRatio Pixel ratio.
@@ -260,7 +259,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {number[]}
      */
     this.pixelCoordinates_ = [];
 
@@ -272,13 +271,13 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number[]} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
    * @private
    */
-  drawImages_(flatCoordinates: Array<number>, offset: number, end: number, stride: number) {
+  drawImages_(flatCoordinates: number[], offset: number, end: number, stride: number) {
     if (!this.image_) {
       return;
     }
@@ -359,13 +358,13 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number[]} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
    * @private
    */
-  drawText_(flatCoordinates: Array<number>, offset: number, end: number, stride: number) {
+  drawText_(flatCoordinates: number[], offset: number, end: number, stride: number) {
     if (!this.textState_ || this.text_ === '') {
       return;
     }
@@ -424,7 +423,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number[]} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -432,7 +431,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * @private
    * @return {number} end End.
    */
-  moveToLineTo_(flatCoordinates: Array<number>, offset: number, end: number, stride: number, close: boolean): number {
+  moveToLineTo_(flatCoordinates: number[], offset: number, end: number, stride: number, close: boolean): number {
     const context = this.context_;
     const pixelCoordinates = transform2D(
       flatCoordinates,
@@ -457,14 +456,14 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number[]} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
+   * @param {number[]} ends Ends.
    * @param {number} stride Stride.
    * @private
    * @return {number} End.
    */
-  drawRings_(flatCoordinates: Array<number>, offset: number, ends: Array<number>, stride: number): number {
+  drawRings_(flatCoordinates: number[], offset: number, ends: number[], stride: number): number {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       offset = this.moveToLineTo_(
         flatCoordinates,
@@ -757,7 +756,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const context = this.context_;
       const flatCoordinates = geometry.getFlatCoordinates();
       let offset = 0;
-      const ends = /** @type {Array<number>} */ (geometry.getEnds());
+      const ends = /** @type {number[]} */ (geometry.getEnds());
       const stride = geometry.getStride();
       context.beginPath();
       for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -807,7 +806,7 @@ class CanvasImmediateRenderer extends VectorContext {
       this.drawRings_(
         geometry.getOrientedFlatCoordinates(),
         0,
-        /** @type {Array<number>} */ (geometry.getEnds()),
+        /** @type {number[]} */ (geometry.getEnds()),
         geometry.getStride(),
       );
       if (this.fillState_) {

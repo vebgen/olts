@@ -1,5 +1,5 @@
 import { ImageState } from './image-state';
-import { createCanvasContext2D } from './dom';
+import { createCanvasContext2D } from '@olts/core/dom';
 import { get as getIconImage } from './style/icon-image';
 import { shared as iconCache } from './style/icon-image-cache';
 import { Color, toString } from './color';

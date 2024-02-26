@@ -11,7 +11,7 @@ import ImageWrapper from './Image.js';
  * @typedef {function(function(Error=): void): void} Loader
  */
 
-class ImageCanvas extends ImageWrapper {
+export class ImageCanvas extends ImageWrapper {
   /**
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.

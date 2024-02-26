@@ -1,12 +1,11 @@
 import Spatial from './Spatial.js';
 
 /**
- * @classdesc
  * Represents a `<DWithin>` operator to test whether a geometry-valued property
  * is within a distance to a given geometry.
  * @api
  */
-class DWithin extends Spatial {
+export class DWithin extends Spatial {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Geometry} geometry Geometry.

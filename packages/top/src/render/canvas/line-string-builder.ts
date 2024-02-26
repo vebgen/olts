@@ -6,7 +6,7 @@ import CanvasInstruction, {
 } from './Instruction';
 import {defaultLineDash, defaultLineDashOffset} from '../canvas';
 
-class CanvasLineStringBuilder extends CanvasBuilder {
+export class CanvasLineStringBuilder extends CanvasBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {Extent} maxExtent Maximum extent.
@@ -18,14 +18,14 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number[]} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
    * @private
    * @return {number} end.
    */
-  drawFlatCoordinates_(flatCoordinates: Array<number>, offset: number, end: number, stride: number): number {
+  drawFlatCoordinates_(flatCoordinates: number[], offset: number, end: number, stride: number): number {
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatLineCoordinates(
       flatCoordinates,

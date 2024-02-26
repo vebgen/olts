@@ -1,13 +1,13 @@
-import BaseObject from '../Object.js';
+import { BaseObject } from '@olts/events';
 import InteractionProperty from './Property.js';
-import {easeOut, linear} from '../easing.js';
+import { easeOut, linear } from '../easing.js';
 
 /***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType|
  *     'change:active', Return>} InteractionOnSignature
  */
 
@@ -23,7 +23,6 @@ import {easeOut, linear} from '../easing.js';
  */
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * User actions that change the state of the map. Some are similar to controls,
@@ -35,89 +34,93 @@ import {easeOut, linear} from '../easing.js';
  * vectors and so are visible on the screen.
  * @api
  */
-class Interaction extends BaseObject {
-  /**
-   * @param {InteractionOptions} [options] Options.
-   */
-  constructor(options) {
-    super();
+export class Interaction extends BaseObject {
 
-    /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
+    /**
+     * 
      */
-    this.on;
+    override on: InteractionOnSignature<EventsKey>;
 
-    /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
+    /**
+     * 
      */
-    this.once;
+    override once: InteractionOnSignature<EventsKey>;
 
-    /***
-     * @type {InteractionOnSignature<void>}
+    /**
+     * 
      */
-    this.un;
+    override un: InteractionOnSignature<void>;
 
-    if (options && options.handleEvent) {
-      this.handleEvent = options.handleEvent;
+    /**
+     * @param {InteractionOptions} [options] Options.
+     */
+    constructor(options: InteractionOptions) {
+        super();
+        this.on = this.onInternal as InteractionOnSignature<EventsKey>;
+        this.once = this.onceInternal as InteractionOnSignature<EventsKey>;
+        this.un = this.unInternal as InteractionOnSignature<void>;
+
+        if (options && options.handleEvent) {
+            this.handleEvent = options.handleEvent;
+        }
+
+        /**
+         * @private
+         * @type {import("../Map.js").default|null}
+         */
+        this.map_ = null;
+
+        this.setActive(true);
     }
 
     /**
-     * @private
-     * @type {import("../Map.js").default|null}
+     * Return whether the interaction is currently active.
+     * @return {boolean} `true` if the interaction is active, `false` otherwise.
+     * @observable
+     * @api
      */
-    this.map_ = null;
+    getActive(): boolean {
+        return /** @type {boolean} */ (this.get(InteractionProperty.ACTIVE));
+    }
 
-    this.setActive(true);
-  }
+    /**
+     * Get the map associated with this interaction.
+     * @return {import("../Map.js").default|null} Map.
+     * @api
+     */
+    getMap(): import("../Map.js").default | null {
+        return this.map_;
+    }
 
-  /**
-   * Return whether the interaction is currently active.
-   * @return {boolean} `true` if the interaction is active, `false` otherwise.
-   * @observable
-   * @api
-   */
-  getActive() {
-    return /** @type {boolean} */ (this.get(InteractionProperty.ACTIVE));
-  }
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event}.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+     * @return {boolean} `false` to stop event propagation.
+     * @api
+     */
+    handleEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+        return true;
+    }
 
-  /**
-   * Get the map associated with this interaction.
-   * @return {import("../Map.js").default|null} Map.
-   * @api
-   */
-  getMap() {
-    return this.map_;
-  }
+    /**
+     * Activate or deactivate the interaction.
+     * @param {boolean} active Active.
+     * @observable
+     * @api
+     */
+    setActive(active: boolean) {
+        this.set(InteractionProperty.ACTIVE, active);
+    }
 
-  /**
-   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event}.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   * @api
-   */
-  handleEvent(mapBrowserEvent) {
-    return true;
-  }
-
-  /**
-   * Activate or deactivate the interaction.
-   * @param {boolean} active Active.
-   * @observable
-   * @api
-   */
-  setActive(active) {
-    this.set(InteractionProperty.ACTIVE, active);
-  }
-
-  /**
-   * Remove the interaction from its current map and attach it to the new map.
-   * Subclasses may set up event handlers to get notified about changes to
-   * the map here.
-   * @param {import("../Map.js").default|null} map Map.
-   */
-  setMap(map) {
-    this.map_ = map;
-  }
+    /**
+     * Remove the interaction from its current map and attach it to the new map.
+     * Subclasses may set up event handlers to get notified about changes to
+     * the map here.
+     * @param {import("../Map.js").default|null} map Map.
+     */
+    setMap(map: import("../Map.js").default | null) {
+        this.map_ = map;
+    }
 }
 
 /**
@@ -125,16 +128,16 @@ class Interaction extends BaseObject {
  * @param {Coordinate} delta Delta.
  * @param {number} [duration] Duration.
  */
-export function pan(view, delta, duration) {
-  const currentCenter = view.getCenterInternal();
-  if (currentCenter) {
-    const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
-    view.animateInternal({
-      duration: duration !== undefined ? duration : 250,
-      easing: linear,
-      center: view.getConstrainedCenter(center),
-    });
-  }
+export function pan(view: import("../View.js").default, delta: Coordinate, duration: number) {
+    const currentCenter = view.getCenterInternal();
+    if (currentCenter) {
+        const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
+        view.animateInternal({
+            duration: duration !== undefined ? duration : 250,
+            easing: linear,
+            center: view.getConstrainedCenter(center),
+        });
+    }
 }
 
 /**
@@ -143,25 +146,25 @@ export function pan(view, delta, duration) {
  * @param {Coordinate} [anchor] Anchor coordinate in the user projection.
  * @param {number} [duration] Duration.
  */
-export function zoomByDelta(view, delta, anchor, duration) {
-  const currentZoom = view.getZoom();
+export function zoomByDelta(view: import("../View.js").default, delta: number, anchor: Coordinate, duration: number) {
+    const currentZoom = view.getZoom();
 
-  if (currentZoom === undefined) {
-    return;
-  }
+    if (currentZoom === undefined) {
+        return;
+    }
 
-  const newZoom = view.getConstrainedZoom(currentZoom + delta);
-  const newResolution = view.getResolutionForZoom(newZoom);
+    const newZoom = view.getConstrainedZoom(currentZoom + delta);
+    const newResolution = view.getResolutionForZoom(newZoom);
 
-  if (view.getAnimating()) {
-    view.cancelAnimations();
-  }
-  view.animate({
-    resolution: newResolution,
-    anchor: anchor,
-    duration: duration !== undefined ? duration : 250,
-    easing: easeOut,
-  });
+    if (view.getAnimating()) {
+        view.cancelAnimations();
+    }
+    view.animate({
+        resolution: newResolution,
+        anchor: anchor,
+        duration: duration !== undefined ? duration : 250,
+        easing: easeOut,
+    });
 }
 
 export default Interaction;

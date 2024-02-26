@@ -1,5 +1,5 @@
 import { METERS_PER_UNIT, Units } from './units';
-import { Extent } from '../extent';
+import { Extent } from '@olts/core/extent';
 
 
 /**

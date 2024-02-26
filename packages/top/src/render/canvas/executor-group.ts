@@ -17,7 +17,7 @@ import {transform2D} from '@olts/geometry/flat';
  */
 const ORDER: Array<import("../canvas").BuilderType> = ['Polygon', 'Circle', 'LineString', 'Image', 'Text', 'Default'];
 
-class ExecutorGroup {
+export class ExecutorGroup {
   /**
    * @param {Extent} maxExtent Max extent for clipping. When a
    * `maxExtent` was set on the Builder for this executor group, the same `maxExtent`
@@ -160,7 +160,7 @@ class ExecutorGroup {
     rotation: number,
     hitTolerance: number,
     callback: (arg0: FeatureLike, arg1: SimpleGeometry, arg2: number) => T,
-    declutteredFeatures: Array<FeatureLike>,
+    declutteredFeatures:FeatureLike[],
   ): T | undefined {
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
@@ -248,8 +248,8 @@ class ExecutorGroup {
       return undefined;
     }
 
-    /** @type {Array<number>} */
-    const zs: Array<number> = Object.keys(this.executorsByZIndex_).map(Number);
+    /** @type {number[]} */
+    const zs: number[] = Object.keys(this.executorsByZIndex_).map(Number);
     zs.sort(ascending);
 
     let i, j, executors, executor, result;
@@ -278,9 +278,9 @@ class ExecutorGroup {
 
   /**
    * @param {import("../../transform").Transform} transform Transform.
-   * @return {Array<number>|null} Clip coordinates.
+   * @return {number[]|null} Clip coordinates.
    */
-  getClipCoords(transform: import("../../transform").Transform): Array<number> | null {
+  getClipCoords(transform: import("../../transform").Transform): number[] | null {
     const maxExtent = this.maxExtent_;
     if (!maxExtent) {
       return null;
@@ -320,8 +320,8 @@ class ExecutorGroup {
     builderTypes: Array<import("../canvas").BuilderType>,
     declutterTree: import("rbush").default,
   ) {
-    /** @type {Array<number>} */
-    const zs: Array<number> = Object.keys(this.executorsByZIndex_).map(Number);
+    /** @type {number[]} */
+    const zs: number[] = Object.keys(this.executorsByZIndex_).map(Number);
     zs.sort(ascending);
 
     // setup clipping so that the parts of over-simplified geometries are not
@@ -365,18 +365,18 @@ class ExecutorGroup {
  * This cache is used to store arrays of indexes for calculated pixel circles
  * to increase performance.
  * It is a static property to allow each Replaygroup to access it.
- * @type {Object<number, Array<number>>}
+ * @type {Object<number, number[]>}
  */
-const circlePixelIndexArrayCache: { [n: number]: Array<number>; } = {};
+const circlePixelIndexArrayCache: { [n: number]: number[]; } = {};
 
 /**
  * This methods creates an array with indexes of all pixels within a circle,
  * ordered by how close they are to the center.
  * A cache is used to increase performance.
  * @param {number} radius Radius.
- * @return {Array<number>} An array with indexes within a circle.
+ * @return {number[]} An array with indexes within a circle.
  */
-export function getPixelIndexArray(radius: number): Array<number> {
+export function getPixelIndexArray(radius: number): number[] {
   if (circlePixelIndexArrayCache[radius] !== undefined) {
     return circlePixelIndexArrayCache[radius];
   }

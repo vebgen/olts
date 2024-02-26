@@ -44,7 +44,6 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  */
 
 /**
- * @classdesc
  * Vector data is rendered client-side, to an image. This layer type provides great performance
  * during panning and zooming, but point symbols and texts are always rotated with the view and
  * pixels are scaled during zoom animations. For more accurate rendering of vector data, use
@@ -58,7 +57,7 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorImageLayerRenderer>}
  * @api
  */
-class VectorImageLayer extends BaseVectorLayer {
+export class VectorImageLayer extends BaseVectorLayer {
   /**
    * @param {Options<VectorSourceType>} [options] Options.
    */

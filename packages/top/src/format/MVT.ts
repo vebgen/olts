@@ -29,14 +29,13 @@ import {inflateEnds} from '@olts/geometry/flat';
  */
 
 /**
- * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
  * @template {import('../Feature.js').FeatureClass} [T=typeof import("../render/Feature.js").default]
  * @extends {FeatureFormat<T>}
  * @api
  */
-class MVT extends FeatureFormat {
+export class MVT extends FeatureFormat {
   /**
    * @param {Options<T>} [options] Options.
    */
@@ -96,8 +95,8 @@ class MVT extends FeatureFormat {
    * property.
    * @param {PBF} pbf PBF.
    * @param {Object} feature Raw feature.
-   * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
-   * @param {Array<number>} ends Array to store ends in.
+   * @param {number[]} flatCoordinates Array to store flat coordinates in.
+   * @param {number[]} ends Array to store ends in.
    * @private
    */
   readRawGeometry_(pbf, feature, flatCoordinates, ends) {
@@ -180,8 +179,8 @@ class MVT extends FeatureFormat {
 
     values[this.layerName_] = rawFeature.layer.name;
 
-    const flatCoordinates = /** @type {Array<number>} */ ([]);
-    const ends = /** @type {Array<number>} */ ([]);
+    const flatCoordinates = /** @type {number[]} */ ([]);
+    const ends = /** @type {number[]} */ ([]);
     this.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
     const geometryType = getGeometryType(type, ends.length);

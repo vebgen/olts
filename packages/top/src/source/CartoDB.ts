@@ -37,11 +37,10 @@ import XYZ from './XYZ.js';
  */
 
 /**
- * @classdesc
  * Layer source for the CartoDB Maps API.
  * @api
  */
-class CartoDB extends XYZ {
+export class CartoDB extends XYZ {
   /**
    * @param {Options} options CartoDB options.
    */

@@ -38,13 +38,12 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @classdesc
  * Feature format for reading data in the
  * [OSMXML format](https://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @api
  */
-class OSMXML extends XMLFeature {
+export class OSMXML extends XMLFeature {
   constructor() {
     super();
 
@@ -76,7 +75,7 @@ class OSMXML extends XMLFeature {
       // parse nodes in ways
       for (let j = 0; j < state.ways.length; j++) {
         const values = /** @type {Object} */ (state.ways[j]);
-        /** @type {Array<number>} */
+        /** @type {number[]} */
         const flatCoordinates = values.flatCoordinates;
         if (!flatCoordinates.length) {
           for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {

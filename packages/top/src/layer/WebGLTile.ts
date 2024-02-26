@@ -269,7 +269,6 @@ function parseStyle(style, bandCount) {
 }
 
 /**
- * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
  * organized by zoom levels for specific resolutions.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -280,7 +279,7 @@ function parseStyle(style, bandCount) {
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class WebGLTileLayer extends BaseTileLayer {
+export class WebGLTileLayer extends BaseTileLayer {
   /**
    * @param {Options} options Tile layer options.
    */

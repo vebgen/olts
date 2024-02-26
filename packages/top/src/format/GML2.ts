@@ -38,13 +38,12 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
 };
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the GML format,
  * version 2.1.2.
  *
  * @api
  */
-class GML2 extends GMLBase {
+export class GML2 extends GMLBase {
   /**
    * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
    */
@@ -68,7 +67,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} Flat coordinates.
+   * @return {number[]|undefined} Flat coordinates.
    */
   readFlatCoordinates(node, objectStack) {
     const s = getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
@@ -105,7 +104,7 @@ class GML2 extends GMLBase {
    * @return {Extent|undefined} Envelope.
    */
   readBox(node, objectStack) {
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     const flatCoordinates = pushParseAndPop(
       [null],
       this.BOX_PARSERS_,
@@ -126,7 +125,7 @@ class GML2 extends GMLBase {
    * @param {Array<*>} objectStack Object stack.
    */
   innerBoundaryIsParser(node, objectStack) {
-    /** @type {Array<number>|undefined} */
+    /** @type {number[]|undefined} */
     const flatLinearRing = pushParseAndPop(
       undefined,
       this.RING_PARSERS,
@@ -136,7 +135,7 @@ class GML2 extends GMLBase {
     );
     if (flatLinearRing) {
       const flatLinearRings =
-        /** @type {Array<Array<number>>} */
+        /** @type {Array<number[]>} */
         (objectStack[objectStack.length - 1]);
       flatLinearRings.push(flatLinearRing);
     }
@@ -147,7 +146,7 @@ class GML2 extends GMLBase {
    * @param {Array<*>} objectStack Object stack.
    */
   outerBoundaryIsParser(node, objectStack) {
-    /** @type {Array<number>|undefined} */
+    /** @type {number[]|undefined} */
     const flatLinearRing = pushParseAndPop(
       undefined,
       this.RING_PARSERS,
@@ -157,7 +156,7 @@ class GML2 extends GMLBase {
     );
     if (flatLinearRing) {
       const flatLinearRings =
-        /** @type {Array<Array<number>>} */
+        /** @type {Array<number[]>} */
         (objectStack[objectStack.length - 1]);
       flatLinearRings[0] = flatLinearRing;
     }
@@ -472,7 +471,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Array<number>} point Point geometry.
+   * @param {number[]} point Point geometry.
    * @param {string} [srsName] Optional srsName
    * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.

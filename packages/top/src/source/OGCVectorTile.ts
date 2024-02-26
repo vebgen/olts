@@ -33,7 +33,6 @@ import {error as logError} from '../console.js';
  */
 
 /**
- * @classdesc
  * Layer source for map tiles from an [OGC API - Tiles](https://ogcapi.ogc.org/tiles/) service that provides "vector" type tiles.
  * The service must conform to at least the core (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core)
  * and tileset (http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset) conformance classes.
@@ -43,7 +42,7 @@ import {error as logError} from '../console.js';
  * provide the `mediaType` option.
  * @api
  */
-class OGCVectorTile extends VectorTileSource {
+export class OGCVectorTile extends VectorTileSource {
   /**
    * @param {Options} options OGC vector tile options.
    */

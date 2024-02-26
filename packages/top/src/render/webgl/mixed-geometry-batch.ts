@@ -18,7 +18,7 @@ export interface GeometryBatchItem {
      * Array of flat coordinates arrays, one for each geometry related to the
      * feature.
      */
-    flatCoordss: Array<Array<number>>;
+    flatCoordss: Array<number[]>;
 
     /**
      * Only defined for linestring and polygon batches.
@@ -34,7 +34,7 @@ export interface GeometryBatchItem {
      * Array of vertices counts in each ring for each geometry; only defined for
      * polygons batches.
      */
-    ringsVerticesCounts?: Array<Array<number>>;
+    ringsVerticesCounts?: Array<number[]>;
 
     /**
      * The reference in the global batch (used for hit detection).
@@ -74,8 +74,7 @@ export interface GeometryBatchItem {
  * @property {number} geometriesCount Amount of geometries in the batch.
  */
 
-/**
- * @classdesc This class is used to group several geometries of various types together for faster rendering.
+/** This class is used to group several geometries of various types together for faster rendering.
  * Three inner batches are maintained for polygons, lines and points. Each time a feature is added, changed or removed
  * from the batch, these inner batches are modified accordingly in order to keep them up-to-date.
  *
@@ -93,7 +92,7 @@ export interface GeometryBatchItem {
  * This is why two world-to-screen transforms are stored on each batch: one for the render instructions and one for
  * the WebGL buffers.
  */
-class MixedGeometryBatch {
+export class MixedGeometryBatch {
   constructor() {
     this.globalCounter_ = 0;
     /**
@@ -113,7 +112,7 @@ class MixedGeometryBatch {
     /**
      * The precision in WebGL shaders is limited.
      * To keep the refs as small as possible we maintain an array of returned references.
-     * @type {Array<number>}
+     * @type {number[]}
      * @private
      */
     this.freeGlobalRef_ = [];
@@ -332,19 +331,19 @@ class MixedGeometryBatch {
 
   /**
    * @param {GeometryType} type Geometry type
-   * @param {Array<number>} flatCoords Flat coordinates
-   * @param {Array<number> | Array<Array<number>> | null} ends Coordinate ends
+   * @param {number[]} flatCoords Flat coordinates
+   * @param {number[] | Array<number[]> | null} ends Coordinate ends
    * @param {Feature|RenderFeature} feature Feature
    * @param {string} featureUid Feature uid
    * @param {number} stride Stride
    * @private
    */
-  addCoordinates_(type: GeometryType, flatCoords: Array<number>, ends: Array<number> | Array<Array<number>> | null, feature: Feature | RenderFeature, featureUid: string, stride: number) {
+  addCoordinates_(type: GeometryType, flatCoords: number[], ends: number[] | Array<number[]> | null, feature: Feature | RenderFeature, featureUid: string, stride: number) {
     /** @type {number} */
     let verticesCount: number;
     switch (type) {
       case 'MultiPolygon': {
-        const multiPolygonEndss = /** @type {Array<Array<number>>} */ (ends);
+        const multiPolygonEndss = /** @type {Array<number[]>} */ (ends);
         for (let i = 0, ii = multiPolygonEndss.length; i < ii; i++) {
           let polygonEnds = multiPolygonEndss[i];
           const prevPolygonEnds = i > 0 ? multiPolygonEndss[i - 1] : null;
@@ -368,7 +367,7 @@ class MixedGeometryBatch {
         break;
       }
       case 'MultiLineString': {
-        const multiLineEnds = /** @type {Array<number>} */ (ends);
+        const multiLineEnds = /** @type {number[]} */ (ends);
         for (let i = 0, ii = multiLineEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? multiLineEnds[i - 1] : 0;
           this.addCoordinates_(
@@ -395,7 +394,7 @@ class MixedGeometryBatch {
         }
         break;
       case 'Polygon': {
-        const polygonEnds = /** @type {Array<number>} */ (ends);
+        const polygonEnds = /** @type {number[]} */ (ends);
         if (feature instanceof RenderFeature) {
           const multiPolygonEnds = inflateEnds(flatCoords, polygonEnds);
           if (multiPolygonEnds.length > 1) {
@@ -576,11 +575,11 @@ class MixedGeometryBatch {
 }
 
 /**
- * @param {Array<number>} flatCoords Flat coords
+ * @param {number[]} flatCoords Flat coords
  * @param {number} stride Stride
- * @return {Array<number>} Flat coords with only XY components
+ * @return {number[]} Flat coords with only XY components
  */
-function getFlatCoordinatesXY(flatCoords: Array<number>, stride: number): Array<number> {
+function getFlatCoordinatesXY(flatCoords: number[], stride: number): number[] {
   if (stride === 2) {
     return flatCoords;
   }

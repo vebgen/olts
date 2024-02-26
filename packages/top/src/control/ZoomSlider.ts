@@ -30,7 +30,6 @@ const Direction = {
  */
 
 /**
- * @classdesc
  * A slider type of control for zooming.
  *
  * Example:
@@ -39,7 +38,7 @@ const Direction = {
  *
  * @api
  */
-class ZoomSlider extends Control {
+export class ZoomSlider extends Control {
   /**
    * @param {Options} [options] Zoom slider options.
    */

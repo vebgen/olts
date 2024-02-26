@@ -74,7 +74,6 @@ const Property = {
 };
 
 /**
- * @classdesc
  * Vector data that is rendered client-side.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
@@ -85,7 +84,7 @@ const Property = {
  * @extends {Layer<VectorSourceType, RendererType>}
  * @api
  */
-class BaseVectorLayer extends Layer {
+export class BaseVectorLayer extends Layer {
   /**
    * @param {Options<VectorSourceType>} [options] Options.
    */

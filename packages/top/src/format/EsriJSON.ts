@@ -30,7 +30,7 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} EsriJSONMultiPolygon
- * @property {Array<Array<Array<Array<number>>>>} rings Rings for the MultiPolygon.
+ * @property {Array<Array<Array<number[]>>>} rings Rings for the MultiPolygon.
  * @property {boolean} [hasM] If the polygon coordinates have an M value.
  * @property {boolean} [hasZ] If the polygon coordinates have a Z value.
  * @property {EsriJSONSpatialReferenceWkid} [spatialReference] The coordinate reference system.
@@ -68,12 +68,11 @@ const GEOMETRY_WRITERS = {
  */
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.
  *
  * @api
  */
-class EsriJSON extends JSONFeature {
+export class EsriJSON extends JSONFeature {
   /**
    * @param {Options} [options] Options.
    */
@@ -283,9 +282,9 @@ function readGeometry(object, options) {
  * Checks if any polygons in this array contain any other polygons in this
  * array. It is used for checking for holes.
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
- * @param {Array<!Array<!Array<number>>>} rings Rings.
+ * @param {Array<!Array<!number[]>>} rings Rings.
  * @param {GeometryLayout} layout Geometry layout.
- * @return {Array<!Array<!Array<!Array<number>>>>} Transformed rings.
+ * @return {Array<!Array<!Array<!number[]>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
   const flatRing = [];

@@ -3,7 +3,7 @@ import { Extent } from '@olts/core/extent';
 import CanvasBuilder from './Builder';
 import CanvasInstruction from './Instruction';
 
-class CanvasImageBuilder extends CanvasBuilder {
+export class CanvasImageBuilder extends CanvasBuilder {
     /**
      * @param {number} tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.

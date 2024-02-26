@@ -14,7 +14,7 @@ export function appendParams(
     uri: string,
     params: Record<string, any>
 ): string {
-    const keyParams: Array<string> = [];
+    const keyParams:string[] = [];
 
     // Skip any null or undefined parameter values
     Object.keys(params).forEach(function (k) {

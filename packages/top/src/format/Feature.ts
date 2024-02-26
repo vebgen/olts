@@ -72,8 +72,8 @@ import {
 /**
  * @typedef {Object} SimpleGeometryObject
  * @property {GeometryType} type Type.
- * @property {Array<number>} flatCoordinates Flat coordinates.
- * @property {Array<number>|Array<Array<number>>} [ends] Ends or endss.
+ * @property {number[]} flatCoordinates Flat coordinates.
+ * @property {number[]|Array<number[]>} [ends] Ends or endss.
  * @property {import('@olts/geometry').GeometryLayout} [layout] Layout.
  */
 
@@ -103,7 +103,6 @@ import {
  */
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for feature formats.
@@ -115,7 +114,7 @@ import {
  * @abstract
  * @api
  */
-class FeatureFormat {
+export class FeatureFormat {
   constructor() {
     /**
      * @protected
@@ -322,8 +321,8 @@ export function transformGeometryWithOptions(geometry, write, options) {
     const power = Math.pow(10, /** @type {WriteOptions} */ (options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
-     * @param {Array<number>} coordinates Coordinates.
-     * @return {Array<number>} Transformed coordinates.
+     * @param {number[]} coordinates Coordinates.
+     * @return {number[]} Transformed coordinates.
      */
     const transform = function (coordinates) {
       for (let i = 0, ii = coordinates.length; i < ii; ++i) {

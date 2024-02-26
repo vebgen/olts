@@ -1,4 +1,4 @@
-import { equals as arrayEquals } from './array';
+import { equals as arrayEquals } from '@olts/core/array';
 
 
 /**

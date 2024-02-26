@@ -46,7 +46,6 @@ const DEFAULT_STYLE = createDefaultStyle();
  */
 
 /**
- * @classdesc
  * This class implements a classic builder pattern for generating many different types of shaders.
  * Methods can be chained, e. g.:
  *

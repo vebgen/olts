@@ -44,7 +44,7 @@ const WKBGeometryType = {
   TRIANGLE: 17,
 };
 
-class WkbReader {
+export class WkbReader {
   /**
    * @param {DataView} view source to read
    */
@@ -392,7 +392,7 @@ class WkbReader {
   }
 }
 
-class WkbWriter {
+export class WkbWriter {
   /**
    * @type {Object}
    * @property {string} [layout] geometryLayout
@@ -410,7 +410,7 @@ class WkbWriter {
 
     this.isEWKB_ = opts.ewkb !== false;
 
-    /** @type {Array<Array<number>>} */
+    /** @type {Array<number[]>} */
     this.writeQueue_ = [];
 
     /**
@@ -690,13 +690,12 @@ class WkbWriter {
  */
 
 /**
- * @classdesc
  * Geometry format for reading and writing data in the `Well-Known Binary` (WKB) format.
  * Also supports `Extended Well-Known Binary` (EWKB) format, used in PostGIS for example.
  *
  * @api
  */
-class WKB extends FeatureFormat {
+export class WKB extends FeatureFormat {
   /**
    * @param {Options} [options] Optional configuration object.
    */

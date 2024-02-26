@@ -1,27 +1,27 @@
 
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import Event from '../events/Event.js';
+import { BaseEvent as Event } from '@olts/events';
 import Feature from '../Feature.js';
 import Interaction from './Interaction.js';
 import VectorLayer from '../layer/Vector.js';
-import {TRUE} from '@olts/core/functions';
-import {clear} from '../obj.js';
-import {createEditingStyle} from '../style/Style.js';
-import {extend} from '@olts/core/array';
-import {getUid} from '@olts/core/util';
-import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
+import { TRUE } from '@olts/core/functions';
+import { clear } from '../obj.js';
+import { createEditingStyle } from '../style/Style.js';
+import { extend } from '@olts/core/array';
+import { getUid } from '@olts/core/util';
+import { never, shiftKeyOnly, singleClick } from '../events/condition.js';
 
 /**
  * @enum {string}
  */
 const SelectEventType = {
-  /**
-   * Triggered when feature(s) has been (de)selected.
-   * @event SelectEvent#select
-   * @api
-   */
-  SELECT: 'select',
+    /**
+     * Triggered when feature(s) has been (de)selected.
+     * @event SelectEvent#select
+     * @api
+     */
+    SELECT: 'select',
 };
 
 /**
@@ -87,62 +87,60 @@ const SelectEventType = {
  */
 
 /**
- * @classdesc
  * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
  */
 export class SelectEvent extends Event {
-  /**
-   * @param {SelectEventType} type The event type.
-   * @param {Array<import("../Feature.js").default>} selected Selected features.
-   * @param {Array<import("../Feature.js").default>} deselected Deselected features.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
-   *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
-   */
-  constructor(type, selected, deselected, mapBrowserEvent) {
-    super(type);
-
     /**
-     * Selected features array.
-     * @type {Array<import("../Feature.js").default>}
-     * @api
+     * @param {SelectEventType} type The event type.
+     * @param {Array<import("../Feature.js").default>} selected Selected features.
+     * @param {Array<import("../Feature.js").default>} deselected Deselected features.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
+     *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      */
-    this.selected = selected;
+    constructor(type: SelectEventType, selected: Array<import("../Feature.js").default>, deselected: Array<import("../Feature.js").default>, mapBrowserEvent: import("../MapBrowserEvent.js").default) {
+        super(type);
 
-    /**
-     * Deselected features array.
-     * @type {Array<import("../Feature.js").default>}
-     * @api
-     */
-    this.deselected = deselected;
+        /**
+         * Selected features array.
+         * @type {Array<import("../Feature.js").default>}
+         * @api
+         */
+        this.selected = selected;
 
-    /**
-     * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
-     * @type {import("../MapBrowserEvent.js").default}
-     * @api
-     */
-    this.mapBrowserEvent = mapBrowserEvent;
-  }
+        /**
+         * Deselected features array.
+         * @type {Array<import("../Feature.js").default>}
+         * @api
+         */
+        this.deselected = deselected;
+
+        /**
+         * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
+         * @type {import("../MapBrowserEvent.js").default}
+         * @api
+         */
+        this.mapBrowserEvent = mapBrowserEvent;
+    }
 }
 
 /**
  * Original feature styles to reset to when features are no longer selected.
  * @type {Object<number, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
  */
-const originalFeatureStyles = {};
+const originalFeatureStyles: { [n: number]: import("../style/Style.js").default | Array<import("../style/Style.js").default> | import("../style/Style.js").StyleFunction; } = {};
 
 /***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
+ *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'select', SelectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType|
  *     'change:active'|'select', Return>} SelectOnSignature
  */
 
 /**
- * @classdesc
  * Interaction for selecting vector features. By default, selected features are
  * styled differently, so this interaction can be used for visual highlighting,
  * as well as selecting features for other actions, such as modification or
@@ -154,435 +152,439 @@ const originalFeatureStyles = {};
  * @fires SelectEvent
  * @api
  */
-class Select extends Interaction {
-  /**
-   * @param {Options} [options] Options.
-   */
-  constructor(options) {
-    super();
-
-    /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {SelectOnSignature<void>}
-     */
-    this.un;
-
-    options = options ? options : {};
+export class Select extends Interaction {
 
     /**
-     * @private
+     * 
      */
-    this.boundAddFeature_ = this.addFeature_.bind(this);
+    override on: SelectOnSignature<EventsKey>;
 
     /**
-     * @private
+     * 
      */
-    this.boundRemoveFeature_ = this.removeFeature_.bind(this);
+    override once: SelectOnSignature<EventsKey>;
 
     /**
-     * @private
-     * @type {import("../events/condition.js").Condition}
+     * 
      */
-    this.condition_ = options.condition ? options.condition : singleClick;
+    override un: SelectOnSignature<void>;
 
     /**
-     * @private
-     * @type {import("../events/condition.js").Condition}
+     * @param {Options} [options] Options.
      */
-    this.addCondition_ = options.addCondition ? options.addCondition : never;
+    constructor(options: Options) {
+        super();
+        this.on = this.onInternal as SelectOnSignature<EventsKey>;
+        this.once = this.onceInternal as SelectOnSignature<EventsKey>;
+        this.un = this.unInternal as SelectOnSignature<void>;
 
-    /**
-     * @private
-     * @type {import("../events/condition.js").Condition}
-     */
-    this.removeCondition_ = options.removeCondition
-      ? options.removeCondition
-      : never;
+        options = options ? options : {};
 
-    /**
-     * @private
-     * @type {import("../events/condition.js").Condition}
-     */
-    this.toggleCondition_ = options.toggleCondition
-      ? options.toggleCondition
-      : shiftKeyOnly;
+        /**
+         * @private
+         */
+        this.boundAddFeature_ = this.addFeature_.bind(this);
 
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.multi_ = options.multi ? options.multi : false;
+        /**
+         * @private
+         */
+        this.boundRemoveFeature_ = this.removeFeature_.bind(this);
 
-    /**
-     * @private
-     * @type {FilterFunction}
-     */
-    this.filter_ = options.filter ? options.filter : TRUE;
+        /**
+         * @private
+         * @type {import("../events/condition.js").Condition}
+         */
+        this.condition_ = options.condition ? options.condition : singleClick;
 
-    /**
-     * @private
-     * @type {number}
-     */
-    this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
+        /**
+         * @private
+         * @type {import("../events/condition.js").Condition}
+         */
+        this.addCondition_ = options.addCondition ? options.addCondition : never;
 
-    /**
-     * @private
-     * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
-     */
-    this.style_ =
-      options.style !== undefined ? options.style : getDefaultStyleFunction();
+        /**
+         * @private
+         * @type {import("../events/condition.js").Condition}
+         */
+        this.removeCondition_ = options.removeCondition
+            ? options.removeCondition
+            : never;
 
-    /**
-     * @private
-     * @type {Collection<Feature>}
-     */
-    this.features_ = options.features || new Collection();
+        /**
+         * @private
+         * @type {import("../events/condition.js").Condition}
+         */
+        this.toggleCondition_ = options.toggleCondition
+            ? options.toggleCondition
+            : shiftKeyOnly;
 
-    /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
-    let layerFilter;
-    if (options.layers) {
-      if (typeof options.layers === 'function') {
-        layerFilter = options.layers;
-      } else {
-        const layers = options.layers;
-        layerFilter = function (layer) {
-          return layers.includes(layer);
-        };
-      }
-    } else {
-      layerFilter = TRUE;
-    }
+        /**
+         * @private
+         * @type {boolean}
+         */
+        this.multi_ = options.multi ? options.multi : false;
 
-    /**
-     * @private
-     * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
-     */
-    this.layerFilter_ = layerFilter;
+        /**
+         * @private
+         * @type {FilterFunction}
+         */
+        this.filter_ = options.filter ? options.filter : TRUE;
 
-    /**
-     * An association between selected feature (key)
-     * and layer (value)
-     * @private
-     * @type {Object<string, import("../layer/Layer.js").default>}
-     */
-    this.featureLayerAssociation_ = {};
-  }
+        /**
+         * @private
+         * @type {number}
+         */
+        this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
-  /**
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("../layer/Layer.js").default} layer Layer.
-   * @private
-   */
-  addFeatureLayerAssociation_(feature, layer) {
-    this.featureLayerAssociation_[getUid(feature)] = layer;
-  }
+        /**
+         * @private
+         * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null}
+         */
+        this.style_ =
+            options.style !== undefined ? options.style : getDefaultStyleFunction();
 
-  /**
-   * Get the selected features.
-   * @return {Collection<Feature>} Features collection.
-   * @api
-   */
-  getFeatures() {
-    return this.features_;
-  }
+        /**
+         * @private
+         * @type {Collection<Feature>}
+         */
+        this.features_ = options.features || new Collection();
 
-  /**
-   * Returns the Hit-detection tolerance.
-   * @return {number} Hit tolerance in pixels.
-   * @api
-   */
-  getHitTolerance() {
-    return this.hitTolerance_;
-  }
-
-  /**
-   * Returns the associated {@link module:ol/layer/Vector~VectorLayer vector layer} of
-   * a selected feature.
-   * @param {import("../Feature.js").default} feature Feature
-   * @return {import('../layer/Vector.js').default} Layer.
-   * @api
-   */
-  getLayer(feature) {
-    return /** @type {import('../layer/Vector.js').default} */ (
-      this.featureLayerAssociation_[getUid(feature)]
-    );
-  }
-
-  /**
-   * Hit-detection tolerance. Pixels inside the radius around the given position
-   * will be checked for features.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @api
-   */
-  setHitTolerance(hitTolerance) {
-    this.hitTolerance_ = hitTolerance;
-  }
-
-  /**
-   * Remove the interaction from its current map, if any,  and attach it to a new
-   * map, if any. Pass `null` to just remove the interaction from the current map.
-   * @param {import("../Map.js").default|null} map Map.
-   * @api
-   */
-  setMap(map) {
-    const currentMap = this.getMap();
-    if (currentMap && this.style_) {
-      this.features_.forEach(this.restorePreviousStyle_.bind(this));
-    }
-    super.setMap(map);
-    if (map) {
-      this.features_.addEventListener(
-        CollectionEventType.ADD,
-        this.boundAddFeature_,
-      );
-      this.features_.addEventListener(
-        CollectionEventType.REMOVE,
-        this.boundRemoveFeature_,
-      );
-
-      if (this.style_) {
-        this.features_.forEach(this.applySelectedStyle_.bind(this));
-      }
-    } else {
-      this.features_.removeEventListener(
-        CollectionEventType.ADD,
-        this.boundAddFeature_,
-      );
-      this.features_.removeEventListener(
-        CollectionEventType.REMOVE,
-        this.boundRemoveFeature_,
-      );
-    }
-  }
-
-  /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-   * @private
-   */
-  addFeature_(evt) {
-    const feature = evt.element;
-    if (this.style_) {
-      this.applySelectedStyle_(feature);
-    }
-    if (!this.getLayer(feature)) {
-      const layer = /** @type {VectorLayer} */ (
-        this.getMap()
-          .getAllLayers()
-          .find(function (layer) {
-            if (
-              layer instanceof VectorLayer &&
-              layer.getSource() &&
-              layer.getSource().hasFeature(feature)
-            ) {
-              return layer;
+        /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
+        let layerFilter: (arg0: import("../layer/Layer.js").default<import("../source/Source").default>) => boolean;
+        if (options.layers) {
+            if (typeof options.layers === 'function') {
+                layerFilter = options.layers;
+            } else {
+                const layers = options.layers;
+                layerFilter = function (layer) {
+                    return layers.includes(layer);
+                };
             }
-          })
-      );
-      if (layer) {
-        this.addFeatureLayerAssociation_(feature, layer);
-      }
-    }
-  }
-
-  /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-   * @private
-   */
-  removeFeature_(evt) {
-    if (this.style_) {
-      this.restorePreviousStyle_(evt.element);
-    }
-  }
-
-  /**
-   * @return {import("../style/Style.js").StyleLike|null} Select style.
-   */
-  getStyle() {
-    return this.style_;
-  }
-
-  /**
-   * @param {Feature} feature Feature
-   * @private
-   */
-  applySelectedStyle_(feature) {
-    const key = getUid(feature);
-    if (!(key in originalFeatureStyles)) {
-      originalFeatureStyles[key] = feature.getStyle();
-    }
-    feature.setStyle(this.style_);
-  }
-
-  /**
-   * @param {Feature} feature Feature
-   * @private
-   */
-  restorePreviousStyle_(feature) {
-    const interactions = this.getMap().getInteractions().getArray();
-    for (let i = interactions.length - 1; i >= 0; --i) {
-      const interaction = interactions[i];
-      if (
-        interaction !== this &&
-        interaction instanceof Select &&
-        interaction.getStyle() &&
-        interaction.getFeatures().getArray().lastIndexOf(feature) !== -1
-      ) {
-        feature.setStyle(interaction.getStyle());
-        return;
-      }
-    }
-
-    const key = getUid(feature);
-    feature.setStyle(originalFeatureStyles[key]);
-    delete originalFeatureStyles[key];
-  }
-
-  /**
-   * @param {Feature} feature Feature.
-   * @private
-   */
-  removeFeatureLayerAssociation_(feature) {
-    delete this.featureLayerAssociation_[getUid(feature)];
-  }
-
-  /**
-   * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
-   * selected state of features.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
-   * @return {boolean} `false` to stop event propagation.
-   */
-  handleEvent(mapBrowserEvent) {
-    if (!this.condition_(mapBrowserEvent)) {
-      return true;
-    }
-    const add = this.addCondition_(mapBrowserEvent);
-    const remove = this.removeCondition_(mapBrowserEvent);
-    const toggle = this.toggleCondition_(mapBrowserEvent);
-    const set = !add && !remove && !toggle;
-    const map = mapBrowserEvent.map;
-    const features = this.getFeatures();
-
-    /**
-     * @type {Array<Feature>}
-     */
-    const deselected = [];
-
-    /**
-     * @type {Array<Feature>}
-     */
-    const selected = [];
-
-    if (set) {
-      // Replace the currently selected feature(s) with the feature(s) at the
-      // pixel, or clear the selected feature(s) if there is no feature at
-      // the pixel.
-      clear(this.featureLayerAssociation_);
-      map.forEachFeatureAtPixel(
-        mapBrowserEvent.pixel,
-        /**
-         * @param {import("../Feature.js").FeatureLike} feature Feature.
-         * @param {import("../layer/Layer.js").default} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
-        (feature, layer) => {
-          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-            return;
-          }
-          this.addFeatureLayerAssociation_(feature, layer);
-          selected.push(feature);
-          return !this.multi_;
-        },
-        {
-          layerFilter: this.layerFilter_,
-          hitTolerance: this.hitTolerance_,
-        },
-      );
-      for (let i = features.getLength() - 1; i >= 0; --i) {
-        const feature = features.item(i);
-        const index = selected.indexOf(feature);
-        if (index > -1) {
-          // feature is already selected
-          selected.splice(index, 1);
         } else {
-          features.remove(feature);
-          deselected.push(feature);
+            layerFilter = TRUE;
         }
-      }
-      if (selected.length !== 0) {
-        features.extend(selected);
-      }
-    } else {
-      // Modify the currently selected feature(s).
-      map.forEachFeatureAtPixel(
-        mapBrowserEvent.pixel,
+
         /**
-         * @param {import("../Feature.js").FeatureLike} feature Feature.
-         * @param {import("../layer/Layer.js").default} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
+         * @private
+         * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
          */
-        (feature, layer) => {
-          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-            return;
-          }
-          if ((add || toggle) && !features.getArray().includes(feature)) {
-            this.addFeatureLayerAssociation_(feature, layer);
-            selected.push(feature);
-          } else if (
-            (remove || toggle) &&
-            features.getArray().includes(feature)
-          ) {
-            deselected.push(feature);
-            this.removeFeatureLayerAssociation_(feature);
-          }
-          return !this.multi_;
-        },
-        {
-          layerFilter: this.layerFilter_,
-          hitTolerance: this.hitTolerance_,
-        },
-      );
-      for (let j = deselected.length - 1; j >= 0; --j) {
-        features.remove(deselected[j]);
-      }
-      features.extend(selected);
+        this.layerFilter_ = layerFilter;
+
+        /**
+         * An association between selected feature (key)
+         * and layer (value)
+         * @private
+         * @type {Object<string, import("../layer/Layer.js").default>}
+         */
+        this.featureLayerAssociation_ = {};
     }
-    if (selected.length > 0 || deselected.length > 0) {
-      this.dispatchEvent(
-        new SelectEvent(
-          SelectEventType.SELECT,
-          selected,
-          deselected,
-          mapBrowserEvent,
-        ),
-      );
+
+    /**
+     * @param {import("../Feature.js").default} feature Feature.
+     * @param {import("../layer/Layer.js").default} layer Layer.
+     * @private
+     */
+    addFeatureLayerAssociation_(feature: import("../Feature.js").default, layer: import("../layer/Layer.js").default) {
+        this.featureLayerAssociation_[getUid(feature)] = layer;
     }
-    return true;
-  }
+
+    /**
+     * Get the selected features.
+     * @return {Collection<Feature>} Features collection.
+     * @api
+     */
+    getFeatures(): Collection<Feature> {
+        return this.features_;
+    }
+
+    /**
+     * Returns the Hit-detection tolerance.
+     * @return {number} Hit tolerance in pixels.
+     * @api
+     */
+    getHitTolerance(): number {
+        return this.hitTolerance_;
+    }
+
+    /**
+     * Returns the associated {@link module:ol/layer/Vector~VectorLayer vector layer} of
+     * a selected feature.
+     * @param {import("../Feature.js").default} feature Feature
+     * @return {import('../layer/Vector.js').default} Layer.
+     * @api
+     */
+    getLayer(feature: import("../Feature.js").default): import('../layer/Vector.js').default {
+        return /** @type {import('../layer/Vector.js').default} */ (
+            this.featureLayerAssociation_[getUid(feature)]
+        );
+    }
+
+    /**
+     * Hit-detection tolerance. Pixels inside the radius around the given position
+     * will be checked for features.
+     * @param {number} hitTolerance Hit tolerance in pixels.
+     * @api
+     */
+    setHitTolerance(hitTolerance: number) {
+        this.hitTolerance_ = hitTolerance;
+    }
+
+    /**
+     * Remove the interaction from its current map, if any,  and attach it to a new
+     * map, if any. Pass `null` to just remove the interaction from the current map.
+     * @param {import("../Map.js").default|null} map Map.
+     * @api
+     */
+    setMap(map: import("../Map.js").default | null) {
+        const currentMap = this.getMap();
+        if (currentMap && this.style_) {
+            this.features_.forEach(this.restorePreviousStyle_.bind(this));
+        }
+        super.setMap(map);
+        if (map) {
+            this.features_.addEventListener(
+                CollectionEventType.ADD,
+                this.boundAddFeature_,
+            );
+            this.features_.addEventListener(
+                CollectionEventType.REMOVE,
+                this.boundRemoveFeature_,
+            );
+
+            if (this.style_) {
+                this.features_.forEach(this.applySelectedStyle_.bind(this));
+            }
+        } else {
+            this.features_.removeEventListener(
+                CollectionEventType.ADD,
+                this.boundAddFeature_,
+            );
+            this.features_.removeEventListener(
+                CollectionEventType.REMOVE,
+                this.boundRemoveFeature_,
+            );
+        }
+    }
+
+    /**
+     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+     * @private
+     */
+    addFeature_(evt: import("../Collection.js").CollectionEvent<Feature>) {
+        const feature = evt.element;
+        if (this.style_) {
+            this.applySelectedStyle_(feature);
+        }
+        if (!this.getLayer(feature)) {
+            const layer = /** @type {VectorLayer} */ (
+                this.getMap()
+                    .getAllLayers()
+                    .find(function (layer) {
+                        if (
+                            layer instanceof VectorLayer &&
+                            layer.getSource() &&
+                            layer.getSource().hasFeature(feature)
+                        ) {
+                            return layer;
+                        }
+                    })
+            );
+            if (layer) {
+                this.addFeatureLayerAssociation_(feature, layer);
+            }
+        }
+    }
+
+    /**
+     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+     * @private
+     */
+    removeFeature_(evt: import("../Collection.js").CollectionEvent<Feature>) {
+        if (this.style_) {
+            this.restorePreviousStyle_(evt.element);
+        }
+    }
+
+    /**
+     * @return {import("../style/Style.js").StyleLike|null} Select style.
+     */
+    getStyle(): import("../style/Style.js").StyleLike | null {
+        return this.style_;
+    }
+
+    /**
+     * @param {Feature} feature Feature
+     * @private
+     */
+    applySelectedStyle_(feature: Feature) {
+        const key = getUid(feature);
+        if (!(key in originalFeatureStyles)) {
+            originalFeatureStyles[key] = feature.getStyle();
+        }
+        feature.setStyle(this.style_);
+    }
+
+    /**
+     * @param {Feature} feature Feature
+     * @private
+     */
+    restorePreviousStyle_(feature: Feature) {
+        const interactions = this.getMap().getInteractions().getArray();
+        for (let i = interactions.length - 1; i >= 0; --i) {
+            const interaction = interactions[i];
+            if (
+                interaction !== this &&
+                interaction instanceof Select &&
+                interaction.getStyle() &&
+                interaction.getFeatures().getArray().lastIndexOf(feature) !== -1
+            ) {
+                feature.setStyle(interaction.getStyle());
+                return;
+            }
+        }
+
+        const key = getUid(feature);
+        feature.setStyle(originalFeatureStyles[key]);
+        delete originalFeatureStyles[key];
+    }
+
+    /**
+     * @param {Feature} feature Feature.
+     * @private
+     */
+    removeFeatureLayerAssociation_(feature: Feature) {
+        delete this.featureLayerAssociation_[getUid(feature)];
+    }
+
+    /**
+     * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
+     * selected state of features.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+     * @return {boolean} `false` to stop event propagation.
+     */
+    handleEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+        if (!this.condition_(mapBrowserEvent)) {
+            return true;
+        }
+        const add = this.addCondition_(mapBrowserEvent);
+        const remove = this.removeCondition_(mapBrowserEvent);
+        const toggle = this.toggleCondition_(mapBrowserEvent);
+        const set = !add && !remove && !toggle;
+        const map = mapBrowserEvent.map;
+        const features = this.getFeatures();
+
+        /**
+         * @type {Array<Feature>}
+         */
+        const deselected:Feature[] = [];
+
+        /**
+         * @type {Array<Feature>}
+         */
+        const selected:Feature[] = [];
+
+        if (set) {
+            // Replace the currently selected feature(s) with the feature(s) at the
+            // pixel, or clear the selected feature(s) if there is no feature at
+            // the pixel.
+            clear(this.featureLayerAssociation_);
+            map.forEachFeatureAtPixel(
+                mapBrowserEvent.pixel,
+                /**
+                 * @param {import("../Feature.js").FeatureLike} feature Feature.
+                 * @param {import("../layer/Layer.js").default} layer Layer.
+                 * @return {boolean|undefined} Continue to iterate over the features.
+                 */
+                (feature: import("../Feature.js").FeatureLike, layer: import("../layer/Layer.js").default): boolean | undefined => {
+                    if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+                        return;
+                    }
+                    this.addFeatureLayerAssociation_(feature, layer);
+                    selected.push(feature);
+                    return !this.multi_;
+                },
+                {
+                    layerFilter: this.layerFilter_,
+                    hitTolerance: this.hitTolerance_,
+                },
+            );
+            for (let i = features.getLength() - 1; i >= 0; --i) {
+                const feature = features.item(i);
+                const index = selected.indexOf(feature);
+                if (index > -1) {
+                    // feature is already selected
+                    selected.splice(index, 1);
+                } else {
+                    features.remove(feature);
+                    deselected.push(feature);
+                }
+            }
+            if (selected.length !== 0) {
+                features.extend(selected);
+            }
+        } else {
+            // Modify the currently selected feature(s).
+            map.forEachFeatureAtPixel(
+                mapBrowserEvent.pixel,
+                /**
+                 * @param {import("../Feature.js").FeatureLike} feature Feature.
+                 * @param {import("../layer/Layer.js").default} layer Layer.
+                 * @return {boolean|undefined} Continue to iterate over the features.
+                 */
+                (feature: import("../Feature.js").FeatureLike, layer: import("../layer/Layer.js").default): boolean | undefined => {
+                    if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+                        return;
+                    }
+                    if ((add || toggle) && !features.getArray().includes(feature)) {
+                        this.addFeatureLayerAssociation_(feature, layer);
+                        selected.push(feature);
+                    } else if (
+                        (remove || toggle) &&
+                        features.getArray().includes(feature)
+                    ) {
+                        deselected.push(feature);
+                        this.removeFeatureLayerAssociation_(feature);
+                    }
+                    return !this.multi_;
+                },
+                {
+                    layerFilter: this.layerFilter_,
+                    hitTolerance: this.hitTolerance_,
+                },
+            );
+            for (let j = deselected.length - 1; j >= 0; --j) {
+                features.remove(deselected[j]);
+            }
+            features.extend(selected);
+        }
+        if (selected.length > 0 || deselected.length > 0) {
+            this.dispatchEvent(
+                new SelectEvent(
+                    SelectEventType.SELECT,
+                    selected,
+                    deselected,
+                    mapBrowserEvent,
+                ),
+            );
+        }
+        return true;
+    }
 }
 
 /**
  * @return {import("../style/Style.js").StyleFunction} Styles.
  */
-function getDefaultStyleFunction() {
-  const styles = createEditingStyle();
-  extend(styles['Polygon'], styles['LineString']);
-  extend(styles['GeometryCollection'], styles['LineString']);
+function getDefaultStyleFunction(): import("../style/Style.js").StyleFunction {
+    const styles = createEditingStyle();
+    extend(styles['Polygon'], styles['LineString']);
+    extend(styles['GeometryCollection'], styles['LineString']);
 
-  return function (feature) {
-    if (!feature.getGeometry()) {
-      return null;
-    }
-    return styles[feature.getGeometry().getType()];
-  };
+    return function (feature) {
+        if (!feature.getGeometry()) {
+            return null;
+        }
+        return styles[feature.getGeometry().getType()];
+    };
 }
 
 export default Select;

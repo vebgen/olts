@@ -16,7 +16,6 @@ import {transformGeometryWithOptions} from './Feature.js';
  */
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the Encoded
  * Polyline Algorithm Format.
  *
@@ -29,7 +28,7 @@ import {transformGeometryWithOptions} from './Feature.js';
  *
  * @api
  */
-class Polyline extends TextFeature {
+export class Polyline extends TextFeature {
   /**
    * @param {Options} [options] Optional configuration object.
    */
@@ -153,7 +152,7 @@ class Polyline extends TextFeature {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array<number>} numbers A list of n-dimensional points.
+ * @param {number[]} numbers A list of n-dimensional points.
  * @param {number} stride The number of dimension of the points in the list.
  * @param {number} [factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
@@ -191,14 +190,14 @@ export function encodeDeltas(numbers, stride, factor) {
  *     encoded string.
  * @param {number} [factor] The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
- * @return {Array<number>} A list of n-dimensional points.
+ * @return {number[]} A list of n-dimensional points.
  * @api
  */
 export function decodeDeltas(encoded, stride, factor) {
   factor = factor ? factor : 1e5;
   let d;
 
-  /** @type {Array<number>} */
+  /** @type {number[]} */
   const lastNumbers = new Array(stride);
   for (d = 0; d < stride; ++d) {
     lastNumbers[d] = 0;
@@ -222,7 +221,7 @@ export function decodeDeltas(encoded, stride, factor) {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array<number>} numbers A list of floating point numbers.
+ * @param {number[]} numbers A list of floating point numbers.
  * @param {number} [factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
@@ -244,7 +243,7 @@ export function encodeFloats(numbers, factor) {
  * @param {string} encoded An encoded string.
  * @param {number} [factor] The factor by which the result will be divided.
  *     Default is `1e5`.
- * @return {Array<number>} A list of floating point numbers.
+ * @return {number[]} A list of floating point numbers.
  * @api
  */
 export function decodeFloats(encoded, factor) {
@@ -261,7 +260,7 @@ export function decodeFloats(encoded, factor) {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array<number>} numbers A list of signed integers.
+ * @param {number[]} numbers A list of signed integers.
  * @return {string} The encoded string.
  */
 export function encodeSignedIntegers(numbers) {
@@ -276,7 +275,7 @@ export function encodeSignedIntegers(numbers) {
  * Decode a list of signed integers from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @return {Array<number>} A list of signed integers.
+ * @return {number[]} A list of signed integers.
  */
 export function decodeSignedIntegers(encoded) {
   const numbers = decodeUnsignedIntegers(encoded);
@@ -290,7 +289,7 @@ export function decodeSignedIntegers(encoded) {
 /**
  * Encode a list of unsigned integers and return an encoded string
  *
- * @param {Array<number>} numbers A list of unsigned integers.
+ * @param {number[]} numbers A list of unsigned integers.
  * @return {string} The encoded string.
  */
 export function encodeUnsignedIntegers(numbers) {
@@ -305,7 +304,7 @@ export function encodeUnsignedIntegers(numbers) {
  * Decode a list of unsigned integers from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @return {Array<number>} A list of unsigned integers.
+ * @return {number[]} A list of unsigned integers.
  */
 export function decodeUnsignedIntegers(encoded) {
   const numbers = [];

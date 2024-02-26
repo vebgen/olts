@@ -8,7 +8,7 @@ import {
     createSafeCoordinateTransform,
     get,
 } from './support';
-import { get as getTransform } from './transform';
+import { get as getTransform } from '@olts/core/transform';
 import { Units } from './units';
 
 

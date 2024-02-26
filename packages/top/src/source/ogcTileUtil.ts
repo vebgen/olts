@@ -53,7 +53,7 @@ import {getIntersection as intersectExtents} from '@olts/core/extent';
  * @typedef {Object} TileMatrix
  * @property {string} id The tile matrix identifier.
  * @property {number} cellSize The pixel resolution (map units per pixel).
- * @property {Array<number>} pointOfOrigin The map location of the matrix origin.
+ * @property {number[]} pointOfOrigin The map location of the matrix origin.
  * @property {CornerOfOrigin} [cornerOfOrigin='topLeft'] The corner of the matrix that represents the origin ('topLeft' or 'bottomLeft').
  * @property {number} matrixWidth The number of columns.
  * @property {number} matrixHeight The number of rows.

@@ -40,7 +40,7 @@ import { Extent } from '@olts/core/extent';
  * @property {number} drawImageH DrawImageH.
  * @property {number} originX OriginX.
  * @property {number} originY OriginY.
- * @property {Array<number>} scale Scale.
+ * @property {number[]} scale Scale.
  * @property {BBox} declutterBox DeclutterBox.
  * @property {import("../../transform").Transform} canvasTransform CanvasTransform.
  */
@@ -101,7 +101,7 @@ function horizontalTextAlign(text: string, align: CanvasTextAlign): number {
  * @param {number} i Index
  * @return {Array<string>} Accumulator.
  */
-function createTextChunks(acc: Array<string>, line: string, i: number): Array<string> {
+function createTextChunks(acc:string[], line: string, i: number):string[] {
   if (i > 0) {
     acc.push('\n', '');
   }
@@ -109,7 +109,7 @@ function createTextChunks(acc: Array<string>, line: string, i: number): Array<st
   return acc;
 }
 
-class Executor {
+export class Executor {
   /**
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
@@ -150,7 +150,7 @@ class Executor {
 
     /**
      * @protected
-     * @type {Array<number>}
+     * @type {number[]}
      */
     this.coordinates = instructions.coordinates;
 
@@ -174,7 +174,7 @@ class Executor {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {number[]}
      */
     this.pixelCoordinates_ = null;
 
@@ -219,7 +219,7 @@ class Executor {
    * @param {string} strokeKey Stroke style key.
    * @return {import("../canvas").Label} Label.
    */
-  createLabel(text: string | Array<string>, textKey: string, fillKey: string, strokeKey: string): import("../canvas").Label {
+  createLabel(text: string |string[], textKey: string, fillKey: string, strokeKey: string): import("../canvas").Label {
     const key = text + textKey + fillKey + strokeKey;
     if (this.labels_[key]) {
       return this.labels_[key];
@@ -344,8 +344,8 @@ class Executor {
     p2: Coordinate,
     p3: Coordinate,
     p4: Coordinate,
-    fillInstruction: Array<any>,
-    strokeInstruction: Array<any>,
+    fillInstruction:any[],
+    strokeInstruction:any[],
   ) {
     context.beginPath();
     context.moveTo.apply(context, p1);
@@ -381,7 +381,7 @@ class Executor {
    * @param {number} rotation Rotation.
    * @param {Size} scale Scale.
    * @param {boolean} snapToPixel Snap to pixel.
-   * @param {Array<number>} padding Padding.
+   * @param {number[]} padding Padding.
    * @param {boolean} fillStroke Background fill or stroke.
    * @param {FeatureLike} feature Feature.
    * @return {ImageOrLabelDimensions} Dimensions for positioning and decluttering the image or label.
@@ -400,7 +400,7 @@ class Executor {
     rotation: number,
     scale: Size,
     snapToPixel: boolean,
-    padding: Array<number>,
+    padding: number[],
     fillStroke: boolean,
     feature: FeatureLike,
   ): ImageOrLabelDimensions {
@@ -500,8 +500,8 @@ class Executor {
     imageOrLabel: import("../canvas").Label | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     dimensions: ImageOrLabelDimensions,
     opacity: number,
-    fillInstruction: Array<any>,
-    strokeInstruction: Array<any>,
+    fillInstruction:any[],
+    strokeInstruction:any[],
   ): boolean {
     const fillStroke = !!(fillInstruction || strokeInstruction);
 
@@ -572,7 +572,7 @@ class Executor {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {Array<*>} instruction Instruction.
    */
-  setStrokeStyle_(context: CanvasRenderingContext2D, instruction: Array<any>) {
+  setStrokeStyle_(context: CanvasRenderingContext2D, instruction:any[]) {
     context['strokeStyle'] =
       /** @type {import("../../colorlike").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
@@ -580,7 +580,7 @@ class Executor {
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
     context.lineDashOffset = /** @type {number} */ (instruction[7]);
-    context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
+    context.setLineDash(/** @type {number[]} */ (instruction[6]));
   }
 
   /**
@@ -591,7 +591,7 @@ class Executor {
    * @param {string} fillKey The key for the fill state.
    * @return {{label: import("../canvas").Label, anchorX: number, anchorY: number}} The text image and its anchor.
    */
-  drawLabelWithPointPlacement_(text: string | Array<string>, textKey: string, strokeKey: string, fillKey: string): { label: import("../canvas").Label; anchorX: number; anchorY: number; } {
+  drawLabelWithPointPlacement_(text: string |string[], textKey: string, strokeKey: string, fillKey: string): { label: import("../canvas").Label; anchorX: number; anchorY: number; } {
     const textState = this.textStates[textKey];
 
     const label = this.createLabel(text, textKey, fillKey, strokeKey);
@@ -638,14 +638,14 @@ class Executor {
     context: CanvasRenderingContext2D,
     contextScale: number,
     transform: import("../../transform").Transform,
-    instructions: Array<any>,
+    instructions:any[],
     snapToPixel: boolean,
     featureCallback: FeatureCallback<T>,
     hitExtent: Extent,
     declutterTree: import("rbush").default,
   ): T | undefined {
-    /** @type {Array<number>} */
-    let pixelCoordinates: Array<number>;
+    /** @type {number[]} */
+    let pixelCoordinates: number[];
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
       pixelCoordinates = this.pixelCoordinates_;
     } else {
@@ -842,7 +842,7 @@ class Executor {
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 17) {
-            padding = /** @type {Array<number>} */ (instruction[16]);
+            padding = /** @type {number[]} */ (instruction[16]);
             backgroundFill = /** @type {boolean} */ (instruction[17]);
             backgroundStroke = /** @type {boolean} */ (instruction[18]);
           } else {
@@ -997,7 +997,7 @@ class Executor {
             );
             drawChars: if (parts) {
               /** @type {Array<ReplayImageOrLabelArgs>} */
-              const replayImageOrLabelArgs: Array<ReplayImageOrLabelArgs> = [];
+              const replayImageOrLabelArgs:ReplayImageOrLabelArgs[] = [];
               let c, cc, chars, label, part;
               if (strokeKey) {
                 for (c = 0, cc = parts.length; c < cc; ++c) {

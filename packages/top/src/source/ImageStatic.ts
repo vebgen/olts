@@ -23,11 +23,10 @@ import {intersects} from '@olts/core/extent';
  */
 
 /**
- * @classdesc
  * A layer source for displaying a single, static image.
  * @api
  */
-class Static extends ImageSource {
+export class Static extends ImageSource {
   /**
    * @param {Options} options ImageStatic options.
    */

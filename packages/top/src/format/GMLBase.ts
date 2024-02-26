@@ -75,7 +75,6 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  */
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Feature base format for reading and writing data in the GML format.
@@ -85,7 +84,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  * @abstract
  * @api
  */
-class GMLBase extends XMLFeature {
+export class GMLBase extends XMLFeature {
   /**
    * @param {Options} [options] Optional configuration object.
    */
@@ -371,7 +370,7 @@ class GMLBase extends XMLFeature {
    * @return {MultiPoint|undefined} MultiPoint.
    */
   readMultiPoint(node, objectStack) {
-    /** @type {Array<Array<number>>} */
+    /** @type {Array<number[]>} */
     const coordinates = pushParseAndPop(
       [],
       this.MULTIPOINT_PARSERS,
@@ -464,7 +463,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>|undefined} LinearRing flat coordinates.
+   * @return {number[]|undefined} LinearRing flat coordinates.
    */
   readFlatLinearRing(node, objectStack) {
     const ring = pushParseAndPop(
@@ -498,7 +497,7 @@ class GMLBase extends XMLFeature {
    * @return {Polygon|undefined} Polygon.
    */
   readPolygon(node, objectStack) {
-    /** @type {Array<Array<number>>} */
+    /** @type {Array<number[]>} */
     const flatLinearRings = pushParseAndPop(
       [null],
       this.FLAT_LINEAR_RINGS_PARSERS,
@@ -522,7 +521,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<number>} Flat coordinates.
+   * @return {number[]} Flat coordinates.
    */
   readFlatCoordinatesFromNode(node, objectStack) {
     return pushParseAndPop(

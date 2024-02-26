@@ -38,10 +38,10 @@ export function numberToGlsl(v: number): string {
 
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
- * @param {Array<number>} array Numerical values array.
+ * @param {number[]} array Numerical values array.
  * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
-export function arrayToGlsl(array: Array<number>): string {
+export function arrayToGlsl(array: number[]): string {
     if (array.length < 2 || array.length > 4) {
         throw new Error(
             '`formatArray` can only output `vec2`, `vec3` or `vec4` arrays.',
@@ -200,7 +200,7 @@ export function buildExpression(
  * @param {function(Array<CompiledExpression>, CompilationContext): string} output Function that takes in parsed arguments and returns a string
  * @return {function(CompilationContext, import("./expression").CallExpression, number): string} Compiler for the call expression
  */
-function createCompiler(output: (arg0: Array<CompiledExpression>, arg1: CompilationContext) => string): (arg0: CompilationContext, arg1: import("./expression").CallExpression, arg2: number) => string {
+function createCompiler(output: (arg0:CompiledExpression[], arg1: CompilationContext) => string): (arg0: CompilationContext, arg1: import("./expression").CallExpression, arg2: number) => string {
     return (context, expression, type) => {
         const length = expression.args.length;
         const args = new Array(length);
@@ -412,7 +412,7 @@ ${ifBlocks}
         const numColors = colors.length;
         const palette = new Uint8Array(numColors * 4);
         for (let i = 0; i < colors.length; i++) {
-            const parsedValue = /** @type {string | Array<number>} */ (
+            const parsedValue = /** @type {string | number[]} */ (
         /** @type {LiteralExpression} */ (colors[i]).value
             );
             const color = asArray(parsedValue);
@@ -472,12 +472,12 @@ function compile(expression: Expression, returnType: number, context: Compilatio
 
     if ((expression.type & ColorType) > 0) {
         return colorToGlsl(
-      /** @type {Array<number> | string} */(expression.value),
+      /** @type {number[] | string} */(expression.value),
         );
     }
 
     if ((expression.type & NumberArrayType) > 0) {
-        return arrayToGlsl(/** @type {Array<number>} */(expression.value));
+        return arrayToGlsl(/** @type {number[]} */(expression.value));
     }
 
     throw new Error(

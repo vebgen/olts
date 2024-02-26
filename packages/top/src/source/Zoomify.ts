@@ -111,12 +111,11 @@ export class CustomTile extends ImageTile {
  */
 
 /**
- * @classdesc
  * Layer source for tile data in Zoomify format (both Zoomify and Internet
  * Imaging Protocol are supported).
  * @api
  */
-class Zoomify extends TileImage {
+export class Zoomify extends TileImage {
   /**
    * @param {Options} options Options.
    */

@@ -258,7 +258,6 @@ const GML_FORMATS = {
 const DEFAULT_VERSION = '1.1.0';
 
 /**
- * @classdesc
  * Feature format for reading and writing data in the WFS format.
  * By default, supports WFS version 1.1.0. You can pass a GML format
  * as option to override the default.
@@ -266,7 +265,7 @@ const DEFAULT_VERSION = '1.1.0';
  *
  * @api
  */
-class WFS extends XMLFeature {
+export class WFS extends XMLFeature {
   /**
    * @param {Options} [options] Optional configuration object.
    */

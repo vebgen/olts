@@ -1,11 +1,10 @@
 import Filter from './Filter.js';
 
 /**
- * @classdesc
  *
  * @abstract
  */
-class ResourceId extends Filter {
+export class ResourceId extends Filter {
   /**
    * @param {!string} rid Resource ID.
    */

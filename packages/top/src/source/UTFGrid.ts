@@ -267,11 +267,10 @@ export class CustomTile extends Tile {
  */
 
 /**
- * @classdesc
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
  * @api
  */
-class UTFGrid extends TileSource {
+export class UTFGrid extends TileSource {
   /**
    * @param {Options} options Source options.
    */

@@ -43,11 +43,10 @@ export const ATTRIBUTION =
  */
 
 /**
- * @classdesc
  * Layer source for the OpenStreetMap tile server.
  * @api
  */
-class OSM extends XYZ {
+export class OSM extends XYZ {
   /**
    * @param {Options} [options] Open Street Map options.
    */

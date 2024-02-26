@@ -12,12 +12,11 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom the map by double tap/click then drag up/down
  * with one finger/left mouse.
  * @api
  */
-class DblClickDragZoom extends Interaction {
+export class DblClickDragZoom extends Interaction {
   /**
    * @param {Options} [opt_options] Options.
    */

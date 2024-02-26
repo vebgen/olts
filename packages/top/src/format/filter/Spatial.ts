@@ -1,14 +1,13 @@
 import Filter from './Filter.js';
 
 /**
- * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
  * Represents a spatial operator to test whether a geometry-valued property
  * relates to a given geometry.
  *
  * @abstract
  */
-class Spatial extends Filter {
+export class Spatial extends Filter {
   /**
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} geometryName Geometry name to use.

@@ -57,7 +57,6 @@ import {listen, unlistenByKey} from '../../events.js';
  */
 
 /**
- * @classdesc
  * WebGL vector renderer optimized for points.
  * All features will be rendered as quads (two triangles forming a square). New data will be flushed to the GPU
  * every time the vector source changes.
@@ -119,7 +118,7 @@ import {listen, unlistenByKey} from '../../events.js';
  *
  * @api
  */
-class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
+export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {import("../../layer/Layer.js").default} layer Layer.
    * @param {Options} options Options.

@@ -1,5 +1,5 @@
 import { isEmpty } from '../js-obj';
-import { Transform } from '../transform';
+import { Transform } from '@olts/core/transform';
 import { Projection } from './projection';
 import { TransformFunction } from './support';
 
@@ -90,7 +90,7 @@ export function createMat4(): number[] {
  * @return 2D transformation matrix as flattened 4x4 matrix.
  */
 export function mat4FromTransform(
-    mat4: Array<number>, transform: Transform
+    mat4: number[], transform: Transform
 ): number[] {
     mat4[0] = transform[0];
     mat4[1] = transform[1];

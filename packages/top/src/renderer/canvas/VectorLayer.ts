@@ -42,11 +42,10 @@ import {getUid} from '@olts/core/util';
 import {wrapX as wrapCoordinateX} from '../../coordinate.js';
 
 /**
- * @classdesc
  * Canvas renderer for vector layers.
  * @api
  */
-class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
+export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../layer/BaseVector.js").default} vectorLayer Vector layer.
    */

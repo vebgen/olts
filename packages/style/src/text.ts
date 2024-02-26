@@ -129,7 +129,7 @@ export interface Options {
      * @note Rich text is not supported for `placement: 'line'` or
      * the immediate rendering API.
      */
-    text?: string | Array<string>;
+    text?: string |string[];
 
     /**
      * Text alignment.
@@ -200,7 +200,7 @@ export interface Options {
      *
      * @default `[0, 0, 0, 0]`
      */
-    padding?: Array<number>;
+    padding?: number[];
 }
 
 
@@ -238,7 +238,7 @@ export class Text {
     /**
      * The text to be rendered.
      */
-    private text_: string | Array<string> | undefined;
+    private text_: string |string[] | undefined;
 
     /**
      * The text alignment.
@@ -310,7 +310,7 @@ export class Text {
     /**
      * The padding for the text.
      */
-    private padding_: Array<number> | null;
+    private padding_: number[] | null;
 
     /**
      * @param options Options.

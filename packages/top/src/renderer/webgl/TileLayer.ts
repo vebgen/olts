@@ -66,12 +66,11 @@ const attributeDescriptions = [
  */
 
 /**
- * @classdesc
  * WebGL renderer for tile layers.
  * @extends {WebGLBaseTileLayerRenderer<LayerType, TileTextureType, TileTextureRepresentation>}
  * @api
  */
-class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
+export class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   /**
    * @param {LayerType} tileLayer Tile layer.
    * @param {Options} options Options.

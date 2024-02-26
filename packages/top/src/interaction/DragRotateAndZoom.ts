@@ -11,7 +11,6 @@ import {mouseOnly, shiftKeyOnly} from '../events/condition.js';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom and rotate the map by clicking and dragging
  * on the map.  By default, this interaction is limited to when the shift
  * key is held down.
@@ -21,7 +20,7 @@ import {mouseOnly, shiftKeyOnly} from '../events/condition.js';
  * And this interaction is not included in the default interactions.
  * @api
  */
-class DragRotateAndZoom extends PointerInteraction {
+export class DragRotateAndZoom extends PointerInteraction {
   /**
    * @param {Options} [options] Options.
    */

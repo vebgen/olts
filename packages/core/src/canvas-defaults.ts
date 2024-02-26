@@ -45,7 +45,7 @@ export const defaultFont: string = '10px sans-serif';
 /**
  *
  */
-export const defaultLineDash: Array<number> = [];
+export const defaultLineDash: number[] = [];
 
 
 /**
@@ -69,4 +69,4 @@ export const defaultTextBaseline: CanvasTextBaseline = 'middle';
 /**
  *
  */
-export const defaultPadding: Array<number> = [0, 0, 0, 0];
+export const defaultPadding: number[] = [0, 0, 0, 0];

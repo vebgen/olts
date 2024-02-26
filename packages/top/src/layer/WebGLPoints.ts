@@ -31,7 +31,6 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  */
 
 /**
- * @classdesc
  * Layer optimized for rendering large point datasets. Takes a `style` property which
  * is a serializable JSON object describing how the layer should be rendered.
  *
@@ -64,7 +63,7 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
  * @fires import("../render/Event.js").RenderEvent
  */
-class WebGLPointsLayer extends Layer {
+export class WebGLPointsLayer extends Layer {
   /**
    * @param {Options<VectorSourceType>} options Options.
    */
@@ -80,7 +79,7 @@ class WebGLPointsLayer extends Layer {
     this.parseResult_ = parseLiteralStyle(options.style);
 
     /**
-     * @type {Object<string, (string|number|Array<number>|boolean)>}
+     * @type {Object<string, (string|number|number[]|boolean)>}
      * @private
      */
     this.styleVariables_ = options.style.variables || {};

@@ -18,13 +18,12 @@ import {toSize} from '../size.js';
  */
 
 /**
- * @classdesc
  * A pseudo tile source, which does not fetch tiles from a server, but renders
  * a grid outline for the tile grid/projection along with the coordinates for
  * each tile. See examples/canvas-tiles for an example.
  * @api
  */
-class TileDebug extends XYZ {
+export class TileDebug extends XYZ {
   /**
    * @param {Options} [options] Debug tile options.
    */

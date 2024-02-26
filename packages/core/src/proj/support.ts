@@ -16,8 +16,8 @@ import {
     add as addTransformFunc,
     clear as clearTransformFuncs,
     get as getTransformFunc,
-} from './transform';
-import { Extent, applyTransform, getWidth } from '../extent';
+} from '@olts/core/transform';
+import { Extent, applyTransform, getWidth } from '@olts/core/extent';
 import { clamp, modulo } from '../math';
 import { Coordinate, equals, getWorldsAway } from '../coordinate';
 import { getDistance } from './sphere';

@@ -54,10 +54,10 @@ import {toPromise} from '@olts/core/functions';
  * @typedef {function(Extent, number, number, (function(HTMLImageElement, string): void)=): import("./DataTile.js").ImageLike|ImageObject|Promise<import("./DataTile.js").ImageLike|ImageObject>} ImageObjectPromiseLoader
  */
 
-class ImageWrapper extends EventTarget {
+export class ImageWrapper extends EventTarget {
   /**
    * @param {Extent} extent Extent.
-   * @param {number|Array<number>|undefined} resolution Resolution. If provided as array, x and y
+   * @param {number|number[]|undefined} resolution Resolution. If provided as array, x and y
    * resolution will be assumed.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("./ImageState.js").default|import("./Image.js").Loader} stateOrLoader State.
@@ -79,7 +79,7 @@ class ImageWrapper extends EventTarget {
 
     /**
      * @protected
-     * @type {number|Array<number>|undefined}
+     * @type {number|number[]|undefined}
      */
     this.resolution = resolution;
 
@@ -132,7 +132,7 @@ class ImageWrapper extends EventTarget {
   }
 
   /**
-   * @return {number|Array<number>} Resolution.
+   * @return {number|number[]} Resolution.
    */
   getResolution() {
     return /** @type {number} */ (this.resolution);
@@ -204,7 +204,7 @@ class ImageWrapper extends EventTarget {
   }
 
   /**
-   * @param {number|Array<number>} resolution Resolution.
+   * @param {number|number[]} resolution Resolution.
    */
   setResolution(resolution) {
     this.resolution = resolution;

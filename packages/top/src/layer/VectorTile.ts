@@ -2,7 +2,7 @@
 import BaseVectorLayer from './BaseVector.js';
 import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
 import TileProperty from './TileProperty.js';
-import {assert} from '@olts/core/asserts';
+import { assert } from '@olts/core/asserts';
 
 /***
  * @template Return
@@ -10,7 +10,7 @@ import {assert} from '@olts/core/asserts';
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *   CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
  *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
  */
 
@@ -85,7 +85,6 @@ import {assert} from '@olts/core/asserts';
  */
 
 /**
- * @classdesc
  * Layer for vector tile data that is rendered client-side.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
@@ -95,142 +94,146 @@ import {assert} from '@olts/core/asserts';
  * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
  * @api
  */
-class VectorTileLayer extends BaseVectorLayer {
-  /**
-   * @param {Options} [options] Options.
-   */
-  constructor(options) {
-    options = options ? options : {};
-
-    const baseOptions = /** @type {Object} */ (Object.assign({}, options));
-    delete baseOptions.preload;
-    delete baseOptions.useInterimTilesOnError;
-
-    super(
-      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */ (
-        baseOptions
-      ),
-    );
-
-    /***
-     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.on;
-
-    /***
-     * @type {VectorTileLayerOnSignature<import("../events").EventsKey>}
-     */
-    this.once;
-
-    /***
-     * @type {VectorTileLayerOnSignature<void>}
-     */
-    this.un;
-
-    const renderMode = options.renderMode || 'hybrid';
-    assert(
-      renderMode == 'hybrid' || renderMode == 'vector',
-      "`renderMode` must be `'hybrid'` or `'vector'`",
-    );
+export class VectorTileLayer extends BaseVectorLayer {
 
     /**
-     * @private
-     * @type {VectorTileRenderType}
+     * 
      */
-    this.renderMode_ = renderMode;
-
-    this.setPreload(options.preload ? options.preload : 0);
-    this.setUseInterimTilesOnError(
-      options.useInterimTilesOnError !== undefined
-        ? options.useInterimTilesOnError
-        : true,
-    );
+    override on: VectorTileLayerOnSignature<EventsKey>;
 
     /**
-     * @return {import("./Base.js").BackgroundColor} Background color.
-     * @function
+     * 
+     */
+    override once: VectorTileLayerOnSignature<EventsKey>;
+
+    /**
+     * 
+     */
+    override un: VectorTileLayerOnSignature<void>;
+    
+    /**
+     * @param {Options} [options] Options.
+     */
+    constructor(options: Options) {
+        options = options ? options : {};
+
+        const baseOptions = /** @type {Object} */ (Object.assign({}, options));
+        delete baseOptions.preload;
+        delete baseOptions.useInterimTilesOnError;
+
+        super(
+      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */(
+                baseOptions
+            ),
+        );
+        this.on = this.onInternal as VectorTileLayerOnSignature<EventsKey>;
+        this.once = this.onceInternal as VectorTileLayerOnSignature<EventsKey>;
+        this.un = this.unInternal as VectorTileLayerOnSignature<void>;
+
+        const renderMode = options.renderMode || 'hybrid';
+        assert(
+            renderMode == 'hybrid' || renderMode == 'vector',
+            "`renderMode` must be `'hybrid'` or `'vector'`",
+        );
+
+        /**
+         * @private
+         * @type {VectorTileRenderType}
+         */
+        this.renderMode_ = renderMode;
+
+        this.setPreload(options.preload ? options.preload : 0);
+        this.setUseInterimTilesOnError(
+            options.useInterimTilesOnError !== undefined
+                ? options.useInterimTilesOnError
+                : true,
+        );
+
+        /**
+         * @return {import("./Base.js").BackgroundColor} Background color.
+         * @function
+         * @api
+         */
+        this.getBackground;
+
+        /**
+         * @param {import("./Base.js").BackgroundColor} background Background color.
+         * @function
+         * @api
+         */
+        this.setBackground;
+    }
+
+    createRenderer() {
+        return new CanvasVectorTileLayerRenderer(this);
+    }
+
+    /**
+     * Get the topmost feature that intersects the given pixel on the viewport. Returns a promise
+     * that resolves with an array of features. The array will either contain the topmost feature
+     * when a hit was detected, or it will be empty.
+     *
+     * The hit detection algorithm used for this method is optimized for performance, but is less
+     * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map.js").default#getFeaturesAtPixel}.
+     * Text is not considered, and icons are only represented by their bounding box instead of the exact
+     * image.
+     *
+     * @param {import("../pixel.js").Pixel} pixel Pixel.
+     * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
      * @api
      */
-    this.getBackground;
+    getFeatures(pixel: import("../pixel.js").Pixel): Promise<Array<import("../Feature").FeatureLike>> {
+        return super.getFeatures(pixel);
+    }
 
     /**
-     * @param {import("./Base.js").BackgroundColor} background Background color.
-     * @function
+     * @return {VectorTileRenderType} The render mode.
+     */
+    getRenderMode(): VectorTileRenderType {
+        return this.renderMode_;
+    }
+
+    /**
+     * Return the level as number to which we will preload tiles up to.
+     * @return {number} The level to preload tiles up to.
+     * @observable
      * @api
      */
-    this.setBackground;
-  }
+    getPreload(): number {
+        return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+    }
 
-  createRenderer() {
-    return new CanvasVectorTileLayerRenderer(this);
-  }
+    /**
+     * Whether we use interim tiles on error.
+     * @return {boolean} Use interim tiles on error.
+     * @observable
+     * @api
+     */
+    getUseInterimTilesOnError(): boolean {
+        return /** @type {boolean} */ (
+            this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
+        );
+    }
 
-  /**
-   * Get the topmost feature that intersects the given pixel on the viewport. Returns a promise
-   * that resolves with an array of features. The array will either contain the topmost feature
-   * when a hit was detected, or it will be empty.
-   *
-   * The hit detection algorithm used for this method is optimized for performance, but is less
-   * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map.js").default#getFeaturesAtPixel}.
-   * Text is not considered, and icons are only represented by their bounding box instead of the exact
-   * image.
-   *
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
-   * @api
-   */
-  getFeatures(pixel) {
-    return super.getFeatures(pixel);
-  }
+    /**
+     * Set the level as number to which we will preload tiles up to.
+     * @param {number} preload The level to preload tiles up to.
+     * @observable
+     * @api
+     */
+    setPreload(preload: number) {
+        this.set(TileProperty.PRELOAD, preload);
+    }
 
-  /**
-   * @return {VectorTileRenderType} The render mode.
-   */
-  getRenderMode() {
-    return this.renderMode_;
-  }
-
-  /**
-   * Return the level as number to which we will preload tiles up to.
-   * @return {number} The level to preload tiles up to.
-   * @observable
-   * @api
-   */
-  getPreload() {
-    return /** @type {number} */ (this.get(TileProperty.PRELOAD));
-  }
-
-  /**
-   * Whether we use interim tiles on error.
-   * @return {boolean} Use interim tiles on error.
-   * @observable
-   * @api
-   */
-  getUseInterimTilesOnError() {
-    return /** @type {boolean} */ (
-      this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR)
-    );
-  }
-
-  /**
-   * Set the level as number to which we will preload tiles up to.
-   * @param {number} preload The level to preload tiles up to.
-   * @observable
-   * @api
-   */
-  setPreload(preload) {
-    this.set(TileProperty.PRELOAD, preload);
-  }
-
-  /**
-   * Set whether we use interim tiles on error.
-   * @param {boolean} useInterimTilesOnError Use interim tiles on error.
-   * @observable
-   * @api
-   */
-  setUseInterimTilesOnError(useInterimTilesOnError) {
-    this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
-  }
+    /**
+     * Set whether we use interim tiles on error.
+     * @param {boolean} useInterimTilesOnError Use interim tiles on error.
+     * @observable
+     * @api
+     */
+    setUseInterimTilesOnError(useInterimTilesOnError: boolean) {
+        this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    }
 }
 
 export default VectorTileLayer;

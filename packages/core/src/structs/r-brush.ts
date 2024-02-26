@@ -1,6 +1,6 @@
 import RBush_ from 'rbush';
 
-import { Extent, createOrUpdate, equals } from '../extent';
+import { Extent, createOrUpdate, equals } from '@olts/core/extent';
 import { getUid } from '../util';
 import { isEmpty } from '../js-obj';
 

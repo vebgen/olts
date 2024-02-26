@@ -305,7 +305,7 @@ export class Polygon extends SimpleGeometry {
      * @return Linear rings.
      * @api
      */
-    getLinearRings(): Array<LinearRing> {
+    getLinearRings():LinearRing[] {
         const layout = this.layout;
         const flatCoordinates = this.flatCoordinates;
         const ends = this.ends_;

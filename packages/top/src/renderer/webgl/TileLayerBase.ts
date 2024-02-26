@@ -140,14 +140,13 @@ export function getCacheKey(source, tileCoord) {
  */
 
 /**
- * @classdesc
  * Base WebGL renderer for tile layers.
  * @template {BaseLayerType} LayerType
  * @template {import("../../Tile.js").default} TileType
  * @template {import("../../webgl/BaseTileRepresentation.js").default<TileType>} TileRepresentation
  * @extends {WebGLLayerRenderer<LayerType>}
  */
-class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
+export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {LayerType} tileLayer Tile layer.
    * @param {Options} options Options.
@@ -172,7 +171,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.tileTransform_ = createTransform();
 
     /**
-     * @type {Array<number>}
+     * @type {number[]}
      * @protected
      */
     this.tempMat4 = createMat4();

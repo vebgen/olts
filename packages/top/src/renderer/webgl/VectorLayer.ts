@@ -52,7 +52,6 @@ export const Uniforms = {
  */
 
 /**
- * @classdesc
  * Experimental WebGL vector renderer. Supports polygons, lines and points:
  *  * Polygons are broken down into triangles
  *  * Lines are rendered as strips of quads
@@ -69,7 +68,7 @@ export const Uniforms = {
  *
  * Note: this uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  */
-class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
+export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {import("../../layer/Layer.js").default} layer Layer.
    * @param {Options} options Options.

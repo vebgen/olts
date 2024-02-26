@@ -8,11 +8,10 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom by double-clicking on the map.
  * @api
  */
-class DoubleClickZoom extends Interaction {
+export class DoubleClickZoom extends Interaction {
   /**
    * @param {Options} [options] Options.
    */

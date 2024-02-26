@@ -27,13 +27,12 @@ import {getUid} from '@olts/core/util';
 import {toSize} from '../../size.js';
 
 /**
- * @classdesc
  * Canvas renderer for tile layers.
  * @api
  * @template {import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
  * @extends {CanvasLayerRenderer<LayerType>}
  */
-class CanvasTileLayerRenderer extends CanvasLayerRenderer {
+export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {LayerType} tileLayer Tile layer.
    */
@@ -416,7 +415,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.preRender(context, frameState);
 
     this.renderedTiles.length = 0;
-    /** @type {Array<number>} */
+    /** @type {number[]} */
     let zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(ascending);
 

@@ -33,7 +33,6 @@ import {removeChildren, replaceNode} from '@olts/core/dom';
  */
 
 /**
- * @classdesc
  * Control to show all the attributions associated with the layer sources
  * in the map. This control is one of the default controls included in maps.
  * By default it will show in the bottom right portion of the map, but this can
@@ -41,7 +40,7 @@ import {removeChildren, replaceNode} from '@olts/core/dom';
  *
  * @api
  */
-class Attribution extends Control {
+export class Attribution extends Control {
   /**
    * @param {Options} [options] Attribution options.
    */

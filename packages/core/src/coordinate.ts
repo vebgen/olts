@@ -1,5 +1,5 @@
 import { assert } from './asserts';
-import { getWidth } from './extent';
+import { getWidth } from '@olts/core/extent';
 import { modulo, toFixed } from './math';
 import { Projection } from './proj';
 import { padNumber } from './string';

@@ -30,7 +30,6 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
  */
 
 /**
- * @classdesc
  * Base class that calls user-defined functions on `down`, `move` and `up`
  * events. This class also manages "drag sequences".
  *
@@ -40,7 +39,7 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
  * user function is called and returns `false`.
  * @api
  */
-class PointerInteraction extends Interaction {
+export class PointerInteraction extends Interaction {
   /**
    * @param {Options} [options] Options.
    */

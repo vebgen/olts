@@ -136,11 +136,10 @@ const ProviderConfig = {
  */
 
 /**
- * @classdesc
  * Layer source for the Stadia Maps tile server.
  * @api
  */
-class StadiaMaps extends XYZ {
+export class StadiaMaps extends XYZ {
   /**
    * @param {Options} options StadiaMaps options.
    */

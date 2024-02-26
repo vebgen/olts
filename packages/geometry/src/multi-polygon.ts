@@ -401,7 +401,7 @@ export class MultiPolygon extends SimpleGeometry {
      * @return Polygons.
      * @api
      */
-    getPolygons(): Array<Polygon> {
+    getPolygons():Polygon[] {
         const layout = this.layout;
         const flatCoordinates = this.flatCoordinates;
         const endss = this.endss_;

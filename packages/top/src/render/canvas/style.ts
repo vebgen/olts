@@ -107,7 +107,7 @@ export function flatStylesToStyleFunction(flatStyles: Array<import('../../style/
   /**
    * @type {Array<StyleEvaluator>}
    */
-  const evaluators: Array<StyleEvaluator> = new Array(length);
+  const evaluators:StyleEvaluator[] = new Array(length);
   for (let i = 0; i < length; ++i) {
     evaluators[i] = buildStyle(flatStyles[i], parsingContext);
   }
@@ -116,7 +116,7 @@ export function flatStylesToStyleFunction(flatStyles: Array<import('../../style/
   /**
    * @type {Array<Style>}
    */
-  const styles: Array<Style> = new Array(length);
+  const styles:Style[] = new Array(length);
 
   return function (feature, resolution) {
     evaluationContext.properties = feature.getPropertiesInternal();
@@ -163,7 +163,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
   /**
    * @type {Array<CompiledRule>}
    */
-  const compiledRules: Array<CompiledRule> = new Array(length);
+  const compiledRules:CompiledRule[] = new Array(length);
 
   for (let i = 0; i < length; ++i) {
     const rule = rules[i];
@@ -175,7 +175,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
     /**
      * @type {Array<StyleEvaluator>}
      */
-    let styles: Array<StyleEvaluator>;
+    let styles:StyleEvaluator[];
     if (Array.isArray(rule.style)) {
       const styleLength = rule.style.length;
       styles = new Array(styleLength);
@@ -193,7 +193,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
     /**
      * @type {Array<Style>}
      */
-    const styles: Array<Style> = [];
+    const styles:Style[] = [];
 
     let someMatched = false;
     for (let i = 0; i < length; ++i) {
@@ -446,7 +446,7 @@ function buildStroke(flatStyle: FlatStyle, prefix: string, context: ParsingConte
 function buildText(flatStyle: FlatStyle, context: ParsingContext): TextEvaluator | null {
   const prefix = 'text-';
 
-  // Currently, an Array<string> may be used for rich text support.  This doesn't
+  // Currently, anstring[] may be used for rich text support.  This doesn't
   // work with our expression syntax where arrays of strings are interpreted as
   // call expressions.  To support rich text, we could add a 'strings' operator
   // where all the following arguments would be string values.
@@ -1202,9 +1202,9 @@ function optionalIconAnchorUnits(flatStyle: FlatStyle, property: string): import
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {Array<number>|undefined} An array of numbers or undefined.
+ * @return {number[]|undefined} An array of numbers or undefined.
  */
-function optionalNumberArray(flatStyle: FlatStyle, property: string): Array<number> | undefined {
+function optionalNumberArray(flatStyle: FlatStyle, property: string): number[] | undefined {
   const encoded = flatStyle[property];
   if (encoded === undefined) {
     return undefined;
@@ -1234,9 +1234,9 @@ function optionalDeclutterMode(flatStyle: FlatStyle, property: string): "declutt
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {string|Array<number>|undefined} A string or an array of color values or undefined.
+ * @return {string|number[]|undefined} A string or an array of color values or undefined.
  */
-function optionalColorLike(flatStyle: FlatStyle, property: string): string | Array<number> | undefined {
+function optionalColorLike(flatStyle: FlatStyle, property: string): string | number[] | undefined {
   const encoded = flatStyle[property];
   if (encoded === undefined) {
     return undefined;
@@ -1247,9 +1247,9 @@ function optionalColorLike(flatStyle: FlatStyle, property: string): string | Arr
 /**
  * @param {any} value The value.
  * @param {string} property The property.
- * @return {Array<number>} An array of numbers.
+ * @return {number[]} An array of numbers.
  */
-function requireNumberArray(value: any, property: string): Array<number> {
+function requireNumberArray(value: any, property: string): number[] {
   if (!Array.isArray(value)) {
     throw new Error(`Expected an array for ${property}`);
   }
@@ -1289,9 +1289,9 @@ function requireNumber(value: any, property: string): number {
 /**
  * @param {any} value The value.
  * @param {string} property The property.
- * @return {Array<number>|string} A color.
+ * @return {number[]|string} A color.
  */
-function requireColorLike(value: any, property: string): Array<number> | string {
+function requireColorLike(value: any, property: string): number[] | string {
   if (typeof value === 'string') {
     return value;
   }
@@ -1306,9 +1306,9 @@ function requireColorLike(value: any, property: string): Array<number> | string 
 /**
  * @param {any} value The value.
  * @param {string} property The property.
- * @return {Array<number>} A number or an array of two numbers.
+ * @return {number[]} A number or an array of two numbers.
  */
-function requireSize(value: any, property: string): Array<number> {
+function requireSize(value: any, property: string): number[] {
   const size = requireNumberArray(value, property);
   if (size.length !== 2) {
     throw new Error(`Expected an array of two numbers for ${property}`);
@@ -1319,9 +1319,9 @@ function requireSize(value: any, property: string): Array<number> {
 /**
  * @param {any} value The value.
  * @param {string} property The property.
- * @return {number|Array<number>} A number or an array of two numbers.
+ * @return {number|number[]} A number or an array of two numbers.
  */
-function requireSizeLike(value: any, property: string): number | Array<number> {
+function requireSizeLike(value: any, property: string): number | number[] {
   if (typeof value === 'number') {
     return value;
   }

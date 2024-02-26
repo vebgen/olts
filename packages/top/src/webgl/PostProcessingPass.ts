@@ -50,7 +50,6 @@ const DEFAULT_FRAGMENT_SHADER = `
  */
 
 /**
- * @classdesc
  * This class is used to define Post Processing passes with custom shaders and uniforms.
  * This is used internally by {@link module:ol/webgl/Helper~WebGLHelper}.
  *
@@ -96,7 +95,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  *   }
  *   ```
  */
-class WebGLPostProcessingPass {
+export class WebGLPostProcessingPass {
   /**
    * @param {Options} options Options.
    */

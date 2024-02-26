@@ -41,7 +41,7 @@ export const Attributes = {
  * for each feature.
  * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
- * @property {function(this:import("./MixedGeometryBatch").GeometryBatchItem, FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
+ * @property {function(this:import("./MixedGeometryBatch").GeometryBatchItem, FeatureLike):number|number[]} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
@@ -83,8 +83,7 @@ export const Attributes = {
  * @typedef {import('../../style/webgl').WebGLStyle|StyleShaders} VectorStyle
  */
 
-/**
- * @classdesc This class is responsible for:
+/** This class is responsible for:
  * 1. generate WebGL buffers according to a provided style, using a MixedGeometryBatch as input
  * 2. rendering geometries contained in said buffers
  *
@@ -97,7 +96,7 @@ export const Attributes = {
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
  */
-class VectorStyleRenderer {
+export class VectorStyleRenderer {
   /**
    * @param {VectorStyle} styleOrShaders Literal style or custom shaders
    * @param {import('../../webgl/Helper').default} helper Helper

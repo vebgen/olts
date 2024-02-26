@@ -145,7 +145,7 @@ export class MultiPoint extends SimpleGeometry {
      * @return Points.
      * @api
      */
-    getPoints(): Array<Point> {
+    getPoints():Point[] {
         const flatCoordinates = this.flatCoordinates;
         const layout = this.layout;
         const stride = this.stride;

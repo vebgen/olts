@@ -15,7 +15,6 @@ import {platformModifierKey, targetNotEditable} from '../events/condition.js';
  */
 
 /**
- * @classdesc
  * Allows the user to zoom the map using keyboard + and -.
  * Note that, although this interaction is by default included in maps,
  * the keys can only be used when browser focus is on the element to which
@@ -27,7 +26,7 @@ import {platformModifierKey, targetNotEditable} from '../events/condition.js';
  * See also {@link module:ol/interaction/KeyboardPan~KeyboardPan}.
  * @api
  */
-class KeyboardZoom extends Interaction {
+export class KeyboardZoom extends Interaction {
   /**
    * @param {Options} [options] Options.
    */

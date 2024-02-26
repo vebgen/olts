@@ -5,14 +5,13 @@ import {extend} from '@olts/core/array';
 import {getXMLSerializer, isDocument, parse} from '../xml.js';
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for XML feature formats.
  *
  * @abstract
  */
-class XMLFeature extends FeatureFormat {
+export class XMLFeature extends FeatureFormat {
   constructor() {
     super();
 

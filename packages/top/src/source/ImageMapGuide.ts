@@ -18,7 +18,7 @@ import {decode} from '../Image.js';
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
- * @property {Array<number>} [resolutions] Resolutions.
+ * @property {number[]} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
@@ -27,13 +27,12 @@ import {decode} from '../Image.js';
  */
 
 /**
- * @classdesc
  * Source for images from Mapguide servers
  *
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
-class ImageMapGuide extends ImageSource {
+export class ImageMapGuide extends ImageSource {
   /**
    * @param {Options} options ImageMapGuide options.
    */

@@ -1,5 +1,5 @@
 import { lerp } from '@olts/core/math';
-import { rotate } from './transform';
+import { rotate } from '@olts/core/transform';
 
 export type MeasureAndCacheTextWidth = (
     font: string, text: string, cache: Record<string, number>

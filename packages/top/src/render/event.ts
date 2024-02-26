@@ -1,7 +1,7 @@
 
-import Event from '../events/Event';
+import { BaseEvent as Event } from '@olts/events';
 
-class RenderEvent extends Event {
+export class RenderEvent extends Event {
   /**
    * @param {import("./EventType").default} type Type.
    * @param {import("../transform").Transform} [inversePixelTransform] Transform for

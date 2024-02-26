@@ -10,11 +10,10 @@ import {listen, unlistenByKey} from '../events.js';
 import {replaceChildren} from '@olts/core/dom';
 
 /**
- * @classdesc
  * Canvas map renderer.
  * @api
  */
-class CompositeMapRenderer extends MapRenderer {
+export class CompositeMapRenderer extends MapRenderer {
   /**
    * @param {import("../Map.js").default} map Map.
    */

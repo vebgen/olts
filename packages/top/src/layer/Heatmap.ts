@@ -52,7 +52,6 @@ const Property = {
 const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 /**
- * @classdesc
  * Layer for rendering vector data as a heatmap.
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
@@ -62,7 +61,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @extends {BaseVector<import("../source/Vector.js").default, WebGLPointsLayerRenderer>}
  * @api
  */
-class Heatmap extends BaseVector {
+export class Heatmap extends BaseVector {
   /**
    * @param {Options} [options] Options.
    */

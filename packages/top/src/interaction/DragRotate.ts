@@ -17,7 +17,6 @@ import {disable} from '../rotationconstraint.js';
  */
 
 /**
- * @classdesc
  * Allows the user to rotate the map by clicking and dragging on the map,
  * normally combined with an {@link module:ol/events/condition} that limits
  * it to when the alt and shift keys are held down.
@@ -25,7 +24,7 @@ import {disable} from '../rotationconstraint.js';
  * This interaction is only supported for mouse devices.
  * @api
  */
-class DragRotate extends PointerInteraction {
+export class DragRotate extends PointerInteraction {
   /**
    * @param {Options} [options] Options.
    */

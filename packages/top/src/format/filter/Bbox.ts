@@ -2,13 +2,12 @@
 import Filter from './Filter.js';
 
 /**
- * @classdesc
  * Represents a `<BBOX>` operator to test whether a geometry-valued property
  * intersects a fixed bounding box
  *
  * @api
  */
-class Bbox extends Filter {
+export class Bbox extends Filter {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Extent} extent Extent.

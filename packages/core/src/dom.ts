@@ -149,7 +149,7 @@ export function replaceChildren(node: Node, children: Node[]) {
 export function createCanvasContext2D(
     width?: number,
     height?: number,
-    canvasPool?: Array<HTMLCanvasElement>,
+    canvasPool?:HTMLCanvasElement[],
     settings?: CanvasRenderingContext2DSettings
 ): CanvasRenderingContext2D {
     let canvas: HTMLCanvasElement | OffscreenCanvas;

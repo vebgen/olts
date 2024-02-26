@@ -1,4 +1,4 @@
-import BaseObject from '../Object.js';
+import { BaseObject  } from '@olts/events';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -36,7 +36,6 @@ import {get as getProjection} from '../proj.js';
  */
 
 /**
- * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
@@ -45,7 +44,7 @@ import {get as getProjection} from '../proj.js';
  * @abstract
  * @api
  */
-class Source extends BaseObject {
+export class Source extends BaseObject {
   /**
    * @param {Options} options Source options.
    */
@@ -149,7 +148,7 @@ class Source extends BaseObject {
 
   /**
    * @param {import("../proj/Projection").default} [projection] Projection.
-   * @return {Array<number>|null} Resolutions.
+   * @return {number[]|null} Resolutions.
    */
   getResolutions(projection) {
     return null;

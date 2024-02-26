@@ -37,7 +37,7 @@ const DECIMALS = 5;
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
  * origin. Tile coordinates increase left to right and downwards. If not specified, `extent` or
  * `origin` must be provided.
- * @property {!Array<number>} resolutions Resolutions. The array index of each resolution needs
+ * @property {!number[]} resolutions Resolutions. The array index of each resolution needs
  * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
  * array will have a length of `maxZoom + 1`.
  * @property {Array<Size>} [sizes] Number of tile rows and columns
@@ -55,12 +55,11 @@ const DECIMALS = 5;
  */
 
 /**
- * @classdesc
  * Base class for setting the grid pattern for sources accessing tiled-image
  * servers.
  * @api
  */
-class TileGrid {
+export class TileGrid {
   /**
    * @param {Options} options Tile grid options.
    */
@@ -73,7 +72,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {!Array<number>}
+     * @type {!number[]}
      */
     this.resolutions_ = options.resolutions;
     assert(
@@ -333,7 +332,7 @@ class TileGrid {
 
   /**
    * Get the list of resolutions for the tile grid.
-   * @return {Array<number>} Resolutions.
+   * @return {number[]} Resolutions.
    * @api
    */
   getResolutions() {
@@ -641,7 +640,7 @@ class TileGrid {
   /**
    * The tile with the provided tile coordinate intersects the given viewport.
    * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coordinate.
-   * @param {Array<number>} viewport Viewport as returned from {@link module:ol/extent.getRotatedViewport}.
+   * @param {number[]} viewport Viewport as returned from {@link module:ol/extent.getRotatedViewport}.
    * @return {boolean} The tile with the provided tile coordinate intersects the given viewport.
    */
   tileCoordIntersectsViewport(tileCoord, viewport) {

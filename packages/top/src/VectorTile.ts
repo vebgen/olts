@@ -2,7 +2,7 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
-class VectorTile extends Tile {
+export class VectorTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.

@@ -71,7 +71,7 @@ export {
     remove as removeTransform,
     createMat4,
     mat4FromTransform,
-} from './transform';
+} from '@olts/core/transform';
 
 
 export type {

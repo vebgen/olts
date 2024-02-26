@@ -50,11 +50,10 @@ export const Attributes = {
  */
 
 /**
- * @classdesc
  * WebGL renderer for vector tile layers. Experimental.
  * @extends {WebGLBaseTileLayerRenderer<LayerType>}
  */
-class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
+export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   /**
    * @param {LayerType} tileLayer Tile layer.
    * @param {Options} options Options.

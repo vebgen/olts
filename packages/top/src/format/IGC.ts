@@ -44,7 +44,6 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  */
 
 /**
- * @classdesc
  * Feature format for `*.igc` flight recording files.
  *
  * As IGC sources contain a single feature,
@@ -53,7 +52,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  *
  * @api
  */
-class IGC extends TextFeature {
+export class IGC extends TextFeature {
   /**
    * @param {Options} [options] Options.
    */

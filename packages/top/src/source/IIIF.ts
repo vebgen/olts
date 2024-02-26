@@ -24,7 +24,7 @@ import {toSize} from '../size.js';
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {Array<number>} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
+ * @property {number[]} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
  * @property {Size} size Size of the image [width, height].
  * @property {Array<Size>} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
@@ -51,11 +51,10 @@ function formatPercentage(percentage) {
 }
 
 /**
- * @classdesc
  * Layer source for IIIF Image API services.
  * @api
  */
-class IIIF extends TileImage {
+export class IIIF extends TileImage {
   /**
    * @param {Options} [options] Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
    * to parse Image API service information responses into constructor options.

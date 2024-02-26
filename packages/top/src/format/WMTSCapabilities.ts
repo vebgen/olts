@@ -34,12 +34,11 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @classdesc
  * Format for reading WMTS capabilities data.
  *
  * @api
  */
-class WMTSCapabilities extends XML {
+export class WMTSCapabilities extends XML {
   constructor() {
     super();
 

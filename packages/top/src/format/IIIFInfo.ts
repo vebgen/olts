@@ -20,7 +20,7 @@ import {assert} from '@olts/core/asserts';
 
 /**
  * @typedef {Object} TileInfo
- * @property {Array<number>} scaleFactors Supported resolution scaling factors.
+ * @property {number[]} scaleFactors Supported resolution scaling factors.
  * @property {number} width Tile width in pixels.
  * @property {number} [height] Tile height in pixels. Same as tile width if height is
  * not given.
@@ -298,13 +298,12 @@ versionFunctions[Versions.VERSION2] = generateVersion2Options;
 versionFunctions[Versions.VERSION3] = generateVersion3Options;
 
 /**
- * @classdesc
  * Format for transforming IIIF Image API image information responses into
  * IIIF tile source ready options
  *
  * @api
  */
-class IIIFInfo {
+export class IIIFInfo {
   /**
    * @param {string|ImageInformationResponse} imageInfo
    * Deserialized image information JSON response object or JSON response as string

@@ -50,13 +50,12 @@ import {toSize} from '../size.js';
  */
 
 /**
- * @classdesc
  * A source for typed array data tiles.
  *
  * @fires import("./Tile.js").TileSourceEvent
  * @api
  */
-class DataTileSource extends TileSource {
+export class DataTileSource extends TileSource {
   /**
    * @param {Options} options DataTile source options.
    */

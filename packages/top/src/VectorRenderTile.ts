@@ -18,7 +18,7 @@ import {getUid} from '@olts/core/util';
  */
 const canvasPool = [];
 
-class VectorRenderTile extends Tile {
+export class VectorRenderTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.

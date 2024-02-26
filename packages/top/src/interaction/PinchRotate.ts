@@ -13,12 +13,11 @@ import {disable} from '../rotationconstraint.js';
  */
 
 /**
- * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
  * @api
  */
-class PinchRotate extends PointerInteraction {
+export class PinchRotate extends PointerInteraction {
   /**
    * @param {Options} [options] Options.
    */

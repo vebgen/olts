@@ -38,7 +38,7 @@ import PinchZoom from './PinchZoom.js';
  * options, but the order of the interactions is fixed.  If you want to specify
  * a different order for interactions, you will need to create your own
  * {@link module:ol/interaction/Interaction~Interaction} instances and insert
- * them into a {@link module:ol/Collection~Collection} in the order you want
+ * them into a {@link Collection} in the order you want
  * before creating your {@link module:ol/Map~Map} instance. Changing the order can
  * be of interest if the event propagation needs to be stopped at a point.
  * The default set of interactions, in sequence, is:

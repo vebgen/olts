@@ -41,11 +41,10 @@ const MAX_SUBDIVISION = 10;
 const MAX_TRIANGLE_WIDTH = 0.25;
 
 /**
- * @classdesc
  * Class containing triangulation of the given target extent.
  * Used for determining source data and the reprojection itself.
  */
-class Triangulation {
+export class Triangulation {
   /**
    * @param {import("../proj/Projection.js").default} sourceProj Source projection.
    * @param {import("../proj/Projection.js").default} targetProj Target projection.

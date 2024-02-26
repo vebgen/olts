@@ -37,7 +37,7 @@ export const TEXT_ALIGN: { left: 0; center: 0.5; right: 1; top: 0; middle: 0.5; 
   'bottom': 1,
 };
 
-class CanvasTextBuilder extends CanvasBuilder {
+export class CanvasTextBuilder extends CanvasBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {Extent} maxExtent Maximum extent.

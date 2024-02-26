@@ -47,12 +47,11 @@ import {transformGeometryWithOptions} from './Feature.js';
  */
 
 /**
- * @classdesc
  * Feature format for reading data in the TopoJSON format.
  *
  * @api
  */
-class TopoJSON extends JSONFeature {
+export class TopoJSON extends JSONFeature {
   /**
    * @param {Options} [options] Options.
    */
@@ -174,7 +173,7 @@ const GEOMETRY_READERS = {
 
 /**
  * Concatenate arcs into a coordinate array.
- * @param {Array<number>} indices Indices of arcs to concatenate.  Negative
+ * @param {number[]} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
  * @param {Array<Array<Coordinate>>} arcs Array of arcs (already
  *     transformed).
@@ -211,8 +210,8 @@ function concatenateArcs(indices, arcs) {
  * Create a point from a TopoJSON geometry object.
  *
  * @param {TopoJSONPoint} object TopoJSON object.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  * @return {Point} Geometry.
  */
 function readPointGeometry(object, scale, translate) {
@@ -227,8 +226,8 @@ function readPointGeometry(object, scale, translate) {
  * Create a multi-point from a TopoJSON geometry object.
  *
  * @param {TopoJSONMultiPoint} object TopoJSON object.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  * @return {MultiPoint} Geometry.
  */
 function readMultiPointGeometry(object, scale, translate) {
@@ -311,8 +310,8 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
  *     object.
  * @param {Array<Array<Coordinate>>} arcs Array of arcs.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
@@ -349,8 +348,8 @@ function readFeaturesFromGeometryCollection(
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
  * @param {Array<Array<Coordinate>>} arcs Array of arcs.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
@@ -399,8 +398,8 @@ function readFeatureFromGeometry(
  * modified in place.
  *
  * @param {Array<Array<Coordinate>>} arcs Array of arcs.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  */
 function transformArcs(arcs, scale, translate) {
   for (let i = 0, ii = arcs.length; i < ii; ++i) {
@@ -412,8 +411,8 @@ function transformArcs(arcs, scale, translate) {
  * Apply a linear transform to an arc.  The provided arc is modified in place.
  *
  * @param {Array<Coordinate>} arc Arc.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  */
 function transformArc(arc, scale, translate) {
   let x = 0;
@@ -433,8 +432,8 @@ function transformArc(arc, scale, translate) {
  * place.
  *
  * @param {Coordinate} vertex Vertex.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {number[]} scale Scale for each dimension.
+ * @param {number[]} translate Translation for each dimension.
  */
 function transformVertex(vertex, scale, translate) {
   vertex[0] = vertex[0] * scale[0] + translate[0];

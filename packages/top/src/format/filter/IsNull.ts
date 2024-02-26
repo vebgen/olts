@@ -1,11 +1,10 @@
 import Comparison from './Comparison.js';
 
 /**
- * @classdesc
  * Represents a `<PropertyIsNull>` comparison operator.
  * @api
  */
-class IsNull extends Comparison {
+export class IsNull extends Comparison {
   /**
    * @param {!string} propertyName Name of the context property to compare.
    */
