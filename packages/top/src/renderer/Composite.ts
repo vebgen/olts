@@ -1,12 +1,12 @@
 
-import MapRenderer from './Map.js';
-import ObjectEventType from '../ObjectEventType.js';
-import RenderEvent from '../render/Event.js';
-import RenderEventType from '../render/EventType.js';
+import MapRenderer from './Map';
+import ObjectEventType from '../ObjectEventType';
+import RenderEvent from '../render/Event';
+import RenderEventType from '../render/EventType';
 import {CLASS_UNSELECTABLE} from '@olts/core/css';
-import {checkedFonts} from '../render/canvas.js';
-import {inView} from '../layer/Layer.js';
-import {listen, unlistenByKey} from '../events.js';
+import {checkedFonts} from '../render/canvas';
+import {inView} from '../layer/Layer';
+import {listen, unlistenByKey} from '../events';
 import {replaceChildren} from '@olts/core/dom';
 
 /**
@@ -15,13 +15,13 @@ import {replaceChildren} from '@olts/core/dom';
  */
 export class CompositeMapRenderer extends MapRenderer {
   /**
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../Map").default} map Map.
    */
   constructor(map) {
     super(map);
 
     /**
-     * @type {import("../events.js").EventsKey}
+     * @type {import("../events").EventsKey}
      */
     this.fontChangeListenerKey_ = listen(
       checkedFonts,
@@ -58,14 +58,14 @@ export class CompositeMapRenderer extends MapRenderer {
     this.renderedVisible_ = true;
 
     /**
-     * @type {Array<import("../layer/BaseVector.js").default>}
+     * @type {Array<import("../layer/BaseVector").default>}
      */
     this.declutterLayers_ = [];
   }
 
   /**
-   * @param {import("../render/EventType.js").default} type Event type.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../render/EventType").default} type Event type.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
@@ -83,7 +83,7 @@ export class CompositeMapRenderer extends MapRenderer {
 
   /**
    * Render.
-   * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @param {?import("../Map").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     if (!frameState) {
@@ -132,7 +132,7 @@ export class CompositeMapRenderer extends MapRenderer {
       }
       if ('getDeclutter' in layer) {
         declutterLayers.push(
-          /** @type {import("../layer/BaseVector.js").default} */ (layer),
+          /** @type {import("../layer/BaseVector").default} */ (layer),
         );
       }
     }
@@ -151,7 +151,7 @@ export class CompositeMapRenderer extends MapRenderer {
   }
 
   /**
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   flushDeclutterItems(frameState) {
     const layers = this.declutterLayers_;

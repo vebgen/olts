@@ -1,7 +1,7 @@
 
 //FIXME Implement projection handling
 
-import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPoint } from '@olts/geometry';
@@ -9,13 +9,13 @@ import { MultiPolygon } from '@olts/geometry';
 import PBF from 'pbf';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import Projection from '../proj/Projection.js';
-import RenderFeature from '../render/Feature.js';
-import {get} from '../proj.js';
+import Projection from '../proj/Projection';
+import RenderFeature from '../render/Feature';
+import {get} from '../proj';
 import {inflateEnds} from '@olts/geometry/flat';
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
+ * @template {import("../Feature").FeatureClass} FeatureClassToFeature
  * @typedef {Object} Options
  * @property {FeatureClassToFeature} [featureClass] Class for features returned by
  * {@link module:ol/format/MVT~MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
@@ -31,7 +31,7 @@ import {inflateEnds} from '@olts/geometry/flat';
 /**
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof import("../render/Feature.js").default]
+ * @template {import('../Feature').FeatureClass} [T=typeof import("../render/Feature").default]
  * @extends {FeatureFormat<T>}
  * @api
  */
@@ -54,7 +54,7 @@ export class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {import("../Feature.js").FeatureClass}
+     * @type {import("../Feature").FeatureClass}
      */
     this.featureClass_ = options.featureClass
       ? options.featureClass
@@ -157,8 +157,8 @@ export class MVT extends FeatureFormat {
    * @private
    * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
-   * @param {import("./Feature.js").ReadOptions} options Read options.
-   * @return {import("../Feature.js").FeatureLike|null} Feature.
+   * @param {import("./Feature").ReadOptions} options Read options.
+   * @return {import("../Feature").FeatureLike|null} Feature.
    */
   createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
@@ -215,7 +215,7 @@ export class MVT extends FeatureFormat {
                   ? new MultiLineString(flatCoordinates, 'XY', ends)
                   : null;
       }
-      const ctor = /** @type {typeof import("../Feature.js").default} */ (
+      const ctor = /** @type {typeof import("../Feature").default} */ (
         this.featureClass_
       );
       feature = new ctor();
@@ -234,7 +234,7 @@ export class MVT extends FeatureFormat {
   }
 
   /**
-   * @return {import("./Feature.js").Type} Format.
+   * @return {import("./Feature").Type} Format.
    */
   getType() {
     return 'arraybuffer';
@@ -244,8 +244,8 @@ export class MVT extends FeatureFormat {
    * Read all features.
    *
    * @param {ArrayBuffer} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {Array<import('./Feature').FeatureClassToFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -276,7 +276,7 @@ export class MVT extends FeatureFormat {
       }
     }
 
-    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
+    return /** @type {Array<import('./Feature').FeatureClassToFeature<T>>} */ (
       features
     );
   }
@@ -285,7 +285,7 @@ export class MVT extends FeatureFormat {
    * Read the projection from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    * @api
    */
   readProjection(source) {
@@ -414,10 +414,10 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {import("../render/Feature.js").Type} The geometry type.
+ * @return {import("../render/Feature").Type} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../render/Feature.js").Type} */
+  /** @type {import("../render/Feature").Type} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ? 'Point' : 'MultiPoint';

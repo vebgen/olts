@@ -1,11 +1,11 @@
 
 
-import TileImage from './TileImage.js';
-import {appendParams} from '../uri.js';
+import TileImage from './TileImage';
+import {appendParams} from '../uri';
 import {containsExtent} from '@olts/core/extent';
-import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
-import {equivalent, get as getProjection, transformExtent} from '../proj.js';
+import {createFromCapabilitiesMatrixSet} from '../tile-grid/WMTS';
+import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction';
+import {equivalent, get as getProjection, transformExtent} from '../proj';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
@@ -14,7 +14,7 @@ import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
@@ -22,14 +22,14 @@ import {equivalent, get as getProjection, transformExtent} from '../proj.js';
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {import("../tilegrid/WMTS").default} tileGrid Tile grid.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {RequestEncoding} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {typeof import("../ImageTile").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
@@ -44,7 +44,7 @@ import {equivalent, get as getProjection, transformExtent} from '../proj.js';
  * template.  For KVP encoding, it is normal URL. A `{?-?}` template pattern,
  * for example `subdomain{a-f}.domain.com`, may be used instead of defining
  * each one separately in the `urls` option.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -55,7 +55,7 @@ import {equivalent, get as getProjection, transformExtent} from '../proj.js';
  * @property {boolean} [wrapX=false] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -261,7 +261,7 @@ export class WMTS extends TileImage {
 
   /**
    * @param {string} template Template.
-   * @return {import("../Tile.js").UrlFunction} Tile URL function.
+   * @return {import("../Tile").UrlFunction} Tile URL function.
    */
   createFromWMTSTemplate(template) {
     const requestEncoding = this.requestEncoding_;
@@ -294,16 +294,16 @@ export class WMTS extends TileImage {
             return p.toLowerCase() in context ? context[p.toLowerCase()] : m;
           });
 
-    const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
+    const tileGrid = /** @type {import("../tilegrid/WMTS").default} */ (
       this.tileGrid
     );
     const dimensions = this.dimensions_;
 
     return (
       /**
-       * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+       * @param {TileCoord} tileCoord Tile coordinate.
        * @param {number} pixelRatio Pixel ratio.
-       * @param {import("../proj/Projection.js").default} projection Projection.
+       * @param {import("../proj/Projection").default} projection Projection.
        * @return {string|undefined} Tile URL.
        */
       function (tileCoord, pixelRatio, projection) {

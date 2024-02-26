@@ -1,20 +1,20 @@
 
 
-import Feature from '../Feature.js';
-import JSONFeature from './JSONFeature.js';
-import RenderFeature from '../render/Feature.js';
+import Feature from '../Feature';
+import JSONFeature from './JSONFeature';
+import RenderFeature from '../render/Feature';
 import {
   createGeometry,
   createRenderFeature,
   transformGeometryWithOptions,
-} from './Feature.js';
+} from './Feature';
 import {
   deflateCoordinatesArray,
   deflateMultiCoordinatesArray,
 } from '@olts/geometry/flat';
 import {getLayoutForStride} from '@olts/geometry';
-import {get as getProjection} from '../proj.js';
-import {isEmpty} from '../obj.js';
+import {get as getProjection} from '../proj';
+import {isEmpty} from '../obj';
 
 /**
  * @typedef {import("geojson").GeoJSON} GeoJSONObject
@@ -31,11 +31,11 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
- * @template {import("../Feature.js").FeatureClass} FeatureClassToFeature
+ * @template {import("../Feature").FeatureClass} FeatureClassToFeature
  * @typedef {Object} Options
  *
- * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
- * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection for features read or
+ * @property {ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
+ * @property {ProjectionLike} [featureProjection] Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
  * @property {string} [geometryName] Geometry name to use when creating features.
  * @property {boolean} [extractGeometryName=false] Certain GeoJSON providers include
@@ -51,7 +51,7 @@ import {isEmpty} from '../obj.js';
 /**
  * Feature format for reading and writing data in the GeoJSON format.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof Feature]
+ * @template {import('../Feature').FeatureClass} [T=typeof Feature]
  * @extends {JSONFeature<T>}
  * @api
  */
@@ -65,7 +65,7 @@ export class GeoJSON extends JSONFeature {
     super();
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection(
       options.dataProjection ? options.dataProjection : 'EPSG:4326',
@@ -73,7 +73,7 @@ export class GeoJSON extends JSONFeature {
 
     if (options.featureProjection) {
       /**
-       * @type {import("../proj/Projection.js").default}
+       * @type {import("../proj/Projection").default}
        */
       this.defaultFeatureProjection = getProjection(options.featureProjection);
     }
@@ -104,7 +104,7 @@ export class GeoJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Feature|RenderFeature|Array<RenderFeature>}.default} Feature.
    */
@@ -155,7 +155,7 @@ export class GeoJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature|RenderFeature>} Features.
    */
@@ -187,7 +187,7 @@ export class GeoJSON extends JSONFeature {
 
   /**
    * @param {GeoJSONGeometry} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -198,7 +198,7 @@ export class GeoJSON extends JSONFeature {
   /**
    * @param {Object} object Object.
    * @protected
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    */
   readProjectionFromObject(object) {
     const crs = object['crs'];
@@ -214,14 +214,14 @@ export class GeoJSON extends JSONFeature {
     } else {
       projection = this.dataProjection;
     }
-    return /** @type {import("../proj/Projection.js").default} */ (projection);
+    return /** @type {import("../proj/Projection").default} */ (projection);
   }
 
   /**
    * Encode a feature as a GeoJSON Feature object.
    *
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Feature.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {GeoJSONFeature} Object.
    * @api
    */
@@ -262,8 +262,8 @@ export class GeoJSON extends JSONFeature {
   /**
    * Encode an array of features as a GeoJSON object.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {GeoJSONFeatureCollection} GeoJSON Object.
    * @api
    */
@@ -283,7 +283,7 @@ export class GeoJSON extends JSONFeature {
    * Encode a geometry as a GeoJSON object.
    *
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
    * @api
    */
@@ -294,15 +294,15 @@ export class GeoJSON extends JSONFeature {
 
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
- * @param {import("./Feature.js").ReadOptions} [options] Read options.
- * @return {import("./Feature.js").GeometryObject} Geometry.
+ * @param {import("./Feature").ReadOptions} [options] Read options.
+ * @return {import("./Feature").GeometryObject} Geometry.
  */
 function readGeometryInternal(object, options) {
   if (!object) {
     return null;
   }
 
-  /** @type {import("./Feature.js").GeometryObject} */
+  /** @type {import("./Feature").GeometryObject} */
   let geometry;
   switch (object['type']) {
     case 'Point': {
@@ -352,7 +352,7 @@ function readGeometryInternal(object, options) {
 
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
- * @param {import("./Feature.js").ReadOptions} [options] Read options.
+ * @param {import("./Feature").ReadOptions} [options] Read options.
  * @return {Geometry} Geometry.
  */
 function readGeometry(object, options) {
@@ -362,14 +362,14 @@ function readGeometry(object, options) {
 
 /**
  * @param {GeoJSONGeometryCollection} object Object.
- * @param {import("./Feature.js").ReadOptions} [options] Read options.
- * @return {import("./Feature.js").GeometryCollectionObject} Geometry collection.
+ * @param {import("./Feature").ReadOptions} [options] Read options.
+ * @return {import("./Feature").GeometryCollectionObject} Geometry collection.
  */
 function readGeometryCollectionGeometry(object, options) {
   const geometries = object['geometries'].map(
     /**
      * @param {GeoJSONGeometry} geometry Geometry.
-     * @return {import("./Feature.js").GeometryObject} geometry Geometry.
+     * @return {import("./Feature").GeometryObject} geometry Geometry.
      */
     function (geometry) {
       return readGeometryInternal(geometry, options);
@@ -380,7 +380,7 @@ function readGeometryCollectionGeometry(object, options) {
 
 /**
  * @param {GeoJSONPoint} object Input object.
- * @return {import("./Feature.js").GeometryObject} Point geometry.
+ * @return {import("./Feature").GeometryObject} Point geometry.
  */
 function readPointGeometry(object) {
   const flatCoordinates = object['coordinates'];
@@ -393,7 +393,7 @@ function readPointGeometry(object) {
 
 /**
  * @param {GeoJSONLineString} object Object.
- * @return {import("./Feature.js").GeometryObject} LineString geometry.
+ * @return {import("./Feature").GeometryObject} LineString geometry.
  */
 function readLineStringGeometry(object) {
   const coordinates = object['coordinates'];
@@ -408,7 +408,7 @@ function readLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONMultiLineString} object Object.
- * @return {import("./Feature.js").GeometryObject} MultiLineString geometry.
+ * @return {import("./Feature").GeometryObject} MultiLineString geometry.
  */
 function readMultiLineStringGeometry(object) {
   const coordinates = object['coordinates'];
@@ -425,7 +425,7 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONMultiPoint} object Object.
- * @return {import("./Feature.js").GeometryObject} MultiPoint geometry.
+ * @return {import("./Feature").GeometryObject} MultiPoint geometry.
  */
 function readMultiPointGeometry(object) {
   const coordinates = object['coordinates'];
@@ -438,7 +438,7 @@ function readMultiPointGeometry(object) {
 
 /**
  * @param {GeoJSONMultiPolygon} object Object.
- * @return {import("./Feature.js").GeometryObject} MultiPolygon geometry.
+ * @return {import("./Feature").GeometryObject} MultiPolygon geometry.
  */
 function readMultiPolygonGeometry(object) {
   const coordinates = object['coordinates'];
@@ -460,7 +460,7 @@ function readMultiPolygonGeometry(object) {
 
 /**
  * @param {GeoJSONPolygon} object Object.
- * @return {import("./Feature.js").GeometryObject} Polygon.
+ * @return {import("./Feature").GeometryObject} Polygon.
  */
 function readPolygonGeometry(object) {
   const coordinates = object['coordinates'];
@@ -477,7 +477,7 @@ function readPolygonGeometry(object) {
 
 /**
  * @param {Geometry} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeGeometry(geometry, options) {
@@ -555,7 +555,7 @@ function writeGeometry(geometry, options) {
 
 /**
  * @param {GeometryCollection} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
 function writeGeometryCollectionGeometry(geometry, options) {
@@ -572,7 +572,7 @@ function writeGeometryCollectionGeometry(geometry, options) {
 
 /**
  * @param {LineString} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeLineStringGeometry(geometry, options) {
@@ -584,7 +584,7 @@ function writeLineStringGeometry(geometry, options) {
 
 /**
  * @param {MultiLineString} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, options) {
@@ -596,7 +596,7 @@ function writeMultiLineStringGeometry(geometry, options) {
 
 /**
  * @param {MultiPoint} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPointGeometry(geometry, options) {
@@ -608,7 +608,7 @@ function writeMultiPointGeometry(geometry, options) {
 
 /**
  * @param {MultiPolygon} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, options) {
@@ -624,7 +624,7 @@ function writeMultiPolygonGeometry(geometry, options) {
 
 /**
  * @param {Point} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePointGeometry(geometry, options) {
@@ -636,7 +636,7 @@ function writePointGeometry(geometry, options) {
 
 /**
  * @param {Polygon} geometry Geometry.
- * @param {import("./Feature.js").WriteOptions} [options] Write options.
+ * @param {import("./Feature").WriteOptions} [options] Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePolygonGeometry(geometry, options) {

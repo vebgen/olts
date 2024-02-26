@@ -9,22 +9,22 @@ import {
   NumberType,
   StringType,
   newParsingContext,
-} from '../expr/expression.js';
-import {ShaderBuilder} from './ShaderBuilder.js';
+} from '../expr/expression';
+import {ShaderBuilder} from './ShaderBuilder';
 import {
   arrayToGlsl,
   buildExpression,
   getStringNumberEquivalent,
   stringToGlsl,
   uniformNameForVariable,
-} from '../expr/gpu.js';
+} from '../expr/gpu';
 import {asArray} from '@olts/core/color';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
  * will be read and modified during the parsing operation.
- * @param {import("../expr/gpu.js").CompilationContext} compilationContext Compilation context
- * @param {import("../expr/expression.js").EncodedExpression} value Value
+ * @param {import("../expr/gpu").CompilationContext} compilationContext Compilation context
+ * @param {import("../expr/expression").EncodedExpression} value Value
  * @param {number} [expectedType] Expected final type (can be several types combined)
  * @return {string} GLSL-compatible output
  */
@@ -41,7 +41,7 @@ export function expressionToGlsl(compilationContext, value, expectedType) {
 
 /**
  * Packs all components of a color into a two-floats array
- * @param {import("../color.js").Color|string} color Color as array of numbers or string
+ * @param {import("../color").Color|string} color Color as array of numbers or string
  * @return {number[]} Vec2 array containing the color in compressed form
  */
 export function packColor(color) {
@@ -101,9 +101,9 @@ export function computeHash(input) {
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
  */
 function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
@@ -193,9 +193,9 @@ function getColorFromDistanceField(
 /**
  * This will parse an image property provided by `<prefix>-src`
  * The image size expression in GLSL will be returned
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
  * @return {string} The image size expression
@@ -226,9 +226,9 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
 
 /**
  * This will parse an image's offset properties provided by `<prefix>-offset`, `<prefix>-offset-origin` and `<prefix>-size`
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
- * @param {import("../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
+ * @param {import("../expr/gpu").CompilationContext} context Shader compilation context (vertex or fragment)
  * @param {string} imageSize Pixel size of the full image as a GLSL expression
  * @param {string} sampleSize Pixel size of the sample in the image as a GLSL expression
  * @return {string} The offset expression
@@ -263,11 +263,11 @@ function parseImageOffsetProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
- * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseCircleProperties(
   style,
@@ -357,11 +357,11 @@ function parseCircleProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
- * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseShapeProperties(
   style,
@@ -499,11 +499,11 @@ function parseShapeProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
- * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseIconProperties(
   style,
@@ -626,11 +626,11 @@ function parseIconProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
- * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseStrokeProperties(
   style,
@@ -791,11 +791,11 @@ function parseStrokeProperties(
 }
 
 /**
- * @param {import("../style/webgl.js").WebGLStyle} style Style
+ * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
- * @param {import("../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
- * @param {import("../expr/gpu.js").CompilationContext} fragContext Fragment shader compilation context
+ * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {import("../expr/gpu").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../expr/gpu").CompilationContext} fragContext Fragment shader compilation context
  */
 function parseFillProperties(
   style,
@@ -861,24 +861,24 @@ function parseFillProperties(
 /**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
- * @property {import("../render/webgl/VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
- * @property {import("../render/webgl/VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("../render/webgl/VectorStyleRenderer").UniformDefinitions} uniforms Uniform definitions
+ * @property {import("../render/webgl/VectorStyleRenderer").AttributeDefinitions} attributes Attribute definitions
  */
 
 /**
- * Parses a {@link import("../style/webgl.js").WebGLStyle} object and returns a {@link ShaderBuilder}
+ * Parses a {@link import("../style/webgl").WebGLStyle} object and returns a {@link ShaderBuilder}
  * object that has been configured according to the given style, as well as `attributes` and `uniforms`
  * arrays to be fed to the `WebGLPointsRenderer` class.
  *
  * Also returns `uniforms` and `attributes` properties as expected by the
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
- * @param {import("../style/webgl.js").WebGLStyle} style Literal style.
+ * @param {import("../style/webgl").WebGLStyle} style Literal style.
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style) {
   /**
-   * @type {import("../expr/gpu.js").CompilationContext}
+   * @type {import("../expr/gpu").CompilationContext}
    */
   const vertContext = {
     inFragmentShader: false,
@@ -889,7 +889,7 @@ export function parseLiteralStyle(style) {
   };
 
   /**
-   * @type {import("../expr/gpu.js").CompilationContext}
+   * @type {import("../expr/gpu").CompilationContext}
    */
   const fragContext = {
     inFragmentShader: true,
@@ -901,7 +901,7 @@ export function parseLiteralStyle(style) {
 
   const builder = new ShaderBuilder();
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Record<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   if ('icon-src' in style) {

@@ -1,13 +1,13 @@
 
-import CanvasLayerRenderer from './Layer.js';
-import ImageState from '../../ImageState.js';
-import ViewHint from '../../ViewHint.js';
+import CanvasLayerRenderer from './Layer';
+import ImageState from '../../ImageState';
+import ViewHint from '../../ViewHint';
 import {
   apply as applyTransform,
   compose as composeTransform,
   makeInverse,
   toString as toTransformString,
-} from '../../transform.js';
+} from '../../transform';
 import {
   containsCoordinate,
   containsExtent,
@@ -17,7 +17,7 @@ import {
   intersects as intersectsExtent,
   isEmpty,
 } from '@olts/core/extent';
-import {fromUserExtent} from '../../proj.js';
+import {fromUserExtent} from '../../proj';
 
 /**
  * Canvas renderer for image layers.
@@ -25,20 +25,20 @@ import {fromUserExtent} from '../../proj.js';
  */
 export class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
-   * @param {import("../../layer/Image.js").default} imageLayer Image layer.
+   * @param {import("../../layer/Image").default} imageLayer Image layer.
    */
   constructor(imageLayer) {
     super(imageLayer);
 
     /**
      * @protected
-     * @type {?import("../../Image.js").default}
+     * @type {?import("../../Image").default}
      */
     this.image_ = null;
   }
 
   /**
-   * @return {import('../../DataTile.js').ImageLike} Image.
+   * @return {import('../../DataTile').ImageLike} Image.
    */
   getImage() {
     return !this.image_ ? null : this.image_.getImage();
@@ -46,7 +46,7 @@ export class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -96,7 +96,7 @@ export class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
    */
   getData(pixel) {
@@ -142,7 +142,7 @@ export class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */

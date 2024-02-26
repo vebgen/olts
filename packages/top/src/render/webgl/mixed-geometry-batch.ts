@@ -52,7 +52,7 @@ export interface GeometryBatchItem {
 
 /**
  * @typedef {Object} PolygonGeometryBatch A geometry batch specific to polygons
- * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
+ * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
@@ -61,7 +61,7 @@ export interface GeometryBatchItem {
 
 /**
  * @typedef {Object} LineStringGeometryBatch A geometry batch specific to lines
- * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
+ * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
  * @property {number} verticesCount Amount of vertices from geometries in the batch.
@@ -69,7 +69,7 @@ export interface GeometryBatchItem {
 
 /**
  * @typedef {Object} PointGeometryBatch A geometry batch specific to points
- * @property {Object<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
+ * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
  * @property {number} geometriesCount Amount of geometries in the batch.
  */

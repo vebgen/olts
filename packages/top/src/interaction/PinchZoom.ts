@@ -1,7 +1,7 @@
 
 import PointerInteraction, {
   centroid as centroidFromPointers,
-} from './Pointer.js';
+} from './Pointer';
 import {FALSE} from '@olts/core/functions';
 
 /**
@@ -21,7 +21,7 @@ export class PinchZoom extends PointerInteraction {
   constructor(options) {
     options = options ? options : {};
 
-    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+    const pointerOptions = /** @type {import("./Pointer").Options} */ (
       options
     );
 
@@ -58,7 +58,7 @@ export class PinchZoom extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let scaleDelta = 1.0;
@@ -95,7 +95,7 @@ export class PinchZoom extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -111,7 +111,7 @@ export class PinchZoom extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {

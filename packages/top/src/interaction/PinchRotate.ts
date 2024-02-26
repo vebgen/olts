@@ -1,9 +1,9 @@
 
 import PointerInteraction, {
   centroid as centroidFromPointers,
-} from './Pointer.js';
+} from './Pointer';
 import {FALSE} from '@olts/core/functions';
-import {disable} from '../rotationconstraint.js';
+import {disable} from '../rotationconstraint';
 
 /**
  * @typedef {Object} Options
@@ -24,7 +24,7 @@ export class PinchRotate extends PointerInteraction {
   constructor(options) {
     options = options ? options : {};
 
-    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+    const pointerOptions = /** @type {import("./Pointer").Options} */ (
       options
     );
 
@@ -73,7 +73,7 @@ export class PinchRotate extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let rotationDelta = 0.0;
@@ -119,7 +119,7 @@ export class PinchRotate extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -134,7 +134,7 @@ export class PinchRotate extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {

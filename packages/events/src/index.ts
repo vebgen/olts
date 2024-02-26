@@ -1,4 +1,5 @@
-export { EventType } from './event-type';
+export type { EventType } from './event-type';
+export { EventTypes } from './event-type';
 
 
 export {
@@ -32,7 +33,7 @@ export { BaseObject, ObjectEvent } from './object';
 export type {
     OnSignature,
     CombinedOnSignature,
-    EventTypes,
+    EventTypes as ObservableEventTypes,
     ObservableOnSignature,
 } from './observable';
 export { Observable, unByKey } from './observable';

@@ -1,29 +1,29 @@
 
 import { BaseObject, EventsKey } from '@olts/events';
-import Collection from './Collection.js';
-import CollectionEventType from './CollectionEventType.js';
-import CompositeMapRenderer from './renderer/Composite.js';
-import EventType from './events/EventType.js';
-import Layer from './layer/Layer.js';
-import LayerGroup, { GroupEvent } from './layer/Group.js';
-import MapBrowserEvent from './MapBrowserEvent.js';
-import MapBrowserEventHandler from './MapBrowserEventHandler.js';
-import MapBrowserEventType from './MapBrowserEventType.js';
-import MapEvent from './MapEvent.js';
-import MapEventType from './MapEventType.js';
-import MapProperty from './MapProperty.js';
-import ObjectEventType from './ObjectEventType.js';
-import PointerEventType from './pointer/EventType.js';
-import RenderEventType from './render/EventType.js';
-import TileQueue, { getTilePriority } from './TileQueue.js';
-import View from './View.js';
-import ViewHint from './ViewHint.js';
+import Collection from './Collection';
+import CollectionEventType from './CollectionEventType';
+import CompositeMapRenderer from './renderer/Composite';
+import type { EventType } from '@olts/events';
+import Layer from './layer/Layer';
+import LayerGroup, { GroupEvent } from './layer/Group';
+import MapBrowserEvent from './MapBrowserEvent';
+import MapBrowserEventHandler from './MapBrowserEventHandler';
+import MapBrowserEventType from './MapBrowserEventType';
+import MapEvent from './MapEvent';
+import MapEventType from './MapEventType';
+import MapProperty from './MapProperty';
+import ObjectEventType from './ObjectEventType';
+import PointerEventType from './pointer/EventType';
+import RenderEventType from './render/EventType';
+import TileQueue, { getTilePriority } from './TileQueue';
+import View from './View';
+import ViewHint from './ViewHint';
 import { DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS } from '@olts/core/has';
 import { TRUE } from '@olts/core/functions';
 import {
     apply as applyTransform,
     create as createTransform,
-} from './transform.js';
+} from './transform';
 import { assert } from '@olts/core/asserts';
 import {
     clone,
@@ -32,15 +32,15 @@ import {
     getForViewAndSize,
     isEmpty,
 } from '@olts/core/extent';
-import { defaults as defaultControls } from './control/defaults.js';
-import { defaults as defaultInteractions } from './interaction/defaults.js';
+import { defaults as defaultControls } from './control/defaults';
+import { defaults as defaultInteractions } from './interaction/defaults';
 import { equals } from '@olts/core/array';
-import { fromUserCoordinate, toUserCoordinate } from './proj.js';
+import { fromUserCoordinate, toUserCoordinate } from './proj';
 import { getUid } from '@olts/core/util';
-import { hasArea } from './size.js';
-import { listen, unlistenByKey } from './events.js';
+import { hasArea } from './size';
+import { listen, unlistenByKey } from './events';
 import { removeNode } from '@olts/core/dom';
-import { warn } from './console.js';
+import { warn } from './console';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -48,24 +48,24 @@ import { warn } from './console.js';
  * @typedef {Object} FrameState
  * @property {number} pixelRatio The pixel ratio of the frame.
  * @property {number} time The time when rendering of the frame was requested.
- * @property {import("./View.js").State} viewState The state of the current view.
+ * @property {import("./View").State} viewState The state of the current view.
  * @property {boolean} animate Animate.
- * @property {import("./transform.js").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
+ * @property {import("./transform").Transform} coordinateToPixelTransform CoordinateToPixelTransform.
  * @property {import("rbush").default} declutterTree DeclutterTree.
  * @property {null|Extent} extent Extent (in view projection coordinates).
  * @property {Extent} [nextExtent] Next extent during an animation series.
  * @property {number} index Index.
- * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
+ * @property {Array<import("./layer/Layer").State>} layerStatesArray LayerStatesArray.
  * @property {number} layerIndex LayerIndex.
- * @property {import("./transform.js").Transform} pixelToCoordinateTransform PixelToCoordinateTransform.
+ * @property {import("./transform").Transform} pixelToCoordinateTransform PixelToCoordinateTransform.
  * @property {Array<PostRenderFunction>} postRenderFunctions PostRenderFunctions.
  * @property {Size} size Size.
  * @property {TileQueue} tileQueue TileQueue.
- * @property {!Object<string, Object<string, boolean>>} usedTiles UsedTiles.
+ * @property {!Record<string, Record<string, boolean>>} usedTiles UsedTiles.
  * @property {number[]} viewHints ViewHints.
- * @property {!Object<string, Object<string, boolean>>} wantedTiles WantedTiles.
+ * @property {!Record<string, Record<string, boolean>>} wantedTiles WantedTiles.
  * @property {string} mapId The id of the map.
- * @property {Object<string, boolean>} renderTargets Identifiers of previously rendered elements.
+ * @property {Record<string, boolean>} renderTargets Identifiers of previously rendered elements.
  */
 
 /**
@@ -74,7 +74,7 @@ import { warn } from './console.js';
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
+ * @property {undefined|function(import("./layer/Layer").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
  * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
@@ -87,11 +87,11 @@ import { warn } from './console.js';
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {Collection<import("./control/Control.js").default>} [controls] Controls.
- * @property {Collection<import("./interaction/Interaction.js").default>} [interactions] Interactions.
+ * @property {Collection<import("./control/Control").default>} [controls] Controls.
+ * @property {Collection<import("./interaction/Interaction").default>} [interactions] Interactions.
  * @property {HTMLElement|Document} keyboardEventTarget KeyboardEventTarget.
- * @property {Collection<import("./Overlay.js").default>} overlays Overlays.
- * @property {Object<string, *>} values Values.
+ * @property {Collection<import("./Overlay").default>} overlays Overlays.
+ * @property {Record<string, *>} values Values.
  */
 
 /**
@@ -113,12 +113,12 @@ import { warn } from './console.js';
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
+ * @property {Collection<import("./control/Control").default>|Array<import("./control/Control").default>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control/defaults.defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
- * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
+ * @property {Collection<import("./interaction/Interaction").default>|Array<import("./interaction/Interaction").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction/defaults.defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
@@ -129,7 +129,7 @@ import { warn } from './console.js';
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>|LayerGroup} [layers]
+ * @property {Array<import("./layer/Base").default>|Collection<import("./layer/Base").default>|LayerGroup} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -139,22 +139,22 @@ import { warn } from './console.js';
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
- * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
+ * @property {Collection<import("./Overlay").default>|Array<import("./Overlay").default>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
  * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
  * **Note:** CSS `transform` support for the target element is limited to `scale`.
- * @property {View|Promise<import("./View.js").ViewOptions>} [view] The map's view.  No layer sources will be
+ * @property {View|Promise<import("./View").ViewOptions>} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
 
 /**
- * @param {import("./layer/Base.js").default} layer Layer.
+ * @param {import("./layer/Base").default} layer Layer.
  */
-function removeLayerMapProperty(layer: import("./layer/Base.js").default) {
+function removeLayerMapProperty(layer: import("./layer/Base").default) {
     if (layer instanceof Layer) {
         layer.setMapInternal(null);
         return;
@@ -165,10 +165,10 @@ function removeLayerMapProperty(layer: import("./layer/Base.js").default) {
 }
 
 /**
- * @param {import("./layer/Base.js").default} layer Layer.
+ * @param {import("./layer/Base").default} layer Layer.
  * @param {Map} map Map.
  */
-function setLayerMapProperty(layer: import("./layer/Base.js").default, map: Map) {
+function setLayerMapProperty(layer: import("./layer/Base").default, map: Map) {
     if (layer instanceof Layer) {
         layer.setMapInternal(map);
         return;
@@ -185,10 +185,10 @@ function setLayerMapProperty(layer: import("./layer/Base.js").default, map: Map)
  * The map is the core component of OpenLayers. For a map to render, a view,
  * one or more layers, and a target container are needed:
  *
- *     import Map from 'ol/Map.js';
- *     import View from 'ol/View.js';
- *     import TileLayer from 'ol/layer/Tile.js';
- *     import OSM from 'ol/source/OSM.js';
+ *     import Map from 'ol/Map';
+ *     import View from 'ol/View';
+ *     import TileLayer from 'ol/layer/Tile';
+ *     import OSM from 'ol/source/OSM';
  *
  *     const map = new Map({
  *       view: new View({
@@ -225,11 +225,11 @@ function setLayerMapProperty(layer: import("./layer/Base.js").default, map: Map)
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
- * @fires import("./MapBrowserEvent.js").MapBrowserEvent
- * @fires import("./MapEvent.js").MapEvent
- * @fires import("./render/Event.js").default#precompose
- * @fires import("./render/Event.js").default#postcompose
- * @fires import("./render/Event.js").default#rendercomplete
+ * @fires import("./MapBrowserEvent").MapBrowserEvent
+ * @fires import("./MapEvent").MapEvent
+ * @fires import("./render/Event").default#precompose
+ * @fires import("./render/Event").default#postcompose
+ * @fires import("./render/Event").default#rendercomplete
  * @api
  */
 export class Map extends BaseObject {
@@ -312,13 +312,13 @@ export class Map extends BaseObject {
 
         /**
          * @private
-         * @type {import("./transform.js").Transform}
+         * @type {import("./transform").Transform}
          */
         this.coordinateToPixelTransform_ = createTransform();
 
         /**
          * @private
-         * @type {import("./transform.js").Transform}
+         * @type {import("./transform").Transform}
          */
         this.pixelToCoordinateTransform_ = createTransform();
 
@@ -343,19 +343,19 @@ export class Map extends BaseObject {
 
         /**
          * @private
-         * @type {?import("./events.js").EventsKey}
+         * @type {?import("./events").EventsKey}
          */
         this.viewPropertyListenerKey_ = null;
 
         /**
          * @private
-         * @type {?import("./events.js").EventsKey}
+         * @type {?import("./events").EventsKey}
          */
         this.viewChangeListenerKey_ = null;
 
         /**
          * @private
-         * @type {?Array<import("./events.js").EventsKey>}
+         * @type {?Array<import("./events").EventsKey>}
          */
         this.layerGroupPropertyListenerKeys_ = null;
 
@@ -417,7 +417,7 @@ export class Map extends BaseObject {
 
         /**
          * @private
-         * @type {?Array<import("./events.js").EventsKey>}
+         * @type {?Array<import("./events").EventsKey>}
          */
         this.targetChangeHandlerKeys_ = null;
 
@@ -433,13 +433,13 @@ export class Map extends BaseObject {
         this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
 
         /**
-         * @type {Collection<import("./control/Control.js").default>}
+         * @type {Collection<import("./control/Control").default>}
          * @protected
          */
         this.controls = optionsInternal.controls || defaultControls();
 
         /**
-         * @type {Collection<import("./interaction/Interaction.js").default>}
+         * @type {Collection<import("./interaction/Interaction").default>}
          * @protected
          */
         this.interactions =
@@ -449,7 +449,7 @@ export class Map extends BaseObject {
             });
 
         /**
-         * @type {Collection<import("./Overlay.js").default>}
+         * @type {Collection<import("./Overlay").default>}
          * @private
          */
         this.overlays_ = optionsInternal.overlays;
@@ -457,12 +457,12 @@ export class Map extends BaseObject {
         /**
          * A lookup of overlays by id.
          * @private
-         * @type {Object<string, import("./Overlay.js").default>}
+         * @type {Record<string, import("./Overlay").default>}
          */
         this.overlayIdIndex_ = {};
 
         /**
-         * @type {import("./renderer/Map.js").default|null}
+         * @type {import("./renderer/Map").default|null}
          * @private
          */
         this.renderer_ = null;
@@ -504,9 +504,9 @@ export class Map extends BaseObject {
         this.controls.addEventListener(
             CollectionEventType.ADD,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent
+             * @param {import("./Collection").CollectionEvent<import("./control/Control").default>} event CollectionEvent
              */
-            (event: import("./Collection.js").CollectionEvent<import("./control/Control.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./control/Control").default>) => {
                 event.element.setMap(this);
             },
         );
@@ -514,9 +514,9 @@ export class Map extends BaseObject {
         this.controls.addEventListener(
             CollectionEventType.REMOVE,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./control/Control.js").default>} event CollectionEvent.
+             * @param {import("./Collection").CollectionEvent<import("./control/Control").default>} event CollectionEvent.
              */
-            (event: import("./Collection.js").CollectionEvent<import("./control/Control.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./control/Control").default>) => {
                 event.element.setMap(null);
             },
         );
@@ -524,9 +524,9 @@ export class Map extends BaseObject {
         this.interactions.addEventListener(
             CollectionEventType.ADD,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
+             * @param {import("./Collection").CollectionEvent<import("./interaction/Interaction").default>} event CollectionEvent.
              */
-            (event: import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./interaction/Interaction").default>) => {
                 event.element.setMap(this);
             },
         );
@@ -534,9 +534,9 @@ export class Map extends BaseObject {
         this.interactions.addEventListener(
             CollectionEventType.REMOVE,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>} event CollectionEvent.
+             * @param {import("./Collection").CollectionEvent<import("./interaction/Interaction").default>} event CollectionEvent.
              */
-            (event: import("./Collection.js").CollectionEvent<import("./interaction/Interaction.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./interaction/Interaction").default>) => {
                 event.element.setMap(null);
             },
         );
@@ -544,9 +544,9 @@ export class Map extends BaseObject {
         this.overlays_.addEventListener(
             CollectionEventType.ADD,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
+             * @param {import("./Collection").CollectionEvent<import("./Overlay").default>} event CollectionEvent.
              */
-            (event: import("./Collection.js").CollectionEvent<import("./Overlay.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./Overlay").default>) => {
                 this.addOverlayInternal_(event.element);
             },
         );
@@ -554,9 +554,9 @@ export class Map extends BaseObject {
         this.overlays_.addEventListener(
             CollectionEventType.REMOVE,
             /**
-             * @param {import("./Collection.js").CollectionEvent<import("./Overlay.js").default>} event CollectionEvent.
+             * @param {import("./Collection").CollectionEvent<import("./Overlay").default>} event CollectionEvent.
              */
-            (event: import("./Collection.js").CollectionEvent<import("./Overlay.js").default>) => {
+            (event: import("./Collection").CollectionEvent<import("./Overlay").default>) => {
                 const id = event.element.getId();
                 if (id !== undefined) {
                     delete this.overlayIdIndex_[id.toString()];
@@ -567,18 +567,18 @@ export class Map extends BaseObject {
 
         this.controls.forEach(
             /**
-             * @param {import("./control/Control.js").default} control Control.
+             * @param {import("./control/Control").default} control Control.
              */
-            (control: import("./control/Control.js").default) => {
+            (control: import("./control/Control").default) => {
                 control.setMap(this);
             },
         );
 
         this.interactions.forEach(
             /**
-             * @param {import("./interaction/Interaction.js").default} interaction Interaction.
+             * @param {import("./interaction/Interaction").default} interaction Interaction.
              */
-            (interaction: import("./interaction/Interaction.js").default) => {
+            (interaction: import("./interaction/Interaction").default) => {
                 interaction.setMap(this);
             },
         );
@@ -588,10 +588,10 @@ export class Map extends BaseObject {
 
     /**
      * Add the given control to the map.
-     * @param {import("./control/Control.js").default} control Control.
+     * @param {import("./control/Control").default} control Control.
      * @api
      */
-    addControl(control: import("./control/Control.js").default) {
+    addControl(control: import("./control/Control").default) {
         this.getControls().push(control);
     }
 
@@ -601,10 +601,10 @@ export class Map extends BaseObject {
      * available on {@link Collection}. This can be used to
      * stop the event propagation from the handleEvent function. The interactions
      * get to handle the events in the reverse order of this collection.
-     * @param {import("./interaction/Interaction.js").default} interaction Interaction to add.
+     * @param {import("./interaction/Interaction").default} interaction Interaction to add.
      * @api
      */
-    addInteraction(interaction: import("./interaction/Interaction.js").default) {
+    addInteraction(interaction: import("./interaction/Interaction").default) {
         this.getInteractions().push(interaction);
     }
 
@@ -612,37 +612,37 @@ export class Map extends BaseObject {
      * Adds the given layer to the top of this map. If you want to add a layer
      * elsewhere in the stack, use `getLayers()` and the methods available on
      * {@link Collection}.
-     * @param {import("./layer/Base.js").default} layer Layer.
+     * @param {import("./layer/Base").default} layer Layer.
      * @api
      */
-    addLayer(layer: import("./layer/Base.js").default) {
+    addLayer(layer: import("./layer/Base").default) {
         const layers = this.getLayerGroup().getLayers();
         layers.push(layer);
     }
 
     /**
-     * @param {import("./layer/Group.js").GroupEvent} event The layer add event.
+     * @param {import("./layer/Group").GroupEvent} event The layer add event.
      * @private
      */
-    handleLayerAdd_(event: import("./layer/Group.js").GroupEvent) {
+    handleLayerAdd_(event: import("./layer/Group").GroupEvent) {
         setLayerMapProperty(event.layer, this);
     }
 
     /**
      * Add the given overlay to the map.
-     * @param {import("./Overlay.js").default} overlay Overlay.
+     * @param {import("./Overlay").default} overlay Overlay.
      * @api
      */
-    addOverlay(overlay: import("./Overlay.js").default) {
+    addOverlay(overlay: import("./Overlay").default) {
         this.getOverlays().push(overlay);
     }
 
     /**
      * This deals with map's overlay collection changes.
-     * @param {import("./Overlay.js").default} overlay Overlay.
+     * @param {import("./Overlay").default} overlay Overlay.
      * @private
      */
-    addOverlayInternal_(overlay: import("./Overlay.js").default) {
+    addOverlayInternal_(overlay: import("./Overlay").default) {
         const id = overlay.getId();
         if (id !== undefined) {
             this.overlayIdIndex_[id.toString()] = overlay;
@@ -667,8 +667,8 @@ export class Map extends BaseObject {
      * Detect features that intersect a pixel on the viewport, and execute a
      * callback with each intersecting feature. Layers included in the detection can
      * be configured through the `layerFilter` option in `options`.
-     * @param {import("./pixel.js").Pixel} pixel Pixel.
-     * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, SimpleGeometry): T} callback Feature callback. The callback will be
+     * @param {import("./pixel").Pixel} pixel Pixel.
+     * @param {function(import("./Feature").FeatureLike, import("./layer/Layer").default<import("./source/Source").default>, SimpleGeometry): T} callback Feature callback. The callback will be
      *     called with two arguments. The first argument is one
      *     {@link module:ol/Feature~Feature feature} or
      *     {@link module:ol/render/Feature~RenderFeature render feature} at the pixel, the second is
@@ -681,7 +681,7 @@ export class Map extends BaseObject {
      * @template T
      * @api
      */
-    forEachFeatureAtPixel<T>(pixel: import("./pixel.js").Pixel, callback: (arg0: import("./Feature.js").FeatureLike, arg1: import("./layer/Layer.js").default<import("./source/Source").default>, arg2: SimpleGeometry) => T, options: AtPixelOptions): T | undefined {
+    forEachFeatureAtPixel<T>(pixel: import("./pixel").Pixel, callback: (arg0: import("./Feature").FeatureLike, arg1: import("./layer/Layer").default<import("./source/Source").default>, arg2: SimpleGeometry) => T, options: AtPixelOptions): T | undefined {
         if (!this.frameState_ || !this.renderer_) {
             return;
         }
@@ -706,13 +706,13 @@ export class Map extends BaseObject {
 
     /**
      * Get all features that intersect a pixel on the viewport.
-     * @param {import("./pixel.js").Pixel} pixel Pixel.
+     * @param {import("./pixel").Pixel} pixel Pixel.
      * @param {AtPixelOptions} [options] Optional options.
-     * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
+     * @return {Array<import("./Feature").FeatureLike>} The detected features or
      * an empty array if none were found.
      * @api
      */
-    getFeaturesAtPixel(pixel: import("./pixel.js").Pixel, options: AtPixelOptions): Array<import("./Feature.js").FeatureLike> {
+    getFeaturesAtPixel(pixel: import("./pixel").Pixel, options: AtPixelOptions): Array<import("./Feature").FeatureLike> {
         const features = [];
         this.forEachFeatureAtPixel(
             pixel,
@@ -726,10 +726,10 @@ export class Map extends BaseObject {
 
     /**
      * Get all layers from all layer groups.
-     * @return {Array<import("./layer/Layer.js").default>} Layers.
+     * @return {Array<import("./layer/Layer").default>} Layers.
      * @api
      */
-    getAllLayers(): Array<import("./layer/Layer.js").default> {
+    getAllLayers(): Array<import("./layer/Layer").default> {
         const layers = [];
         function addLayersFrom(layerGroup) {
             layerGroup.forEach(function (layer) {
@@ -747,12 +747,12 @@ export class Map extends BaseObject {
     /**
      * Detect if features intersect a pixel on the viewport. Layers included in the
      * detection can be configured through the `layerFilter` option.
-     * @param {import("./pixel.js").Pixel} pixel Pixel.
+     * @param {import("./pixel").Pixel} pixel Pixel.
      * @param {AtPixelOptions} [options] Optional options.
      * @return {boolean} Is there a feature at the given pixel?
      * @api
      */
-    hasFeatureAtPixel(pixel: import("./pixel.js").Pixel, options: AtPixelOptions): boolean {
+    hasFeatureAtPixel(pixel: import("./pixel").Pixel, options: AtPixelOptions): boolean {
         if (!this.frameState_ || !this.renderer_) {
             return false;
         }
@@ -795,10 +795,10 @@ export class Map extends BaseObject {
     /**
      * Returns the map pixel position for a browser event relative to the viewport.
      * @param {UIEvent|{clientX: number, clientY: number}} event Event.
-     * @return {import("./pixel.js").Pixel} Pixel.
+     * @return {import("./pixel").Pixel} Pixel.
      * @api
      */
-    getEventPixel(event: UIEvent | { clientX: number; clientY: number; }): import("./pixel.js").Pixel {
+    getEventPixel(event: UIEvent | { clientX: number; clientY: number; }): import("./pixel").Pixel {
         const viewport = this.viewport_;
         const viewportPosition = viewport.getBoundingClientRect();
         const viewportSize = this.getSize();
@@ -845,11 +845,11 @@ export class Map extends BaseObject {
     /**
      * Get the coordinate for a given pixel.  This returns a coordinate in the
      * user projection.
-     * @param {import("./pixel.js").Pixel} pixel Pixel position in the map viewport.
+     * @param {import("./pixel").Pixel} pixel Pixel position in the map viewport.
      * @return {Coordinate} The coordinate for the pixel position.
      * @api
      */
-    getCoordinateFromPixel(pixel: import("./pixel.js").Pixel): Coordinate {
+    getCoordinateFromPixel(pixel: import("./pixel").Pixel): Coordinate {
         return toUserCoordinate(
             this.getCoordinateFromPixelInternal(pixel),
             this.getView().getProjection(),
@@ -859,10 +859,10 @@ export class Map extends BaseObject {
     /**
      * Get the coordinate for a given pixel.  This returns a coordinate in the
      * map view projection.
-     * @param {import("./pixel.js").Pixel} pixel Pixel position in the map viewport.
+     * @param {import("./pixel").Pixel} pixel Pixel position in the map viewport.
      * @return {Coordinate} The coordinate for the pixel position.
      */
-    getCoordinateFromPixelInternal(pixel: import("./pixel.js").Pixel): Coordinate {
+    getCoordinateFromPixelInternal(pixel: import("./pixel").Pixel): Coordinate {
         const frameState = this.frameState_;
         if (!frameState) {
             return null;
@@ -873,20 +873,20 @@ export class Map extends BaseObject {
     /**
      * Get the map controls. Modifying this collection changes the controls
      * associated with the map.
-     * @return {Collection<import("./control/Control.js").default>} Controls.
+     * @return {Collection<import("./control/Control").default>} Controls.
      * @api
      */
-    getControls(): Collection<import("./control/Control.js").default> {
+    getControls(): Collection<import("./control/Control").default> {
         return this.controls;
     }
 
     /**
      * Get the map overlays. Modifying this collection changes the overlays
      * associated with the map.
-     * @return {Collection<import("./Overlay.js").default>} Overlays.
+     * @return {Collection<import("./Overlay").default>} Overlays.
      * @api
      */
-    getOverlays(): Collection<import("./Overlay.js").default> {
+    getOverlays(): Collection<import("./Overlay").default> {
         return this.overlays_;
     }
 
@@ -895,10 +895,10 @@ export class Map extends BaseObject {
      * Note that the index treats string and numeric identifiers as the same. So
      * `map.getOverlayById(2)` will return an overlay with id `'2'` or `2`.
      * @param {string|number} id Overlay identifier.
-     * @return {import("./Overlay.js").default|null} Overlay.
+     * @return {import("./Overlay").default|null} Overlay.
      * @api
      */
-    getOverlayById(id: string | number): import("./Overlay.js").default | null {
+    getOverlayById(id: string | number): import("./Overlay").default | null {
         const overlay = this.overlayIdIndex_[id.toString()];
         return overlay !== undefined ? overlay : null;
     }
@@ -908,10 +908,10 @@ export class Map extends BaseObject {
      * associated with the map.
      *
      * Interactions are used for e.g. pan, zoom and rotate.
-     * @return {Collection<import("./interaction/Interaction.js").default>} Interactions.
+     * @return {Collection<import("./interaction/Interaction").default>} Interactions.
      * @api
      */
-    getInteractions(): Collection<import("./interaction/Interaction.js").default> {
+    getInteractions(): Collection<import("./interaction/Interaction").default> {
         return this.interactions;
     }
 
@@ -927,10 +927,10 @@ export class Map extends BaseObject {
 
     /**
      * Clear any existing layers and add layers to the map.
-     * @param {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} layers The layers to be added to the map.
+     * @param {Array<import("./layer/Base").default>|Collection<import("./layer/Base").default>} layers The layers to be added to the map.
      * @api
      */
-    setLayers(layers: Array<import("./layer/Base.js").default> | Collection<import("./layer/Base.js").default>) {
+    setLayers(layers: Array<import("./layer/Base").default> | Collection<import("./layer/Base").default>) {
         const group = this.getLayerGroup();
         if (layers instanceof Collection) {
             group.setLayers(layers);
@@ -944,10 +944,10 @@ export class Map extends BaseObject {
 
     /**
      * Get the collection of layers associated with this map.
-     * @return {!Collection<import("./layer/Base.js").default>} Layers.
+     * @return {!Collection<import("./layer/Base").default>} Layers.
      * @api
      */
-    getLayers(): Collection<import("./layer/Base.js").default> {
+    getLayers(): Collection<import("./layer/Base").default> {
         const layers = this.getLayerGroup().getLayers();
         return layers;
     }
@@ -978,10 +978,10 @@ export class Map extends BaseObject {
      * Get the pixel for a coordinate.  This takes a coordinate in the user
      * projection and returns the corresponding pixel.
      * @param {Coordinate} coordinate A map coordinate.
-     * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
+     * @return {import("./pixel").Pixel} A pixel position in the map viewport.
      * @api
      */
-    getPixelFromCoordinate(coordinate: Coordinate): import("./pixel.js").Pixel {
+    getPixelFromCoordinate(coordinate: Coordinate): import("./pixel").Pixel {
         const viewCoordinate = fromUserCoordinate(
             coordinate,
             this.getView().getProjection(),
@@ -993,9 +993,9 @@ export class Map extends BaseObject {
      * Get the pixel for a coordinate.  This takes a coordinate in the map view
      * projection and returns the corresponding pixel.
      * @param {Coordinate} coordinate A map coordinate.
-     * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
+     * @return {import("./pixel").Pixel} A pixel position in the map viewport.
      */
-    getPixelFromCoordinateInternal(coordinate: Coordinate): import("./pixel.js").Pixel {
+    getPixelFromCoordinateInternal(coordinate: Coordinate): import("./pixel").Pixel {
         const frameState = this.frameState_;
         if (!frameState) {
             return null;
@@ -1008,9 +1008,9 @@ export class Map extends BaseObject {
 
     /**
      * Get the map renderer.
-     * @return {import("./renderer/Map.js").default|null} Renderer
+     * @return {import("./renderer/Map").default|null} Renderer
      */
-    getRenderer(): import("./renderer/Map.js").default | null {
+    getRenderer(): import("./renderer/Map").default | null {
         return this.renderer_;
     }
 
@@ -1077,13 +1077,13 @@ export class Map extends BaseObject {
     }
 
     /**
-     * @param {import("./Tile.js").default} tile Tile.
+     * @param {import("./Tile").default} tile Tile.
      * @param {string} tileSourceKey Tile source key.
      * @param {Coordinate} tileCenter Tile center.
      * @param {number} tileResolution Tile resolution.
      * @return {number} Tile priority.
      */
-    getTilePriority(tile: import("./Tile.js").default, tileSourceKey: string, tileCenter: Coordinate, tileResolution: number): number {
+    getTilePriority(tile: import("./tile").default, tileSourceKey: string, tileCenter: Coordinate, tileResolution: number): number {
         return getTilePriority(
             this.frameState_,
             tile,
@@ -1475,54 +1475,54 @@ export class Map extends BaseObject {
 
     /**
      * Remove the given control from the map.
-     * @param {import("./control/Control.js").default} control Control.
-     * @return {import("./control/Control.js").default|undefined} The removed control (or undefined
+     * @param {import("./control/Control").default} control Control.
+     * @return {import("./control/Control").default|undefined} The removed control (or undefined
      *     if the control was not found).
      * @api
      */
-    removeControl(control: import("./control/Control.js").default): import("./control/Control.js").default | undefined {
+    removeControl(control: import("./control/Control").default): import("./control/Control").default | undefined {
         return this.getControls().remove(control);
     }
 
     /**
      * Remove the given interaction from the map.
-     * @param {import("./interaction/Interaction.js").default} interaction Interaction to remove.
-     * @return {import("./interaction/Interaction.js").default|undefined} The removed interaction (or
+     * @param {import("./interaction/Interaction").default} interaction Interaction to remove.
+     * @return {import("./interaction/Interaction").default|undefined} The removed interaction (or
      *     undefined if the interaction was not found).
      * @api
      */
-    removeInteraction(interaction: import("./interaction/Interaction.js").default): import("./interaction/Interaction.js").default | undefined {
+    removeInteraction(interaction: import("./interaction/Interaction").default): import("./interaction/Interaction").default | undefined {
         return this.getInteractions().remove(interaction);
     }
 
     /**
      * Removes the given layer from the map.
-     * @param {import("./layer/Base.js").default} layer Layer.
-     * @return {import("./layer/Base.js").default|undefined} The removed layer (or undefined if the
+     * @param {import("./layer/Base").default} layer Layer.
+     * @return {import("./layer/Base").default|undefined} The removed layer (or undefined if the
      *     layer was not found).
      * @api
      */
-    removeLayer(layer: import("./layer/Base.js").default): import("./layer/Base.js").default | undefined {
+    removeLayer(layer: import("./layer/Base").default): import("./layer/Base").default | undefined {
         const layers = this.getLayerGroup().getLayers();
         return layers.remove(layer);
     }
 
     /**
-     * @param {import("./layer/Group.js").GroupEvent} event The layer remove event.
+     * @param {import("./layer/Group").GroupEvent} event The layer remove event.
      * @private
      */
-    handleLayerRemove_(event: import("./layer/Group.js").GroupEvent) {
+    handleLayerRemove_(event: import("./layer/Group").GroupEvent) {
         removeLayerMapProperty(event.layer);
     }
 
     /**
      * Remove the given overlay from the map.
-     * @param {import("./Overlay.js").default} overlay Overlay.
-     * @return {import("./Overlay.js").default|undefined} The removed overlay (or undefined
+     * @param {import("./Overlay").default} overlay Overlay.
+     * @return {import("./Overlay").default|undefined} The removed overlay (or undefined
      *     if the overlay was not found).
      * @api
      */
-    removeOverlay(overlay: import("./Overlay.js").default): import("./Overlay.js").default | undefined {
+    removeOverlay(overlay: import("./Overlay").default): import("./Overlay").default | undefined {
         return this.getOverlays().remove(overlay);
     }
 
@@ -1676,14 +1676,14 @@ export class Map extends BaseObject {
 
     /**
      * Set the view for this map.
-     * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+     * @param {View|Promise<import("./View").ViewOptions>} view The view that controls this map.
      * It is also possible to pass a promise that resolves to options for constructing a view.  This
      * alternative allows view properties to be resolved by sources or other components that load
      * view-related metadata.
      * @observable
      * @api
      */
-    setView(view: View | Promise<import("./View.js").ViewOptions>) {
+    setView(view: View | Promise<import("./View").ViewOptions>) {
         if (!view || view instanceof View) {
             this.set(MapProperty.VIEW, view);
             return;
@@ -1773,7 +1773,7 @@ function createOptionsInternal(options: MapOptions): MapOptionsInternal {
     }
 
     /**
-     * @type {Object<string, *>}
+     * @type {Record<string, *>}
      */
     const values: { [s: string]: *; } = {};
 
@@ -1783,7 +1783,7 @@ function createOptionsInternal(options: MapOptions): MapOptionsInternal {
             ? /** @type {LayerGroup} */ (options.layers)
             : new LayerGroup({
                 layers:
-            /** @type {Collection<import("./layer/Base.js").default>|Array<import("./layer/Base.js").default>} */ (
+            /** @type {Collection<import("./layer/Base").default>|Array<import("./layer/Base").default>} */ (
                         options.layers
                     ),
             });
@@ -1794,8 +1794,8 @@ function createOptionsInternal(options: MapOptions): MapOptionsInternal {
     values[MapProperty.VIEW] =
         options.view instanceof View ? options.view : new View();
 
-    /** @type {Collection<import("./control/Control.js").default>} */
-    let controls: Collection<import("./control/Control.js").default>;
+    /** @type {Collection<import("./control/Control").default>} */
+    let controls: Collection<import("./control/Control").default>;
     if (options.controls !== undefined) {
         if (Array.isArray(options.controls)) {
             controls = new Collection(options.controls.slice());
@@ -1823,8 +1823,8 @@ function createOptionsInternal(options: MapOptions): MapOptionsInternal {
         }
     }
 
-    /** @type {Collection<import("./Overlay.js").default>} */
-    let overlays: Collection<import("./Overlay.js").default>;
+    /** @type {Collection<import("./Overlay").default>} */
+    let overlays: Collection<import("./Overlay").default>;
     if (options.overlays !== undefined) {
         if (Array.isArray(options.overlays)) {
             overlays = new Collection(options.overlays.slice());

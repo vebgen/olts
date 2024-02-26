@@ -1,34 +1,34 @@
 
-import BaseVector from '../../layer/BaseVector.js';
-import VectorEventType from '../../source/VectorEventType.js';
-import ViewHint from '../../ViewHint.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
-import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
+import BaseVector from '../../layer/BaseVector';
+import VectorEventType from '../../source/VectorEventType';
+import ViewHint from '../../ViewHint';
+import WebGLArrayBuffer from '../../webgl/Buffer';
+import WebGLLayerRenderer from './Layer';
+import WebGLRenderTarget from '../../webgl/RenderTarget';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl';
+import {AttributeType, DefaultUniform} from '../../webgl/Helper';
+import {WebGLWorkerMessageType} from '../../render/webgl/constants';
 import {
   apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   translate as translateTransform,
-} from '../../transform.js';
+} from '../../transform';
 import {assert} from '@olts/core/asserts';
 import {buffer, createEmpty, equals} from '@olts/core/extent';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {fromUserCoordinate, getUserProjection} from '../../proj.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils';
+import {create as createWebGLWorker} from '../../worker/webgl';
+import {fromUserCoordinate, getUserProjection} from '../../proj';
 import {getUid} from '@olts/core/util';
-import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
+import {getWorldParameters} from './worldUtil';
+import {listen, unlistenByKey} from '../../events';
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
  * @property {string} name Attribute name.
- * @property {function(import("../../Feature").default, Object<string, *>):number} callback This callback computes the numerical value of the
+ * @property {function(import("../../Feature").default, Record<string, *>):number} callback This callback computes the numerical value of the
  * attribute for a given feature (properties are available as 2nd arg for quicker access).
  */
 
@@ -36,7 +36,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @typedef {Object} FeatureCacheItem Object that holds a reference to a feature, its geometry and properties. Used to optimize
  * rebuildBuffers by accessing these objects quicker.
  * @property {import("../../Feature").default} feature Feature
- * @property {Object<string, *>} properties Feature properties
+ * @property {Record<string, *>} properties Feature properties
  * @property {import("../../geom").Geometry} geometry Feature geometry
  */
 
@@ -51,7 +51,7 @@ import {listen, unlistenByKey} from '../../events.js';
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.
  * @property {boolean} [hitDetectionEnabled] Whether shader is hit detection aware.
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot and `u_opacity` is reserved for the layer opacity.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -120,7 +120,7 @@ import {listen, unlistenByKey} from '../../events.js';
  */
 export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
-   * @param {import("../../layer/Layer.js").default} layer Layer.
+   * @param {import("../../layer/Layer").default} layer Layer.
    * @param {Options} options Options.
    */
   constructor(layer, options) {
@@ -176,7 +176,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     /**
      * A list of attributes used by the renderer. By default only the position and
      * index of the vertex (0 to 3) are required.
-     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
+     * @type {Array<import('../../webgl/Helper').AttributeDescription>}
      */
     this.attributes = [
       {
@@ -213,20 +213,20 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * This transform is updated on every frame and is the composition of:
      * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
      * - current world->screen transform
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.currentTransform_ = projectionMatrixTransform;
 
     /**
      * This transform is updated when buffers are rebuilt and converts world space coordinates to screen space
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.renderTransform_ = createTransform();
 
     /**
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.invertRenderTransform_ = createTransform();
@@ -287,7 +287,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * This object will be updated when the source changes. Key is uid.
-     * @type {Object<string, FeatureCacheItem>}
+     * @type {Record<string, FeatureCacheItem>}
      * @private
      */
     this.featureCache_ = {};
@@ -348,7 +348,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureAdded_(event) {
@@ -362,7 +362,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureChanged_(event) {
@@ -375,7 +375,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureDelete_(event) {
@@ -394,7 +394,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -427,7 +427,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -541,7 +541,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    /** @type {import('../../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
+    /** @type {import('../../render/webgl/constants').WebGLWorkerGenerateBuffersMessage} */
     const message = {
       id: ++this.lastSentId,
       type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
@@ -557,10 +557,10 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -600,7 +600,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the world, either to the main framebuffer or to the hit framebuffer
-   * @param {import("../../Map.js").FrameState} frameState current frame state
+   * @param {import("../../Map").FrameState} frameState current frame state
    * @param {boolean} forHitDetection whether the rendering is for hit detection
    * @param {number} startWorld the world to render in the first iteration
    * @param {number} endWorld the last world to render

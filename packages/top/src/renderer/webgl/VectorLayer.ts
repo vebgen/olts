@@ -1,12 +1,12 @@
 
-import BaseVector from '../../layer/BaseVector.js';
-import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import VectorEventType from '../../source/VectorEventType.js';
-import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import ViewHint from '../../ViewHint.js';
-import WebGLLayerRenderer from './Layer.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {DefaultUniform} from '../../webgl/Helper.js';
+import BaseVector from '../../layer/BaseVector';
+import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch';
+import VectorEventType from '../../source/VectorEventType';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer';
+import ViewHint from '../../ViewHint';
+import WebGLLayerRenderer from './Layer';
+import WebGLRenderTarget from '../../webgl/RenderTarget';
+import {DefaultUniform} from '../../webgl/Helper';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -14,10 +14,10 @@ import {
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
   translate as translateTransform,
-} from '../../transform.js';
+} from '../../transform';
 import {assert} from '@olts/core/asserts';
 import {buffer, createEmpty, equals} from '@olts/core/extent';
-import {colorDecodeId} from '../../render/webgl/utils.js';
+import {colorDecodeId} from '../../render/webgl/utils';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -27,9 +27,9 @@ import {
   getUserProjection,
   toUserExtent,
   toUserResolution,
-} from '../../proj.js';
-import {getWorldParameters} from './worldUtil.js';
-import {listen, unlistenByKey} from '../../events.js';
+} from '../../proj';
+import {getWorldParameters} from './worldUtil';
+import {listen, unlistenByKey} from '../../events';
 
 export const Uniforms = {
   ...DefaultUniform,
@@ -39,7 +39,7 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer').VectorStyle} VectorStyle
  */
 
 /**
@@ -70,7 +70,7 @@ export const Uniforms = {
  */
 export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
-   * @param {import("../../layer/Layer.js").default} layer Layer.
+   * @param {import("../../layer/Layer").default} layer Layer.
    * @param {Options} options Options.
    */
   constructor(layer, options) {
@@ -105,7 +105,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * This transform is updated on every frame and is the composition of:
      * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
      * - current world->screen transform
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.currentTransform_ = createTransform();
@@ -115,7 +115,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.tmpMat4_ = createMat4();
 
     /**
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.currentFrameStateTransform_ = createTransform();
@@ -133,7 +133,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.styleRenderers_ = [];
 
     /**
-     * @type {Array<import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers>}
+     * @type {Array<import('../../render/webgl/VectorStyleRenderer').WebGLBuffers>}
      * @private
      */
     this.buffers_ = [];
@@ -153,14 +153,14 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {Array<import("../../events.js").EventsKey|null>}
+     * @type {Array<import("../../events").EventsKey|null>}
      */
     this.sourceListenKeys_ = null;
   }
 
   /**
    * @private
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    */
   addInitialFeatures_(frameState) {
     const source = this.getLayer().getSource();
@@ -238,8 +238,8 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../proj").TransformFunction} projectionTransform Transform function.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureAdded_(projectionTransform, event) {
@@ -248,7 +248,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureChanged_(event) {
@@ -257,7 +257,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @param {import("../../source/Vector").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureDelete_(event) {
@@ -273,7 +273,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @param {import("../../transform").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
    * @private
    */
   applyUniforms_(batchInvertTransform) {
@@ -302,7 +302,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -338,7 +338,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -404,7 +404,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the world, either to the main framebuffer or to the hit framebuffer
-   * @param {import("../../Map.js").FrameState} frameState current frame state
+   * @param {import("../../Map").FrameState} frameState current frame state
    * @param {boolean} forHitDetection whether the rendering is for hit detection
    * @param {number} startWorld the world to render in the first iteration
    * @param {number} endWorld the last world to render
@@ -448,10 +448,10 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
    */

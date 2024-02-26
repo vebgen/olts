@@ -1,8 +1,8 @@
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
-import {easeOut} from '../easing.js';
+import {easeOut} from '../easing';
 
 /**
  * @typedef {Object} Options

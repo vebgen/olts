@@ -2,7 +2,7 @@
 
 The `proj` module stores:
 
-- a list of {@link module:ol/proj/Projection~Projection}
+- a list of {@link Projection}
   objects, one for each projection supported by the application
 - a list of transform functions needed to convert coordinates in one projection
   into another.

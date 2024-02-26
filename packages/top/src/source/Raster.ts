@@ -1,16 +1,16 @@
 
-import Disposable from '../Disposable.js';
+import Disposable from '../Disposable';
 import { BaseEvent as Event, EventsKey, Options } from '@olts/events';
-import EventType from '../events/EventType.js';
-import ImageCanvas from '../ImageCanvas.js';
-import ImageLayer from '../layer/Image.js';
-import ImageSource from './Image.js';
-import Source from './Source.js';
-import TileLayer from '../layer/Tile.js';
-import TileQueue from '../TileQueue.js';
-import TileSource from './Tile.js';
+import type { EventType } from '@olts/events';
+import ImageCanvas from '../ImageCanvas';
+import ImageLayer from '../layer/Image';
+import ImageSource from './Image';
+import Source from './Source';
+import TileLayer from '../layer/Tile';
+import TileQueue from '../TileQueue';
+import TileSource from './Tile';
 import { createCanvasContext2D } from '@olts/core/dom';
-import { create as createTransform } from '../transform.js';
+import { create as createTransform } from '../transform';
 import { Extent, equals, getCenter, getHeight, getWidth } from '@olts/core/extent';
 import { getUid } from '@olts/core/util';
 
@@ -200,7 +200,7 @@ function createFauxWorker(config: ProcessorOptions, onMessage: (arg0: FauxMessag
  * @typedef {Object} ProcessorOptions
  * @property {number} threads Number of workers to spawn.
  * @property {Operation} operation The operation.
- * @property {Object<string, Function>} [lib] Functions that will be made available to operations run in a worker.
+ * @property {Record<string, Function>} [lib] Functions that will be made available to operations run in a worker.
  * @property {number} queue The number of queued jobs to allow.
  * @property {boolean} [imageOps=false] Pass all the image data to the operation instead of a single pixel.
  */
@@ -251,7 +251,7 @@ export class Processor extends Disposable {
         this._running = 0;
 
         /**
-         * @type {Object<number, any>}
+         * @type {Record<number, any>}
          * @private
          */
         this._dataLookup = {};
@@ -451,7 +451,7 @@ const RasterEventType = {
  */
 
 /**
- * @typedef {import("./Image.js").ImageSourceEventTypes|'beforeoperations'|'afteroperations'} RasterSourceEventTypes
+ * @typedef {import("./Image").ImageSourceEventTypes|'beforeoperations'|'afteroperations'} RasterSourceEventTypes
  */
 
 /**
@@ -461,11 +461,11 @@ const RasterEventType = {
 export class RasterSourceEvent extends Event {
     /**
      * @param {string} type Type.
-     * @param {import("../Map.js").FrameState} frameState The frame state.
+     * @param {import("../Map").FrameState} frameState The frame state.
      * @param {Object|Array<Object>} data An object made available to operations.  For "afteroperations" evenets
      * this will be an array of objects if more than one thread is used.
      */
-    constructor(type: string, frameState: import("../Map.js").FrameState, data: object |object[]) {
+    constructor(type: string, frameState: import("../Map").FrameState, data: object |object[]) {
         super(type);
 
         /**
@@ -494,7 +494,7 @@ export class RasterSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
+ * @property {Array<import("./Source").default|import("../layer/Layer").default>} sources Input
  * sources or layers.  For vector data, use an VectorImage layer.
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
@@ -517,9 +517,9 @@ export class RasterSourceEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("./Image.js").ImageSourceEventTypes, import("./Image.js").ImageSourceEvent, Return> &
+ *   import("../Observable").OnSignature<import("./Image").ImageSourceEventTypes, import("./Image").ImageSourceEvent, Return> &
  *   import("../Observable").OnSignature<RasterSourceEventTypes, RasterSourceEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType
  *     |RasterSourceEventTypes, Return>} RasterSourceOnSignature
@@ -582,7 +582,7 @@ export class RasterSource extends ImageSource {
 
         /**
          * @private
-         * @type {Array<import("../layer/Layer.js").default>}
+         * @type {Array<import("../layer/Layer").default>}
          */
         this.layers_ = createLayers(options.sources);
 
@@ -596,7 +596,7 @@ export class RasterSource extends ImageSource {
 
         /**
          * @private
-         * @type {import("../TileQueue.js").default}
+         * @type {import("../TileQueue").default}
          */
         this.tileQueue_ = new TileQueue(function () {
             return 1;
@@ -604,14 +604,14 @@ export class RasterSource extends ImageSource {
 
         /**
          * The most recently requested frame state.
-         * @type {import("../Map.js").FrameState}
+         * @type {import("../Map").FrameState}
          * @private
          */
         this.requestedFrameState_;
 
         /**
          * The most recently rendered image canvas.
-         * @type {import("../ImageCanvas.js").default}
+         * @type {import("../ImageCanvas").default}
          * @private
          */
         this.renderedImageCanvas_ = null;
@@ -624,7 +624,7 @@ export class RasterSource extends ImageSource {
 
         /**
          * @private
-         * @type {import("../Map.js").FrameState}
+         * @type {import("../Map").FrameState}
          */
         this.frameState_ = {
             animate: false,
@@ -641,7 +641,7 @@ export class RasterSource extends ImageSource {
             tileQueue: this.tileQueue_,
             time: Date.now(),
             usedTiles: {},
-            viewState: /** @type {import("../View.js").State} */ ({
+            viewState: /** @type {import("../View").State} */ ({
                 rotation: 0,
             }),
             viewHints: [],
@@ -705,16 +705,16 @@ export class RasterSource extends ImageSource {
      * Update the stored frame state.
      * @param {Extent} extent The view extent (in map units).
      * @param {number} resolution The view resolution.
-     * @param {import("../proj/Projection.js").default} projection The view projection.
-     * @return {import("../Map.js").FrameState} The updated frame state.
+     * @param {import("../proj/Projection").default} projection The view projection.
+     * @return {import("../Map").FrameState} The updated frame state.
      * @private
      */
-    updateFrameState_(extent: Extent, resolution: number, projection: import("../proj/Projection.js").default): import("../Map.js").FrameState {
-        const frameState = /** @type {import("../Map.js").FrameState} */ (
+    updateFrameState_(extent: Extent, resolution: number, projection: import("../proj/Projection").default): import("../Map").FrameState {
+        const frameState = /** @type {import("../Map").FrameState} */ (
             Object.assign({}, this.frameState_)
         );
 
-        frameState.viewState = /** @type {import("../View.js").State} */ (
+        frameState.viewState = /** @type {import("../View").State} */ (
             Object.assign({}, frameState.viewState)
         );
 
@@ -759,10 +759,10 @@ export class RasterSource extends ImageSource {
      * @param {Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {import("../ImageCanvas.js").default} Single image.
+     * @param {import("../proj/Projection").default} projection Projection.
+     * @return {import("../ImageCanvas").default} Single image.
      */
-    getImage(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection.js").default): import("../ImageCanvas.js").default {
+    getImage(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection").default): import("../ImageCanvas").default {
         if (!this.allSourcesReady_()) {
             return null;
         }
@@ -831,13 +831,13 @@ export class RasterSource extends ImageSource {
 
     /**
      * Called when pixel processing is complete.
-     * @param {import("../Map.js").FrameState} frameState The frame state.
+     * @param {import("../Map").FrameState} frameState The frame state.
      * @param {Error} err Any error during processing.
      * @param {ImageData} output The output image data.
      * @param {Object|Array<Object>} data The user data (or an array if more than one thread).
      * @private
      */
-    onWorkerComplete_(frameState: import("../Map.js").FrameState, err: Error, output: ImageData, data: object |object[]) {
+    onWorkerComplete_(frameState: import("../Map").FrameState, err: Error, output: ImageData, data: object |object[]) {
         if (err || !output) {
             return;
         }
@@ -925,11 +925,11 @@ let sharedContext: CanvasRenderingContext2D = null;
 
 /**
  * Get image data from a layer.
- * @param {import("../layer/Layer.js").default} layer Layer to render.
- * @param {import("../Map.js").FrameState} frameState The frame state.
+ * @param {import("../layer/Layer").default} layer Layer to render.
+ * @param {import("../Map").FrameState} frameState The frame state.
  * @return {ImageData} The image data.
  */
-function getImageData(layer: import("../layer/Layer.js").default, frameState: import("../Map.js").FrameState): ImageData {
+function getImageData(layer: import("../layer/Layer").default, frameState: import("../Map").FrameState): ImageData {
     const renderer = layer.getRenderer();
     if (!renderer) {
         throw new Error('Unsupported layer type: ' + layer);
@@ -980,10 +980,10 @@ function getImageData(layer: import("../layer/Layer.js").default, frameState: im
 
 /**
  * Get a list of layer states from a list of layers.
- * @param {Array<import("../layer/Layer.js").default>} layers Layers.
- * @return {Array<import("../layer/Layer.js").State>} The layer states.
+ * @param {Array<import("../layer/Layer").default>} layers Layers.
+ * @return {Array<import("../layer/Layer").State>} The layer states.
  */
-function getLayerStatesArray(layers: Array<import("../layer/Layer.js").default>): Array<import("../layer/Layer.js").State> {
+function getLayerStatesArray(layers: Array<import("../layer/Layer").default>): Array<import("../layer/Layer").State> {
     return layers.map(function (layer) {
         return layer.getLayerState();
     });
@@ -991,10 +991,10 @@ function getLayerStatesArray(layers: Array<import("../layer/Layer.js").default>)
 
 /**
  * Create layers for all sources.
- * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
- * @return {Array<import("../layer/Layer.js").default>} Array of layers.
+ * @param {Array<import("./Source").default|import("../layer/Layer").default>} sources The sources.
+ * @return {Array<import("../layer/Layer").default>} Array of layers.
  */
-function createLayers(sources: Array<import("./Source.js").default | import("../layer/Layer.js").default>): Array<import("../layer/Layer.js").default> {
+function createLayers(sources: Array<import("./Source").default | import("../layer/Layer").default>): Array<import("../layer/Layer").default> {
     const len = sources.length;
     const layers = new Array(len);
     for (let i = 0; i < len; ++i) {
@@ -1005,11 +1005,11 @@ function createLayers(sources: Array<import("./Source.js").default | import("../
 
 /**
  * Create a layer for the provided source.
- * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
- * @return {import("../layer/Layer.js").default} The layer.
+ * @param {import("./Source").default|import("../layer/Layer").default} layerOrSource The layer or source.
+ * @return {import("../layer/Layer").default} The layer.
  */
-function createLayer(layerOrSource: import("./Source.js").default | import("../layer/Layer.js").default): import("../layer/Layer.js").default {
-    // @type {import("../layer/Layer.js").default}
+function createLayer(layerOrSource: import("./Source").default | import("../layer/Layer").default): import("../layer/Layer").default {
+    // @type {import("../layer/Layer").default}
     let layer;
     if (layerOrSource instanceof Source) {
         if (layerOrSource instanceof TileSource) {

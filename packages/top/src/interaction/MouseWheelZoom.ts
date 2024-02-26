@@ -1,8 +1,8 @@
 
-import EventType from '../events/EventType.js';
-import Interaction, {zoomByDelta} from './Interaction.js';
+import type { EventType } from '@olts/events';
+import Interaction, {zoomByDelta} from './Interaction';
 import {DEVICE_PIXEL_RATIO, FIREFOX} from '@olts/core/has';
-import {all, always, focusWithTabindex} from '../events/condition.js';
+import {all, always, focusWithTabindex} from '../events/condition';
 import {clamp} from '@olts/core/math';
 
 /**
@@ -11,7 +11,7 @@ import {clamp} from '@olts/core/math';
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that
+ * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition.always}.
@@ -40,7 +40,7 @@ export class MouseWheelZoom extends Interaction {
     options = options ? options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
+      /** @type {import("./Interaction").InteractionOptions} */ (options),
     );
 
     /**
@@ -93,7 +93,7 @@ export class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {import("../events/condition.js").Condition}
+     * @type {import("../events/condition").Condition}
      */
     this.condition_ = options.onFocusOnly
       ? all(focusWithTabindex, condition)
@@ -165,7 +165,7 @@ export class MouseWheelZoom extends Interaction {
   /**
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} (if it was a mousewheel-event) and eventually
    * zooms the map.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {
@@ -252,7 +252,7 @@ export class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../Map").default} map Map.
    */
   handleWheelZoom_(map) {
     const view = map.getView();

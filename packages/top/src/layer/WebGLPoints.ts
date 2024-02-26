@@ -1,12 +1,12 @@
 
-import Layer from './Layer.js';
-import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {parseLiteralStyle} from '../webgl/styleparser.js';
+import Layer from './Layer';
+import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer';
+import {parseLiteralStyle} from '../webgl/styleparser';
 
 /**
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../source/Vector").default} VectorSourceType
  * @typedef {Object} Options
- * @property {import('../style/webgl.js').WebGLStyle} style Literal style to apply to the layer features.
+ * @property {import('../style/webgl').WebGLStyle} style Literal style to apply to the layer features.
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -27,7 +27,7 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * @property {VectorSourceType} [source] Point source.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -59,9 +59,9 @@ import {parseLiteralStyle} from '../webgl/styleparser.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../source/Vector").default} VectorSourceType
  * @extends {Layer<VectorSourceType, WebGLPointsLayerRenderer>}
- * @fires import("../render/Event.js").RenderEvent
+ * @fires import("../render/Event").RenderEvent
  */
 export class WebGLPointsLayer extends Layer {
   /**
@@ -74,12 +74,12 @@ export class WebGLPointsLayer extends Layer {
 
     /**
      * @private
-     * @type {import('../webgl/styleparser.js').StyleParseResult}
+     * @type {import('../webgl/styleparser').StyleParseResult}
      */
     this.parseResult_ = parseLiteralStyle(options.style);
 
     /**
-     * @type {Object<string, (string|number|number[]|boolean)>}
+     * @type {Record<string, (string|number|number[]|boolean)>}
      * @private
      */
     this.styleVariables_ = options.style.variables || {};
@@ -104,7 +104,7 @@ export class WebGLPointsLayer extends Layer {
       hitDetectionEnabled: !this.hitDetectionDisabled_,
       uniforms: this.parseResult_.uniforms,
       attributes:
-        /** @type {Array<import('../renderer/webgl/PointsLayer.js').CustomAttribute>} */ (
+        /** @type {Array<import('../renderer/webgl/PointsLayer').CustomAttribute>} */ (
           attributes
         ),
     });
@@ -112,7 +112,7 @@ export class WebGLPointsLayer extends Layer {
 
   /**
    * Update any variables used by the layer style and trigger a re-render.
-   * @param {Object<string, number>} variables Variables to update.
+   * @param {Record<string, number>} variables Variables to update.
    */
   updateStyleVariables(variables) {
     Object.assign(this.styleVariables_, variables);

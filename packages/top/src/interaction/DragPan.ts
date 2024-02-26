@@ -1,27 +1,27 @@
 import PointerInteraction, {
   centroid as centroidFromPointers,
-} from './Pointer.js';
+} from './Pointer';
 import {FALSE} from '@olts/core/functions';
 import {
   all,
   focusWithTabindex,
   noModifierKeys,
   primaryAction,
-} from '../events/condition.js';
-import {easeOut} from '../easing.js';
+} from '../events/condition';
+import {easeOut} from '../easing';
 import {
   rotate as rotateCoordinate,
   scale as scaleCoordinate,
-} from '../coordinate.js';
+} from '../coordinate';
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {import("../events/condition").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.noModifierKeys} and {@link module:ol/events/condition.primaryAction}.
  * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
  * the interaction will only handle events when the map has the focus.
- * @property {import("../Kinetic.js").default} [kinetic] Kinetic inertia to apply to the pan.
+ * @property {import("../Kinetic").default} [kinetic] Kinetic inertia to apply to the pan.
  */
 
 /**
@@ -41,12 +41,12 @@ export class DragPan extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../Kinetic.js").default|undefined}
+     * @type {import("../Kinetic").default|undefined}
      */
     this.kinetic_ = options.kinetic;
 
     /**
-     * @type {import("../pixel.js").Pixel}
+     * @type {import("../pixel").Pixel}
      */
     this.lastCentroid = null;
 
@@ -66,7 +66,7 @@ export class DragPan extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../events/condition.js").Condition}
+     * @type {import("../events/condition").Condition}
      */
     this.condition_ = options.onFocusOnly
       ? all(focusWithTabindex, condition)
@@ -81,7 +81,7 @@ export class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     const map = mapBrowserEvent.map;
@@ -118,7 +118,7 @@ export class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -157,7 +157,7 @@ export class DragPan extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {

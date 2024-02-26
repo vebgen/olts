@@ -1,4 +1,4 @@
-import Spatial from './Spatial.js';
+import Spatial from './Spatial';
 
 /**
  * Represents a `<Contains>` operator to test whether a geometry-valued property

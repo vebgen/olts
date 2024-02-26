@@ -1,16 +1,16 @@
 
-import BaseLayer from './Base.js';
-import EventType from '../events/EventType.js';
-import LayerProperty from './Property.js';
-import RenderEventType from '../render/EventType.js';
-import View from '../View.js';
+import BaseLayer from './Base';
+import type { EventType } from '@olts/events';
+import LayerProperty from './Property';
+import RenderEventType from '../render/EventType';
+import View from '../View';
 import { assert } from '@olts/core/asserts';
 import { intersects } from '@olts/core/extent';
-import { listen, unlistenByKey } from '../events.js';
+import { listen, unlistenByKey } from '../events';
 import { EventsKey } from '@olts/events';
 
 /**
- * @typedef {function(import("../Map.js").FrameState):HTMLElement} RenderFunction
+ * @typedef {function(import("../Map").FrameState):HTMLElement} RenderFunction
  */
 
 /**
@@ -19,7 +19,7 @@ import { EventsKey } from '@olts/events';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     LayerEventType, import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
@@ -28,7 +28,7 @@ import { EventsKey } from '@olts/events';
  */
 
 /**
- * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
+ * @template {import("../source/Source").default} [SourceType=import("../source/Source").default]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -50,15 +50,15 @@ import { EventsKey } from '@olts/events';
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
  * construction.
- * @property {import("../Map.js").default|null} [map] Map.
+ * @property {import("../Map").default|null} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
  * @typedef {Object} State
- * @property {import("./Layer.js").default} layer Layer.
+ * @property {import("./Layer").default} layer Layer.
  * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
@@ -79,7 +79,7 @@ import { EventsKey } from '@olts/events';
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
  *
- * Layers are usually added to a map with [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+ * Layers are usually added to a map with [map.addLayer()]{@link import("../Map").default#addLayer}.
  * Components like {@link module:ol/interaction/Draw~Draw} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
  * [layer.setMap()]{@link module:ol/layer/Layer~Layer#setMap} instead.
@@ -87,12 +87,12 @@ import { EventsKey } from '@olts/events';
  * A generic `change` event is fired when the state of the source changes.
  * A `sourceready` event is fired when the layer's source is ready.
  *
- * @fires import("../render/Event.js").RenderEvent#prerender
- * @fires import("../render/Event.js").RenderEvent#postrender
- * @fires import("../events/Event.js").BaseEvent#sourceready
+ * @fires import("../render/Event").RenderEvent#prerender
+ * @fires import("../render/Event").RenderEvent#postrender
+ * @fires import("../events/Event").BaseEvent#sourceready
  *
- * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
- * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
+ * @template {import("../source/Source").default} [SourceType=import("../source/Source").default]
+ * @template {import("../renderer/Layer").default} [RendererType=import("../renderer/Layer").default]
  * @api
  */
 export class Layer extends BaseLayer {
@@ -126,19 +126,19 @@ export class Layer extends BaseLayer {
 
         /**
          * @private
-         * @type {?import("../events.js").EventsKey}
+         * @type {?import("../events").EventsKey}
          */
         this.mapPrecomposeKey_ = null;
 
         /**
          * @private
-         * @type {?import("../events.js").EventsKey}
+         * @type {?import("../events").EventsKey}
          */
         this.mapRenderKey_ = null;
 
         /**
          * @private
-         * @type {?import("../events.js").EventsKey}
+         * @type {?import("../events").EventsKey}
          */
         this.sourceChangeKey_ = null;
 
@@ -181,20 +181,20 @@ export class Layer extends BaseLayer {
     }
 
     /**
-     * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
-     * @return {Array<import("./Layer.js").default>} Array of layers.
+     * @param {Array<import("./Layer").default>} [array] Array of layers (to be modified in place).
+     * @return {Array<import("./Layer").default>} Array of layers.
      */
-    getLayersArray(array: Array<import("./Layer.js").default>): Array<import("./Layer.js").default> {
+    getLayersArray(array: Array<import("./Layer").default>): Array<import("./Layer").default> {
         array = array ? array : [];
         array.push(this);
         return array;
     }
 
     /**
-     * @param {Array<import("./Layer.js").State>} [states] Optional list of layer states (to be modified in place).
-     * @return {Array<import("./Layer.js").State>} List of layer states.
+     * @param {Array<import("./Layer").State>} [states] Optional list of layer states (to be modified in place).
+     * @return {Array<import("./Layer").State>} List of layer states.
      */
-    getLayerStatesArray(states: Array<import("./Layer.js").State>): Array<import("./Layer.js").State> {
+    getLayerStatesArray(states: Array<import("./Layer").State>): Array<import("./Layer").State> {
         states = states ? states : [];
         states.push(this.getLayerState());
         return states;
@@ -218,9 +218,9 @@ export class Layer extends BaseLayer {
     }
 
     /**
-     * @return {import("../source/Source.js").State} Source state.
+     * @return {import("../source/Source").State} Source state.
      */
-    getSourceState(): import("../source/Source.js").State {
+    getSourceState(): import("../source/Source").State {
         const source = this.getSource();
         return !source ? 'undefined' : source.getState();
     }
@@ -291,12 +291,12 @@ export class Layer extends BaseLayer {
      * The layer is visible on the map view, i.e. within its min/max resolution or zoom and
      * extent, not set to `visible: false`, and not inside a layer group that is set
      * to `visible: false`.
-     * @param {View|import("../View.js").ViewStateLayerStateExtent} [view] View or {@link import("../Map.js").FrameState}.
+     * @param {View|import("../View").ViewStateLayerStateExtent} [view] View or {@link import("../Map").FrameState}.
      * Only required when the layer is not added to a map.
      * @return {boolean} The layer is visible in the map view.
      * @api
      */
-    isVisible(view: View | import("../View.js").ViewStateLayerStateExtent): boolean {
+    isVisible(view: View | import("../View").ViewStateLayerStateExtent): boolean {
         let frameState;
         const map = this.getMapInternal();
         if (!view && map) {
@@ -332,12 +332,12 @@ export class Layer extends BaseLayer {
 
     /**
      * Get the attributions of the source of this layer for the given view.
-     * @param {View|import("../View.js").ViewStateLayerStateExtent} [view] View or {@link import("../Map.js").FrameState}.
+     * @param {View|import("../View").ViewStateLayerStateExtent} [view] View or {@link import("../Map").FrameState}.
      * Only required when the layer is not added to a map.
      * @return {Array<string>} Attributions for this layer at the given view.
      * @api
      */
-    getAttributions(view: View | import("../View.js").ViewStateLayerStateExtent):string[] {
+    getAttributions(view: View | import("../View").ViewStateLayerStateExtent):string[] {
         if (!this.isVisible(view)) {
             return [];
         }
@@ -361,12 +361,12 @@ export class Layer extends BaseLayer {
     /**
      * In charge to manage the rendering of the layer. One layer type is
      * bounded with one layer renderer.
-     * @param {?import("../Map.js").FrameState} frameState Frame state.
+     * @param {?import("../Map").FrameState} frameState Frame state.
      * @param {HTMLElement} target Target which the renderer may (but need not) use
      * for rendering its content.
      * @return {HTMLElement|null} The rendered element.
      */
-    render(frameState: import("../Map.js").FrameState | null, target: HTMLElement): HTMLElement | null {
+    render(frameState: import("../Map").FrameState | null, target: HTMLElement): HTMLElement | null {
         const layerRenderer = this.getRenderer();
 
         if (layerRenderer.prepareFrame(frameState)) {
@@ -385,9 +385,9 @@ export class Layer extends BaseLayer {
 
     /**
      * For use inside the library only.
-     * @param {import("../Map.js").default|null} map Map.
+     * @param {import("../Map").default|null} map Map.
      */
-    setMapInternal(map: import("../Map.js").default | null) {
+    setMapInternal(map: import("../Map").default | null) {
         if (!map) {
             this.unrender();
         }
@@ -396,9 +396,9 @@ export class Layer extends BaseLayer {
 
     /**
      * For use inside the library only.
-     * @return {import("../Map.js").default|null} Map.
+     * @return {import("../Map").default|null} Map.
      */
-    getMapInternal(): import("../Map.js").default | null {
+    getMapInternal(): import("../Map").default | null {
         return this.get(LayerProperty.MAP);
     }
 
@@ -410,10 +410,10 @@ export class Layer extends BaseLayer {
      *
      * To add the layer to a map and have it managed by the map, use
      * {@link module:ol/Map~Map#addLayer} instead.
-     * @param {import("../Map.js").default|null} map Map.
+     * @param {import("../Map").default|null} map Map.
      * @api
      */
-    setMap(map: import("../Map.js").default | null) {
+    setMap(map: import("../Map").default | null) {
         if (this.mapPrecomposeKey_) {
             unlistenByKey(this.mapPrecomposeKey_);
             this.mapPrecomposeKey_ = null;
@@ -431,7 +431,7 @@ export class Layer extends BaseLayer {
                 RenderEventType.PRECOMPOSE,
                 function (evt) {
                     const renderEvent =
-            /** @type {import("../render/Event.js").default} */ (evt);
+            /** @type {import("../render/Event").default} */ (evt);
                     const layerStatesArray = renderEvent.frameState.layerStatesArray;
                     const layerState = this.getLayerState(false);
                     assert(
@@ -504,10 +504,10 @@ export class Layer extends BaseLayer {
  * Return `true` if the layer is visible and if the provided view state
  * has resolution and zoom levels that are in range of the layer's min/max.
  * @param {State} layerState Layer state.
- * @param {import("../View.js").State} viewState View state.
+ * @param {import("../View").State} viewState View state.
  * @return {boolean} The layer is visible at the given view state.
  */
-export function inView(layerState: State, viewState: import("../View.js").State): boolean {
+export function inView(layerState: State, viewState: import("../View").State): boolean {
     if (!layerState.visible) {
         return false;
     }

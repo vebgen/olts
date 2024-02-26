@@ -1,14 +1,14 @@
 
-import Collection from '../Collection.js';
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
-import Map from '../Map.js';
-import MapEventType from '../MapEventType.js';
-import MapProperty from '../MapProperty.js';
-import ObjectEventType from '../ObjectEventType.js';
-import Overlay from '../Overlay.js';
-import View from '../View.js';
-import ViewProperty from '../ViewProperty.js';
+import Collection from '../Collection';
+import Control from './Control';
+import type { EventType } from '@olts/events';
+import Map from '../Map';
+import MapEventType from '../MapEventType';
+import MapProperty from '../MapProperty';
+import ObjectEventType from '../ObjectEventType';
+import Overlay from '../Overlay';
+import View from '../View';
+import ViewProperty from '../ViewProperty';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
 import {
   containsExtent,
@@ -17,7 +17,7 @@ import {
   getTopLeft,
   scaleFromCenter,
 } from '@olts/core/extent';
-import {listen, listenOnce} from '../events.js';
+import {listen, listenOnce} from '../events';
 import {fromExtent as polygonFromExtent} from '@olts/geometry';
 import {replaceNode} from '@olts/core/dom';
 
@@ -44,9 +44,9 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|HTMLElement} [label='›'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<import("../layer/Base.js").default>|import("../Collection.js").default<import("../layer/Base.js").default>} [layers]
+ * @property {Array<import("../layer/Base").default>|import("../Collection").default<import("../layer/Base").default>} [layers]
  * Layers for the overview map.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
+ * @property {function(import("../MapEvent").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {boolean} [rotateWithView=false] Whether the control view should rotate with the main map view.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -194,7 +194,7 @@ export class OverviewMap extends Control {
     box.style.boxSizing = 'border-box';
 
     /**
-     * @type {import("../Overlay.js").default}
+     * @type {import("../Overlay").default}
      * @private
      */
     this.boxOverlay_ = new Overlay({
@@ -264,7 +264,7 @@ export class OverviewMap extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../Map.js").default|null} map Map.
+   * @param {import("../Map").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -309,12 +309,12 @@ export class OverviewMap extends Control {
 
   /**
    * Handle map property changes.  This only deals with changes to the map's view.
-   * @param {import("../Object.js").ObjectEvent} event The propertychange event.
+   * @param {import("../Object").ObjectEvent} event The propertychange event.
    * @private
    */
   handleMapPropertyChange_(event) {
     if (event.key === MapProperty.VIEW) {
-      const oldView = /** @type {import("../View.js").default} */ (
+      const oldView = /** @type {import("../View").default} */ (
         event.oldValue
       );
       if (oldView) {
@@ -332,7 +332,7 @@ export class OverviewMap extends Control {
 
   /**
    * Register listeners for view property changes.
-   * @param {import("../View.js").default} view The view.
+   * @param {import("../View").default} view The view.
    * @private
    */
   bindView_(view) {
@@ -354,7 +354,7 @@ export class OverviewMap extends Control {
 
   /**
    * Unregister listeners for view property changes.
-   * @param {import("../View.js").default} view The view.
+   * @param {import("../View").default} view The view.
    * @private
    */
   unbindView_(view) {
@@ -656,7 +656,7 @@ export class OverviewMap extends Control {
 
   /**
    * Return the overview map.
-   * @return {import("../Map.js").default} Overview map.
+   * @return {import("../Map").default} Overview map.
    * @api
    */
   getOverviewMap() {
@@ -665,7 +665,7 @@ export class OverviewMap extends Control {
 
   /**
    * Update the overview map element.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @param {import("../MapEvent").default} mapEvent Map event.
    * @override
    */
   render(mapEvent) {

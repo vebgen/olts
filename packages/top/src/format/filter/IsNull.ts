@@ -1,4 +1,4 @@
-import Comparison from './Comparison.js';
+import Comparison from './Comparison';
 
 /**
  * Represents a `<PropertyIsNull>` comparison operator.

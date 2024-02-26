@@ -1,15 +1,15 @@
 
-import EventType from '../../events/EventType.js';
-import TileGeometry from '../../webgl/TileGeometry.js';
-import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import type { EventType } from '@olts/events';
+import TileGeometry from '../../webgl/TileGeometry';
+import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer';
+import WebGLArrayBuffer from '../../webgl/Buffer';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
-} from './TileLayerBase.js';
-import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import {ShaderBuilder} from '../../webgl/ShaderBuilder.js';
+} from './TileLayerBase';
+import WebGLRenderTarget from '../../webgl/RenderTarget';
+import {AttributeType} from '../../webgl/Helper';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl';
+import {ShaderBuilder} from '../../webgl/ShaderBuilder';
 import {
   create as createMat4,
   fromTransform as mat4FromTransform,
@@ -19,9 +19,9 @@ import {
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
-} from '../../transform.js';
+} from '../../transform';
 import {getIntersection} from '@olts/core/extent';
-import {parseLiteralStyle} from '../../webgl/styleparser.js';
+import {parseLiteralStyle} from '../../webgl/styleparser';
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -34,7 +34,7 @@ export const Attributes = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').VectorStyle} VectorStyle
+ * @typedef {import('../../render/webgl/VectorStyleRenderer').VectorStyle} VectorStyle
  */
 
 /**
@@ -46,7 +46,7 @@ export const Attributes = {
  */
 
 /**
- * @typedef {import("../../layer/BaseTile.js").default} LayerType
+ * @typedef {import("../../layer/BaseTile").default} LayerType
  */
 
 /**
@@ -89,7 +89,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * This transform is updated on every frame and is the composition of:
      * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
      * - current world->screen transform
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.currentFrameStateTransform_ = createTransform();
@@ -113,7 +113,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.tileMaskIndices_.fromArray([0, 1, 3, 1, 2, 3]);
 
     /**
-     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
+     * @type {Array<import('../../webgl/Helper').AttributeDescription>}
      * @private
      */
     this.tileMaskAttributes_ = [
@@ -176,7 +176,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       let shaders;
       if (!isShaders) {
         const parseResult = parseLiteralStyle(
-          /** @type {import('../../style/webgl.js').WebGLStyle} */ (style),
+          /** @type {import('../../style/webgl').WebGLStyle} */ (style),
         );
         addBuilderParams(parseResult.builder);
         shaders = {
@@ -186,7 +186,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         };
       } else {
         addBuilderParams(
-          /** @type {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} */ (
+          /** @type {import('../../render/webgl/VectorStyleRenderer').StyleShaders} */ (
             style
           ).builder,
         );
@@ -291,7 +291,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   /**
    * @param {number} alpha Alpha value of the tile
    * @param {Extent} renderExtent Which extent to restrict drawing to
-   * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
+   * @param {import("../../transform").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
    * @param {number} tileZ Tile zoom level
    * @param {number} depth Depth of the tile
    * @private
@@ -350,7 +350,7 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {}
 

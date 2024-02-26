@@ -37,7 +37,7 @@ import {assert} from '@olts/core/asserts';
  */
 
 /**
- * @typedef {Object<string,string|number|Array<number|string|IiifProfile|Object<string, number>|TileInfo>>}
+ * @typedef {Record<string,string|number|Array<number|string|IiifProfile|Record<string, number>|TileInfo>>}
  *    ImageInformationResponse
  */
 
@@ -55,7 +55,7 @@ export const Versions = {
  * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
  * @const
- * @type {Object<string, Object<string, SupportedFeatures>>}
+ * @type {Record<string, Record<string, SupportedFeatures>>}
  */
 const IIIF_PROFILE_VALUES = {};
 IIIF_PROFILE_VALUES[Versions.VERSION1] = {
@@ -439,7 +439,7 @@ export class IIIFInfo {
 
   /**
    * @param {PreferredOptions} [preferredOptions] Optional options for preferred format and quality.
-   * @return {import("../source/IIIF.js").Options|undefined} IIIF tile source ready constructor options.
+   * @return {import("../source/IIIF").Options|undefined} IIIF tile source ready constructor options.
    * @api
    */
   getTileSourceOptions(preferredOptions) {

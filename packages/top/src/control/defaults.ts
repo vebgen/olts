@@ -1,20 +1,20 @@
-import Attribution from './Attribution.js';
-import Collection from '../Collection.js';
-import Rotate from './Rotate.js';
-import Zoom from './Zoom.js';
+import Attribution from './Attribution';
+import Collection from '../Collection';
+import Rotate from './Rotate';
+import Zoom from './Zoom';
 
 /**
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [attribution=true] Include
  * {@link module:ol/control/Attribution~Attribution}.
- * @property {import("./Attribution.js").Options} [attributionOptions]
+ * @property {import("./Attribution").Options} [attributionOptions]
  * Options for {@link module:ol/control/Attribution~Attribution}.
  * @property {boolean} [rotate=true] Include
  * {@link module:ol/control/Rotate~Rotate}.
- * @property {import("./Rotate.js").Options} [rotateOptions] Options
+ * @property {import("./Rotate").Options} [rotateOptions] Options
  * for {@link module:ol/control/Rotate~Rotate}.
  * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
- * @property {import("./Zoom.js").Options} [zoomOptions] Options for
+ * @property {import("./Zoom").Options} [zoomOptions] Options for
  * {@link module:ol/control/Zoom~Zoom}.
  */
 
@@ -27,14 +27,14 @@ import Zoom from './Zoom.js';
  * * {@link module:ol/control/Attribution~Attribution}
  *
  * @param {DefaultsOptions} [options] Options for the default controls.
- * @return {Collection<import("./Control.js").default>} A collection of controls
+ * @return {Collection<import("./Control").default>} A collection of controls
  * to be used with the {@link module:ol/Map~Map} constructor's `controls` option.
  * @api
  */
 export function defaults(options) {
   options = options ? options : {};
 
-  /** @type {Collection<import("./Control.js").default>} */
+  /** @type {Collection<import("./Control").default>} */
   const controls = new Collection();
 
   const zoomControl = options.zoom !== undefined ? options.zoom : true;

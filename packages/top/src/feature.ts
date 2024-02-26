@@ -59,7 +59,7 @@ export interface ObjectWithGeometry<G = Geometry> {
  *
  * ```js
  *
- * import Feature from 'ol/Feature.js';
+ * import Feature from 'ol/Feature';
  * import { Polygon } from '@olts/geometry';
  * import { Point } from '@olts/geometry';
  *

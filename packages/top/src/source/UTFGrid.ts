@@ -1,28 +1,28 @@
 
 
-import EventType from '../events/EventType.js';
-import Tile from '../Tile.js';
-import TileSource from './Tile.js';
-import TileState from '../TileState.js';
+import type { EventType } from '@olts/events';
+import Tile from '../tile';
+import TileSource from './Tile';
+import type { TileState} from '../tile';
 import {applyTransform, intersects} from '@olts/core/extent';
-import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {getKeyZXY} from '../tilecoord.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import {listenOnce} from '../events.js';
-import {jsonp as requestJSONP} from '../net.js';
+import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction';
+import {createXYZ, extentFromProjection} from '../tile-grid';
+import {getKeyZXY} from '../tile-coord';
+import {get as getProjection, getTransformFromProjections} from '../proj';
+import {listenOnce} from '../events';
+import {jsonp as requestJSONP} from '../net';
 
 /**
  * @typedef {Object} UTFGridJSON
  * @property {Array<string>} grid The grid.
  * @property {Array<string>} keys The keys.
- * @property {Object<string, Object>} [data] Optional data.
+ * @property {Record<string, Object>} [data] Optional data.
  */
 
 export class CustomTile extends Tile {
   /**
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileState.js").default} state State.
+   * @param {TileCoord} tileCoord Tile coordinate.
+   * @param {import("../TileState").default} state State.
    * @param {string} src Image source URI.
    * @param {Extent} extent Extent of the tile.
    * @param {boolean} preemptive Load the tile when visible (before it's needed).
@@ -63,7 +63,7 @@ export class CustomTile extends Tile {
 
     /**
      * @private
-     * @type {Object<string, Object>|undefined}
+     * @type {Record<string, Object>|undefined}
      */
     this.data_ = null;
 
@@ -132,8 +132,8 @@ export class CustomTile extends Tile {
    *                               The tile data is requested if not yet loaded.
    */
   forDataAtCoordinate(coordinate, callback, request) {
-    if (this.state == TileState.EMPTY && request === true) {
-      this.state = TileState.IDLE;
+    if (this.state == TileStates.EMPTY && request === true) {
+      this.state = TileStates.IDLE;
       listenOnce(
         this,
         EventType.CHANGE,
@@ -166,7 +166,7 @@ export class CustomTile extends Tile {
    * @private
    */
   handleError_() {
-    this.state = TileState.ERROR;
+    this.state = TileStates.ERROR;
     this.changed();
   }
 
@@ -179,7 +179,7 @@ export class CustomTile extends Tile {
     this.keys_ = json['keys'];
     this.data_ = json['data'];
 
-    this.state = TileState.LOADED;
+    this.state = TileStates.LOADED;
     this.changed();
   }
 
@@ -187,8 +187,8 @@ export class CustomTile extends Tile {
    * @private
    */
   loadInternal_() {
-    if (this.state == TileState.IDLE) {
-      this.state = TileState.LOADING;
+    if (this.state == TileStates.IDLE) {
+      this.state = TileStates.LOADING;
       if (this.jsonp_) {
         requestJSONP(
           this.src_,
@@ -242,7 +242,7 @@ export class CustomTile extends Tile {
     if (this.preemptive_) {
       this.loadInternal_();
     } else {
-      this.setState(TileState.EMPTY);
+      this.setState(TileStates.EMPTY);
     }
   }
 }
@@ -257,11 +257,11 @@ export class CustomTile extends Tile {
  * data will ever be loaded.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
- * @property {import("./TileJSON.js").Config} [tileJSON] TileJSON configuration for this source.
+ * @property {import("./TileJSON").Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
  * @property {string} [url] TileJSON endpoint that provides the configuration for this source.
  * Request will be made through JSONP. If not provided, `tileJSON` must be configured.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -290,7 +290,7 @@ export class UTFGrid extends TileSource {
 
     /**
      * @private
-     * @type {!import("../Tile.js").UrlFunction}
+     * @type {!import("../Tile").UrlFunction}
      */
     this.tileUrlFunction_ = nullTileUrlFunction;
 
@@ -337,7 +337,7 @@ export class UTFGrid extends TileSource {
     if (!client.status || (client.status >= 200 && client.status < 300)) {
       let response;
       try {
-        response = /** @type {import("./TileJSON.js").Config} */ (
+        response = /** @type {import("./TileJSON").Config} */ (
           JSON.parse(client.responseText)
         );
       } catch (err) {
@@ -413,7 +413,7 @@ export class UTFGrid extends TileSource {
   /**
    * TODO: very similar to ol/source/TileJSON#handleTileJSONResponse
    * @protected
-   * @param {import("./TileJSON.js").Config} tileJSON Tile JSON.
+   * @param {import("./TileJSON").Config} tileJSON Tile JSON.
    */
   handleTileJSONResponse(tileJSON) {
     const epsg4326Projection = getProjection('EPSG:4326');
@@ -466,7 +466,7 @@ export class UTFGrid extends TileSource {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {!CustomTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
@@ -482,7 +482,7 @@ export class UTFGrid extends TileSource {
     const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     const tile = new CustomTile(
       tileCoord,
-      tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
+      tileUrl !== undefined ? TileStates.IDLE : TileStates.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.tileGrid.getTileCoordExtent(tileCoord),
       this.preemptive_,

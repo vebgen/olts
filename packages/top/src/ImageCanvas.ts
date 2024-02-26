@@ -1,6 +1,6 @@
 
-import ImageState from './ImageState.js';
-import ImageWrapper from './Image.js';
+import ImageState from './ImageState';
+import ImageWrapper from './Image';
 
 /**
  * A function that is called to trigger asynchronous canvas drawing.  It is
@@ -12,79 +12,79 @@ import ImageWrapper from './Image.js';
  */
 
 export class ImageCanvas extends ImageWrapper {
-  /**
-   * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {HTMLCanvasElement} canvas Canvas.
-   * @param {Loader} [loader] Optional loader function to
-   *     support asynchronous canvas drawing.
-   */
-  constructor(extent, resolution, pixelRatio, canvas, loader) {
-    const state = loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
-
-    super(extent, resolution, pixelRatio, state);
-
     /**
-     * Optional canvas loader function.
-     * @type {?Loader}
-     * @private
+     * @param {Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @param {number} pixelRatio Pixel ratio.
+     * @param {HTMLCanvasElement} canvas Canvas.
+     * @param {Loader} [loader] Optional loader function to
+     *     support asynchronous canvas drawing.
      */
-    this.loader_ = loader !== undefined ? loader : null;
+    constructor(extent: Extent, resolution: number, pixelRatio: number, canvas: HTMLCanvasElement, loader: Loader) {
+        const state = loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
-    /**
-     * @private
-     * @type {HTMLCanvasElement}
-     */
-    this.canvas_ = canvas;
+        super(extent, resolution, pixelRatio, state);
 
-    /**
-     * @private
-     * @type {?Error}
-     */
-    this.error_ = null;
-  }
+        /**
+         * Optional canvas loader function.
+         * @type {?Loader}
+         * @private
+         */
+        this.loader_ = loader !== undefined ? loader : null;
 
-  /**
-   * Get any error associated with asynchronous rendering.
-   * @return {?Error} Any error that occurred during rendering.
-   */
-  getError() {
-    return this.error_;
-  }
+        /**
+         * @private
+         * @type {HTMLCanvasElement}
+         */
+        this.canvas_ = canvas;
 
-  /**
-   * Handle async drawing complete.
-   * @param {Error} [err] Any error during drawing.
-   * @private
-   */
-  handleLoad_(err) {
-    if (err) {
-      this.error_ = err;
-      this.state = ImageState.ERROR;
-    } else {
-      this.state = ImageState.LOADED;
+        /**
+         * @private
+         * @type {?Error}
+         */
+        this.error_ = null;
     }
-    this.changed();
-  }
 
-  /**
-   * Load not yet loaded URI.
-   */
-  load() {
-    if (this.state == ImageState.IDLE) {
-      this.state = ImageState.LOADING;
-      this.changed();
-      this.loader_(this.handleLoad_.bind(this));
+    /**
+     * Get any error associated with asynchronous rendering.
+     * @return {?Error} Any error that occurred during rendering.
+     */
+    getError(): Error | null {
+        return this.error_;
     }
-  }
 
-  /**
-   * @return {HTMLCanvasElement} Canvas element.
-   */
-  getImage() {
-    return this.canvas_;
-  }
+    /**
+     * Handle async drawing complete.
+     * @param {Error} [err] Any error during drawing.
+     * @private
+     */
+    handleLoad_(err: Error) {
+        if (err) {
+            this.error_ = err;
+            this.state = ImageState.ERROR;
+        } else {
+            this.state = ImageState.LOADED;
+        }
+        this.changed();
+    }
+
+    /**
+     * Load not yet loaded URI.
+     */
+    load() {
+        if (this.state == ImageState.IDLE) {
+            this.state = ImageState.LOADING;
+            this.changed();
+            this.loader_(this.handleLoad_.bind(this));
+        }
+    }
+
+    /**
+     * @return {HTMLCanvasElement} Canvas element.
+     */
+    getImage(): HTMLCanvasElement {
+        return this.canvas_;
+    }
 }
 
 export default ImageCanvas;

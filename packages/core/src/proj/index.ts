@@ -71,10 +71,10 @@ export {
     remove as removeTransform,
     createMat4,
     mat4FromTransform,
-} from '@olts/core/transform';
+} from './transform';
 
 
-export type {
+export {
     Units,
     fromCode as unitsFromCode,
     METERS_PER_UNIT,

@@ -1,24 +1,24 @@
 
 
-import EventType from '../events/EventType.js';
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import ImageWrapper, {decode} from '../Image.js';
-import {createLoader} from './static.js';
-import {get as getProjection} from '../proj.js';
+import type { EventType } from '@olts/events';
+import ImageSource, {defaultImageLoadFunction} from './Image';
+import ImageWrapper, {decode} from '../Image';
+import {createLoader} from './static';
+import {get as getProjection} from '../proj';
 import {intersects} from '@olts/core/extent';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {Extent} imageExtent Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
- * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../Image").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {string} url Image URL.
  */
 
@@ -34,7 +34,7 @@ export class Static extends ImageSource {
     const crossOrigin =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
-    const /** @type {import("../Image.js").LoadFunction} */ imageLoadFunction =
+    const /** @type {import("../Image").LoadFunction} */ imageLoadFunction =
         options.imageLoadFunction !== undefined
           ? options.imageLoadFunction
           : defaultImageLoadFunction;
@@ -59,7 +59,7 @@ export class Static extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").default}
+     * @type {import("../Image").default}
      */
     this.image = null;
 
@@ -98,8 +98,8 @@ export class Static extends ImageSource {
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../Image").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (intersects(extent, this.image.getExtent())) {

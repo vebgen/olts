@@ -1,14 +1,14 @@
 
 
-import TileImage from './TileImage.js';
+import TileImage from './TileImage';
 import {applyTransform, intersects} from '@olts/core/extent';
-import {createFromTileUrlFunctions} from '../tileurlfunction.js';
-import {createOrUpdate} from '../tilecoord.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction';
+import {createOrUpdate} from '../tile-coord';
+import {createXYZ, extentFromProjection} from '../tile-grid';
+import {get as getProjection, getTransformFromProjections} from '../proj';
 
 /**
- * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
+ * @param {TileCoord} tileCoord Tile coord.
  * @return {string} Quad key.
  */
 export function quadKey(tileCoord) {
@@ -54,7 +54,7 @@ const TOS_ATTRIBUTION =
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -63,7 +63,7 @@ const TOS_ATTRIBUTION =
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
@@ -242,16 +242,16 @@ export class BingMaps extends TileImage {
     const placeholderTiles = this.placeholderTiles_;
     this.tileUrlFunction = createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function (subdomain) {
-        /** @type {import('../tilecoord.js').TileCoord} */
+        /** @type {TileCoord} */
         const quadKeyTileCoord = [0, 0, 0];
         const imageUrl = resource.imageUrl
           .replace('{subdomain}', subdomain)
           .replace('{culture}', culture);
         return (
           /**
-           * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+           * @param {TileCoord} tileCoord Tile coordinate.
            * @param {number} pixelRatio Pixel ratio.
-           * @param {import("../proj/Projection.js").default} projection Projection.
+           * @param {import("../proj/Projection").default} projection Projection.
            * @return {string|undefined} Tile URL.
            */
           function (tileCoord, pixelRatio, projection) {

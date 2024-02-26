@@ -1,10 +1,10 @@
 import { BaseObject } from '@olts/events';
-import InteractionProperty from './Property.js';
-import { easeOut, linear } from '../easing.js';
+import InteractionProperty from './Property';
+import { easeOut, linear } from '../easing';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType|
@@ -14,7 +14,7 @@ import { easeOut, linear } from '../easing.js';
 /**
  * Object literal with config options for interactions.
  * @typedef {Object} InteractionOptions
- * @property {function(import("../MapBrowserEvent.js").default):boolean} handleEvent
+ * @property {function(import("../MapBrowserEvent").default):boolean} handleEvent
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. If the function returns a falsy value, propagation of
  * the event to other interactions in the map's interactions chain will be
@@ -66,7 +66,7 @@ export class Interaction extends BaseObject {
 
         /**
          * @private
-         * @type {import("../Map.js").default|null}
+         * @type {import("../Map").default|null}
          */
         this.map_ = null;
 
@@ -85,20 +85,20 @@ export class Interaction extends BaseObject {
 
     /**
      * Get the map associated with this interaction.
-     * @return {import("../Map.js").default|null} Map.
+     * @return {import("../Map").default|null} Map.
      * @api
      */
-    getMap(): import("../Map.js").default | null {
+    getMap(): import("../Map").default | null {
         return this.map_;
     }
 
     /**
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event}.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
         return true;
     }
 
@@ -116,19 +116,19 @@ export class Interaction extends BaseObject {
      * Remove the interaction from its current map and attach it to the new map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default|null} map Map.
+     * @param {import("../Map").default|null} map Map.
      */
-    setMap(map: import("../Map.js").default | null) {
+    setMap(map: import("../Map").default | null) {
         this.map_ = map;
     }
 }
 
 /**
- * @param {import("../View.js").default} view View.
+ * @param {import("../View").default} view View.
  * @param {Coordinate} delta Delta.
  * @param {number} [duration] Duration.
  */
-export function pan(view: import("../View.js").default, delta: Coordinate, duration: number) {
+export function pan(view: import("../View").default, delta: Coordinate, duration: number) {
     const currentCenter = view.getCenterInternal();
     if (currentCenter) {
         const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
@@ -141,12 +141,12 @@ export function pan(view: import("../View.js").default, delta: Coordinate, durat
 }
 
 /**
- * @param {import("../View.js").default} view View.
+ * @param {import("../View").default} view View.
  * @param {number} delta Delta from previous zoom level.
  * @param {Coordinate} [anchor] Anchor coordinate in the user projection.
  * @param {number} [duration] Duration.
  */
-export function zoomByDelta(view: import("../View.js").default, delta: number, anchor: Coordinate, duration: number) {
+export function zoomByDelta(view: import("../View").default, delta: number, anchor: Coordinate, duration: number) {
     const currentZoom = view.getZoom();
 
     if (currentZoom === undefined) {

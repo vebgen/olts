@@ -1,8 +1,8 @@
 
 import { BaseObject, EventsKey } from '@olts/events';
-import ViewHint from './ViewHint.js';
-import ViewProperty from './ViewProperty.js';
-import { DEFAULT_TILE_SIZE } from './tilegrid/common.js';
+import ViewHint from './ViewHint';
+import ViewProperty from './ViewProperty';
+import { DEFAULT_TILE_SIZE } from './tile-grid/common';
 import {
     METERS_PER_UNIT,
     createProjection,
@@ -12,29 +12,29 @@ import {
     getUserProjection,
     toUserCoordinate,
     toUserExtent,
-} from './proj.js';
+} from './proj';
 import { VOID } from '@olts/core/functions';
 import {
     add as addCoordinate,
     equals as coordinatesEqual,
     equals,
     rotate as rotateCoordinate,
-} from './coordinate.js';
+} from './coordinate';
 import { assert } from '@olts/core/asserts';
-import { none as centerNone, createExtent } from './centerconstraint.js';
+import { none as centerNone, createExtent } from './center-constraint';
 import { clamp, modulo } from '@olts/core/math';
 import {
     createMinMaxResolution,
     createSnapToPower,
     createSnapToResolutions,
-} from './resolutionconstraint.js';
+} from './resolutionconstraint';
 import {
     createSnapToN,
     createSnapToZero,
     disable,
     none as rotationNone,
-} from './rotationconstraint.js';
-import { easeOut, inAndOut } from './easing.js';
+} from './rotationconstraint';
+import { easeOut, inAndOut } from '@olts/core/easing';
 import {
     getCenter,
     getForViewAndSize,
@@ -65,9 +65,9 @@ import { fromExtent as polygonFromExtent } from '@olts/geometry';
 
 /**
  * @typedef {Object} Constraints
- * @property {import("./centerconstraint.js").Type} center Center.
- * @property {import("./resolutionconstraint.js").Type} resolution Resolution.
- * @property {import("./rotationconstraint.js").Type} rotation Rotation.
+ * @property {import("./centerconstraint").Type} center Center.
+ * @property {import("./resolutionconstraint").Type} resolution Resolution.
+ * @property {import("./rotationconstraint").Type} rotation Rotation.
  */
 
 /**
@@ -155,7 +155,7 @@ import { fromExtent as polygonFromExtent } from '@olts/geometry';
  * showFullExtent is true, the user will be able to zoom out so that the viewport
  * exceeds the height or width of the configured extent, but not both, allowing the
  * full extent to be shown.
- * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
+ * @property {ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
  * units are `projection` units per pixel (e.g. meters per pixel). An
@@ -202,7 +202,7 @@ import { fromExtent as polygonFromExtent } from '@olts/geometry';
 /**
  * @typedef {Object} State
  * @property {Coordinate} center Center (in view projection coordinates).
- * @property {import("./proj/Projection.js").default} projection Projection.
+ * @property {Projection} projection Projection.
  * @property {number} resolution Resolution.
  * @property {Coordinate} [nextCenter] The next center during an animation series.
  * @property {number} [nextResolution] The next resolution during an animation series.
@@ -212,11 +212,11 @@ import { fromExtent as polygonFromExtent } from '@olts/geometry';
  */
 
 /**
- * Like {@link import("./Map.js").FrameState}, but just `viewState` and `extent`.
+ * Like {@link import("./Map").FrameState}, but just `viewState` and `extent`.
  * @typedef {Object} ViewStateLayerStateExtent
  * @property {State} viewState View state.
  * @property {Extent} extent Extent (in user projection coordinates).
- * @property {Array<import("./layer/Layer.js").State>} [layerStatesArray] Layer states.
+ * @property {Array<import("./layer/Layer").State>} [layerStatesArray] Layer states.
  */
 
 /**
@@ -355,7 +355,7 @@ export class View extends BaseObject {
         /**
          * @private
          * @const
-         * @type {import("./proj/Projection.js").default}
+         * @type {Projection}
          */
         this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
@@ -1089,10 +1089,10 @@ export class View extends BaseObject {
 
     /**
      * Get the view projection.
-     * @return {import("./proj/Projection.js").default} The projection of the view.
+     * @return {Projection} The projection of the view.
      * @api
      */
-    getProjection(): import("./proj/Projection.js").default {
+    getProjection(): Projection {
         return this.projection_;
     }
 
@@ -1474,10 +1474,10 @@ export class View extends BaseObject {
      * Center on coordinate and view position.
      * @param {Coordinate} coordinate Coordinate.
      * @param {Size} size Box pixel size.
-     * @param {import("./pixel.js").Pixel} position Position on the view to center on.
+     * @param {import("./pixel").Pixel} position Position on the view to center on.
      * @api
      */
-    centerOn(coordinate: Coordinate, size: Size, position: import("./pixel.js").Pixel) {
+    centerOn(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel) {
         this.centerOnInternal(
             fromUserCoordinate(coordinate, this.getProjection()),
             size,
@@ -1488,9 +1488,9 @@ export class View extends BaseObject {
     /**
      * @param {Coordinate} coordinate Coordinate.
      * @param {Size} size Box pixel size.
-     * @param {import("./pixel.js").Pixel} position Position on the view to center on.
+     * @param {import("./pixel").Pixel} position Position on the view to center on.
      */
-    centerOnInternal(coordinate: Coordinate, size: Size, position: import("./pixel.js").Pixel) {
+    centerOnInternal(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel) {
         this.setCenterInternal(
             calculateCenterOn(
                 coordinate,
@@ -1662,11 +1662,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {import("./ViewHint.js").default} hint Hint.
+     * @param {import("./ViewHint").default} hint Hint.
      * @param {number} delta Delta.
      * @return {number} New value.
      */
-    setHint(hint: import("./ViewHint.js").default, delta: number): number {
+    setHint(hint: import("./ViewHint").default, delta: number): number {
         this.hints_[hint] += delta;
         this.changed();
         return this.hints_[hint];
@@ -1927,9 +1927,9 @@ function animationCallback(callback: Function, returnValue: any) {
 
 /**
  * @param {ViewOptions} options View options.
- * @return {import("./centerconstraint.js").Type} The constraint.
+ * @return {import("./centerconstraint").Type} The constraint.
  */
-export function createCenterConstraint(options: ViewOptions): import("./centerconstraint.js").Type {
+export function createCenterConstraint(options: ViewOptions): import("./center-constraint").Type {
     if (options.extent !== undefined) {
         const smooth =
             options.smoothExtentConstraint !== undefined
@@ -1951,11 +1951,11 @@ export function createCenterConstraint(options: ViewOptions): import("./centerco
 
 /**
  * @param {ViewOptions} options View options.
- * @return {{constraint: import("./resolutionconstraint.js").Type, maxResolution: number,
+ * @return {{constraint: import("./resolutionconstraint").Type, maxResolution: number,
  *     minResolution: number, minZoom: number, zoomFactor: number}} The constraint.
  */
 export function createResolutionConstraint(options: ViewOptions): {
-    constraint: import("./resolutionconstraint.js").Type; maxResolution: number;
+    constraint: import("./resolutionconstraint").Type; maxResolution: number;
     minResolution: number; minZoom: number; zoomFactor: number;
 } {
     let resolutionConstraint;
@@ -2094,9 +2094,9 @@ export function createResolutionConstraint(options: ViewOptions): {
 
 /**
  * @param {ViewOptions} options View options.
- * @return {import("./rotationconstraint.js").Type} Rotation constraint.
+ * @return {import("./rotationconstraint").Type} Rotation constraint.
  */
-export function createRotationConstraint(options: ViewOptions): import("./rotationconstraint.js").Type {
+export function createRotationConstraint(options: ViewOptions): import("./rotationconstraint").Type {
     const enableRotation =
         options.enableRotation !== undefined ? options.enableRotation : true;
     if (enableRotation) {
@@ -2138,12 +2138,12 @@ export function isNoopAnimation(animation: Animation): boolean {
 /**
  * @param {Coordinate} coordinate Coordinate.
  * @param {Size} size Box pixel size.
- * @param {import("./pixel.js").Pixel} position Position on the view to center on.
+ * @param {import("./pixel").Pixel} position Position on the view to center on.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @return {Coordinate} Shifted center.
  */
-function calculateCenterOn(coordinate: Coordinate, size: Size, position: import("./pixel.js").Pixel, resolution: number, rotation: number): Coordinate {
+function calculateCenterOn(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel, resolution: number, rotation: number): Coordinate {
     // calculate rotated position
     const cosAngle = Math.cos(-rotation);
     let sinAngle = Math.sin(-rotation);

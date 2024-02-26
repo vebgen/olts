@@ -1,5 +1,5 @@
 import { ValueOf } from '@olts/core';
-import { BaseEvent as Event, BaseObject, OnSignature, EventTypes, ObjectEvent, CombinedOnSignature, ObjectEventType, EventsKey } from '@olts/events';
+import { BaseEvent as Event, BaseObject, OnSignature, EventTypes, ObjectEvent, CombinedOnSignature, ObjectEventType, EventsKey, EventType } from '@olts/events';
 
 
 /**
@@ -67,11 +67,11 @@ export class CollectionEvent<T> extends Event {
  * 
  */
 export type CollectionOnSignature<T, Return> =
-    & OnSignature<EventTypes, Event, Return>
+    & OnSignature<EventType, Event, Return>
     & OnSignature<ObjectEventType | 'change:length', ObjectEvent, Return>
     & OnSignature<'add' | 'remove', CollectionEvent<T>, Return>
     & CombinedOnSignature<
-        | EventTypes
+        | EventType
         | ObjectEventType
         | 'change:length'
         | 'add'
@@ -123,27 +123,27 @@ export class Collection<T> extends BaseObject {
     override un: CollectionOnSignature<T, void>;
 
     /**
+     * 
+     */
+    private unique_: boolean;
+
+    /**
+     * 
+     */
+    private array_: T[];
+
+    /**
      * @param {Array<T>} [array] Array.
      * @param {Options} [options] Collection options.
      */
-    constructor(array:T[], options: Options) {
+    constructor(array: T[], options: Options) {
         super();
         this.on = this.onInternal as CollectionOnSignature<T, EventsKey>;
         this.once = this.onceInternal as CollectionOnSignature<T, EventsKey>;
         this.un = this.unInternal as CollectionOnSignature<T, void>;
 
         options = options || {};
-
-        /**
-         * @private
-         * @type {boolean}
-         */
         this.unique_ = !!options.unique;
-
-        /**
-         * @private
-         * @type {!Array<T>}
-         */
         this.array_ = array ? array : [];
 
         if (this.unique_) {
@@ -166,13 +166,16 @@ export class Collection<T> extends BaseObject {
     }
 
     /**
-     * Add elements to the collection.  This pushes each item in the provided array
-     * to the end of the collection.
-     * @param {!Array<T>} arr Array.
-     * @return {Collection<T>} This collection.
+     * Add elements to the collection.
+     *
+     * This pushes each item in the provided array to the end of the
+     * collection.
+     * 
+     * @param arr Array.
+     * @return This collection.
      * @api
      */
-    extend(arr:T[]): Collection<T> {
+    extend(arr: T[]): Collection<T> {
         for (let i = 0, ii = arr.length; i < ii; ++i) {
             this.push(arr[i]);
         }
@@ -181,12 +184,13 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Iterate over each element, calling the provided callback.
+     * 
      * @param {function(T, number,T[]): *} f The function to call
      *     for every element. This function takes 3 arguments (the element, the
      *     index and the array). The return value is ignored.
      * @api
      */
-    forEach(f: (arg0: T, arg1: number, arg2:T[]) => *) {
+    forEach(f: (element: T, index: number, aray: T[]) => void) {
         const array = this.array_;
         for (let i = 0, ii = array.length; i < ii; ++i) {
             f(array[i], i, array);
@@ -194,21 +198,24 @@ export class Collection<T> extends BaseObject {
     }
 
     /**
-     * Get a reference to the underlying Array object. Warning: if the array
-     * is mutated, no events will be dispatched by the collection, and the
-     * collection's "length" property won't be in sync with the actual length
-     * of the array.
-     * @return {!Array<T>} Array.
+     * Get a reference to the underlying Array object.
+     *
+     * Warning: if the array is mutated, no events will be dispatched by the
+     * collection, and the collection's "length" property won't be in sync with
+     * the actual length of the array.
+     * 
+     * @return Array.
      * @api
      */
-    getArray():T[] {
+    getArray(): T[] {
         return this.array_;
     }
 
     /**
      * Get the element at the provided index.
-     * @param {number} index Index.
-     * @return {T} Element.
+     * 
+     * @param index Index.
+     * @return Element.
      * @api
      */
     item(index: number): T {
@@ -217,7 +224,8 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Get the length of this collection.
-     * @return {number} The length of the array.
+     * 
+     * @return The length of the array.
      * @observable
      * @api
      */
@@ -227,8 +235,9 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Insert an element at the provided index.
-     * @param {number} index Index.
-     * @param {T} elem Element.
+     * 
+     * @param index Index.
+     * @param elem Element.
      * @api
      */
     insertAt(index: number, elem: T) {
@@ -241,14 +250,14 @@ export class Collection<T> extends BaseObject {
         this.array_.splice(index, 0, elem);
         this.updateLength_();
         this.dispatchEvent(
-            new CollectionEvent(CollectionEventType.ADD, elem, index),
+            new CollectionEvent(CollectionEventTypes.ADD, elem, index),
         );
     }
 
     /**
      * Remove the last element of the collection and return it.
-     * Return `undefined` if the collection is empty.
-     * @return {T|undefined} Element.
+     * 
+     * @return Element or `undefined` if the collection is empty.
      * @api
      */
     pop(): T | undefined {
@@ -257,8 +266,9 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Insert the provided element at the end of the collection.
-     * @param {T} elem Element.
-     * @return {number} New length of the collection.
+     * 
+     * @param elem Element.
+     * @return New length of the collection.
      * @api
      */
     push(elem: T): number {
@@ -272,8 +282,9 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Remove the first occurrence of an element from the collection.
-     * @param {T} elem Element.
-     * @return {T|undefined} The removed element or undefined if none found.
+     * 
+     * @param elem Element.
+     * @return The removed element or undefined if none found.
      * @api
      */
     remove(elem: T): T | undefined {
@@ -288,9 +299,11 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Remove the element at the provided index and return it.
+     * 
      * Return `undefined` if the collection does not contain this index.
-     * @param {number} index Index.
-     * @return {T|undefined} Value.
+     * 
+     * @param index Index.
+     * @return Value.
      * @api
      */
     removeAt(index: number): T | undefined {
@@ -302,7 +315,7 @@ export class Collection<T> extends BaseObject {
         this.updateLength_();
         this.dispatchEvent(
       /** @type {CollectionEvent<T>} */(
-                new CollectionEvent(CollectionEventType.REMOVE, prev, index)
+                new CollectionEvent(CollectionEventTypes.REMOVE, prev, index)
             ),
         );
         return prev;
@@ -310,8 +323,9 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Set the element at the provided index.
-     * @param {number} index Index.
-     * @param {T} elem Element.
+     * 
+     * @param index Index.
+     * @param elem Element.
      * @api
      */
     setAt(index: number, elem: T) {
@@ -329,30 +343,26 @@ export class Collection<T> extends BaseObject {
         const prev = this.array_[index];
         this.array_[index] = elem;
         this.dispatchEvent(
-      /** @type {CollectionEvent<T>} */(
-                new CollectionEvent(CollectionEventType.REMOVE, prev, index)
-            ),
+            new CollectionEvent(CollectionEventTypes.REMOVE, prev, index)
         );
         this.dispatchEvent(
-      /** @type {CollectionEvent<T>} */(
-                new CollectionEvent(CollectionEventType.ADD, elem, index)
-            ),
+            new CollectionEvent(CollectionEventTypes.ADD, elem, index)
         );
     }
 
     /**
-     * @private
+     *
      */
-    updateLength_() {
+    private updateLength_() {
         this.set(Property.LENGTH, this.array_.length);
     }
 
     /**
-     * @private
-     * @param {T} elem Element.
-     * @param {number} [except] Optional index to ignore.
+     * 
+     * @param elem Element.
+     * @param except Optional index to ignore.
      */
-    assertUnique_(elem: T, except: number) {
+    private assertUnique_(elem: T, except?: number) {
         for (let i = 0, ii = this.array_.length; i < ii; ++i) {
             if (this.array_[i] === elem && i !== except) {
                 throw new Error('Duplicate item added to a unique collection');
@@ -360,5 +370,6 @@ export class Collection<T> extends BaseObject {
         }
     }
 }
+
 
 export default Collection;

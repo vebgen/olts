@@ -5,7 +5,7 @@ import {
   ELEMENT_ARRAY_BUFFER,
   STATIC_DRAW,
   STREAM_DRAW,
-} from '../webgl.js';
+} from '../webgl';
 import {assert} from '@olts/core/asserts';
 
 /**

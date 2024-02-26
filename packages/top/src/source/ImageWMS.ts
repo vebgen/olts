@@ -1,30 +1,30 @@
 
 
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import {calculateSourceResolution} from '../reproj.js';
-import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
-import {decode} from '../Image.js';
-import {get as getProjection, transform} from '../proj.js';
+import ImageSource, {defaultImageLoadFunction} from './Image';
+import {calculateSourceResolution} from '../reproj';
+import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms';
+import {decode} from '../Image';
+import {get as getProjection, transform} from '../proj';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {import("./wms.js").ServerType} [serverType] The type of
+ * @property {import("./wms").ServerType} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
  * Only needed if `hidpi` is `true`.
- * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../Image").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {Object<string,*>} [params] WMS request parameters.
+ * @property {Record<string,*>} [params] WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {number[]} [resolutions] Resolutions.
@@ -67,7 +67,7 @@ export class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").LoadFunction}
+     * @type {import("../Image").LoadFunction}
      */
     this.imageLoadFunction_ =
       options.imageLoadFunction !== undefined
@@ -82,7 +82,7 @@ export class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("./wms.js").ServerType}
+     * @type {import("./wms").ServerType}
      */
     this.serverType_ = options.serverType;
 
@@ -106,7 +106,7 @@ export class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.loaderProjection_ = null;
   }
@@ -117,7 +117,7 @@ export class ImageWMS extends ImageSource {
    * constructed.
    * @param {Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {import("../proj.js").ProjectionLike} projection Projection.
+   * @param {ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
    *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -191,8 +191,8 @@ export class ImageWMS extends ImageSource {
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../Image").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (this.url_ === undefined) {
@@ -222,7 +222,7 @@ export class ImageWMS extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {import("../Image.js").LoadFunction} The image load function.
+   * @return {import("../Image").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -240,7 +240,7 @@ export class ImageWMS extends ImageSource {
 
   /**
    * Set the image load function of the source.
-   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {

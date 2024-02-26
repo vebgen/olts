@@ -1,4 +1,4 @@
-import Filter from './Filter.js';
+import Filter from './Filter';
 
 /**
  * Represents a logical `<Not>` operator for a filter condition.
@@ -6,13 +6,13 @@ import Filter from './Filter.js';
  */
 export class Not extends Filter {
   /**
-   * @param {!import("./Filter.js").default} condition Filter condition.
+   * @param {!import("./Filter").default} condition Filter condition.
    */
   constructor(condition) {
     super('Not');
 
     /**
-     * @type {!import("./Filter.js").default}
+     * @type {!import("./Filter").default}
      */
     this.condition = condition;
   }

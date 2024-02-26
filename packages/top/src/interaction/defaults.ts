@@ -1,15 +1,15 @@
 
-import Collection from '../Collection.js';
-import DoubleClickZoom from './DoubleClickZoom.js';
-import DragPan from './DragPan.js';
-import DragRotate from './DragRotate.js';
-import DragZoom from './DragZoom.js';
-import KeyboardPan from './KeyboardPan.js';
-import KeyboardZoom from './KeyboardZoom.js';
-import Kinetic from '../Kinetic.js';
-import MouseWheelZoom from './MouseWheelZoom.js';
-import PinchRotate from './PinchRotate.js';
-import PinchZoom from './PinchZoom.js';
+import Collection from '../Collection';
+import DoubleClickZoom from './DoubleClickZoom';
+import DragPan from './DragPan';
+import DragRotate from './DragRotate';
+import DragZoom from './DragZoom';
+import KeyboardPan from './KeyboardPan';
+import KeyboardZoom from './KeyboardZoom';
+import Kinetic from '../Kinetic';
+import MouseWheelZoom from './MouseWheelZoom';
+import PinchRotate from './PinchRotate';
+import PinchZoom from './PinchZoom';
 
 /**
  * @typedef {Object} DefaultsOptions
@@ -53,7 +53,7 @@ import PinchZoom from './PinchZoom.js';
  * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
  * @param {DefaultsOptions} [options] Defaults options.
- * @return {Collection<import("./Interaction.js").default>}
+ * @return {Collection<import("./Interaction").default>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api
@@ -61,7 +61,7 @@ import PinchZoom from './PinchZoom.js';
 export function defaults(options) {
   options = options ? options : {};
 
-  /** @type {Collection<import("./Interaction.js").default>} */
+  /** @type {Collection<import("./Interaction").default>} */
   const interactions = new Collection();
 
   const kinetic = new Kinetic(-0.005, 0.05, 100);

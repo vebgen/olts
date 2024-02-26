@@ -1,5 +1,5 @@
 
-import Filter from './Filter.js';
+import Filter from './Filter';
 
 /**
  * Represents a `<BBOX>` operator to test whether a geometry-valued property

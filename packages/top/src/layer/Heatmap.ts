@@ -1,7 +1,7 @@
 
-import BaseVector from './BaseVector.js';
-import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {ShaderBuilder} from '../webgl/ShaderBuilder.js';
+import BaseVector from './BaseVector';
+import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer';
+import {ShaderBuilder} from '../webgl/ShaderBuilder';
 import {clamp} from '@olts/core/math';
 import {createCanvasContext2D} from '@olts/core/dom';
 
@@ -28,11 +28,11 @@ import {createCanvasContext2D} from '@olts/core/dom';
  * of the heatmap, specified as an array of CSS color strings.
  * @property {number} [radius=8] Radius size in pixels.
  * @property {number} [blur=15] Blur size in pixels.
- * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
+ * @property {string|function(import("../Feature").default):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
- * @property {import("../source/Vector.js").default} [source] Point source.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {import("../source/Vector").default} [source] Point source.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -57,8 +57,8 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @fires import("../render/Event.js").RenderEvent
- * @extends {BaseVector<import("../source/Vector.js").default, WebGLPointsLayerRenderer>}
+ * @fires import("../render/Event").RenderEvent
+ * @extends {BaseVector<import("../source/Vector").default, WebGLPointsLayerRenderer>}
  * @api
  */
 export class Heatmap extends BaseVector {

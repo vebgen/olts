@@ -11,17 +11,17 @@ import {isStringColor} from '@olts/core/color';
 
 /**
  * Base type used for literal style parameters; can be a number literal or the output of an operator,
- * which in turns takes {@link import("./expression.js").ExpressionValue} arguments.
+ * which in turns takes {@link import("./expression").ExpressionValue} arguments.
  *
  * The following operators can be used:
  *
  * * Reading operators:
  *   * `['band', bandIndex, xOffset, yOffset]` For tile layers only. Fetches pixel values from band
  *     `bandIndex` of the source's data. The first `bandIndex` of the source data is `1`. Fetched values
- *     are in the 0..1 range. {@link import("../source/TileImage.js").default} sources have 4 bands: red,
- *     green, blue and alpha. {@link import("../source/DataTile.js").default} sources can have any number
+ *     are in the 0..1 range. {@link import("../source/TileImage").default} sources have 4 bands: red,
+ *     green, blue and alpha. {@link import("../source/DataTile").default} sources can have any number
  *     of bands, depending on the underlying data source and
- *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
+ *     {@link import("../source/GeoTIFF").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
  *   * `['get', 'attributeName', typeHint]` fetches a feature property value, similar to `feature.get('attributeName')`
  *     A type hint can optionally be specified, in case the resulting expression contains a type ambiguity which
@@ -111,7 +111,7 @@ import {isStringColor} from '@olts/core/color';
  * * `string`
  * * {@link module:ol/color~Color}
  *
- * @typedef {Array<*>|import("../color.js").Color|string|number|boolean} ExpressionValue
+ * @typedef {Array<*>|import("../color").Color|string|number|boolean} ExpressionValue
  * @api
  */
 
@@ -220,7 +220,7 @@ export class CallExpression {
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
- * @property {import("../style/flat.js").FlatStyle|import("../style/webgl.js").WebGLStyle} style The style being parsed
+ * @property {import("../style/flat").FlatStyle|import("../style/webgl").WebGLStyle} style The style being parsed
  */
 
 /**
@@ -320,7 +320,7 @@ export function parse(encoded, context, typeHint) {
 }
 
 /**
- * @type {Object<string, string>}
+ * @type {Record<string, string>}
  */
 export const Ops = {
   Get: 'get',
@@ -375,7 +375,7 @@ export const Ops = {
  */
 
 /**
- * @type {Object<string, Parser>}
+ * @type {Record<string, Parser>}
  */
 const parsers = {
   [Ops.Get]: createParser(
@@ -1124,7 +1124,7 @@ function parseCallExpression(encoded, context, typeHint) {
 
 /**
  * Returns a simplified geometry type suited for the `geometry-type` operator
- * @param {Geometry|import('../render/Feature.js').default} geometry Geometry object
+ * @param {Geometry|import('../render/Feature').default} geometry Geometry object
  * @return {'Point'|'LineString'|'Polygon'|''} Simplified geometry type; empty string of no geometry found
  */
 export function computeGeometryType(geometry) {

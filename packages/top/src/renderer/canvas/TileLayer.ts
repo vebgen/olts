@@ -1,15 +1,15 @@
 
-import CanvasLayerRenderer from './Layer.js';
-import ImageTile from '../../ImageTile.js';
-import ReprojTile from '../../reproj/Tile.js';
-import TileRange from '../../TileRange.js';
-import TileState from '../../TileState.js';
+import CanvasLayerRenderer from './Layer';
+import ImageTile from '../../ImageTile';
+import ReprojTile from '../../reproj/Tile';
+import TileRange from '../../TileRange';
+import type { TileState} from '../../tile';
 import {
   apply as applyTransform,
   compose as composeTransform,
   makeInverse,
   toString as toTransformString,
-} from '../../transform.js';
+} from '../../transform';
 import {ascending} from '@olts/core/array';
 import {
   containsCoordinate,
@@ -22,14 +22,14 @@ import {
   getWidth,
   intersects,
 } from '@olts/core/extent';
-import {fromUserExtent} from '../../proj.js';
+import {fromUserExtent} from '../../proj';
 import {getUid} from '@olts/core/util';
-import {toSize} from '../../size.js';
+import {toSize} from '../../size';
 
 /**
  * Canvas renderer for tile layers.
  * @api
- * @template {import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default} [LayerType=import("../../layer/Tile.js").default<import("../../source/Tile.js").default>|import("../../layer/VectorTile.js").default]
+ * @template {import("../../layer/Tile").default<import("../../source/Tile").default>|import("../../layer/VectorTile").default} [LayerType=import("../../layer/Tile").default<import("../../source/Tile").default>|import("../../layer/VectorTile").default]
  * @extends {CanvasLayerRenderer<LayerType>}
  */
 export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
@@ -59,7 +59,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {import("../../proj/Projection.js").default}
+     * @type {import("../../proj/Projection").default}
      */
     this.renderedProjection = null;
 
@@ -71,7 +71,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {!Array<import("../../Tile.js").default>}
+     * @type {!Array<import("../../Tile").default>}
      */
     this.renderedTiles = [];
 
@@ -89,14 +89,14 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../TileRange.js").default}
+     * @type {import("../../TileRange").default}
      */
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
   }
 
   /**
    * @protected
-   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../Tile").default} tile Tile.
    * @return {boolean} Tile is drawable.
    */
   isDrawableTile(tile) {
@@ -104,9 +104,9 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     return (
-      tileState == TileState.LOADED ||
-      tileState == TileState.EMPTY ||
-      (tileState == TileState.ERROR && !useInterimTilesOnError)
+      tileState == TileStates.LOADED ||
+      tileState == TileStates.EMPTY ||
+      (tileState == TileStates.ERROR && !useInterimTilesOnError)
     );
   }
 
@@ -114,8 +114,8 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @return {!import("../../Tile.js").default} Tile.
+   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @return {!import("../../Tile").default} Tile.
    */
   getTile(z, x, y, frameState) {
     const pixelRatio = frameState.pixelRatio;
@@ -123,7 +123,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getSource();
     let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-    if (tile.getState() == TileState.ERROR) {
+    if (tile.getState() == TileStates.ERROR) {
       if (tileLayer.getUseInterimTilesOnError() && tileLayer.getPreload() > 0) {
         // Preloaded tiles for lower resolutions might have finished loading.
         this.newTiles_ = true;
@@ -136,7 +136,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray} Data at the pixel location.
    */
   getData(pixel) {
@@ -180,12 +180,12 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       );
       if (
         !(tile instanceof ImageTile || tile instanceof ReprojTile) ||
-        (tile instanceof ReprojTile && tile.getState() === TileState.EMPTY)
+        (tile instanceof ReprojTile && tile.getState() === TileStates.EMPTY)
       ) {
         return null;
       }
 
-      if (tile.getState() !== TileState.LOADED) {
+      if (tile.getState() !== TileStates.LOADED) {
         continue;
       }
 
@@ -216,9 +216,9 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {Object<number, Object<string, import("../../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @param {Record<number, Record<string, import("../../Tile").default>>} tiles Lookup of loaded tiles by zoom level.
    * @param {number} zoom Zoom level.
-   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../Tile").default} tile Tile.
    * @return {boolean|void} If `false`, the tile will not be considered loaded.
    */
   loadedTileCallback(tiles, zoom, tile) {
@@ -230,7 +230,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -239,7 +239,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
    * @return {HTMLElement} The rendered element.
    */
@@ -287,7 +287,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
     /**
-     * @type {Object<number, Object<string, import("../../Tile.js").default>>}
+     * @type {Record<number, Record<string, import("../../Tile").default>>}
      */
     const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
@@ -320,7 +320,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const tile = this.getTile(z, x, y, frameState);
         if (this.isDrawableTile(tile)) {
           const uid = getUid(this);
-          if (tile.getState() == TileState.LOADED) {
+          if (tile.getState() == TileStates.LOADED) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             let inTransition = tile.inTransition(uid);
             if (inTransition && layerState.opacity !== 1) {
@@ -456,7 +456,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
       for (const tileCoordKey in tilesToDraw) {
-        const tile = /** @type {import("../../ImageTile.js").default} */ (
+        const tile = /** @type {import("../../ImageTile").default} */ (
           tilesToDraw[tileCoordKey]
         );
         const tileCoord = tile.tileCoord;
@@ -570,8 +570,8 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../ImageTile.js").default} tile Tile.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../ImageTile").default} tile Tile.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
@@ -626,7 +626,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Get the image from a tile.
-   * @param {import("../../ImageTile.js").default} tile Tile.
+   * @param {import("../../ImageTile").default} tile Tile.
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    * @protected
    */
@@ -635,16 +635,16 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {import("../../source/Tile.js").default} tileSource Tile source.
+   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @param {import("../../source/Tile").default} tileSource Tile source.
    * @protected
    */
   scheduleExpireCache(frameState, tileSource) {
     if (tileSource.canExpireCache()) {
       /**
-       * @param {import("../../source/Tile.js").default} tileSource Tile source.
-       * @param {import("../../Map.js").default} map Map.
-       * @param {import("../../Map.js").FrameState} frameState Frame state.
+       * @param {import("../../source/Tile").default} tileSource Tile source.
+       * @param {import("../../Map").default} map Map.
+       * @param {import("../../Map").FrameState} frameState Frame state.
        */
       const postRenderFunction = function (tileSource, map, frameState) {
         const tileSourceKey = getUid(tileSource);
@@ -657,7 +657,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }.bind(null, tileSource);
 
       frameState.postRenderFunctions.push(
-        /** @type {import("../../Map.js").PostRenderFunction} */ (
+        /** @type {import("../../Map").PostRenderFunction} */ (
           postRenderFunction
         ),
       );
@@ -665,9 +665,9 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {!Object<string, !Object<string, boolean>>} usedTiles Used tiles.
-   * @param {import("../../source/Tile.js").default} tileSource Tile source.
-   * @param {import('../../Tile.js').default} tile Tile.
+   * @param {!Record<string, !Record<string, boolean>>} usedTiles Used tiles.
+   * @param {import("../../source/Tile").default} tileSource Tile source.
+   * @param {import('../../Tile').default} tile Tile.
    * @protected
    */
   updateUsedTiles(usedTiles, tileSource, tile) {
@@ -686,15 +686,15 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * - registers idle tiles in frameState.wantedTiles so that they are not
    *   discarded by the tile queue
    * - enqueues missing tiles
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
-   * @param {import("../../source/Tile.js").default} tileSource Tile source.
-   * @param {import("../../tilegrid/TileGrid.js").default} tileGrid Tile grid.
+   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @param {import("../../source/Tile").default} tileSource Tile source.
+   * @param {import("../../tilegrid/TileGrid").default} tileGrid Tile grid.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../../proj/Projection.js").default} projection Projection.
+   * @param {import("../../proj/Projection").default} projection Projection.
    * @param {Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to `preload` levels.
-   * @param {function(import("../../Tile.js").default):void} [tileCallback] Tile callback.
+   * @param {function(import("../../Tile").default):void} [tileCallback] Tile callback.
    * @protected
    */
   manageTilePyramid(
@@ -740,7 +740,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           if (currentZ - z <= preload) {
             ++tileCount;
             tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-            if (tile.getState() == TileState.IDLE) {
+            if (tile.getState() == TileStates.IDLE) {
               wantedTiles[tile.getKey()] = true;
               if (!tileQueue.isKeyQueued(tile.getKey())) {
                 tileQueue.enqueue([

@@ -1,7 +1,7 @@
 
 
-import XYZ from './XYZ.js';
-import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
+import XYZ from './XYZ';
+import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM';
 
 /**
  * @const
@@ -25,7 +25,7 @@ const STAMEN_ATTRIBUTION =
   '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a>';
 
 /**
- * @type {Object<string, {extension: string, opaque: boolean}>}
+ * @type {Record<string, {extension: string, opaque: boolean}>}
  */
 const LayerConfig = {
   'stamen_terrain': {
@@ -87,7 +87,7 @@ const LayerConfig = {
 };
 
 /**
- * @type {Object<string, {minZoom: number, maxZoom: number, retina: boolean}>}
+ * @type {Record<string, {minZoom: number, maxZoom: number, retina: boolean}>}
  */
 const ProviderConfig = {
   'stamen_terrain': {
@@ -117,7 +117,7 @@ const ProviderConfig = {
  * @property {number} [maxZoom] Maximum zoom.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -128,7 +128,7 @@ const ProviderConfig = {
  * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  * @property {string} [apiKey] Stadia Maps API key. Not required for localhost or most public web deployments. See https://docs.stadiamaps.com/authentication/ for details.

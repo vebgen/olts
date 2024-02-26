@@ -1,11 +1,11 @@
 
 import { BaseEvent as Event } from '@olts/events';
-import EventType from '../events/EventType.js';
-import ImageState from '../ImageState.js';
-import ImageWrapper from '../Image.js';
-import ReprojImage from '../reproj/Image.js';
-import Source from './Source.js';
-import { DECIMALS } from './common.js';
+import type { EventType } from '@olts/events';
+import ImageState from '../ImageState';
+import ImageWrapper from '../Image';
+import ReprojImage from '../reproj/Image';
+import Source from './Source';
+import { DECIMALS } from './common';
 import { ceil } from '@olts/core/math';
 import {
     containsExtent,
@@ -15,8 +15,8 @@ import {
     getHeight,
     getWidth,
 } from '@olts/core/extent';
-import { equivalent } from '../proj.js';
-import { fromResolutionLike } from '../resolution.js';
+import { equivalent } from '../proj';
+import { fromResolutionLike } from '../resolution';
 import { linearFindNearest } from '@olts/core/array';
 
 /**
@@ -56,14 +56,14 @@ export const ImageSourceEventType = {
 export class ImageSourceEvent extends Event {
     /**
      * @param {string} type Type.
-     * @param {import("../Image.js").default} image The image.
+     * @param {import("../Image").default} image The image.
      */
-    constructor(type: string, image: import("../Image.js").default) {
+    constructor(type: string, image: import("../Image").default) {
         super(type);
 
         /**
          * The image related to the event.
-         * @type {import("../Image.js").default}
+         * @type {import("../Image").default}
          * @api
          */
         this.image = image;
@@ -72,7 +72,7 @@ export class ImageSourceEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType, import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<ImageSourceEventTypes, ImageSourceEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType
@@ -81,16 +81,16 @@ export class ImageSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {import("../Image.js").Loader} [loader] Loader. Can either be a custom loader, or one of the
+ * @property {import("../Image").Loader} [loader] Loader. Can either be a custom loader, or one of the
  * loaders created with a `createLoader()` function ({@link module:ol/source/wms.createLoader wms},
  * {@link module:ol/source/arcgisRest.createLoader arcgisRest}, {@link module:ol/source/mapguide.createLoader mapguide},
  * {@link module:ol/source/static.createLoader static}).
- * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {ProjectionLike} [projection] Projection.
  * @property {number[]} [resolutions] Resolutions.
- * @property {import("./Source.js").State} [state] State.
+ * @property {import("./Source").State} [state] State.
  */
 
 /**
@@ -132,7 +132,7 @@ export class ImageSource extends Source {
 
         /**
          * @protected
-         * @type {import("../Image.js").Loader}
+         * @type {import("../Image").Loader}
          */
         this.loader = options.loader || null;
 
@@ -145,7 +145,7 @@ export class ImageSource extends Source {
 
         /**
          * @private
-         * @type {import("../reproj/Image.js").default}
+         * @type {import("../reproj/Image").default}
          */
         this.reprojectedImage_ = null;
 
@@ -157,7 +157,7 @@ export class ImageSource extends Source {
 
         /**
          * @protected
-         * @type {import("../Image.js").default}
+         * @type {import("../Image").default}
          */
         this.image = null;
 
@@ -181,7 +181,7 @@ export class ImageSource extends Source {
 
         /**
          * @private
-         * @type {import("../proj/Projection.js").default}
+         * @type {import("../proj/Projection").default}
          */
         this.wantedProjection_ = null;
     }
@@ -218,10 +218,10 @@ export class ImageSource extends Source {
      * @param {Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {import("../Image.js").default} Single image.
+     * @param {import("../proj/Projection").default} projection Projection.
+     * @return {import("../Image").default} Single image.
      */
-    getImage(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection.js").default): import("../Image.js").default {
+    getImage(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection").default): import("../Image").default {
         const sourceProjection = this.getProjection();
         if (
             !sourceProjection ||
@@ -267,11 +267,11 @@ export class ImageSource extends Source {
      * @param {Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @return {import("../Image.js").default} Single image.
+     * @param {import("../proj/Projection").default} projection Projection.
+     * @return {import("../Image").default} Single image.
      * @protected
      */
-    getImageInternal(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection.js").default): import("../Image.js").default {
+    getImageInternal(extent: Extent, resolution: number, pixelRatio: number, projection: import("../proj/Projection").default): import("../Image").default {
         if (this.loader) {
             const requestExtent = getRequestExtent(extent, resolution, pixelRatio, 1);
             const requestResolution = this.findNearestResolution(resolution);
@@ -309,11 +309,11 @@ export class ImageSource extends Source {
 
     /**
      * Handle image change events.
-     * @param {import("../events/Event.js").default} event Event.
+     * @param {import("../events/Event").default} event Event.
      * @protected
      */
-    handleImageChange(event: import("../events/Event.js").default) {
-        const image = /** @type {import("../Image.js").default} */ (event.target);
+    handleImageChange(event: import("../events/Event").default) {
+        const image = /** @type {import("../Image").default} */ (event.target);
         let type;
         switch (image.getState()) {
             case ImageState.LOADING:
@@ -338,12 +338,12 @@ export class ImageSource extends Source {
 }
 
 /**
- * Default image load function for image sources that use import("../Image.js").Image image
+ * Default image load function for image sources that use import("../Image").Image image
  * instances.
- * @param {import("../Image.js").default} image Image.
+ * @param {import("../Image").default} image Image.
  * @param {string} src Source.
  */
-export function defaultImageLoadFunction(image: import("../Image.js").default, src: string) {
+export function defaultImageLoadFunction(image: import("../Image").default, src: string) {
   /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
 }
 

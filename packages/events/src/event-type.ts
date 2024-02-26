@@ -1,17 +1,20 @@
+import { ValueOf } from "@olts/core";
+
+
 /**
  * Predefined event types.
  */
-export const EventType = {
+export const EventTypes = {
     /**
      * Generic change event. Triggered when the revision counter is increased.
-     * @event module:olts/events/event~BaseEvent#change
+     * @event BaseEvent#change
      * @api
      */
     CHANGE: 'change',
 
     /**
      * Generic error event. Triggered when an error occurs.
-     * @event module:olts/events/event~BaseEvent#error
+     * @event BaseEvent#error
      * @api
      */
     ERROR: 'error',
@@ -34,4 +37,10 @@ export const EventType = {
 } as const;
 
 
-export default EventType;
+/**
+ * Predefined event types.
+ */
+export type EventType = ValueOf<typeof EventTypes>;
+
+
+export default EventTypes;

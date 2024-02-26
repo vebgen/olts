@@ -1,5 +1,5 @@
 import { BaseObject  } from '@olts/events';
-import {get as getProjection} from '../proj.js';
+import {get as getProjection} from '../proj';
 
 /**
  * @typedef {'undefined' | 'loading' | 'ready' | 'error'} State
@@ -7,10 +7,10 @@ import {get as getProjection} from '../proj.js';
  */
 
 /**
- * A function that takes a {@link import("../View.js").ViewStateLayerStateExtent} and returns a string or
+ * A function that takes a {@link import("../View").ViewStateLayerStateExtent} and returns a string or
  * an array of strings representing source attributions.
  *
- * @typedef {function(import("../View.js").ViewStateLayerStateExtent): (string|Array<string>)} Attribution
+ * @typedef {function(import("../View").ViewStateLayerStateExtent): (string|Array<string>)} Attribution
  */
 
 /**
@@ -28,8 +28,8 @@ import {get as getProjection} from '../proj.js';
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {import("./Source.js").State} [state='ready'] State.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {import("./Source").State} [state='ready'] State.
  * @property {boolean} [wrapX=false] WrapX.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
@@ -53,7 +53,7 @@ export class Source extends BaseObject {
 
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default|null}
+     * @type {import("../proj/Projection").default|null}
      */
     this.projection = getProjection(options.projection);
 
@@ -81,7 +81,7 @@ export class Source extends BaseObject {
 
     /**
      * @private
-     * @type {import("./Source.js").State}
+     * @type {import("./Source").State}
      */
     this.state_ = options.state !== undefined ? options.state : 'ready';
 
@@ -99,7 +99,7 @@ export class Source extends BaseObject {
 
     /**
      * @protected
-     * @type {function(import("../View.js").ViewOptions):void}
+     * @type {function(import("../View").ViewOptions):void}
      */
     this.viewResolver = null;
 
@@ -112,7 +112,7 @@ export class Source extends BaseObject {
     const self = this;
     /**
      * @private
-     * @type {Promise<import("../View.js").ViewOptions>}
+     * @type {Promise<import("../View").ViewOptions>}
      */
     this.viewPromise_ = new Promise(function (resolve, reject) {
       self.viewResolver = resolve;
@@ -139,7 +139,7 @@ export class Source extends BaseObject {
 
   /**
    * Get the projection of the source.
-   * @return {import("../proj/Projection.js").default|null} Projection.
+   * @return {import("../proj/Projection").default|null} Projection.
    * @api
    */
   getProjection() {
@@ -155,15 +155,15 @@ export class Source extends BaseObject {
   }
 
   /**
-   * @return {Promise<import("../View.js").ViewOptions>} A promise for view-related properties.
+   * @return {Promise<import("../View").ViewOptions>} A promise for view-related properties.
    */
   getView() {
     return this.viewPromise_;
   }
 
   /**
-   * Get the state of the source, see {@link import("./Source.js").State} for possible states.
-   * @return {import("./Source.js").State} State.
+   * Get the state of the source, see {@link import("./Source").State} for possible states.
+   * @return {import("./Source").State} State.
    * @api
    */
   getState() {
@@ -206,7 +206,7 @@ export class Source extends BaseObject {
 
   /**
    * Set the state of the source.
-   * @param {import("./Source.js").State} state State.
+   * @param {import("./Source").State} state State.
    */
   setState(state) {
     this.state_ = state;

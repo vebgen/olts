@@ -1,6 +1,6 @@
 
-import Interaction from './Interaction.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction from './Interaction';
+import MapBrowserEventType from '../MapBrowserEventType';
 
 /**
  * @typedef {Object} Options
@@ -24,7 +24,7 @@ export class DblClickDragZoom extends Interaction {
     const options = opt_options ? opt_options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
+      /** @type {import("./Interaction").InteractionOptions} */ (options),
     );
 
     if (options.stopDown) {
@@ -62,7 +62,7 @@ export class DblClickDragZoom extends Interaction {
     this.doubleTapTimeoutId_ = undefined;
 
     /**
-     * @type {!Object<string, PointerEvent>}
+     * @type {!Record<string, PointerEvent>}
      * @private
      */
     this.trackedPointers_ = {};
@@ -78,7 +78,7 @@ export class DblClickDragZoom extends Interaction {
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent  map browser event} and may call into
    * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
    * detected.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
    */
@@ -116,7 +116,7 @@ export class DblClickDragZoom extends Interaction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let scaleDelta = 1.0;
@@ -144,7 +144,7 @@ export class DblClickDragZoom extends Interaction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
@@ -164,7 +164,7 @@ export class DblClickDragZoom extends Interaction {
 
   /**
    * Handle pointer up events zooming out.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -191,7 +191,7 @@ export class DblClickDragZoom extends Interaction {
   }
 
   /**
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @private
    */
   updateTrackedPointers_(mapBrowserEvent) {
@@ -239,7 +239,7 @@ export class DblClickDragZoom extends Interaction {
 }
 
 /**
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+ * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
  * @return {boolean} Whether the event is a pointerdown, pointerdrag
  *     or pointerup event.
  */

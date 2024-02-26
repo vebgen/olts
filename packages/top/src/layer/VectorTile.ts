@@ -1,17 +1,17 @@
 
-import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
-import TileProperty from './TileProperty.js';
+import BaseVectorLayer from './BaseVector';
+import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer';
+import TileProperty from './TileProperty';
 import { assert } from '@olts/core/asserts';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
+ *     import("./Layer").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
+ *     import("./Layer").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
  */
 
 /**
@@ -37,7 +37,7 @@ import { assert } from '@olts/core/asserts';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the tile extent used by the
@@ -52,11 +52,11 @@ import { assert } from '@olts/core/asserts';
  *  * `'vector'`: Everything is rendered as vectors. Use this mode for improved performance on vector
  *    tile layers with only a few rendered features (e.g. for highlighting a subset of features of
  *    another layer with the same source).
- * @property {import("../source/VectorTile.js").default} [source] Source.
- * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../source/VectorTile").default} [source] Source.
+ * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+ * use [map.addLayer()]{@link import("../Map").default#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
@@ -67,10 +67,10 @@ import { assert } from '@olts/core/asserts';
  * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
  * behavior and place declutterd features with their own layer configure the layer with a `className`
  * other than `ol-layer`.
- * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
+ * @property {import("../style/Style").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
- * @property {import("./Base.js").BackgroundColor|false} [background] Background color for the layer. If not specified, no
+ * @property {import("./Base").BackgroundColor|false} [background] Background color for the layer. If not specified, no
  * background will be rendered.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -81,7 +81,7 @@ import { assert } from '@olts/core/asserts';
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -91,7 +91,7 @@ import { assert } from '@olts/core/asserts';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options} [options] Options.
- * @extends {BaseVectorLayer<import("../source/VectorTile.js").default, CanvasVectorTileLayerRenderer>}
+ * @extends {BaseVectorLayer<import("../source/VectorTile").default, CanvasVectorTileLayerRenderer>}
  * @api
  */
 export class VectorTileLayer extends BaseVectorLayer {
@@ -122,7 +122,7 @@ export class VectorTileLayer extends BaseVectorLayer {
         delete baseOptions.useInterimTilesOnError;
 
         super(
-      /** @type {import("./BaseVector.js").Options<import("../source/VectorTile.js").default>} */(
+      /** @type {import("./BaseVector").Options<import("../source/VectorTile").default>} */(
                 baseOptions
             ),
         );
@@ -150,14 +150,14 @@ export class VectorTileLayer extends BaseVectorLayer {
         );
 
         /**
-         * @return {import("./Base.js").BackgroundColor} Background color.
+         * @return {import("./Base").BackgroundColor} Background color.
          * @function
          * @api
          */
         this.getBackground;
 
         /**
-         * @param {import("./Base.js").BackgroundColor} background Background color.
+         * @param {import("./Base").BackgroundColor} background Background color.
          * @function
          * @api
          */
@@ -174,15 +174,15 @@ export class VectorTileLayer extends BaseVectorLayer {
      * when a hit was detected, or it will be empty.
      *
      * The hit detection algorithm used for this method is optimized for performance, but is less
-     * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map.js").default#getFeaturesAtPixel}.
+     * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map").default#getFeaturesAtPixel}.
      * Text is not considered, and icons are only represented by their bounding box instead of the exact
      * image.
      *
-     * @param {import("../pixel.js").Pixel} pixel Pixel.
+     * @param {import("../pixel").Pixel} pixel Pixel.
      * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
      * @api
      */
-    getFeatures(pixel: import("../pixel.js").Pixel): Promise<Array<import("../Feature").FeatureLike>> {
+    getFeatures(pixel: import("../pixel").Pixel): Promise<Array<import("../Feature").FeatureLike>> {
         return super.getFeatures(pixel);
     }
 

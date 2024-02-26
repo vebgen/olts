@@ -1,5 +1,5 @@
-import Interaction, {zoomByDelta} from './Interaction.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction, {zoomByDelta} from './Interaction';
+import MapBrowserEventType from '../MapBrowserEventType';
 
 /**
  * @typedef {Object} Options
@@ -36,7 +36,7 @@ export class DoubleClickZoom extends Interaction {
   /**
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} (if it was a
    * doubleclick) and eventually zooms the map.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {

@@ -2,22 +2,22 @@
 // FIXME should handle all geo-referenced data, not just vector data
 
 import { BaseEvent as Event, EventsKey } from '@olts/events';
-import EventType from '../events/EventType.js';
-import Interaction from './Interaction.js';
+import type { EventType } from '@olts/events';
+import Interaction from './Interaction';
 import { TRUE } from '@olts/core/functions';
-import { get as getProjection, getUserProjection } from '../proj.js';
-import { listen, unlistenByKey } from '../events.js';
+import { get as getProjection, getUserProjection } from '../proj';
+import { listen, unlistenByKey } from '../events';
 
 /**
  * @typedef {Object} Options
- * @property {Array<typeof import("../format/Feature.js").default|import("../format/Feature.js").default>} [formatConstructors] Format constructors
+ * @property {Array<typeof import("../format/Feature").default|import("../format/Feature").default>} [formatConstructors] Format constructors
  * (and/or formats pre-constructed with options).
- * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
+ * @property {import("../source/Vector").default} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
- * @property {import("../proj.js").ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
+ * @property {ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
  * @property {HTMLElement} [target] The element that is used as the drop target, default is the viewport element.
  */
 
@@ -41,15 +41,15 @@ export class DragAndDropEvent extends Event {
     /**
      * @param {DragAndDropEventType} type Type.
      * @param {File} file File.
-     * @param {Array<import("../Feature.js").default>} [features] Features.
-     * @param {import("../proj/Projection.js").default} [projection] Projection.
+     * @param {Array<import("../Feature").default>} [features] Features.
+     * @param {import("../proj/Projection").default} [projection] Projection.
      */
-    constructor(type: DragAndDropEventType, file: File, features: Array<import("../Feature.js").default>, projection: import("../proj/Projection.js").default) {
+    constructor(type: DragAndDropEventType, file: File, features: Array<import("../Feature").default>, projection: import("../proj/Projection").default) {
         super(type);
 
         /**
          * The features parsed from dropped data.
-         * @type {Array<import("../Feature.js").FeatureLike>|undefined}
+         * @type {Array<import("../Feature").FeatureLike>|undefined}
          * @api
          */
         this.features = features;
@@ -63,7 +63,7 @@ export class DragAndDropEvent extends Event {
 
         /**
          * The feature projection.
-         * @type {import("../proj/Projection.js").default|undefined}
+         * @type {import("../proj/Projection").default|undefined}
          * @api
          */
         this.projection = projection;
@@ -72,7 +72,7 @@ export class DragAndDropEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'addfeatures', DragAndDropEvent, Return> &
@@ -125,7 +125,7 @@ export class DragAndDrop extends Interaction {
 
         /**
          * @private
-         * @type {Array<import("../format/Feature.js").default>}
+         * @type {Array<import("../format/Feature").default>}
          */
         this.formats_ = [];
         const formatConstructors = options.formatConstructors
@@ -143,7 +143,7 @@ export class DragAndDrop extends Interaction {
 
         /**
          * @private
-         * @type {import("../proj/Projection.js").default}
+         * @type {import("../proj/Projection").default}
          */
         this.projection_ = options.projection
             ? getProjection(options.projection)
@@ -151,13 +151,13 @@ export class DragAndDrop extends Interaction {
 
         /**
          * @private
-         * @type {?Array<import("../events.js").EventsKey>}
+         * @type {?Array<import("../events").EventsKey>}
          */
         this.dropListenKeys_ = null;
 
         /**
          * @private
-         * @type {import("../source/Vector.js").default}
+         * @type {import("../source/Vector").default}
          */
         this.source_ = options.source || null;
 
@@ -253,9 +253,9 @@ export class DragAndDrop extends Interaction {
      * Remove the interaction from its current map and attach it to the new map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../Map").default} map Map.
      */
-    setMap(map: import("../Map.js").default) {
+    setMap(map: import("../Map").default) {
         this.unregisterListeners_();
         super.setMap(map);
         if (this.getActive()) {
@@ -264,16 +264,16 @@ export class DragAndDrop extends Interaction {
     }
 
     /**
-     * @param {import("../format/Feature.js").default} format Format.
+     * @param {import("../format/Feature").default} format Format.
      * @param {string} text Text.
-     * @param {import("../format/Feature.js").ReadOptions} options Read options.
+     * @param {import("../format/Feature").ReadOptions} options Read options.
      * @private
-     * @return {Array<import("../Feature.js").default>} Features.
+     * @return {Array<import("../Feature").default>} Features.
      */
-    tryReadFeatures_(format: import("../format/Feature.js").default, text: string, options: import("../format/Feature.js").ReadOptions): Array<import("../Feature.js").default> {
+    tryReadFeatures_(format: import("../format/Feature").default, text: string, options: import("../format/Feature").ReadOptions): Array<import("../Feature").default> {
         try {
             return (
-                /** @type {Array<import("../Feature.js").default>} */
+                /** @type {Array<import("../Feature").default>} */
                 (format.readFeatures(text, options))
             );
         } catch (e) {

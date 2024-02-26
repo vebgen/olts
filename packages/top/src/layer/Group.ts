@@ -1,15 +1,15 @@
 
-import BaseLayer from './Base.js';
-import Collection from '../Collection.js';
-import CollectionEventType from '../CollectionEventType.js';
+import BaseLayer from './Base';
+import Collection from '../Collection';
+import CollectionEventType from '../CollectionEventType';
 import { BaseEvent as Event } from '@olts/events';
-import EventType from '../events/EventType.js';
-import ObjectEventType from '../ObjectEventType.js';
+import type { EventType } from '@olts/events';
+import ObjectEventType from '../ObjectEventType';
 import { assert } from '@olts/core/asserts';
-import { clear } from '../obj.js';
+import { clear } from '../obj';
 import { getIntersection } from '@olts/core/extent';
 import { getUid } from '@olts/core/util';
-import { listen, unlistenByKey } from '../events.js';
+import { listen, unlistenByKey } from '../events';
 
 /**
  * @typedef {'addlayer'|'removelayer'} EventType
@@ -39,7 +39,7 @@ export class GroupEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     'change:layers', import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:layers', Return>} GroupOnSignature
@@ -63,8 +63,8 @@ export class GroupEvent extends Event {
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {Array<import("./Base.js").default>|Collection<import("./Base.js").default>} [layers] Child layers.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Array<import("./Base").default>|Collection<import("./Base").default>} [layers] Child layers.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -116,13 +116,13 @@ export class LayerGroup extends BaseLayer {
 
         /**
          * @private
-         * @type {Array<import("../events.js").EventsKey>}
+         * @type {Array<import("../events").EventsKey>}
          */
         this.layersListenerKeys_ = [];
 
         /**
          * @private
-         * @type {Object<string, Array<import("../events.js").EventsKey>>}
+         * @type {Record<string, Array<import("../events").EventsKey>>}
          */
         this.listenerKeys_ = {};
 
@@ -222,10 +222,10 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * @param {import("../Collection.js").CollectionEvent<import("./Base.js").default>} collectionEvent CollectionEvent.
+     * @param {import("../Collection").CollectionEvent<import("./Base").default>} collectionEvent CollectionEvent.
      * @private
      */
-    handleLayersAdd_(collectionEvent: import("../Collection.js").CollectionEvent<import("./Base.js").default>) {
+    handleLayersAdd_(collectionEvent: import("../Collection").CollectionEvent<import("./Base").default>) {
         const layer = collectionEvent.element;
         this.registerLayerListeners_(layer);
         this.dispatchEvent(new GroupEvent('addlayer', layer));
@@ -233,10 +233,10 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * @param {import("../Collection.js").CollectionEvent<import("./Base.js").default>} collectionEvent CollectionEvent.
+     * @param {import("../Collection").CollectionEvent<import("./Base").default>} collectionEvent CollectionEvent.
      * @private
      */
-    handleLayersRemove_(collectionEvent: import("../Collection.js").CollectionEvent<import("./Base.js").default>) {
+    handleLayersRemove_(collectionEvent: import("../Collection").CollectionEvent<import("./Base").default>) {
         const layer = collectionEvent.element;
         const key = getUid(layer);
         this.listenerKeys_[key].forEach(unlistenByKey);
@@ -248,13 +248,13 @@ export class LayerGroup extends BaseLayer {
     /**
      * Returns the {@link Collection collection} of {@link module:ol/layer/Layer~Layer layers}
      * in this group.
-     * @return {!Collection<import("./Base.js").default>} Collection of
+     * @return {!Collection<import("./Base").default>} Collection of
      *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
      * @observable
      * @api
      */
-    getLayers(): Collection<import("./Base.js").default> {
-        return /** @type {!Collection<import("./Base.js").default>} */ (
+    getLayers(): Collection<import("./Base").default> {
+        return /** @type {!Collection<import("./Base").default>} */ (
             this.get(Property.LAYERS)
         );
     }
@@ -262,12 +262,12 @@ export class LayerGroup extends BaseLayer {
     /**
      * Set the {@link Collection collection} of {@link module:ol/layer/Layer~Layer layers}
      * in this group.
-     * @param {!Collection<import("./Base.js").default>} layers Collection of
+     * @param {!Collection<import("./Base").default>} layers Collection of
      *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
      * @observable
      * @api
      */
-    setLayers(layers: Collection<import("./Base.js").default>) {
+    setLayers(layers: Collection<import("./Base").default>) {
         const collection = this.getLayers();
         if (collection) {
             const currentLayers = collection.getArray();
@@ -280,10 +280,10 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be modified in place).
-     * @return {Array<import("./Layer.js").default>} Array of layers.
+     * @param {Array<import("./Layer").default>} [array] Array of layers (to be modified in place).
+     * @return {Array<import("./Layer").default>} Array of layers.
      */
-    getLayersArray(array: Array<import("./Layer.js").default>): Array<import("./Layer.js").default> {
+    getLayersArray(array: Array<import("./Layer").default>): Array<import("./Layer").default> {
         array = array !== undefined ? array : [];
         this.getLayers().forEach(function (layer) {
             layer.getLayersArray(array);
@@ -296,11 +296,11 @@ export class LayerGroup extends BaseLayer {
      * for all layers in this and nested groups, if it is unset at this point.
      * If dest is not provided and this group's z-index is undefined
      * 0 is used a the default z-index.
-     * @param {Array<import("./Layer.js").State>} [dest] Optional list
+     * @param {Array<import("./Layer").State>} [dest] Optional list
      * of layer states (to be modified in place).
-     * @return {Array<import("./Layer.js").State>} List of layer states.
+     * @return {Array<import("./Layer").State>} List of layer states.
      */
-    getLayerStatesArray(dest: Array<import("./Layer.js").State>): Array<import("./Layer.js").State> {
+    getLayerStatesArray(dest: Array<import("./Layer").State>): Array<import("./Layer").State> {
         const states = dest !== undefined ? dest : [];
         const pos = states.length;
 
@@ -346,9 +346,9 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * @return {import("../source/Source.js").State} Source state.
+     * @return {import("../source/Source").State} Source state.
      */
-    getSourceState(): import("../source/Source.js").State {
+    getSourceState(): import("../source/Source").State {
         return 'ready';
     }
 }

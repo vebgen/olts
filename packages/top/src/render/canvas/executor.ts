@@ -156,7 +156,7 @@ export class Executor {
 
     /**
      * @private
-     * @type {!Object<number,Coordinate|Array<Coordinate>|Array<Array<Coordinate>>>}
+     * @type {!Record<number,Coordinate|Array<Coordinate>|Array<Array<Coordinate>>>}
      */
     this.coordinateCache_ = {};
 
@@ -185,29 +185,29 @@ export class Executor {
     this.viewRotation_ = 0;
 
     /**
-     * @type {!Object<string, import("../canvas").FillState>}
+     * @type {!Record<string, import("../canvas").FillState>}
      */
     this.fillStates = instructions.fillStates || {};
 
     /**
-     * @type {!Object<string, import("../canvas").StrokeState>}
+     * @type {!Record<string, import("../canvas").StrokeState>}
      */
     this.strokeStates = instructions.strokeStates || {};
 
     /**
-     * @type {!Object<string, import("../canvas").TextState>}
+     * @type {!Record<string, import("../canvas").TextState>}
      */
     this.textStates = instructions.textStates || {};
 
     /**
      * @private
-     * @type {Object<string, Object<string, number>>}
+     * @type {Record<string, Record<string, number>>}
      */
     this.widths_ = {};
 
     /**
      * @private
-     * @type {Object<string, import("../canvas").Label>}
+     * @type {Record<string, import("../canvas").Label>}
      */
     this.labels_ = {};
   }

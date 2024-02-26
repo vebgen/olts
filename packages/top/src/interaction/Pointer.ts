@@ -1,27 +1,27 @@
 
-import Interaction from './Interaction.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction from './Interaction';
+import MapBrowserEventType from '../MapBrowserEventType';
 
 /**
  * @typedef {Object} Options
- * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleDownEvent]
+ * @property {function(import("../MapBrowserEvent").default):boolean} [handleDownEvent]
  * Function handling "down" events. If the function returns `true` then a drag
  * sequence is started.
- * @property {function(import("../MapBrowserEvent.js").default):void} [handleDragEvent]
+ * @property {function(import("../MapBrowserEvent").default):void} [handleDragEvent]
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleEvent]
+ * @property {function(import("../MapBrowserEvent").default):boolean} [handleEvent]
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @property {function(import("../MapBrowserEvent.js").default):void} [handleMoveEvent]
+ * @property {function(import("../MapBrowserEvent").default):void} [handleMoveEvent]
  * Function handling "move" events. This function is called on "move" events.
  * This functions is also called during a drag sequence, so during a drag
  * sequence both the `handleDragEvent` function and this function are called.
  * If `handleDownEvent` is defined and it returns true this function will not
  * be called during a drag sequence.
- * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleUpEvent]
+ * @property {function(import("../MapBrowserEvent").default):boolean} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
  * @property {function(boolean):boolean} [stopDown]
@@ -47,7 +47,7 @@ export class PointerInteraction extends Interaction {
     options = options ? options : {};
 
     super(
-      /** @type {import("./Interaction.js").InteractionOptions} */ (options),
+      /** @type {import("./Interaction").InteractionOptions} */ (options),
     );
 
     if (options.handleDownEvent) {
@@ -95,7 +95,7 @@ export class PointerInteraction extends Interaction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    * @protected
    */
@@ -105,7 +105,7 @@ export class PointerInteraction extends Interaction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @protected
    */
   handleDragEvent(mapBrowserEvent) {}
@@ -114,7 +114,7 @@ export class PointerInteraction extends Interaction {
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may call into
    * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
    * detected.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
    */
@@ -149,14 +149,14 @@ export class PointerInteraction extends Interaction {
 
   /**
    * Handle pointer move events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @protected
    */
   handleMoveEvent(mapBrowserEvent) {}
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    * @protected
    */
@@ -175,7 +175,7 @@ export class PointerInteraction extends Interaction {
   }
 
   /**
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @private
    */
   updateTrackedPointers_(mapBrowserEvent) {

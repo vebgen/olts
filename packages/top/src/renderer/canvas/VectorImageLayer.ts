@@ -1,13 +1,13 @@
 
-import CanvasImageLayerRenderer from './ImageLayer.js';
-import CanvasVectorLayerRenderer from './VectorLayer.js';
-import EventType from '../../events/EventType.js';
-import ImageCanvas from '../../ImageCanvas.js';
-import ImageState from '../../ImageState.js';
+import CanvasImageLayerRenderer from './ImageLayer';
+import CanvasVectorLayerRenderer from './VectorLayer';
+import type { EventType } from '@olts/events';
+import ImageCanvas from '../../ImageCanvas';
+import ImageState from '../../ImageState';
 import RBush from 'rbush';
-import ViewHint from '../../ViewHint.js';
-import {apply, compose, create} from '../../transform.js';
-import {fromResolutionLike} from '../../resolution.js';
+import ViewHint from '../../ViewHint';
+import {apply, compose, create} from '../../transform';
+import {fromResolutionLike} from '../../resolution';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '@olts/core/extent';
 
 /**
@@ -16,14 +16,14 @@ import {getHeight, getWidth, isEmpty, scaleFromCenter} from '@olts/core/extent';
  */
 export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
-   * @param {import("../../layer/VectorImage.js").default} layer Vector image layer.
+   * @param {import("../../layer/VectorImage").default} layer Vector image layer.
    */
   constructor(layer) {
     super(layer);
 
     /**
      * @private
-     * @type {import("./VectorLayer.js").default}
+     * @type {import("./VectorLayer").default}
      */
     this.vectorRenderer_ = new CanvasVectorLayerRenderer(layer);
 
@@ -35,13 +35,13 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      */
     this.coordinateToVectorPixelTransform_ = create();
 
     /**
      * @private
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      */
     this.renderedPixelToCoordinateTransform_ = null;
   }
@@ -56,7 +56,7 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
   /**
    * Asynchronous layer level hit detection.
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../pixel").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../../Feature").default>>} Promise that resolves with an array of features.
    */
   getFeatures(pixel) {
@@ -79,7 +79,7 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -106,12 +106,12 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const context = vectorRenderer.context;
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
-      const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
+      const imageFrameState = /** @type {import("../../Map").FrameState} */ (
         Object.assign({}, frameState, {
           declutterTree: new RBush(9),
           extent: renderedExtent,
           size: [width, height],
-          viewState: /** @type {import("../../View.js").State} */ (
+          viewState: /** @type {import("../../View").State} */ (
             Object.assign({}, frameState.viewState, {
               rotation: 0,
             })
@@ -187,10 +187,10 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
    */

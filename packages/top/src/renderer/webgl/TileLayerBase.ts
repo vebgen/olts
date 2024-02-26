@@ -1,27 +1,27 @@
 
-import LRUCache from '../../structs/LRUCache.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
-import TileRange from '../../TileRange.js';
-import TileState from '../../TileState.js';
-import WebGLLayerRenderer from './Layer.js';
+import LRUCache from '../../structs/LRUCache';
+import ReprojDataTile from '../../reproj/DataTile';
+import ReprojTile from '../../reproj/Tile';
+import TileRange from '../../TileRange';
+import type { TileState} from '../../tile';
+import WebGLLayerRenderer from './Layer';
 import {abstract, getUid} from '@olts/core/util';
 import {create as createMat4} from '../../vec/mat4.js';
 import {
   createOrUpdate as createTileCoord,
   getKey as getTileCoordKey,
-} from '../../tilecoord.js';
+} from '../../tile-coord';
 import {
   create as createTransform,
   reset as resetTransform,
   rotate as rotateTransform,
   scale as scaleTransform,
   translate as translateTransform,
-} from '../../transform.js';
+} from '../../transform';
 import {descending} from '@olts/core/array';
-import {fromUserExtent} from '../../proj.js';
+import {fromUserExtent} from '../../proj';
 import {getIntersection, isEmpty} from '@olts/core/extent';
-import {toSize} from '../../size.js';
+import {toSize} from '../../size';
 
 export const Uniforms = {
   TILE_TRANSFORM: 'u_tileTransform',
@@ -37,7 +37,7 @@ export const Uniforms = {
 };
 
 /**
- * @type {Object<string, boolean>}
+ * @type {Record<string, boolean>}
  */
 const empty = {};
 
@@ -52,12 +52,12 @@ function depthForZ(z) {
 }
 
 /**
- * @typedef {import("../../webgl/BaseTileRepresentation.js").default<import("../../Tile.js").default>} AbstractTileRepresentation
+ * @typedef {import("../../webgl/BaseTileRepresentation").default<import("../../Tile").default>} AbstractTileRepresentation
  */
 /**
  * @typedef {Object} TileRepresentationLookup
  * @property {Set<string>} tileIds The set of tile ids in the lookup.
- * @property {Object<number, Set<AbstractTileRepresentation>>} representationsByZ Tile representations by zoom level.
+ * @property {Record<number, Set<AbstractTileRepresentation>>} representationsByZ Tile representations by zoom level.
  */
 
 /**
@@ -70,7 +70,7 @@ export function newTileRepresentationLookup() {
 /**
  * Check if a tile is already in the tile representation lookup.
  * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of tile representations by zoom level.
- * @param {import("../../Tile.js").default} tile A tile.
+ * @param {import("../../Tile").default} tile A tile.
  * @return {boolean} The tile is already in the lookup.
  */
 function lookupHasTile(tileRepresentationLookup, tile) {
@@ -97,7 +97,7 @@ function addTileRepresentationToLookup(
 }
 
 /**
- * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {import("../../Map").FrameState} frameState Frame state.
  * @param {Extent} extent The frame extent.
  * @return {Extent} Frame extent intersected with layer extents.
  */
@@ -109,7 +109,7 @@ function getRenderExtent(frameState, extent) {
       fromUserExtent(layerState.extent, frameState.viewState.projection),
     );
   }
-  const source = /** @type {import("../../source/Tile.js").default} */ (
+  const source = /** @type {import("../../source/Tile").default} */ (
     layerState.layer.getRenderSource()
   );
   if (!source.getWrapX()) {
@@ -129,21 +129,21 @@ export function getCacheKey(source, tileCoord) {
 
 /**
  * @typedef {Object} Options
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
+ * @property {Record<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {number} [cacheSize=512] The tile representation cache size.
- * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.
+ * @property {Array<import('./Layer').PostProcessesOptions>} [postProcesses] Post-processes definitions.
  */
 
 /**
- * @typedef {import("../../layer/BaseTile.js").default} BaseLayerType
+ * @typedef {import("../../layer/BaseTile").default} BaseLayerType
  */
 
 /**
  * Base WebGL renderer for tile layers.
  * @template {BaseLayerType} LayerType
- * @template {import("../../Tile.js").default} TileType
- * @template {import("../../webgl/BaseTileRepresentation.js").default<TileType>} TileRepresentation
+ * @template {import("../../Tile").default} TileType
+ * @template {import("../../webgl/BaseTileRepresentation").default<TileType>} TileRepresentation
  * @extends {WebGLLayerRenderer<LayerType>}
  */
 export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
@@ -165,7 +165,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * This transform converts representation coordinates to screen coordinates.
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      * @private
      */
     this.tileTransform_ = createTransform();
@@ -177,13 +177,13 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.tempMat4 = createMat4();
 
     /**
-     * @type {import("../../TileRange.js").default}
+     * @type {import("../../TileRange").default}
      * @private
      */
     this.tempTileRange_ = new TileRange(0, 0, 0, 0);
 
     /**
-     * @type {import("../../tilecoord.js").TileCoord}
+     * @type {TileCoord}
      * @private
      */
     this.tempTileCoord_ = createTileCoord(0, 0, 0);
@@ -196,20 +196,20 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
     /**
-     * @type {import("../../structs/LRUCache.js").default<TileRepresentation>}
+     * @type {import("../../structs/LRUCache").default<TileRepresentation>}
      * @protected
      */
     this.tileRepresentationCache = new LRUCache(cacheSize);
 
     /**
      * @protected
-     * @type {import("../../Map.js").FrameState|null}
+     * @type {import("../../Map").FrameState|null}
      */
     this.frameState = null;
 
     /**
      * @private
-     * @type {import("../../proj/Projection.js").default}
+     * @type {import("../../proj/Projection").default}
      */
     this.projection_ = undefined;
   }
@@ -233,15 +233,15 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     return (
-      tileState == TileState.LOADED ||
-      tileState == TileState.EMPTY ||
-      (tileState == TileState.ERROR && !useInterimTilesOnError)
+      tileState == TileStates.LOADED ||
+      tileState == TileStates.EMPTY ||
+      (tileState == TileStates.ERROR && !useInterimTilesOnError)
     );
   }
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrameInternal(frameState) {
@@ -266,7 +266,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @abstract
-   * @param {import("../../webgl/BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options tile representation options
+   * @param {import("../../webgl/BaseTileRepresentation").TileRepresentationOptions<TileType>} options tile representation options
    * @return {TileRepresentation} A new tile representation
    * @protected
    */
@@ -275,7 +275,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {Extent} extent The extent to be rendered.
    * @param {number} initialZ The zoom level.
    * @param {TileRepresentationLookup} tileRepresentationLookup The zoom level.
@@ -387,7 +387,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
           const tileQueueKey = tile.getKey();
           wantedTiles[tileQueueKey] = true;
 
-          if (tile.getState() === TileState.IDLE) {
+          if (tile.getState() === TileStates.IDLE) {
             if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
               frameState.tileQueue.enqueue([
                 tile,
@@ -403,7 +403,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {boolean} tilesWithAlpha True if at least one of the rendered tiles has alpha
    * @protected
    */
@@ -412,7 +412,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} If returns false, tile mask rendering will be skipped
    * @protected
    */
@@ -422,8 +422,8 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {TileRepresentation} tileRepresentation Tile representation
-   * @param {import("../../transform.js").Transform} tileTransform Tile transform
-   * @param {import("../../Map.js").FrameState} frameState Frame state
+   * @param {import("../../transform").Transform} tileTransform Tile transform
+   * @param {import("../../Map").FrameState} frameState Frame state
    * @param {Extent} renderExtent Render extent
    * @param {number} tileResolution Tile resolution
    * @param {Size} tileSize Tile size
@@ -532,7 +532,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState) {
@@ -590,7 +590,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * A lookup of alpha values for tiles at the target rendering resolution
      * for tiles that are in transition.  If a tile coord key is absent from
      * this lookup, the tile should be rendered at alpha 1.
-     * @type {Object<string, number>}
+     * @type {Record<string, number>}
      */
     const alphaLookup = {};
 
@@ -604,7 +604,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       const tile = tileRepresentation.tile;
       if (
         (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-        tile.getState() === TileState.EMPTY
+        tile.getState() === TileStates.EMPTY
       ) {
         continue;
       }
@@ -734,8 +734,8 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     /**
      * Here we unconditionally expire the source cache since the renderer maintains
      * its own cache.
-     * @param {import("../../Map.js").default} map Map.
-     * @param {import("../../Map.js").FrameState} frameState Frame state.
+     * @param {import("../../Map").default} map Map.
+     * @param {import("../../Map").FrameState} frameState Frame state.
      */
     const postRenderFunction = function (map, frameState) {
       tileSource.updateCacheSize(0.1, frameState.viewState.projection);
@@ -751,8 +751,8 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * Look for tiles covering the provided tile coordinate at an alternate
    * zoom level.  Loaded tiles will be added to the provided tile representation lookup.
-   * @param {import("../../tilegrid/TileGrid.js").default} tileGrid The tile grid.
-   * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
+   * @param {import("../../tilegrid/TileGrid").default} tileGrid The tile grid.
+   * @param {TileCoord} tileCoord The target tile coordinate.
    * @param {number} altZ The alternate zoom level.
    * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of
    * tile representations by zoom level.

@@ -1,11 +1,11 @@
 
-import EventType from '../events/EventType.js';
-import ImageState from '../ImageState.js';
-import Observable from '../Observable.js';
+import type { EventType } from '@olts/events';
+import ImageState from '../ImageState';
+import Observable from '../Observable';
 import {abstract} from '@olts/core/util';
 
 /**
- * @template {import("../layer/Layer.js").default} LayerType
+ * @template {import("../layer/Layer").default} LayerType
  */
 export class LayerRenderer extends Observable {
   /**
@@ -37,7 +37,7 @@ export class LayerRenderer extends Observable {
 
   /**
    * Asynchronous layer level hit detection.
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../pixel").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with
    * an array of features.
    */
@@ -46,7 +46,7 @@ export class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */
   getData(pixel) {
@@ -56,7 +56,7 @@ export class LayerRenderer extends Observable {
   /**
    * Determine whether render should be called.
    * @abstract
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -66,7 +66,7 @@ export class LayerRenderer extends Observable {
   /**
    * Render the layer.
    * @abstract
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
    * @return {HTMLElement|null} The rendered element.
    */
@@ -75,9 +75,9 @@ export class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @param {Record<number, Record<string, import("../Tile").default>>} tiles Lookup of loaded tiles by zoom level.
    * @param {number} zoom Zoom level.
-   * @param {import("../Tile.js").default} tile Tile.
+   * @param {import("../Tile").default} tile Tile.
    * @return {boolean|void} If `false`, the tile will not be considered loaded.
    */
   loadedTileCallback(tiles, zoom, tile) {
@@ -90,10 +90,10 @@ export class LayerRenderer extends Observable {
 
   /**
    * Create a function that adds loaded tiles to the tile lookup.
-   * @param {import("../source/Tile.js").default} source Tile source.
-   * @param {import("../proj/Projection.js").default} projection Projection of the tiles.
-   * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
-   * @return {function(number, import("../TileRange.js").default):boolean} A function that can be
+   * @param {import("../source/Tile").default} source Tile source.
+   * @param {import("../proj/Projection").default} projection Projection of the tiles.
+   * @param {Record<number, Record<string, import("../Tile").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @return {function(number, import("../TileRange").default):boolean} A function that can be
    *     called with a zoom level and a tile range to add loaded tiles to the lookup.
    * @protected
    */
@@ -101,7 +101,7 @@ export class LayerRenderer extends Observable {
     return (
       /**
        * @param {number} zoom Zoom level.
-       * @param {import("../TileRange.js").default} tileRange Tile range.
+       * @param {import("../TileRange").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
        */
       (zoom, tileRange) => {
@@ -113,10 +113,10 @@ export class LayerRenderer extends Observable {
   /**
    * @abstract
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
-   * @param {Array<import("./Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("./vector").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("./Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -145,11 +145,11 @@ export class LayerRenderer extends Observable {
 
   /**
    * Handle changes in image state.
-   * @param {import("../events/Event.js").default} event Image change event.
+   * @param {import("../events/Event").default} event Image change event.
    * @private
    */
   handleImageChange_(event) {
-    const image = /** @type {import("../Image.js").default} */ (event.target);
+    const image = /** @type {import("../Image").default} */ (event.target);
     if (
       image.getState() === ImageState.LOADED ||
       image.getState() === ImageState.ERROR
@@ -161,7 +161,7 @@ export class LayerRenderer extends Observable {
   /**
    * Load the image if not already loaded, and register the image change
    * listener if needed.
-   * @param {import("../Image.js").default} image Image.
+   * @param {import("../Image").default} image Image.
    * @return {boolean} `true` if the image is already loaded, `false` otherwise.
    * @protected
    */

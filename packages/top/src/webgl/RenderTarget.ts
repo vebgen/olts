@@ -13,13 +13,13 @@ const tmpArray4 = new Uint8Array(4);
  */
 export class WebGLRenderTarget {
   /**
-   * @param {import("./Helper.js").default} helper WebGL helper; mandatory.
+   * @param {import("./Helper").default} helper WebGL helper; mandatory.
    * @param {number[]} [size] Expected size of the render target texture; note: this can be changed later on.
    */
   constructor(helper, size) {
     /**
      * @private
-     * @type {import("./Helper.js").default}
+     * @type {import("./Helper").default}
      */
     this.helper_ = helper;
     const gl = helper.getGL();

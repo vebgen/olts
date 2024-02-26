@@ -1,15 +1,15 @@
 
-import Collection from '../Collection.js';
-import EventType from '../render/EventType.js';
-import Feature from '../Feature.js';
+import Collection from '../Collection';
+import EventType from '../render/EventType';
+import Feature from '../Feature';
 import { Fill } from '@olts/style';
 import { LineString } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Stroke } from '@olts/style';
 import { Style } from '@olts/style';
 import { Text } from '@olts/style';
-import VectorLayer from './Vector.js';
-import VectorSource from '../source/Vector.js';
+import VectorLayer from './Vector';
+import VectorSource from '../source/Vector';
 import {
   applyTransform,
   approximatelyEquals,
@@ -24,13 +24,13 @@ import {
   wrapX as wrapExtentX,
 } from '@olts/core/extent';
 import {clamp} from '@olts/core/math';
-import {degreesToStringHDMS} from '../coordinate.js';
+import {degreesToStringHDMS} from '../coordinate';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
-} from '../proj.js';
-import {getVectorContext} from '../render.js';
+} from '../proj';
+import {getVectorContext} from '../render';
 import {meridian, parallel} from '@olts/geometry/flat';
 
 /**
@@ -167,15 +167,15 @@ const INTERVALS = [
  * [30, 10]
  * ```
  * @property {boolean} [wrapX=true] Whether to repeat the graticule horizontally.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
  * Layer that renders a grid for a coordinate system (currently only EPSG:4326 is supported).
  * Note that the view projection must define both extent and worldExtent.
  *
- * @fires import("../render/Event.js").RenderEvent
- * @extends {VectorLayer<import("../source/Vector.js").default>}
+ * @fires import("../render/Event").RenderEvent
+ * @extends {VectorLayer<import("../source/Vector").default>}
  * @api
  */
 export class Graticule extends VectorLayer {
@@ -208,7 +208,7 @@ export class Graticule extends VectorLayer {
     super(baseOptions);
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.projection_ = null;
 
@@ -295,13 +295,13 @@ export class Graticule extends VectorLayer {
         : DEFAULT_STROKE_STYLE;
 
     /**
-     * @type {import("../proj.js").TransformFunction|undefined}
+     * @type {import("../proj").TransformFunction|undefined}
      * @private
      */
     this.fromLonLatTransform_ = undefined;
 
     /**
-     * @type {import("../proj.js").TransformFunction|undefined}
+     * @type {import("../proj").TransformFunction|undefined}
      * @private
      */
     this.toLonLatTransform_ = undefined;
@@ -541,7 +541,7 @@ export class Graticule extends VectorLayer {
    * Update geometries in the source based on current view
    * @param {import("../extent").Extent} extent Extent
    * @param {number} resolution Resolution
-   * @param {import("../proj/Projection.js").default} projection Projection
+   * @param {import("../proj/Projection").default} projection Projection
    */
   loaderFunction(extent, resolution, projection) {
     this.loadedExtent_ = extent;
@@ -690,7 +690,7 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {import("../render/Event.js").default} event Render event.
+   * @param {import("../render/Event").default} event Render event.
    * @private
    */
   drawLabels_(event) {
@@ -1172,7 +1172,7 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @private
    */
   updateProjectionInfo_(projection) {

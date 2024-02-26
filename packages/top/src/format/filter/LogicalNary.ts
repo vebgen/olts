@@ -1,5 +1,5 @@
 
-import Filter from './Filter.js';
+import Filter from './Filter';
 import {assert} from '@olts/core/asserts';
 
 /**
@@ -11,13 +11,13 @@ import {assert} from '@olts/core/asserts';
 export class LogicalNary extends Filter {
   /**
    * @param {!string} tagName The XML tag name for this filter.
-   * @param {Array<import("./Filter.js").default>} conditions Conditions.
+   * @param {Array<import("./Filter").default>} conditions Conditions.
    */
   constructor(tagName, conditions) {
     super(tagName);
 
     /**
-     * @type {Array<import("./Filter.js").default>}
+     * @type {Array<import("./Filter").default>}
      */
     this.conditions = conditions;
     assert(this.conditions.length >= 2, 'At least 2 conditions are required');

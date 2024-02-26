@@ -2,16 +2,16 @@
  * A worker that does cpu-heavy tasks related to webgl rendering.
  * @module ol/worker/webgl
  */
-import {WebGLWorkerMessageType} from '../render/webgl/constants.js';
+import {WebGLWorkerMessageType} from '../render/webgl/constants';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
-} from '../transform.js';
+} from '../transform';
 import {
   writeLineSegmentToBuffers,
   writePointFeatureToBuffers,
   writePolygonTrianglesToBuffers,
-} from '../render/webgl/utils.js';
+} from '../render/webgl/utils';
 
 /** @type {any} */
 const worker = self;
@@ -47,7 +47,7 @@ worker.onmessage = (event) => {
         );
       }
 
-      /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
+      /** @type {import('../render/webgl/constants').WebGLWorkerGenerateBuffersMessage} */
       const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,
@@ -142,7 +142,7 @@ worker.onmessage = (event) => {
       const indexBuffer = Uint32Array.from(indices);
       const vertexBuffer = Float32Array.from(vertices);
 
-      /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
+      /** @type {import('../render/webgl/constants').WebGLWorkerGenerateBuffersMessage} */
       const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,
@@ -182,7 +182,7 @@ worker.onmessage = (event) => {
       const indexBuffer = Uint32Array.from(indices);
       const vertexBuffer = Float32Array.from(vertices);
 
-      /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
+      /** @type {import('../render/webgl/constants').WebGLWorkerGenerateBuffersMessage} */
       const message = Object.assign(
         {
           vertexBuffer: vertexBuffer.buffer,

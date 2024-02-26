@@ -1,13 +1,13 @@
 
 
-import {DECIMALS} from './common.js';
-import {appendParams} from '../uri.js';
-import {compareVersions} from '../string.js';
-import {decode} from '../Image.js';
+import {DECIMALS} from './common';
+import {appendParams} from '../uri';
+import {compareVersions} from '../string';
+import {decode} from '../Image';
 import {floor, round} from '@olts/core/math';
 import {getForViewAndSize, getHeight, getWidth} from '@olts/core/extent';
-import {get as getProjection} from '../proj.js';
-import {getRequestExtent} from './Image.js';
+import {get as getProjection} from '../proj';
+import {getRequestExtent} from './Image';
 
 /**
  * Default WMS version.
@@ -35,7 +35,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @param {string} baseUrl Base URL.
  * @param {Extent} extent Extent.
  * @param {Size} size Size.
- * @param {import("../proj/Projection.js").default} projection Projection.
+ * @param {import("../proj/Projection").default} projection Projection.
  * @param {Object} params WMS params. Will be modified in place.
  * @return {string} Request URL.
  */
@@ -61,10 +61,10 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
  * @param {import("../extent").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio pixel ratio.
- * @param {import("../proj.js").Projection} projection Projection.
+ * @param {import("../proj").Projection} projection Projection.
  * @param {string} url WMS service url.
  * @param {Object} params WMS params.
- * @param {import("./wms.js").ServerType} serverType The type of the remote WMS server.
+ * @param {import("./wms").ServerType} serverType The type of the remote WMS server.
  * @return {string} Image src.
  */
 export function getImageSrc(
@@ -137,18 +137,18 @@ export function getRequestParams(params, request) {
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {Object<string,*>} [params] WMS request parameters.
+ * @property {Record<string,*>} [params] WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT` and `BBOX` will be set
  * dynamically. `CRS` (`SRS` for WMS version < 1.3.0) will is derived from the `proection` config.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is 'EPSG:3857'.
+ * @property {ProjectionLike} [projection] Projection. Default is 'EPSG:3857'.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
- * @property {import("./wms.js").ServerType} [serverType] The type of
+ * @property {import("./wms").ServerType} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
  * Only needed if `hidpi` is `true`.
  * @property {string} url WMS service URL.
- * @property {function(HTMLImageElement, string): Promise<import('../DataTile.js').ImageLike>} [load] Function
+ * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.
  */
@@ -156,7 +156,7 @@ export function getRequestParams(params, request) {
 /**
  * Creates a loader for WMS images.
  * @param {LoaderOptions} options Loader options.
- * @return {import("../Image.js").ImageObjectPromiseLoader} Loader.
+ * @return {import("../Image").ImageObjectPromiseLoader} Loader.
  * @api
  */
 export function createLoader(options) {
@@ -166,7 +166,7 @@ export function createLoader(options) {
   const load = options.load || decode;
 
   /**
-   * @type {import("../Image.js").Loader}
+   * @type {import("../Image").Loader}
    */
   return (extent, resolution, pixelRatio) => {
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);

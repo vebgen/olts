@@ -1,32 +1,32 @@
 
-import {ERROR_THRESHOLD} from './common.js';
+import {ERROR_THRESHOLD} from './common';
 
-import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
-import EventType from '../events/EventType.js';
-import TileState from '../TileState.js';
-import Triangulation from './Triangulation.js';
+import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile';
+import type { EventType } from '@olts/events';
+import type { TileState} from '../tile';
+import Triangulation from './Triangulation';
 import {
   calculateSourceExtentResolution,
   canvasPool,
   render as renderReprojected,
-} from '../reproj.js';
+} from '../reproj';
 import {clamp} from '@olts/core/math';
 import {createCanvasContext2D, releaseCanvas} from '@olts/core/dom';
 import {getArea, getIntersection} from '@olts/core/extent';
-import {listen, unlistenByKey} from '../events.js';
+import {listen, unlistenByKey} from '../events';
 
 /**
- * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
+ * @typedef {function(number, number, number, number) : import("../DataTile").default} TileGetter
  */
 
 /**
  * @typedef {Object} Options
- * @property {import("../proj/Projection.js").default} sourceProj Source projection.
- * @property {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
- * @property {import("../proj/Projection.js").default} targetProj Target projection.
- * @property {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
- * @property {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
- * @property {import("../tilecoord.js").TileCoord} [wrappedTileCoord] Coordinate of the tile wrapped in X.
+ * @property {import("../proj/Projection").default} sourceProj Source projection.
+ * @property {import("../tilegrid/TileGrid").default} sourceTileGrid Source tile grid.
+ * @property {import("../proj/Projection").default} targetProj Target projection.
+ * @property {import("../tilegrid/TileGrid").default} targetTileGrid Target tile grid.
+ * @property {TileCoord} tileCoord Coordinate of the tile.
+ * @property {TileCoord} [wrappedTileCoord] Coordinate of the tile wrapped in X.
  * @property {number} pixelRatio Pixel ratio.
  * @property {number} gutter Gutter of the source tiles.
  * @property {TileGetter} getTileFunction Function returning source tiles (z, x, y, pixelRatio).
@@ -67,7 +67,7 @@ export class ReprojDataTile extends DataTile {
     this.gutter_ = options.gutter;
 
     /**
-     * @type {import("../DataTile.js").Data}
+     * @type {import("../DataTile").Data}
      * @private
      */
     this.reprojData_ = null;
@@ -79,26 +79,26 @@ export class ReprojDataTile extends DataTile {
     this.reprojError_ = null;
 
     /**
-     * @type {import('../size.js').Size}
+     * @type {Size}
      * @private
      */
     this.reprojSize_ = undefined;
 
     /**
      * @private
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid").default}
      */
     this.sourceTileGrid_ = options.sourceTileGrid;
 
     /**
      * @private
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid").default}
      */
     this.targetTileGrid_ = options.targetTileGrid;
 
     /**
      * @private
-     * @type {import("../tilecoord.js").TileCoord}
+     * @type {TileCoord}
      */
     this.wrappedTileCoord_ = options.wrappedTileCoord || options.tileCoord;
 
@@ -110,7 +110,7 @@ export class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {?Array<import("../events.js").EventsKey>}
+     * @type {?Array<import("../events").EventsKey>}
      */
     this.sourcesListenerKeys_ = null;
 
@@ -133,7 +133,7 @@ export class ReprojDataTile extends DataTile {
     if (getArea(limitedTargetExtent) === 0) {
       // Tile is completely outside range -> EMPTY
       // TODO: is it actually correct that the source even creates the tile ?
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -162,7 +162,7 @@ export class ReprojDataTile extends DataTile {
     if (!isFinite(sourceResolution) || sourceResolution <= 0) {
       // invalid sourceResolution -> EMPTY
       // probably edges of the projections when no extent is defined
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -173,7 +173,7 @@ export class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {!import("./Triangulation.js").default}
+     * @type {!import("./Triangulation").default}
      */
     this.triangulation_ = new Triangulation(
       sourceProj,
@@ -186,7 +186,7 @@ export class ReprojDataTile extends DataTile {
 
     if (this.triangulation_.getTriangles().length === 0) {
       // no valid triangles -> EMPTY
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -211,7 +211,7 @@ export class ReprojDataTile extends DataTile {
     }
 
     if (!getArea(sourceExtent)) {
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
     } else {
       const sourceRange = this.sourceTileGrid_.getTileRangeForExtentAndZ(
         sourceExtent,
@@ -228,14 +228,14 @@ export class ReprojDataTile extends DataTile {
       }
 
       if (this.sourceTiles_.length === 0) {
-        this.state = TileState.EMPTY;
+        this.state = TileStates.EMPTY;
       }
     }
   }
 
   /**
    * Get the tile size.
-   * @return {import('../size.js').Size} Tile size.
+   * @return {Size} Tile size.
    */
   getSize() {
     return this.reprojSize_;
@@ -243,7 +243,7 @@ export class ReprojDataTile extends DataTile {
 
   /**
    * Get the data for the tile.
-   * @return {import("../DataTile.js").Data} Tile data.
+   * @return {import("../DataTile").Data} Tile data.
    */
   getData() {
     return this.reprojData_;
@@ -263,13 +263,13 @@ export class ReprojDataTile extends DataTile {
   reproject_() {
     const dataSources = [];
     this.sourceTiles_.forEach((tile) => {
-      if (!tile || tile.getState() !== TileState.LOADED) {
+      if (!tile || tile.getState() !== TileStates.LOADED) {
         return;
       }
       const size = tile.getSize();
       const gutter = this.gutter_;
       /**
-       * @type {import("../DataTile.js").ArrayLike}
+       * @type {import("../DataTile").ArrayLike}
        */
       let tileData;
       const arrayData = asArrayLike(tile.getData());
@@ -314,7 +314,7 @@ export class ReprojDataTile extends DataTile {
     this.sourceTiles_.length = 0;
 
     if (dataSources.length === 0) {
-      this.state = TileState.ERROR;
+      this.state = TileStates.ERROR;
     } else {
       const z = this.wrappedTileCoord_[0];
       const size = this.targetTileGrid_.getTileSize(z);
@@ -423,7 +423,7 @@ export class ReprojDataTile extends DataTile {
         Math.round(targetWidth * this.pixelRatio_),
         Math.round(targetHeight * this.pixelRatio_),
       ];
-      this.state = TileState.LOADED;
+      this.state = TileStates.LOADED;
     }
     this.changed();
   }
@@ -432,10 +432,10 @@ export class ReprojDataTile extends DataTile {
    * Load not yet loaded URI.
    */
   load() {
-    if (this.state !== TileState.IDLE && this.state !== TileState.ERROR) {
+    if (this.state !== TileStates.IDLE && this.state !== TileStates.ERROR) {
       return;
     }
-    this.state = TileState.LOADING;
+    this.state = TileStates.LOADING;
     this.changed();
 
     let leftToLoad = 0;
@@ -443,7 +443,7 @@ export class ReprojDataTile extends DataTile {
     this.sourcesListenerKeys_ = [];
     this.sourceTiles_.forEach((tile) => {
       const state = tile.getState();
-      if (state !== TileState.IDLE && state !== TileState.LOADING) {
+      if (state !== TileStates.IDLE && state !== TileStates.LOADING) {
         return;
       }
       leftToLoad++;
@@ -454,9 +454,9 @@ export class ReprojDataTile extends DataTile {
         function () {
           const state = tile.getState();
           if (
-            state == TileState.LOADED ||
-            state == TileState.ERROR ||
-            state == TileState.EMPTY
+            state == TileStates.LOADED ||
+            state == TileStates.ERROR ||
+            state == TileStates.EMPTY
           ) {
             unlistenByKey(sourceListenKey);
             leftToLoad--;
@@ -476,7 +476,7 @@ export class ReprojDataTile extends DataTile {
     } else {
       this.sourceTiles_.forEach(function (tile) {
         const state = tile.getState();
-        if (state == TileState.IDLE) {
+        if (state == TileStates.IDLE) {
           tile.load();
         }
       });

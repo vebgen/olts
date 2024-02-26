@@ -1,6 +1,6 @@
 
 
-import {decode} from '../Image.js';
+import {decode} from '../Image';
 import {getHeight, getWidth} from '@olts/core/extent';
 
 /**
@@ -12,7 +12,7 @@ import {getHeight, getWidth} from '@olts/core/extent';
  * This is the [left, bottom, right, top] map coordinates of your image. When using this loader with an
  * `ol/source/Image`, the same extent must be set as `extent` of the `ol/layer/Image`.
  * @property {string} url Image URL.
- * @property {function(HTMLImageElement, string): Promise<import('../DataTile.js').ImageLike>} [load] Function
+ * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.
  */
@@ -20,7 +20,7 @@ import {getHeight, getWidth} from '@olts/core/extent';
 /**
  * Creates a loader for static images.
  * @param {LoaderOptions} options Loader options.
- * @return {import("../Image.js").ImageObjectPromiseLoader} Loader.
+ * @return {import("../Image").ImageObjectPromiseLoader} Loader.
  * @api
  */
 export function createLoader(options) {

@@ -1,18 +1,18 @@
 
-import EventType from '../events/EventType.js';
-import ImageTile from '../ImageTile.js';
-import ReprojTile from '../reproj/Tile.js';
-import TileCache from '../TileCache.js';
-import TileState from '../TileState.js';
-import UrlTile from './UrlTile.js';
-import {equivalent, get as getProjection} from '../proj.js';
-import {getKey, getKeyZXY} from '../tilecoord.js';
-import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
+import type { EventType } from '@olts/events';
+import ImageTile from '../ImageTile';
+import ReprojTile from '../reproj/Tile';
+import TileCache from '../TileCache';
+import type { TileState} from '../tile';
+import UrlTile from './UrlTile';
+import {equivalent, get as getProjection} from '../proj';
+import {getKey, getKeyZXY} from '../tile-coord';
+import {getForProjection as getTileGridForProjection} from '../tile-grid';
 import {getUid} from '@olts/core/util';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
@@ -21,14 +21,14 @@ import {getUid} from '@olts/core/util';
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("./Source.js").State} [state] Source state.
- * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
+ * @property {import("./Source").State} [state] Source state.
+ * @property {typeof import("../ImageTile").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -38,7 +38,7 @@ import {getUid} from '@olts/core/util';
  * service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+ * @property {import("../Tile").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
@@ -50,7 +50,7 @@ import {getUid} from '@olts/core/util';
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [key] Optional tile key for proper cache fetching
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -58,7 +58,7 @@ import {getUid} from '@olts/core/util';
 /**
  * Base class for sources providing images divided into a tile grid.
  *
- * @fires import("./Tile.js").TileSourceEvent
+ * @fires import("./Tile").TileSourceEvent
  * @api
  */
 export class TileImage extends UrlTile {
@@ -105,13 +105,13 @@ export class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object<string, TileCache>}
+     * @type {!Record<string, TileCache>}
      */
     this.tileCacheForProjection = {};
 
     /**
      * @protected
-     * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
+     * @type {!Record<string, import("../tilegrid/TileGrid").default>}
      */
     this.tileGridForProjection = {};
 
@@ -145,8 +145,8 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @param {!Record<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);
@@ -161,7 +161,7 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
@@ -195,7 +195,7 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {boolean} Opaque.
    */
   getOpaque(projection) {
@@ -210,8 +210,8 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {!import("../tilegrid/TileGrid").default} Tile grid.
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
@@ -227,8 +227,8 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../TileCache").default} Tile cache.
    */
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
@@ -249,7 +249,7 @@ export class TileImage extends UrlTile {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @param {string} key The key set on the tile.
    * @return {!ImageTile} Tile.
    * @private
@@ -265,7 +265,7 @@ export class TileImage extends UrlTile {
       : undefined;
     const tile = new this.tileClass(
       tileCoord,
-      tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
+      tileUrl !== undefined ? TileStates.IDLE : TileStates.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction,
@@ -281,7 +281,7 @@ export class TileImage extends UrlTile {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {!(ImageTile|ReprojTile)} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
@@ -348,7 +348,7 @@ export class TileImage extends UrlTile {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {!import("../proj/Projection.js").default} projection Projection.
+   * @param {!import("../proj/Projection").default} projection Projection.
    * @return {!ImageTile} Tile.
    * @protected
    */
@@ -369,7 +369,7 @@ export class TileImage extends UrlTile {
         tile = this.createTile_(z, x, y, pixelRatio, projection, key);
 
         //make the new tile the head of the list,
-        if (interimTile.getState() == TileState.IDLE) {
+        if (interimTile.getState() == TileStates.IDLE) {
           //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
           tile.interimTile = interimTile.interimTile;
         } else {
@@ -406,8 +406,8 @@ export class TileImage extends UrlTile {
    * (e.g. projection has no extent defined) or
    * for optimization reasons (custom tile size, resolutions, ...).
    *
-   * @param {import("../proj.js").ProjectionLike} projection Projection.
-   * @param {import("../tilegrid/TileGrid.js").default} tilegrid Tile grid to use for the projection.
+   * @param {ProjectionLike} projection Projection.
+   * @param {import("../tilegrid/TileGrid").default} tilegrid Tile grid to use for the projection.
    * @api
    */
   setTileGridForProjection(projection, tilegrid) {

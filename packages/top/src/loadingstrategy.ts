@@ -1,6 +1,6 @@
 
 
-import {fromUserExtent, fromUserResolution, toUserExtent} from './proj.js';
+import { fromUserExtent, fromUserResolution, toUserExtent } from './proj';
 
 /**
  * Strategy function for loading all features with a single request.
@@ -9,8 +9,8 @@ import {fromUserExtent, fromUserResolution, toUserExtent} from './proj.js';
  * @return {Array<Extent>} Extents.
  * @api
  */
-export function all(extent, resolution) {
-  return [[-Infinity, -Infinity, Infinity, Infinity]];
+export function all(extent: Extent, resolution: number): Array<Extent> {
+    return [[-Infinity, -Infinity, Infinity, Infinity]];
 }
 
 /**
@@ -21,52 +21,52 @@ export function all(extent, resolution) {
  * @return {Array<Extent>} Extents.
  * @api
  */
-export function bbox(extent, resolution) {
-  return [extent];
+export function bbox(extent: Extent, resolution: number): Array<Extent> {
+    return [extent];
 }
 
 /**
  * Creates a strategy function for loading features based on a tile grid.
- * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
- * @return {function(Extent, number, import("./proj.js").Projection):Extent[]} Loading strategy.
+ * @param {TileGrid} tileGrid Tile grid.
+ * @return {function(Extent, number, import("./proj").Projection):Extent[]} Loading strategy.
  * @api
  */
-export function tile(tileGrid) {
-  return (
-    /**
-     * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {import("./proj.js").Projection} projection Projection.
-     * @return {Array<Extent>} Extents.
-     */
-    function (extent, resolution, projection) {
-      const z = tileGrid.getZForResolution(
-        fromUserResolution(resolution, projection),
-      );
-      const tileRange = tileGrid.getTileRangeForExtentAndZ(
-        fromUserExtent(extent, projection),
-        z,
-      );
-      /** @type {Array<Extent>} */
-      const extents = [];
-      /** @type {import("./tilecoord.js").TileCoord} */
-      const tileCoord = [z, 0, 0];
-      for (
-        tileCoord[1] = tileRange.minX;
-        tileCoord[1] <= tileRange.maxX;
-        ++tileCoord[1]
-      ) {
-        for (
-          tileCoord[2] = tileRange.minY;
-          tileCoord[2] <= tileRange.maxY;
-          ++tileCoord[2]
-        ) {
-          extents.push(
-            toUserExtent(tileGrid.getTileCoordExtent(tileCoord), projection),
-          );
+export function tile(tileGrid: TileGrid): (arg0: Extent, arg1: number, arg2: import("./proj").Projection) => Extent[] {
+    return (
+        /**
+         * @param {Extent} extent Extent.
+         * @param {number} resolution Resolution.
+         * @param {import("./proj").Projection} projection Projection.
+         * @return {Array<Extent>} Extents.
+         */
+        function (extent: Extent, resolution: number, projection: import("./proj").Projection): Array<Extent> {
+            const z = tileGrid.getZForResolution(
+                fromUserResolution(resolution, projection),
+            );
+            const tileRange = tileGrid.getTileRangeForExtentAndZ(
+                fromUserExtent(extent, projection),
+                z,
+            );
+            /** @type {Array<Extent>} */
+            const extents: Array<Extent> = [];
+            /** @type {TileCoord} */
+            const tileCoord: TileCoord = [z, 0, 0];
+            for (
+                tileCoord[1] = tileRange.minX;
+                tileCoord[1] <= tileRange.maxX;
+                ++tileCoord[1]
+            ) {
+                for (
+                    tileCoord[2] = tileRange.minY;
+                    tileCoord[2] <= tileRange.maxY;
+                    ++tileCoord[2]
+                ) {
+                    extents.push(
+                        toUserExtent(tileGrid.getTileCoordExtent(tileCoord), projection),
+                    );
+                }
+            }
+            return extents;
         }
-      }
-      return extents;
-    }
-  );
+    );
 }

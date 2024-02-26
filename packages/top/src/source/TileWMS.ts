@@ -1,18 +1,18 @@
 
 
-import TileImage from './TileImage.js';
-import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
-import {appendParams} from '../uri.js';
+import TileImage from './TileImage';
+import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms';
+import {appendParams} from '../uri';
 import {buffer, createEmpty} from '@olts/core/extent';
-import {calculateSourceResolution} from '../reproj.js';
-import {compareVersions} from '../string.js';
-import {get as getProjection, transform} from '../proj.js';
+import {calculateSourceResolution} from '../reproj';
+import {compareVersions} from '../string';
+import {get as getProjection, transform} from '../proj';
 import {modulo} from '@olts/core/math';
-import {hash as tileCoordHash} from '../tilecoord.js';
+import {hash as tileCoordHash} from '../tile-coord';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
@@ -20,7 +20,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {Object<string,*>} params WMS request parameters.
+ * @property {Record<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
@@ -35,20 +35,20 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * this. See https://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
+ * @property {typeof import("../ImageTile").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
- * @property {import("./wms.js").ServerType} [serverType] The type of
+ * @property {import("./wms").ServerType} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
  * Only needed if `hidpi` is `true`.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -63,7 +63,7 @@ import {hash as tileCoordHash} from '../tilecoord.js';
  * but they will be wrapped horizontally to render multiple worlds.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -122,7 +122,7 @@ export class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {import("./wms.js").ServerType}
+     * @type {import("./wms").ServerType}
      */
     this.serverType_ = options.serverType;
 
@@ -148,7 +148,7 @@ export class TileWMS extends TileImage {
    * constructed.
    * @param {Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {import("../proj.js").ProjectionLike} projection Projection.
+   * @param {ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
    *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -282,10 +282,10 @@ export class TileWMS extends TileImage {
   }
 
   /**
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {TileCoord} tileCoord Tile coordinate.
    * @param {Extent} tileExtent Tile extent.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @param {Object} params Params.
    * @return {string|undefined} Request URL.
    * @private
@@ -358,9 +358,9 @@ export class TileWMS extends TileImage {
   }
 
   /**
-   * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+   * @param {TileCoord} tileCoord The tile coordinate
    * @param {number} pixelRatio The pixel ratio
-   * @param {import("../proj/Projection.js").default} projection The projection
+   * @param {import("../proj/Projection").default} projection The projection
    * @return {string|undefined} The tile URL
    * @override
    */

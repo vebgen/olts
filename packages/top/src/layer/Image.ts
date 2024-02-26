@@ -1,5 +1,5 @@
-import BaseImageLayer from './BaseImage.js';
-import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
+import BaseImageLayer from './BaseImage';
+import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer';
 
 /**
  * Server-rendered images that are available for arbitrary extents and
@@ -8,13 +8,13 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Image.js").default} ImageSourceType
+ * @template {import("../source/Image").default} ImageSourceType
  * @extends {BaseImageLayer<ImageSourceType, CanvasImageLayerRenderer>}
  * @api
  */
 export class ImageLayer extends BaseImageLayer {
   /**
-   * @param {import("./BaseImage.js").Options<ImageSourceType>} [options] Layer options.
+   * @param {import("./BaseImage").Options<ImageSourceType>} [options] Layer options.
    */
   constructor(options) {
     super(options);

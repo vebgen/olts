@@ -1,28 +1,28 @@
 
 
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import {createLoader} from './arcgisRest.js';
-import {decode} from '../Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image';
+import {createLoader} from './arcgisRest';
+import {decode} from '../Image';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
  * the remote server.
- * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
+ * @property {import("../Image").LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
+ * @property {Record<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
  * https://developers.arcgis.com/rest/services-reference/export-map.htm
  * for further reference.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * The projection code must contain a numeric end portion separated by :
  * or the entire code must form a valid ArcGIS SpatialReference definition.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
@@ -79,7 +79,7 @@ export class ImageArcGISRest extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").LoadFunction}
+     * @type {import("../Image").LoadFunction}
      */
     this.imageLoadFunction_ =
       options.imageLoadFunction !== undefined
@@ -112,7 +112,7 @@ export class ImageArcGISRest extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.loaderProjection_ = null;
   }
@@ -131,8 +131,8 @@ export class ImageArcGISRest extends ImageSource {
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../Image").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (this.url_ === undefined) {
@@ -161,7 +161,7 @@ export class ImageArcGISRest extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {import("../Image.js").LoadFunction} The image load function.
+   * @return {import("../Image").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -179,7 +179,7 @@ export class ImageArcGISRest extends ImageSource {
 
   /**
    * Set the image load function of the source.
-   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {

@@ -1,8 +1,8 @@
 
-import EventType from '../events/EventType.js';
-import Interaction from './Interaction.js';
-import MapEventType from '../MapEventType.js';
-import {listen, unlistenByKey} from '../events.js';
+import type { EventType } from '@olts/events';
+import Interaction from './Interaction';
+import MapEventType from '../MapEventType';
+import {listen, unlistenByKey} from '../events';
 import {toFixed} from '@olts/core/math';
 
 /**
@@ -58,7 +58,7 @@ function differentArray(a, b) {
 
 /**
  * @typedef {Object} Options
- * @property {boolean|import('../View.js').AnimationOptions} [animate=true] Animate view transitions.
+ * @property {boolean|import('../View').AnimationOptions} [animate=true] Animate view transitions.
  * @property {Array<Params>} [params=['x', 'y', 'z', 'r', 'l']] Properties to track. Default is to track
  * `x` (center x), `y` (center y), `z` (zoom), `r` (rotation) and `l` (layers).
  * @property {boolean} [replace=false] Replace the current URL without creating the new entry in browser history.
@@ -100,13 +100,13 @@ export class Link extends Interaction {
     }
 
     /**
-     * @type {import('../View.js').AnimationOptions|null}
+     * @type {import('../View').AnimationOptions|null}
      * @private
      */
     this.animationOptions_ = animationOptions;
 
     /**
-     * @type {Object<Params, boolean>}
+     * @type {Record<Params, boolean>}
      * @private
      */
     this.params_ = options.params.reduce((acc, value) => {
@@ -128,7 +128,7 @@ export class Link extends Interaction {
 
     /**
      * @private
-     * @type {!Array<import("../events.js").EventsKey>}
+     * @type {!Array<import("../events").EventsKey>}
      */
     this.listenerKeys_ = [];
 
@@ -143,14 +143,14 @@ export class Link extends Interaction {
     /**
      * The tracked parameter callbacks.
      * @private
-     * @type {Object<string, Callback>}
+     * @type {Record<string, Callback>}
      */
     this.trackedCallbacks_ = {};
 
     /**
      * The tracked parameter values.
      * @private
-     * @type {Object<string, string|null>}
+     * @type {Record<string, string|null>}
      */
     this.trackedValues_ = {};
   }
@@ -203,7 +203,7 @@ export class Link extends Interaction {
   }
 
   /**
-   * @param {import("../Map.js").default|null} map Map.
+   * @param {import("../Map").default|null} map Map.
    */
   setMap(map) {
     const oldMap = this.getMap();
@@ -222,7 +222,7 @@ export class Link extends Interaction {
   }
 
   /**
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../Map").default} map Map.
    * @private
    */
   registerListeners_(map) {
@@ -238,7 +238,7 @@ export class Link extends Interaction {
   }
 
   /**
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../Map").default} map Map.
    * @private
    */
   unregisterListeners_(map) {
@@ -301,7 +301,7 @@ export class Link extends Interaction {
     let updateView = false;
 
     /**
-     * @type {import('../View.js').AnimationOptions}
+     * @type {import('../View').AnimationOptions}
      */
     const viewProperties = {};
 

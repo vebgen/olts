@@ -1,4 +1,4 @@
-import Comparison from './Comparison.js';
+import Comparison from './Comparison';
 
 /**
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.

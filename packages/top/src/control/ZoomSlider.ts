@@ -1,13 +1,13 @@
 
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
-import PointerEventType from '../pointer/EventType.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
+import PointerEventType from '../pointer/EventType';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
 import {clamp} from '@olts/core/math';
-import {easeOut} from '../easing.js';
-import {listen, unlistenByKey} from '../events.js';
-import {stopPropagation} from '../events/Event.js';
+import {easeOut} from '../easing';
+import {listen, unlistenByKey} from '../events';
+import {stopPropagation} from '../events/Event';
 
 /**
  * The enum for available directions.
@@ -23,7 +23,7 @@ const Direction = {
  * @typedef {Object} Options
  * @property {string} [className='ol-zoomslider'] CSS class name.
  * @property {number} [duration=200] Animation duration in milliseconds.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
+ * @property {function(import("../MapEvent").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
@@ -52,7 +52,7 @@ export class ZoomSlider extends Control {
     });
 
     /**
-     * @type {!Array<import("../events.js").EventsKey>}
+     * @type {!Array<import("../events").EventsKey>}
      * @private
      */
     this.dragListenerKeys_ = [];
@@ -164,7 +164,7 @@ export class ZoomSlider extends Control {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../Map.js").default|null} map Map.
+   * @param {import("../Map").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -369,7 +369,7 @@ export class ZoomSlider extends Control {
 
   /**
    * Update the zoomslider element.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @param {import("../MapEvent").default} mapEvent Map event.
    * @override
    */
   render(mapEvent) {

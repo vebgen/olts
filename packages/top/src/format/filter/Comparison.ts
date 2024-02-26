@@ -1,4 +1,4 @@
-import Filter from './Filter.js';
+import Filter from './Filter';
 
 /**
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.

@@ -1,6 +1,6 @@
 
-import OWS from './OWS.js';
-import XML from './XML.js';
+import OWS from './OWS';
+import XML from './XML';
 import {boundingExtent} from '@olts/core/extent';
 import {
   makeArrayPusher,
@@ -8,9 +8,9 @@ import {
   makeObjectPropertySetter,
   makeStructureNS,
   pushParseAndPop,
-} from '../xml.js';
-import {readDecimal, readPositiveInteger, readString} from './xsd.js';
-import {readHref} from './xlink.js';
+} from '../xml';
+import {readDecimal, readPositiveInteger, readString} from './xsd';
+import {readHref} from './xlink';
 
 /**
  * @const
@@ -26,7 +26,7 @@ const OWS_NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -75,7 +75,7 @@ export class WMTSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CONTENTS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -85,7 +85,7 @@ const CONTENTS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LAYER_PARSERS = makeStructureNS(
@@ -108,7 +108,7 @@ const LAYER_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const STYLE_PARSERS = makeStructureNS(
@@ -124,7 +124,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TMS_LINKS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -134,7 +134,7 @@ const TMS_LINKS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TMS_LIMITS_LIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -143,7 +143,7 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TMS_LIMITS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -156,7 +156,7 @@ const TMS_LIMITS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const DIMENSION_PARSERS = makeStructureNS(
@@ -172,7 +172,7 @@ const DIMENSION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const WGS84_BBOX_READERS = makeStructureNS(OWS_NAMESPACE_URIS, {
@@ -182,7 +182,7 @@ const WGS84_BBOX_READERS = makeStructureNS(OWS_NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TMS_PARSERS = makeStructureNS(
@@ -200,7 +200,7 @@ const TMS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TM_PARSERS = makeStructureNS(

@@ -1,10 +1,10 @@
 
 
-import EventType from '../events/EventType.js';
-import Feature from '../Feature.js';
+import type { EventType } from '@olts/events';
+import Feature from '../Feature';
 import { Point } from '@olts/geometry';
-import VectorSource from './Vector.js';
-import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate.js';
+import VectorSource from './Vector';
+import {add as addCoordinate, scale as scaleCoordinate} from '../coordinate';
 import {assert} from '@olts/core/asserts';
 import {
   buffer,
@@ -16,7 +16,7 @@ import {getUid} from '@olts/core/util';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Distance in pixels within which features will
  * be clustered together.
  * @property {number} [minDistance=0] Minimum distance in pixels between clusters.
@@ -171,7 +171,7 @@ export class Cluster extends VectorSource {
   /**
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
     this.source.loadFeatures(extent, resolution, projection);
@@ -263,7 +263,7 @@ export class Cluster extends VectorSource {
     const mapDistance = this.distance * this.resolution;
     const features = this.source.getFeatures();
 
-    /** @type {Object<string, true>} */
+    /** @type {Record<string, true>} */
     const clustered = {};
 
     for (let i = 0, ii = features.length; i < ii; i++) {

@@ -1,5 +1,5 @@
 
-import FeatureFormat from './Feature.js';
+import FeatureFormat from './Feature';
 import {abstract} from '@olts/core/util';
 
 /**
@@ -7,7 +7,7 @@ import {abstract} from '@olts/core/util';
  * instantiated in apps.
  * Base class for JSON feature formats.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
+ * @template {import('../Feature').FeatureClass} [T=typeof import('../Feature').default]
  * @extends {FeatureFormat<T>}
  * @abstract
  */
@@ -17,7 +17,7 @@ export class JSONFeature extends FeatureFormat {
   }
 
   /**
-   * @return {import("./Feature.js").Type} Format.
+   * @return {import("./Feature").Type} Format.
    */
   getType() {
     return 'json';
@@ -28,12 +28,12 @@ export class JSONFeature extends FeatureFormat {
    * read a feature collection.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import('./Feature.js').FeatureClassToFeature<T>} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import('./Feature').FeatureClassToFeature<T>} Feature.
    * @api
    */
   readFeature(source, options) {
-    return /** @type {import('./Feature.js').FeatureClassToFeature<T>} */ (
+    return /** @type {import('./Feature').FeatureClassToFeature<T>} */ (
       this.readFeatureFromObject(
         getObject(source),
         this.getReadOptions(source, options),
@@ -46,12 +46,12 @@ export class JSONFeature extends FeatureFormat {
    * collection.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import('./Feature.js').FeatureClassToFeature<T>>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {Array<import('./Feature').FeatureClassToFeature<T>>} Features.
    * @api
    */
   readFeatures(source, options) {
-    return /** @type {Array<import('./Feature.js').FeatureClassToFeature<T>>} */ (
+    return /** @type {Array<import('./Feature').FeatureClassToFeature<T>>} */ (
       this.readFeaturesFromObject(
         getObject(source),
         this.getReadOptions(source, options),
@@ -62,9 +62,9 @@ export class JSONFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../Feature.js").default|import("../render/Feature.js").default|Array<import("../render/Feature.js").default>} Feature.
+   * @return {import("../Feature").default|import("../render/Feature").default|Array<import("../render/Feature").default>} Feature.
    */
   readFeatureFromObject(object, options) {
     return abstract();
@@ -73,9 +73,9 @@ export class JSONFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<import("../Feature.js").default|import("../render/Feature.js").default>} Features.
+   * @return {Array<import("../Feature").default|import("../render/Feature").default>} Features.
    */
   readFeaturesFromObject(object, options) {
     return abstract();
@@ -85,7 +85,7 @@ export class JSONFeature extends FeatureFormat {
    * Read a geometry.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {Geometry} Geometry.
    * @api
    */
@@ -99,7 +99,7 @@ export class JSONFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -111,7 +111,7 @@ export class JSONFeature extends FeatureFormat {
    * Read the projection.
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    * @api
    */
   readProjection(source) {
@@ -122,7 +122,7 @@ export class JSONFeature extends FeatureFormat {
    * @abstract
    * @param {Object} object Object.
    * @protected
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    */
   readProjectionFromObject(object) {
     return abstract();
@@ -131,8 +131,8 @@ export class JSONFeature extends FeatureFormat {
   /**
    * Encode a feature as string.
    *
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Feature.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
    */
@@ -142,8 +142,8 @@ export class JSONFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Feature.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
   writeFeatureObject(feature, options) {
@@ -153,8 +153,8 @@ export class JSONFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
    */
@@ -164,8 +164,8 @@ export class JSONFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
   writeFeaturesObject(features, options) {
@@ -176,7 +176,7 @@ export class JSONFeature extends FeatureFormat {
    * Encode a geometry as string.
    *
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Encoded geometry.
    * @api
    */
@@ -187,7 +187,7 @@ export class JSONFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {Object} Object.
    */
   writeGeometryObject(geometry, options) {

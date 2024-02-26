@@ -1,15 +1,15 @@
-import PointerInteraction from './Pointer.js';
+import PointerInteraction from './Pointer';
 import {FALSE} from '@olts/core/functions';
 import {
   altShiftKeysOnly,
   mouseActionButton,
   mouseOnly,
-} from '../events/condition.js';
-import {disable} from '../rotationconstraint.js';
+} from '../events/condition';
+import {disable} from '../rotationconstraint';
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an
+ * @property {import("../events/condition").Condition} [condition] A function that takes an
  * {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.altShiftKeysOnly}.
@@ -37,7 +37,7 @@ export class DragRotate extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../events/condition.js").Condition}
+     * @type {import("../events/condition").Condition}
      */
     this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
 
@@ -56,7 +56,7 @@ export class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     if (!mouseOnly(mapBrowserEvent)) {
@@ -80,7 +80,7 @@ export class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer up events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleUpEvent(mapBrowserEvent) {
@@ -96,7 +96,7 @@ export class DragRotate extends PointerInteraction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {

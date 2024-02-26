@@ -1,4 +1,4 @@
-import EventType from './events/EventType.js';
+import type { EventType } from '@olts/events';
 
 /**
  * Constants for event names.

@@ -1,8 +1,8 @@
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
-import {fromUserExtent} from '../proj.js';
+import {fromUserExtent} from '../proj';
 import {fromExtent as polygonFromExtent} from '@olts/geometry';
 
 /**

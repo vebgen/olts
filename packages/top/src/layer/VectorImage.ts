@@ -1,8 +1,8 @@
-import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
+import BaseVectorLayer from './BaseVector';
+import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer';
 
 /**
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../source/Vector").default} VectorSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -21,26 +21,26 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
  * @property {VectorSourceType} [source] Source.
- * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+ * use [map.addLayer()]{@link import("../Map").default#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text on this layer. The priority is defined
  * by the `zIndex` of the style and the render order of features. Higher z-index means higher priority.
  * Within the same z-index, a feature rendered before another has higher priority.
- * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
+ * @property {import("../style/Style").StyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -53,7 +53,7 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../source/Vector").default} VectorSourceType
  * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorImageLayerRenderer>}
  * @api
  */

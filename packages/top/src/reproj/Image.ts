@@ -1,15 +1,15 @@
 
-import {ERROR_THRESHOLD} from './common.js';
+import {ERROR_THRESHOLD} from './common';
 
-import EventType from '../events/EventType.js';
-import ImageState from '../ImageState.js';
-import ImageWrapper from '../Image.js';
-import Triangulation from './Triangulation.js';
+import type { EventType } from '@olts/events';
+import ImageState from '../ImageState';
+import ImageWrapper from '../Image';
+import Triangulation from './Triangulation';
 import {
   calculateSourceResolution,
   render as renderReprojected,
-} from '../reproj.js';
-import {fromResolutionLike} from '../resolution.js';
+} from '../reproj';
+import {fromResolutionLike} from '../resolution';
 import {
   getCenter,
   getHeight,
@@ -17,10 +17,10 @@ import {
   getWidth,
   isEmpty,
 } from '@olts/core/extent';
-import {listen, unlistenByKey} from '../events.js';
+import {listen, unlistenByKey} from '../events';
 
 /**
- * @typedef {function(Extent, number, number) : import("../Image.js").default} FunctionType
+ * @typedef {function(Extent, number, number) : import("../Image").default} FunctionType
  */
 
 /**
@@ -29,8 +29,8 @@ import {listen, unlistenByKey} from '../events.js';
  */
 export class ReprojImage extends ImageWrapper {
   /**
-   * @param {import("../proj/Projection.js").default} sourceProj Source projection (of the data).
-   * @param {import("../proj/Projection.js").default} targetProj Target projection.
+   * @param {import("../proj/Projection").default} sourceProj Source projection (of the data).
+   * @param {import("../proj/Projection").default} targetProj Target projection.
    * @param {Extent} targetExtent Target extent.
    * @param {number} targetResolution Target resolution.
    * @param {number} pixelRatio Pixel ratio.
@@ -94,7 +94,7 @@ export class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.targetProj_ = targetProj;
 
@@ -106,7 +106,7 @@ export class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {!import("./Triangulation.js").default}
+     * @type {!import("./Triangulation").default}
      */
     this.triangulation_ = triangulation;
 
@@ -124,7 +124,7 @@ export class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {import("../Image.js").default}
+     * @type {import("../Image").default}
      */
     this.sourceImage_ = sourceImage;
 
@@ -148,7 +148,7 @@ export class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {?import("../events.js").EventsKey}
+     * @type {?import("../events").EventsKey}
      */
     this.sourceListenerKey_ = null;
   }
@@ -171,7 +171,7 @@ export class ReprojImage extends ImageWrapper {
   }
 
   /**
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    */
   getProjection() {
     return this.targetProj_;
@@ -247,7 +247,7 @@ export class ReprojImage extends ImageWrapper {
    */
   unlistenSource_() {
     unlistenByKey(
-      /** @type {!import("../events.js").EventsKey} */ (
+      /** @type {!import("../events").EventsKey} */ (
         this.sourceListenerKey_
       ),
     );

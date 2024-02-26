@@ -1,12 +1,12 @@
 
-import XML from './XML.js';
+import XML from './XML';
 import {
   makeArrayPusher,
   makeObjectPropertyPusher,
   makeObjectPropertySetter,
   makeStructureNS,
   pushParseAndPop,
-} from '../xml.js';
+} from '../xml';
 import {
   readBooleanString,
   readDecimal,
@@ -14,8 +14,8 @@ import {
   readNonNegativeIntegerString,
   readPositiveInteger,
   readString,
-} from './xsd.js';
-import {readHref} from './xlink.js';
+} from './xsd';
+import {readHref} from './xlink';
 
 /**
  * @const
@@ -25,7 +25,7 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/wms'];
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -35,7 +35,7 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -79,7 +79,7 @@ export class WMSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const SERVICE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -98,7 +98,7 @@ const SERVICE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CONTACT_INFORMATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -112,7 +112,7 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CONTACT_PERSON_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -122,7 +122,7 @@ const CONTACT_PERSON_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CONTACT_ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -136,7 +136,7 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const EXCEPTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -145,7 +145,7 @@ const EXCEPTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LAYER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -173,7 +173,7 @@ const LAYER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const ATTRIBUTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -184,7 +184,7 @@ const ATTRIBUTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -196,7 +196,7 @@ const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const REQUEST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -207,7 +207,7 @@ const REQUEST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const OPERATIONTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -217,7 +217,7 @@ const OPERATIONTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const DCPTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -226,7 +226,7 @@ const DCPTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const HTTP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -236,7 +236,7 @@ const HTTP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -250,7 +250,7 @@ const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const FORMAT_ONLINERESOURCE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -260,7 +260,7 @@ const FORMAT_ONLINERESOURCE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const KEYWORDLIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -419,7 +419,7 @@ function readCapabilityLayer(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 function readLayer(node, objectStack) {
-  const parentLayerObject = /**  @type {!Object<string,*>} */ (
+  const parentLayerObject = /**  @type {!Record<string,*>} */ (
     objectStack[objectStack.length - 1]
   );
 

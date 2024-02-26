@@ -1,6 +1,6 @@
 
 import {abstract} from '@olts/core/util';
-import {isDocument, parse} from '../xml.js';
+import {isDocument, parse} from '../xml';
 
 /**
  * Generic format for reading non-feature XML data

@@ -2,7 +2,7 @@ import { isEmpty } from '@olts/core/js-obj';
 import { getUid } from '@olts/core/util';
 
 import BaseEvent, { BaseEvent as Event } from './event';
-import { EventsKey, Listener } from './events.js';
+import { EventsKey, Listener } from './events';
 import {
     CombinedOnSignature, EventTypes, Observable, OnSignature
 } from './observable';

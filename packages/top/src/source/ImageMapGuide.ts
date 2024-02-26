@@ -1,8 +1,8 @@
 
 
-import ImageSource, {defaultImageLoadFunction} from './Image.js';
-import {createLoader} from './mapguide.js';
-import {decode} from '../Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image';
+import {createLoader} from './mapguide';
+import {decode} from '../Image';
 
 /**
  * @typedef {Object} Options
@@ -15,12 +15,12 @@ import {decode} from '../Image.js';
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {number[]} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../Image").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {Object} [params] Additional parameters.
@@ -71,7 +71,7 @@ export class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").LoadFunction}
+     * @type {import("../Image").LoadFunction}
      */
     this.imageLoadFunction_ =
       options.imageLoadFunction !== undefined
@@ -112,7 +112,7 @@ export class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.loaderProjection_ = null;
   }
@@ -131,8 +131,8 @@ export class ImageMapGuide extends ImageSource {
    * @param {Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../Image").default} Single image.
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
     if (this.url_ === undefined) {
@@ -162,7 +162,7 @@ export class ImageMapGuide extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {import("../Image.js").LoadFunction} The image load function.
+   * @return {import("../Image").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -181,7 +181,7 @@ export class ImageMapGuide extends ImageSource {
 
   /**
    * Set the image load function of the MapGuide source.
-   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {

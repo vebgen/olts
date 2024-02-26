@@ -1,13 +1,13 @@
 
-import LayerProperty from '../../layer/Property.js';
-import LayerRenderer from '../Layer.js';
-import RenderEvent from '../../render/Event.js';
-import RenderEventType from '../../render/EventType.js';
-import WebGLHelper from '../../webgl/Helper.js';
+import LayerProperty from '../../layer/Property';
+import LayerRenderer from '../Layer';
+import RenderEvent from '../../render/Event';
+import RenderEventType from '../../render/EventType';
+import WebGLHelper from '../../webgl/Helper';
 import {
   compose as composeTransform,
   create as createTransform,
-} from '../../transform.js';
+} from '../../transform';
 
 /**
  * @typedef {Object} PostProcessesOptions
@@ -15,19 +15,19 @@ import {
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
  * @typedef {Object} Options
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
  * Base WebGL renderer class.
  * Holds all logic related to data manipulation & some common rendering logic
- * @template {import("../../layer/Layer.js").default} LayerType
+ * @template {import("../../layer/Layer").default} LayerType
  * @extends {LayerRenderer<LayerType>}
  */
 export class WebGLLayerRenderer extends LayerRenderer {
@@ -44,7 +44,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
      * The transform for viewport CSS pixels to rendered pixels.  This transform is only
      * set before dispatching rendering events.
      * @private
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform").Transform}
      */
     this.inversePixelTransform_ = createTransform();
 
@@ -78,7 +78,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The WebGL rendering context.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @protected
    */
   dispatchPreComposeEvent(context, frameState) {
@@ -96,7 +96,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The WebGL rendering context.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @protected
    */
   dispatchPostComposeEvent(context, frameState) {
@@ -135,7 +135,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -195,7 +195,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * Determine whether renderFrame should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    * @protected
    */
@@ -212,9 +212,9 @@ export class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {import("../../render/EventType").default} type Event type.
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @private
    */
   dispatchRenderEvent_(type, context, frameState) {
@@ -243,7 +243,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @protected
    */
   preRender(context, frameState) {
@@ -252,7 +252,7 @@ export class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @param {WebGLRenderingContext} context The rendering context.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @protected
    */
   postRender(context, frameState) {

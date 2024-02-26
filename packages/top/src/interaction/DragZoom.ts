@@ -1,12 +1,12 @@
-import DragBox from './DragBox.js';
-import {easeOut} from '../easing.js';
-import {shiftKeyOnly} from '../events/condition.js';
+import DragBox from './DragBox';
+import {easeOut} from '../easing';
+import {shiftKeyOnly} from '../events/condition';
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-dragzoom'] CSS class name for styling the
  * box.
- * @property {import("../events/condition.js").Condition} [condition] A function that
+ * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.shiftKeyOnly}.
@@ -55,11 +55,11 @@ export class DragZoom extends DragBox {
 
   /**
    * Function to execute just before `onboxend` is fired
-   * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @param {import("../MapBrowserEvent").default} event Event.
    */
   onBoxEnd(event) {
     const map = this.getMap();
-    const view = /** @type {!import("../View.js").default} */ (map.getView());
+    const view = /** @type {!import("../View").default} */ (map.getView());
     let geometry = this.getGeometry();
 
     if (this.out_) {

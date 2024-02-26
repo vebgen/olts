@@ -1,22 +1,22 @@
 
-import {ERROR_THRESHOLD} from './common.js';
+import {ERROR_THRESHOLD} from './common';
 
-import EventType from '../events/EventType.js';
-import Tile from '../Tile.js';
-import TileState from '../TileState.js';
-import Triangulation from './Triangulation.js';
+import type { EventType } from '@olts/events';
+import Tile from '../tile';
+import type { TileState} from '../tile';
+import Triangulation from './Triangulation';
 import {
   calculateSourceExtentResolution,
   canvasPool,
   render as renderReprojected,
-} from '../reproj.js';
+} from '../reproj';
 import {clamp} from '@olts/core/math';
 import {getArea, getIntersection} from '@olts/core/extent';
-import {listen, unlistenByKey} from '../events.js';
+import {listen, unlistenByKey} from '../events';
 import {releaseCanvas} from '@olts/core/dom';
 
 /**
- * @typedef {function(number, number, number, number) : (import("../ImageTile.js").default)} FunctionType
+ * @typedef {function(number, number, number, number) : (import("../ImageTile").default)} FunctionType
  */
 
 /**
@@ -26,19 +26,19 @@ import {releaseCanvas} from '@olts/core/dom';
  */
 export class ReprojTile extends Tile {
   /**
-   * @param {import("../proj/Projection.js").default} sourceProj Source projection.
-   * @param {import("../tilegrid/TileGrid.js").default} sourceTileGrid Source tile grid.
-   * @param {import("../proj/Projection.js").default} targetProj Target projection.
-   * @param {import("../tilegrid/TileGrid.js").default} targetTileGrid Target tile grid.
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Coordinate of the tile.
-   * @param {import("../tilecoord.js").TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
+   * @param {import("../proj/Projection").default} sourceProj Source projection.
+   * @param {import("../tilegrid/TileGrid").default} sourceTileGrid Source tile grid.
+   * @param {import("../proj/Projection").default} targetProj Target projection.
+   * @param {import("../tilegrid/TileGrid").default} targetTileGrid Target tile grid.
+   * @param {TileCoord} tileCoord Coordinate of the tile.
+   * @param {TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
    * @param {number} [errorThreshold] Acceptable reprojection error (in px).
    * @param {boolean} [renderEdges] Render reprojection edges.
-   * @param {import("../Tile.js").Options} [options] Tile options.
+   * @param {import("../Tile").Options} [options] Tile options.
    */
   constructor(
     sourceProj,
@@ -54,7 +54,7 @@ export class ReprojTile extends Tile {
     renderEdges,
     options,
   ) {
-    super(tileCoord, TileState.IDLE, options);
+    super(tileCoord, TileStates.IDLE, options);
 
     /**
      * @private
@@ -82,31 +82,31 @@ export class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid").default}
      */
     this.sourceTileGrid_ = sourceTileGrid;
 
     /**
      * @private
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid").default}
      */
     this.targetTileGrid_ = targetTileGrid;
 
     /**
      * @private
-     * @type {import("../tilecoord.js").TileCoord}
+     * @type {TileCoord}
      */
     this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
 
     /**
      * @private
-     * @type {!Array<import("../ImageTile.js").default>}
+     * @type {!Array<import("../ImageTile").default>}
      */
     this.sourceTiles_ = [];
 
     /**
      * @private
-     * @type {?Array<import("../events.js").EventsKey>}
+     * @type {?Array<import("../events").EventsKey>}
      */
     this.sourcesListenerKeys_ = null;
 
@@ -129,7 +129,7 @@ export class ReprojTile extends Tile {
     if (getArea(limitedTargetExtent) === 0) {
       // Tile is completely outside range -> EMPTY
       // TODO: is it actually correct that the source even creates the tile ?
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -156,7 +156,7 @@ export class ReprojTile extends Tile {
     if (!isFinite(sourceResolution) || sourceResolution <= 0) {
       // invalid sourceResolution -> EMPTY
       // probably edges of the projections when no extent is defined
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -165,7 +165,7 @@ export class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {!import("./Triangulation.js").default}
+     * @type {!import("./Triangulation").default}
      */
     this.triangulation_ = new Triangulation(
       sourceProj,
@@ -178,7 +178,7 @@ export class ReprojTile extends Tile {
 
     if (this.triangulation_.getTriangles().length === 0) {
       // no valid triangles -> EMPTY
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
       return;
     }
 
@@ -203,7 +203,7 @@ export class ReprojTile extends Tile {
     }
 
     if (!getArea(sourceExtent)) {
-      this.state = TileState.EMPTY;
+      this.state = TileStates.EMPTY;
     } else {
       const sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
         sourceExtent,
@@ -220,7 +220,7 @@ export class ReprojTile extends Tile {
       }
 
       if (this.sourceTiles_.length === 0) {
-        this.state = TileState.EMPTY;
+        this.state = TileStates.EMPTY;
       }
     }
   }
@@ -239,7 +239,7 @@ export class ReprojTile extends Tile {
   reproject_() {
     const sources = [];
     this.sourceTiles_.forEach((tile) => {
-      if (tile && tile.getState() == TileState.LOADED) {
+      if (tile && tile.getState() == TileStates.LOADED) {
         sources.push({
           extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
           image: tile.getImage(),
@@ -249,7 +249,7 @@ export class ReprojTile extends Tile {
     this.sourceTiles_.length = 0;
 
     if (sources.length === 0) {
-      this.state = TileState.ERROR;
+      this.state = TileStates.ERROR;
     } else {
       const z = this.wrappedTileCoord_[0];
       const size = this.targetTileGrid_.getTileSize(z);
@@ -279,7 +279,7 @@ export class ReprojTile extends Tile {
         this.interpolate,
       );
 
-      this.state = TileState.LOADED;
+      this.state = TileStates.LOADED;
     }
     this.changed();
   }
@@ -288,8 +288,8 @@ export class ReprojTile extends Tile {
    * Load not yet loaded URI.
    */
   load() {
-    if (this.state == TileState.IDLE) {
-      this.state = TileState.LOADING;
+    if (this.state == TileStates.IDLE) {
+      this.state = TileStates.LOADING;
       this.changed();
 
       let leftToLoad = 0;
@@ -297,7 +297,7 @@ export class ReprojTile extends Tile {
       this.sourcesListenerKeys_ = [];
       this.sourceTiles_.forEach((tile) => {
         const state = tile.getState();
-        if (state == TileState.IDLE || state == TileState.LOADING) {
+        if (state == TileStates.IDLE || state == TileStates.LOADING) {
           leftToLoad++;
 
           const sourceListenKey = listen(
@@ -306,9 +306,9 @@ export class ReprojTile extends Tile {
             function (e) {
               const state = tile.getState();
               if (
-                state == TileState.LOADED ||
-                state == TileState.ERROR ||
-                state == TileState.EMPTY
+                state == TileStates.LOADED ||
+                state == TileStates.ERROR ||
+                state == TileStates.EMPTY
               ) {
                 unlistenByKey(sourceListenKey);
                 leftToLoad--;
@@ -329,7 +329,7 @@ export class ReprojTile extends Tile {
       } else {
         this.sourceTiles_.forEach(function (tile, i, arr) {
           const state = tile.getState();
-          if (state == TileState.IDLE) {
+          if (state == TileStates.IDLE) {
             tile.load();
           }
         });

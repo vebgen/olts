@@ -1,5 +1,5 @@
 
-import XYZ from './XYZ.js';
+import XYZ from './XYZ';
 
 /**
  * The attribution containing a link to the OpenStreetMap Copyright and License
@@ -15,7 +15,7 @@ export const ATTRIBUTION =
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
@@ -26,7 +26,7 @@ export const ATTRIBUTION =
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -37,7 +37,7 @@ export const ATTRIBUTION =
  * @property {string} [url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'] URL template.
  * Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */

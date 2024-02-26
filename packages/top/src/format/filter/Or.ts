@@ -1,4 +1,4 @@
-import LogicalNary from './LogicalNary.js';
+import LogicalNary from './LogicalNary';
 
 /**
  * Represents a logical `<Or>` operator between two or more filter conditions.
@@ -6,7 +6,7 @@ import LogicalNary from './LogicalNary.js';
  */
 export class Or extends LogicalNary {
   /**
-   * @param {...import("./Filter.js").default} conditions Conditions.
+   * @param {...import("./Filter").default} conditions Conditions.
    */
   constructor(conditions) {
     super('Or', Array.prototype.slice.call(arguments));

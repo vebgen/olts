@@ -1,39 +1,39 @@
 
 
-import Collection, { Options } from '../Collection.js';
-import CollectionEventType from '../CollectionEventType.js';
+import Collection, { Options } from '../Collection';
+import CollectionEventType from '../CollectionEventType';
 import { BaseEvent as Event, EventsKey } from '@olts/events';
-import EventType from '../events/EventType.js';
-import ObjectEventType from '../ObjectEventType.js';
-import RBush from '../structs/RBush.js';
-import RenderFeature from '../render/Feature.js';
-import Source from './Source.js';
-import VectorEventType from './VectorEventType.js';
+import type { EventType } from '@olts/events';
+import ObjectEventType from '../ObjectEventType';
+import RBush from '../structs/RBush';
+import RenderFeature from '../render/Feature';
+import Source from './Source';
+import VectorEventType from './VectorEventType';
 import { TRUE, VOID } from '@olts/core/functions';
-import { all as allStrategy } from '../loadingstrategy.js';
+import { all as allStrategy } from '../loadingstrategy';
 import { assert } from '@olts/core/asserts';
 import { Extent, containsExtent, equals, wrapAndSliceX } from '@olts/core/extent';
 import { extend } from '@olts/core/array';
 import { getUid } from '@olts/core/util';
-import { isEmpty } from '../obj.js';
-import { listen, unlistenByKey } from '../events.js';
-import { xhr } from '../featureloader.js';
+import { isEmpty } from '../obj';
+import { listen, unlistenByKey } from '../events';
+import { xhr } from '../feature-loader';
 import { Coordinate } from '@olts/core/coordinate';
-import { FeatureClass } from '../Feature.js';
+import { FeatureClass } from '../Feature';
 
 /**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link module:ol/loadingstrategy} strategies.
  *
- * @typedef {function(Extent, number, import("../proj/Projection.js").default):Extent[]} LoadingStrategy
+ * @typedef {function(Extent, number, import("../proj/Projection").default):Extent[]} LoadingStrategy
  * @api
  */
 
 /**
  * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
  * type.
- * @template {import("../Feature.js").FeatureLike} [FeatureClass=import("../Feature.js").default]
+ * @template {import("../Feature").FeatureLike} [FeatureClass=import("../Feature").default]
  */
 export class VectorSourceEvent extends Event {
     /**
@@ -61,13 +61,13 @@ export class VectorSourceEvent extends Event {
 }
 
 /***
- * @template {import("../Feature.js").FeatureLike} [T=import("../Feature.js").default]
+ * @template {import("../Feature").FeatureLike} [T=import("../Feature").default]
  * @typedef {T extends RenderFeature ? T|Array<T> : T} FeatureClassOrArrayOfRenderFeatures
  */
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType, import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType|
@@ -75,15 +75,15 @@ export class VectorSourceEvent extends Event {
  */
 
 /**
- * @template {import("../Feature.js").FeatureLike} FeatureType
+ * @template {import("../Feature").FeatureLike} FeatureType
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {Array<FeatureType>|Collection<FeatureType>} [features]
  * Features. If provided as {@link Collection}, the features in the source
  * and the collection will stay in sync.
- * @property {import("../format/Feature.js").default<import("../format/Feature.js").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
+ * @property {import("../format/Feature").default<import("../format/Feature").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
- * @property {import("../featureloader.js").FeatureLoader} [loader]
+ * @property {import("../featureloader").FeatureLoader} [loader]
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader. The `'featuresloadend'` and `'featuresloaderror'` events
@@ -92,9 +92,9 @@ export class VectorSourceEvent extends Event {
  * Example:
  *
  * ```js
- * import Vector from 'ol/source/Vector.js';
- * import GeoJSON from 'ol/format/GeoJSON.js';
- * import {bbox} from 'ol/loadingstrategy.js';
+ * import Vector from 'ol/source/Vector';
+ * import GeoJSON from 'ol/format/GeoJSON';
+ * import {bbox} from 'ol/loadingstrategy';
  *
  * const vectorSource = new Vector({
  *   format: new GeoJSON(),
@@ -132,7 +132,7 @@ export class VectorSourceEvent extends Event {
  * @property {LoadingStrategy} [strategy] The loading strategy to use.
  * By default an {@link module:ol/loadingstrategy.all}
  * strategy is used, a one-off strategy which loads all features at once.
- * @property {string|import("../featureloader.js").FeatureUrlFunction} [url]
+ * @property {string|import("../featureloader").FeatureUrlFunction} [url]
  * Setting this option instructs the source to load features using an XHR loader
  * (see {@link module:ol/featureloader.xhr}). Use a `string` and an
  * {@link module:ol/loadingstrategy.all} for a one-off download of all features from
@@ -174,7 +174,7 @@ export class VectorSourceEvent extends Event {
  *
  * @fires VectorSourceEvent
  * @api
- * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
+ * @template {import("../Feature").FeatureLike} [FeatureType=import("../Feature").default]
  */
 export class VectorSource extends Source {
 
@@ -212,13 +212,13 @@ export class VectorSource extends Source {
 
         /**
          * @private
-         * @type {import("../featureloader.js").FeatureLoader}
+         * @type {import("../featureloader").FeatureLoader}
          */
         this.loader_ = VOID;
 
         /**
          * @private
-         * @type {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined}
+         * @type {import("../format/Feature").default<import('../format/Feature').FeatureToFeatureClass<FeatureType>>|undefined}
          */
         this.format_ = options.format;
 
@@ -230,7 +230,7 @@ export class VectorSource extends Source {
 
         /**
          * @private
-         * @type {string|import("../featureloader.js").FeatureUrlFunction|undefined}
+         * @type {string|import("../featureloader").FeatureUrlFunction|undefined}
          */
         this.url_ = options.url;
 
@@ -241,7 +241,7 @@ export class VectorSource extends Source {
             // create a XHR feature loader for "url" and "format"
             this.loader_ = xhr(
                 this.url_,
-        /** @type {import("../format/Feature.js").default} */(this.format_),
+        /** @type {import("../format/Feature").default} */(this.format_),
             );
         }
 
@@ -275,27 +275,27 @@ export class VectorSource extends Source {
 
         /**
          * @private
-         * @type {!Object<string, FeatureType>}
+         * @type {!Record<string, FeatureType>}
          */
         this.nullGeometryFeatures_ = {};
 
         /**
          * A lookup of features by id (the return from feature.getId()).
          * @private
-         * @type {!Object<string, import('../Feature.js').FeatureLike|Array<import('../Feature.js').FeatureLike>>}
+         * @type {!Record<string, import('../Feature').FeatureLike|Array<import('../Feature').FeatureLike>>}
          */
         this.idIndex_ = {};
 
         /**
          * A lookup of features by uid (using getUid(feature)).
          * @private
-         * @type {!Object<string, FeatureType>}
+         * @type {!Record<string, FeatureType>}
          */
         this.uidIndex_ = {};
 
         /**
          * @private
-         * @type {Object<string, Array<import("../events.js").EventsKey>>}
+         * @type {Record<string, Array<import("../events").EventsKey>>}
          */
         this.featureChangeKeys_ = {};
 
@@ -525,9 +525,9 @@ export class VectorSource extends Source {
         collection.addEventListener(
             CollectionEventType.ADD,
             /**
-             * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+             * @param {import("../Collection").CollectionEvent<FeatureType>} evt The collection event
              */
-            (evt: import("../Collection.js").CollectionEvent<FeatureType>) => {
+            (evt: import("../Collection").CollectionEvent<FeatureType>) => {
                 if (!modifyingCollection) {
                     modifyingCollection = true;
                     this.addFeature(evt.element);
@@ -538,9 +538,9 @@ export class VectorSource extends Source {
         collection.addEventListener(
             CollectionEventType.REMOVE,
             /**
-             * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+             * @param {import("../Collection").CollectionEvent<FeatureType>} evt The collection event
              */
-            (evt: import("../Collection.js").CollectionEvent<FeatureType>) => {
+            (evt: import("../Collection").CollectionEvent<FeatureType>) => {
                 if (!modifyingCollection) {
                     modifyingCollection = true;
                     this.removeFeature(evt.element);
@@ -740,10 +740,10 @@ export class VectorSource extends Source {
     /**
      * Get all features whose geometry intersects the provided coordinate.
      * @param {Coordinate} coordinate Coordinate.
-     * @return {Array<import("../Feature.js").default>} Features.
+     * @return {Array<import("../Feature").default>} Features.
      * @api
      */
-    getFeaturesAtCoordinate(coordinate: Coordinate): Array<import("../Feature.js").default> {
+    getFeaturesAtCoordinate(coordinate: Coordinate): Array<import("../Feature").default> {
         const features = [];
         this.forEachFeatureAtCoordinateDirect(coordinate, function (feature) {
             features.push(feature);
@@ -760,12 +760,12 @@ export class VectorSource extends Source {
      * features.
      *
      * @param {Extent} extent Extent.
-     * @param {import("../proj/Projection.js").default} [projection] Include features
+     * @param {import("../proj/Projection").default} [projection] Include features
      * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
      * @return {Array<FeatureType>} Features.
      * @api
      */
-    getFeaturesInExtent(extent: Extent, projection: import("../proj/Projection.js").default):FeatureType[] {
+    getFeaturesInExtent(extent: Extent, projection: import("../proj/Projection").default):FeatureType[] {
         if (this.featuresRtree_) {
             const multiWorld = projection && projection.canWrapX() && this.getWrapX();
 
@@ -893,10 +893,10 @@ export class VectorSource extends Source {
     /**
      * Get the format associated with this source.
      *
-     * @return {import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>>|undefined} The feature format.
+     * @return {import("../format/Feature").default<import('../format/Feature').FeatureToFeatureClass<FeatureType>>|undefined} The feature format.
      * @api
      */
-    getFormat(): import("../format/Feature.js").default<import('../format/Feature.js').FeatureToFeatureClass<FeatureType>> | undefined {
+    getFormat(): import("../format/Feature").default<import('../format/Feature').FeatureToFeatureClass<FeatureType>> | undefined {
         return this.format_;
     }
 
@@ -910,10 +910,10 @@ export class VectorSource extends Source {
     /**
      * Get the url associated with this source.
      *
-     * @return {string|import("../featureloader.js").FeatureUrlFunction|undefined} The url.
+     * @return {string|import("../featureloader").FeatureUrlFunction|undefined} The url.
      * @api
      */
-    getUrl(): string | import("../featureloader.js").FeatureUrlFunction | undefined {
+    getUrl(): string | import("../feature-loader").FeatureUrlFunction | undefined {
         return this.url_;
     }
 
@@ -994,9 +994,9 @@ export class VectorSource extends Source {
     /**
      * @param {Extent} extent Extent.
      * @param {number} resolution Resolution.
-     * @param {import("../proj/Projection.js").default} projection Projection.
+     * @param {import("../proj/Projection").default} projection Projection.
      */
-    loadFeatures(extent: Extent, resolution: number, projection: import("../proj/Projection.js").default) {
+    loadFeatures(extent: Extent, resolution: number, projection: import("../proj/Projection").default) {
         const loadedExtentsRtree = this.loadedExtentsRtree_;
         const extentsToLoad = this.strategy_(extent, resolution, projection);
         for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
@@ -1150,19 +1150,19 @@ export class VectorSource extends Source {
     /**
      * Set the new loader of the source. The next render cycle will use the
      * new loader.
-     * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
+     * @param {import("../featureloader").FeatureLoader} loader The loader to set.
      * @api
      */
-    setLoader(loader: import("../featureloader.js").FeatureLoader) {
+    setLoader(loader: import("../feature-loader").FeatureLoader) {
         this.loader_ = loader;
     }
 
     /**
      * Points the source to a new url. The next render cycle will use the new url.
-     * @param {string|import("../featureloader.js").FeatureUrlFunction} url Url.
+     * @param {string|import("../featureloader").FeatureUrlFunction} url Url.
      * @api
      */
-    setUrl(url: string | import("../featureloader.js").FeatureUrlFunction) {
+    setUrl(url: string | import("../feature-loader").FeatureUrlFunction) {
         assert(this.format_, '`format` must be set when `url` is set');
         this.url_ = url;
         this.setLoader(xhr(url, this.format_));

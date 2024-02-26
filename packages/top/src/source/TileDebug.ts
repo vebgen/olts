@@ -1,15 +1,15 @@
 
 
-import XYZ from './XYZ.js';
+import XYZ from './XYZ';
 import {createCanvasContext2D} from '@olts/core/dom';
-import {toSize} from '../size.js';
+import {toSize} from '../size';
 
 /**
  * @typedef {Object} Options
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Optional projection.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+ * @property {ProjectionLike} [projection='EPSG:3857'] Optional projection.
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Set to `1` when debugging `VectorTile` sources with a default configuration.
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
@@ -57,7 +57,7 @@ export class TileDebug extends XYZ {
         context.strokeText(text, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
         context.fillText(text, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
-        /** @type {import("../ImageTile.js").default} */ (tile).setImage(
+        /** @type {import("../ImageTile").default} */ (tile).setImage(
           context.canvas,
         );
       },

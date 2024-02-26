@@ -1,15 +1,15 @@
 
 
-import Control from './Control.js';
-import EventType from '../pointer/EventType.js';
+import Control from './Control';
+import EventType from '../pointer/EventType';
 import {
     get as getProjection,
     getTransformFromProjections,
     getUserProjection,
     identityTransform,
-} from '../proj.js';
-import { listen } from '../events.js';
-import { wrapX } from '../coordinate.js';
+} from '../proj';
+import { listen } from '../events';
+import { wrapX } from '../coordinate';
 import { EventsKey } from '@olts/events';
 
 /**
@@ -24,7 +24,7 @@ const COORDINATE_FORMAT: string = 'coordinateFormat';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType|
@@ -35,8 +35,8 @@ const COORDINATE_FORMAT: string = 'coordinateFormat';
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
  * @property {CoordinateFormat} [coordinateFormat] Coordinate format.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when the
+ * @property {ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {function(import("../MapEvent").default):void} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the
@@ -126,13 +126,13 @@ export class MousePosition extends Control {
 
         /**
          * @private
-         * @type {?import("../proj/Projection.js").default}
+         * @type {?import("../proj/Projection").default}
          */
         this.mapProjection_ = null;
 
         /**
          * @private
-         * @type {?import("../proj.js").TransformFunction}
+         * @type {?import("../proj").TransformFunction}
          */
         this.transform_ = null;
 
@@ -166,13 +166,13 @@ export class MousePosition extends Control {
 
     /**
      * Return the projection that is used to report the mouse position.
-     * @return {import("../proj/Projection.js").default|undefined} The projection to report mouse
+     * @return {import("../proj/Projection").default|undefined} The projection to report mouse
      *     position in.
      * @observable
      * @api
      */
-    getProjection(): import("../proj/Projection.js").default | undefined {
-        return /** @type {import("../proj/Projection.js").default|undefined} */ (
+    getProjection(): import("../proj/Projection").default | undefined {
+        return /** @type {import("../proj/Projection").default|undefined} */ (
             this.get(PROJECTION)
         );
     }
@@ -199,10 +199,10 @@ export class MousePosition extends Control {
      * Pass `null` to just remove the control from the current map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default|null} map Map.
+     * @param {import("../Map").default|null} map Map.
      * @api
      */
-    setMap(map: import("../Map.js").default | null) {
+    setMap(map: import("../Map").default | null) {
         super.setMap(map);
         if (map) {
             const viewport = map.getViewport();
@@ -231,20 +231,20 @@ export class MousePosition extends Control {
 
     /**
      * Set the projection that is used to report the mouse position.
-     * @param {import("../proj.js").ProjectionLike} projection The projection to report mouse
+     * @param {ProjectionLike} projection The projection to report mouse
      *     position in.
      * @observable
      * @api
      */
-    setProjection(projection: import("../proj.js").ProjectionLike) {
+    setProjection(projection: ProjectionLike) {
         this.set(PROJECTION, getProjection(projection));
     }
 
     /**
-     * @param {?import("../pixel.js").Pixel} pixel Pixel.
+     * @param {?import("../pixel").Pixel} pixel Pixel.
      * @private
      */
-    updateHTML_(pixel: import("../pixel.js").Pixel | null) {
+    updateHTML_(pixel: import("../pixel").Pixel | null) {
         let html = this.placeholder_;
         if (pixel && this.mapProjection_) {
             if (!this.transform_) {
@@ -291,10 +291,10 @@ export class MousePosition extends Control {
     /**
      * Update the projection. Rendering of the coordinates is done in
      * `handleMouseMove` and `handleMouseUp`.
-     * @param {import("../MapEvent.js").default} mapEvent Map event.
+     * @param {import("../MapEvent").default} mapEvent Map event.
      * @override
      */
-    render(mapEvent: import("../MapEvent.js").default) {
+    render(mapEvent: import("../MapEvent").default) {
         const frameState = mapEvent.frameState;
         if (!frameState) {
             this.mapProjection_ = null;

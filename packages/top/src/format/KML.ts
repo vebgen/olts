@@ -1,9 +1,9 @@
 
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { Fill } from '@olts/style';
 import { GeometryCollection } from '@olts/geometry';
 import { Icon } from '@olts/style';
-import ImageState from '../ImageState.js';
+import ImageState from '../ImageState';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPoint } from '@olts/geometry';
@@ -13,7 +13,7 @@ import { Polygon } from '@olts/geometry';
 import { Stroke } from '@olts/style';
 import { Style } from '@olts/style';
 import { Text } from '@olts/style';
-import XMLFeature from './XMLFeature.js';
+import XMLFeature from './XMLFeature';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
@@ -32,10 +32,10 @@ import {
   parseNode,
   pushParseAndPop,
   pushSerializeAndPop,
-} from '../xml.js';
+} from '../xml';
 import {asArray} from '@olts/core/color';
 import {extend} from '@olts/core/array';
-import {get as getProjection} from '../proj.js';
+import {get as getProjection} from '../proj';
 import {
   readBoolean,
   readDecimal,
@@ -44,17 +44,17 @@ import {
   writeCDATASection,
   writeDecimalTextNode,
   writeStringTextNode,
-} from './xsd.js';
+} from './xsd';
 import {toRadians} from '@olts/core/math';
-import {transformGeometryWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {Object} Vec2
  * @property {number} x X coordinate.
- * @property {import("../style/Icon.js").IconAnchorUnits} xunits Units of x.
+ * @property {import("../style/Icon").IconAnchorUnits} xunits Units of x.
  * @property {number} y Y coordinate.
- * @property {import("../style/Icon.js").IconAnchorUnits} yunits Units of Y.
- * @property {import("../style/Icon.js").IconOrigin} [origin] Origin.
+ * @property {import("../style/Icon").IconAnchorUnits} yunits Units of Y.
+ * @property {import("../style/Icon").IconOrigin} [origin] Origin.
  */
 
 /**
@@ -90,7 +90,7 @@ const SCHEMA_LOCATION =
   'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 /**
- * @type {Object<string, import("../style/Icon.js").IconAnchorUnits>}
+ * @type {Record<string, import("../style/Icon").IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': 'fraction',
@@ -100,7 +100,7 @@ const ICON_ANCHOR_UNITS_MAP = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const PLACEMARK_PARSERS = makeStructureNS(
@@ -131,7 +131,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const NETWORK_LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -148,7 +148,7 @@ const NETWORK_LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -157,7 +157,7 @@ const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const CAMERA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -172,7 +172,7 @@ const CAMERA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const REGION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -182,14 +182,14 @@ const REGION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const KML_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['Document', 'Placemark']);
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const KML_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -198,7 +198,7 @@ const KML_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @type {import("../color.js").Color}
+ * @type {import("../color").Color}
  */
 let DEFAULT_COLOR;
 
@@ -221,12 +221,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {import("../style/Icon.js").IconAnchorUnits}
+ * @type {import("../style/Icon").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {import("../style/Icon.js").IconAnchorUnits}
+ * @type {import("../style/Icon").IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -241,13 +241,13 @@ let DEFAULT_IMAGE_STYLE_SIZE;
 let DEFAULT_IMAGE_STYLE_SRC;
 
 /**
- * @type {import("../style/Image.js").default|null}
+ * @type {import("../style/Image").default|null}
  */
 let DEFAULT_IMAGE_STYLE = null;
 
 /**
  * Get the default image style (or null if not yet set).
- * @return {import("../style/Image.js").default|null} The default image style.
+ * @return {import("../style/Image").default|null} The default image style.
  */
 export function getDefaultImageStyle() {
   return DEFAULT_IMAGE_STYLE;
@@ -446,7 +446,7 @@ export class KML extends XMLFeature {
     }
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -473,7 +473,7 @@ export class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {!Object<string, (Array<Style>|string)>}
+     * @type {!Record<string, (Array<Style>|string)>}
      */
     this.sharedStyles_ = {};
 
@@ -546,7 +546,7 @@ export class KML extends XMLFeature {
     if (id !== null) {
       feature.setId(id);
     }
-    const options = /** @type {import("./Feature.js").ReadOptions} */ (
+    const options = /** @type {import("./Feature").ReadOptions} */ (
       objectStack[0]
     );
 
@@ -634,8 +634,8 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -653,8 +653,8 @@ export class KML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -971,7 +971,7 @@ export class KML extends XMLFeature {
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Options.
+   * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -987,10 +987,10 @@ export class KML extends XMLFeature {
       SCHEMA_LOCATION,
     );
 
-    const /** @type {import("../xml.js").NodeStackItem} */ context = {
+    const /** @type {import("../xml").NodeStackItem} */ context = {
         node: kml,
       };
-    /** @type {!Object<string, (Array<Feature>|Feature|undefined)>} */
+    /** @type {!Record<string, (Array<Feature>|Feature|undefined)>} */
     const properties = {};
     if (features.length > 1) {
       properties['Document'] = features;
@@ -1062,9 +1062,9 @@ function createNameStyleFunction(foundStyle, name) {
  * @param {Array<Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
  * @param {Array<Style>} defaultStyle Default style.
- * @param {!Object<string, (Array<Style>|string)>} sharedStyles Shared styles.
+ * @param {!Record<string, (Array<Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
- * @return {import("../style/Style.js").StyleFunction} Feature style function.
+ * @return {import("../style/Style").StyleFunction} Feature style function.
  */
 function createFeatureStyleFunction(
   style,
@@ -1146,7 +1146,7 @@ function createFeatureStyleFunction(
 /**
  * @param {Array<Style>|string|undefined} styleValue Style value.
  * @param {Array<Style>} defaultStyle Default style.
- * @param {!Object<string, (Array<Style>|string)>} sharedStyles
+ * @param {!Record<string, (Array<Style>|string)>} sharedStyles
  * Shared styles.
  * @return {Array<Style>} Style.
  */
@@ -1162,7 +1162,7 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
 
 /**
  * @param {Node} node Node.
- * @return {import("../color.js").Color|undefined} Color.
+ * @return {import("../color").Color|undefined} Color.
  */
 function readColor(node) {
   const s = getAllTextContent(node, false);
@@ -1252,7 +1252,7 @@ function readStyleURL(node) {
 function readVec2(node) {
   const xunits = node.getAttribute('xunits');
   const yunits = node.getAttribute('yunits');
-  /** @type {import('../style/Icon.js').IconOrigin} */
+  /** @type {import('../style/Icon').IconOrigin} */
   let origin;
   if (xunits !== 'insetPixels') {
     if (yunits !== 'insetPixels') {
@@ -1286,7 +1286,7 @@ function readScale(node) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const STYLE_MAP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1305,7 +1305,7 @@ function readStyleMapValue(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const ICON_STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1345,7 +1345,7 @@ function iconStyleParser(node, objectStack) {
     src = DEFAULT_IMAGE_STYLE_SRC;
   }
   let anchor, anchorXUnits, anchorYUnits;
-  /** @type {import('../style/Icon.js').IconOrigin|undefined} */
+  /** @type {import('../style/Icon').IconOrigin|undefined} */
   let anchorOrigin = 'bottom-left';
   const hotSpot = /** @type {Vec2|undefined} */ (object['hotSpot']);
   if (hotSpot) {
@@ -1453,7 +1453,7 @@ function iconStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LABEL_STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1475,7 +1475,7 @@ function labelStyleParser(node, objectStack) {
   const textStyle = new Text({
     fill: new Fill({
       color:
-        /** @type {import("../color.js").Color} */
+        /** @type {import("../color").Color} */
         ('color' in object ? object['color'] : DEFAULT_COLOR),
     }),
     scale: /** @type {number|undefined} */ (object['scale']),
@@ -1485,7 +1485,7 @@ function labelStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LINE_STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1510,7 +1510,7 @@ function lineStyleParser(node, objectStack) {
   const styleObject = objectStack[objectStack.length - 1];
   const strokeStyle = new Stroke({
     color:
-      /** @type {import("../color.js").Color} */
+      /** @type {import("../color").Color} */
       ('color' in object ? object['color'] : DEFAULT_COLOR),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1),
   });
@@ -1519,7 +1519,7 @@ function lineStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const POLY_STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1541,7 +1541,7 @@ function polyStyleParser(node, objectStack) {
   const styleObject = objectStack[objectStack.length - 1];
   const fillStyle = new Fill({
     color:
-      /** @type {import("../color.js").Color} */
+      /** @type {import("../color").Color} */
       ('color' in object ? object['color'] : DEFAULT_COLOR),
   });
   styleObject['fillStyle'] = fillStyle;
@@ -1557,7 +1557,7 @@ function polyStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const FLAT_LINEAR_RING_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1598,7 +1598,7 @@ function gxCoordParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(GX_NAMESPACE_URIS, {
@@ -1625,7 +1625,7 @@ function readGxMultiTrack(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const GX_TRACK_PARSERS = makeStructureNS(
@@ -1678,7 +1678,7 @@ function readGxTrack(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const ICON_PARSERS = makeStructureNS(
@@ -1709,7 +1709,7 @@ function readIcon(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const GEOMETRY_FLAT_COORDINATES_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1732,7 +1732,7 @@ function readFlatCoordinatesFromNode(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1787,7 +1787,7 @@ function readLinearRing(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const MULTI_GEOMETRY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1880,7 +1880,7 @@ function readPoint(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1895,7 +1895,7 @@ const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  */
 function readPolygon(node, objectStack) {
   const properties = pushParseAndPop(
-    /** @type {Object<string,*>} */ ({}),
+    /** @type {Record<string,*>} */ ({}),
     EXTRUDE_AND_ALTITUDE_MODE_PARSERS,
     node,
     objectStack,
@@ -1922,7 +1922,7 @@ function readPolygon(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -1961,7 +1961,7 @@ function readStyle(node, objectStack) {
   let imageStyle;
   if ('imageStyle' in styleObject) {
     if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
-      imageStyle = /** @type {import("../style/Image.js").default} */ (
+      imageStyle = /** @type {import("../style/Image").default} */ (
         styleObject['imageStyle']
       );
     }
@@ -2090,7 +2090,7 @@ function setCommonGeometryProperties(multiGeometry, geometries) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const DATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2126,7 +2126,7 @@ function dataParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const EXTENDED_DATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2152,7 +2152,7 @@ function regionParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const PAIR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2205,7 +2205,7 @@ function placemarkStyleMapParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const SCHEMA_DATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2237,7 +2237,7 @@ function simpleDataParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LAT_LON_ALT_BOX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2281,7 +2281,7 @@ function latLonAltBoxParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LOD_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2309,7 +2309,7 @@ function lodParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2339,7 +2339,7 @@ function innerBoundaryIsParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const OUTER_BOUNDARY_IS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2390,7 +2390,7 @@ function whenParser(node, objectStack) {
 
 /**
  * @param {Node} node Node to append a TextNode with the color to.
- * @param {import("../color.js").Color|string} color Color.
+ * @param {import("../color").Color|string} color Color.
  */
 function writeColorTextNode(node, color) {
   const rgba = asArray(color);
@@ -2443,7 +2443,7 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const EXTENDEDDATA_NODE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2459,7 +2459,7 @@ const EXTENDEDDATA_NODE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 function writeDataNode(node, pair, objectStack) {
   node.setAttribute('name', pair.name);
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const value = pair.value;
 
   if (typeof value == 'object') {
@@ -2514,7 +2514,7 @@ function writeDataNodeValue(node, value) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2540,7 +2540,7 @@ const DOCUMENT_NODE_FACTORY = function (value, objectStack, nodeName) {
  * @this {KML}
  */
 function writeDocument(node, features, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   pushSerializeAndPop(
     context,
     DOCUMENT_SERIALIZERS,
@@ -2565,7 +2565,7 @@ const DATA_NODE_FACTORY = makeSimpleNodeFactory('Data');
  * @param {Array<*>} objectStack Object stack.
  */
 function writeExtendedData(node, namesAndValues, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const names = namesAndValues.names;
   const values = namesAndValues.values;
   const length = names.length;
@@ -2583,7 +2583,7 @@ function writeExtendedData(node, namesAndValues, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const ICON_SEQUENCE = makeStructureNS(
@@ -2594,7 +2594,7 @@ const ICON_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const ICON_SERIALIZERS = makeStructureNS(
@@ -2627,7 +2627,7 @@ const GX_NODE_FACTORY = function (value, objectStack, nodeName) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeIcon(node, icon, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const parentNode = objectStack[objectStack.length - 1].node;
   let orderedKeys = ICON_SEQUENCE[parentNode.namespaceURI];
   let values = makeSequence(icon, orderedKeys);
@@ -2653,7 +2653,7 @@ function writeIcon(node, icon, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const ICON_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -2666,7 +2666,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const ICON_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2679,12 +2679,12 @@ const ICON_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @param {Element} node Node.
- * @param {import("../style/Icon.js").default} style Icon style.
+ * @param {import("../style/Icon").default} style Icon style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeIconStyle(node, style, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
-  const /** @type {Object<string, any>} */ properties = {};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
+  const /** @type {Record<string, any>} */ properties = {};
   const src = style.getSrc();
   const size = style.getSize();
   const iconImageSize = style.getImageSize();
@@ -2754,7 +2754,7 @@ function writeIconStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const LABEL_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -2764,7 +2764,7 @@ const LABEL_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const LABEL_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2778,7 +2778,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeLabelStyle(node, style, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const properties = {};
   const fill = style.getFill();
   if (fill) {
@@ -2803,14 +2803,14 @@ function writeLabelStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const LINE_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['color', 'width']);
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const LINE_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2824,7 +2824,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeLineStyle(node, style, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const properties = {
     'color': style.getColor(),
     'width': Number(style.getWidth()) || 1,
@@ -2844,7 +2844,7 @@ function writeLineStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object<string, string>}
+ * @type {Record<string, string>}
  */
 const GEOMETRY_TYPE_TO_NODENAME = {
   'Point': 'Point',
@@ -2906,7 +2906,7 @@ const POLYGON_NODE_FACTORY = makeSimpleNodeFactory('Polygon');
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2922,7 +2922,7 @@ const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeMultiGeometry(node, geometry, objectStack) {
-  /** @type {import("../xml.js").NodeStackItem} */
+  /** @type {import("../xml").NodeStackItem} */
   const context = {node: node};
   const type = geometry.getType();
   /** @type {Array<Geometry>} */
@@ -2980,7 +2980,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const BOUNDARY_IS_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -2993,7 +2993,7 @@ const BOUNDARY_IS_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeBoundaryIs(node, linearRing, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   pushSerializeAndPop(
     context,
     BOUNDARY_IS_SERIALIZERS,
@@ -3005,7 +3005,7 @@ function writeBoundaryIs(node, linearRing, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const PLACEMARK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -3027,7 +3027,7 @@ const PLACEMARK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const PLACEMARK_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3057,7 +3057,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * @this {KML}
  */
 function writePlacemark(node, feature, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
 
   // set id
   if (feature.getId()) {
@@ -3184,7 +3184,7 @@ function writePlacemark(node, feature, objectStack) {
   }
 
   // serialize geometry
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+  const options = /** @type {import("./Feature").WriteOptions} */ (
     objectStack[0]
   );
   let geometry = feature.getGeometry();
@@ -3202,7 +3202,7 @@ function writePlacemark(node, feature, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3214,7 +3214,7 @@ const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -3231,7 +3231,7 @@ const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  */
 function writePrimitiveGeometry(node, geometry, objectStack) {
   const flatCoordinates = geometry.getFlatCoordinates();
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   context['layout'] = geometry.getLayout();
   context['stride'] = geometry.getStride();
 
@@ -3254,7 +3254,7 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const POLY_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3265,7 +3265,7 @@ const POLY_STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const POLYGON_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -3295,7 +3295,7 @@ const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 function writePolygon(node, polygon, objectStack) {
   const linearRings = polygon.getLinearRings();
   const outerRing = linearRings.shift();
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   // inner rings
   pushSerializeAndPop(
     context,
@@ -3316,7 +3316,7 @@ function writePolygon(node, polygon, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const POLY_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -3331,7 +3331,7 @@ const POLY_STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const fill = style.getFill();
   const stroke = style.getStroke();
   const properties = {
@@ -3363,7 +3363,7 @@ function writeScaleTextNode(node, scale) {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -3375,7 +3375,7 @@ const STYLE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -3387,11 +3387,11 @@ const STYLE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @param {Element} node Node.
- * @param {Object<string,Style[]>} styles Styles.
+ * @param {Record<string,Style[]>} styles Styles.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeStyle(node, styles, objectStack) {
-  const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
+  const /** @type {import("../xml").NodeStackItem} */ context = {node: node};
   const properties = {};
   if (styles.pointStyles.length) {
     const textStyle = styles.pointStyles[0].getText();

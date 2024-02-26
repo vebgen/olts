@@ -1,6 +1,6 @@
 
 import GML2 from './GML2.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
+import GMLBase, {GMLNS} from './GMLBase';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
@@ -18,15 +18,15 @@ import {
   parseNode,
   pushParseAndPop,
   pushSerializeAndPop,
-} from '../xml.js';
+} from '../xml';
 import {createOrUpdate} from '@olts/core/extent';
 import {extend} from '@olts/core/array';
-import {get as getProjection} from '../proj.js';
-import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
+import {get as getProjection} from '../proj';
+import {readNonNegativeIntegerString, writeStringTextNode} from './xsd';
 import {
   transformExtentWithOptions,
   transformGeometryWithOptions,
-} from './Feature.js';
+} from './Feature';
 
 /**
  * @const
@@ -40,7 +40,7 @@ const schemaLocation =
 
 /**
  * @const
- * @type {Object<string, string>}
+ * @type {Record<string, string>}
  */
 const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
@@ -58,7 +58,7 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  */
 export class GML3 extends GMLBase {
   /**
-   * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
+   * @param {import("./GMLBase").Options} [options] Optional configuration object.
    */
   constructor(options) {
     options = options ? options : {};
@@ -549,7 +549,7 @@ export class GML3 extends GMLBase {
     const keys = ['lowerCorner', 'upperCorner'];
     const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
     pushSerializeAndPop(
-      /** @type {import("../xml.js").NodeStackItem} */
+      /** @type {import("../xml").NodeStackItem} */
       ({node: node}),
       this.ENVELOPE_SERIALIZERS,
       OBJECT_PROPERTY_NODE_FACTORY,
@@ -803,7 +803,7 @@ export class GML3 extends GMLBase {
    * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
-    const context = /** @type {import("./Feature.js").WriteOptions} */ (
+    const context = /** @type {import("./Feature").WriteOptions} */ (
       objectStack[objectStack.length - 1]
     );
     const item = Object.assign({}, context);
@@ -822,7 +822,7 @@ export class GML3 extends GMLBase {
       );
     }
     pushSerializeAndPop(
-      /** @type {import("../xml.js").NodeStackItem} */
+      /** @type {import("../xml").NodeStackItem} */
       (item),
       this.GEOMETRY_SERIALIZERS,
       this.GEOMETRY_NODE_FACTORY_,
@@ -835,7 +835,7 @@ export class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("../Feature").default} feature Feature.
    * @param {Array<*>} objectStack Node stack.
    */
   writeFeatureElement(node, feature, objectStack) {
@@ -882,7 +882,7 @@ export class GML3 extends GMLBase {
     const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
-      /** @type {import("../xml.js").NodeStackItem} */
+      /** @type {import("../xml").NodeStackItem} */
       (item),
       context.serializers,
       makeSimpleNodeFactory(undefined, featureNS),
@@ -894,7 +894,7 @@ export class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<import("../Feature").default>} features Features.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -902,7 +902,7 @@ export class GML3 extends GMLBase {
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureType = context['featureType'];
     const featureNS = context['featureNS'];
-    /** @type {Object<string, Object<string, import("../xml.js").Serializer>>} */
+    /** @type {Record<string, Record<string, import("../xml").Serializer>>} */
     const serializers = {};
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
@@ -912,7 +912,7 @@ export class GML3 extends GMLBase {
     const item = Object.assign({}, context);
     item.node = node;
     pushSerializeAndPop(
-      /** @type {import("../xml.js").NodeStackItem} */
+      /** @type {import("../xml").NodeStackItem} */
       (item),
       serializers,
       makeSimpleNodeFactory(featureType, featureNS),
@@ -974,7 +974,7 @@ export class GML3 extends GMLBase {
    * Encode a geometry in GML 3.1.1 Simple Features.
    *
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Options.
+   * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -1000,8 +1000,8 @@ export class GML3 extends GMLBase {
   /**
    * Encode an array of features in the GML 3.1.1 format as an XML node.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Element} Node.
    * @api
    */
@@ -1033,7 +1033,7 @@ export class GML3 extends GMLBase {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1045,7 +1045,7 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1056,7 +1056,7 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1077,7 +1077,7 @@ GML3.prototype.GEOMETRY_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.MULTICURVE_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1088,7 +1088,7 @@ GML3.prototype.MULTICURVE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.MULTISURFACE_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1099,7 +1099,7 @@ GML3.prototype.MULTISURFACE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.CURVEMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1110,7 +1110,7 @@ GML3.prototype.CURVEMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.SURFACEMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1121,7 +1121,7 @@ GML3.prototype.SURFACEMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.SURFACE_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1131,7 +1131,7 @@ GML3.prototype.SURFACE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.CURVE_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1141,7 +1141,7 @@ GML3.prototype.CURVE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.ENVELOPE_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1152,7 +1152,7 @@ GML3.prototype.ENVELOPE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.PATCHES_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1162,7 +1162,7 @@ GML3.prototype.PATCHES_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML3.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1174,7 +1174,7 @@ GML3.prototype.SEGMENTS_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -1187,15 +1187,15 @@ GMLBase.prototype.RING_PARSERS = {
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
  * @function
- * @param {Array<import("../Feature.js").default>} features Features.
- * @param {import("./Feature.js").WriteOptions} [options] Options.
+ * @param {Array<import("../Feature").default>} features Features.
+ * @param {import("./Feature").WriteOptions} [options] Options.
  * @return {string} Result.
  * @api
  */
 GML3.prototype.writeFeatures;
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.RING_SERIALIZERS = {
   'http://www.opengis.net/gml': {
@@ -1205,7 +1205,7 @@ GML3.prototype.RING_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.ENVELOPE_SERIALIZERS = {
   'http://www.opengis.net/gml': {
@@ -1215,7 +1215,7 @@ GML3.prototype.ENVELOPE_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
@@ -1229,7 +1229,7 @@ GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.POINTMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
@@ -1238,7 +1238,7 @@ GML3.prototype.POINTMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml': {
@@ -1252,7 +1252,7 @@ GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML3.prototype.GEOMETRY_SERIALIZERS = {
   'http://www.opengis.net/gml': {

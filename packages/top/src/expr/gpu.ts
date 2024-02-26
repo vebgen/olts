@@ -1,5 +1,5 @@
 
-import PaletteTexture from '../webgl/PaletteTexture.js';
+import PaletteTexture from '../webgl/PaletteTexture';
 import {
   BooleanType,
   CallExpression,
@@ -14,8 +14,8 @@ import {
   overlapsType,
   parse,
   typeName,
-} from './expression.js';
-import {Uniforms} from '../renderer/webgl/TileLayer.js';
+} from './expression';
+import {Uniforms} from '../renderer/webgl/TileLayer';
 import {asArray} from '@olts/core/color';
 
 /**
@@ -53,7 +53,7 @@ export function arrayToGlsl(array) {
 
 /**
  * Will normalize and converts to string a `vec4` color array compatible with GLSL.
- * @param {string|import("../color.js").Color} color Color either in string format or [r, g, b, a] array format,
+ * @param {string|import("../color").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
  * Note that the final array will always have 4 components.
  * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
@@ -70,7 +70,7 @@ export function colorToGlsl(color) {
   ]);
 }
 
-/** @type {Object<string, number>} */
+/** @type {Record<string, number>} */
 const stringToFloatMap = {};
 let stringToFloatCounter = 0;
 
@@ -107,22 +107,22 @@ export function uniformNameForVariable(variableName) {
 }
 
 /**
- * @typedef {import('./expression.js').ParsingContext} ParsingContext
+ * @typedef {import('./expression').ParsingContext} ParsingContext
  */
 /**
  *
- * @typedef {import("./expression.js").Expression} Expression
+ * @typedef {import("./expression").Expression} Expression
  */
 /**
  *
- * @typedef {import("./expression.js").LiteralExpression} LiteralExpression
+ * @typedef {import("./expression").LiteralExpression} LiteralExpression
  */
 
 /**
  * @typedef {Object} CompilationContextProperty
  * @property {string} name Name
  * @property {number} type Resolved property type
- * @property {function(import("../Feature.js").FeatureLike): *} [evaluator] Function used for evaluating the value;
+ * @property {function(import("../Feature").FeatureLike): *} [evaluator] Function used for evaluating the value;
  */
 
 /**
@@ -135,12 +135,12 @@ export function uniformNameForVariable(variableName) {
 /**
  * @typedef {Object} CompilationContext
  * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
- * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
- * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
- * @property {Object<string, string>} functions Lookup of functions used by the style.
+ * @property {Record<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
+ * @property {Record<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
+ * @property {Record<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
- * @property {import("../style/webgl.js").WebGLStyle} style Literal style.
+ * @property {import("../style/webgl").WebGLStyle} style Literal style.
  */
 
 /**
@@ -171,9 +171,9 @@ export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
  */
 
 /**
- * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
+ * @param {import('./expression').EncodedExpression} encoded The encoded expression.
  * @param {number} type The expected type.
- * @param {import('./expression.js').ParsingContext} parsingContext The parsing context.
+ * @param {import('./expression').ParsingContext} parsingContext The parsing context.
  * @param {CompilationContext} compilationContext An existing compilation context
  * @return {CompiledExpression} The compiled expression.
  */
@@ -199,7 +199,7 @@ export function buildExpression(
 
 /**
  * @param {function(Array<CompiledExpression>, CompilationContext): string} output Function that takes in parsed arguments and returns a string
- * @return {function(CompilationContext, import("./expression.js").CallExpression, number): string} Compiler for the call expression
+ * @return {function(CompilationContext, import("./expression").CallExpression, number): string} Compiler for the call expression
  */
 function createCompiler(output) {
   return (context, expression, type) => {
@@ -213,7 +213,7 @@ function createCompiler(output) {
 }
 
 /**
- * @type {Object<string, Compiler>}
+ * @type {Record<string, Compiler>}
  */
 const compilers = {
   [Ops.Get]: (context, expression) => {

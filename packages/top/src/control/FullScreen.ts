@@ -1,9 +1,9 @@
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
-import MapProperty from '../MapProperty.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
+import MapProperty from '../MapProperty';
 import { CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED } from '@olts/core/css';
-import { listen, unlistenByKey } from '../events.js';
+import { listen, unlistenByKey } from '../events';
 import { replaceNode } from '@olts/core/dom';
 
 const events = [
@@ -34,7 +34,7 @@ const FullScreenEventType = {
 /***
  * @template Return
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes|
- *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default, Return> &
+ *     'enterfullscreen'|'leavefullscreen', import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType, import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|
  *     'enterfullscreen'|'leavefullscreen'|ObjectEventType, Return>} FullScreenOnSignature
@@ -138,7 +138,7 @@ export class FullScreen extends Control {
 
         /**
          * @private
-         * @type {Array<import("../events.js").EventsKey>}
+         * @type {Array<import("../events").EventsKey>}
          */
         this.documentListeners_ = [];
 
@@ -286,10 +286,10 @@ export class FullScreen extends Control {
      * Pass `null` to just remove the control from the current map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default|null} map Map.
+     * @param {import("../Map").default|null} map Map.
      * @api
      */
-    setMap(map: import("../Map.js").default | null) {
+    setMap(map: import("../Map").default | null) {
         const oldMap = this.getMap();
         if (oldMap) {
             oldMap.removeChangeListener(

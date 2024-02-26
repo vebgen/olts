@@ -1,14 +1,14 @@
 
 
-import BaseTileRepresentation from './BaseTileRepresentation.js';
-import DataTile, {asArrayLike, asImageLike} from '../DataTile.js';
-import EventType from '../events/EventType.js';
-import ImageTile from '../ImageTile.js';
-import ReprojTile from '../reproj/Tile.js';
-import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import BaseTileRepresentation from './BaseTileRepresentation';
+import DataTile, {asArrayLike, asImageLike} from '../DataTile';
+import type { EventType } from '@olts/events';
+import ImageTile from '../ImageTile';
+import ReprojTile from '../reproj/Tile';
+import WebGLArrayBuffer from './Buffer';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl';
 import {createCanvasContext2D} from '@olts/core/dom';
-import {toSize} from '../size.js';
+import {toSize} from '../size';
 
 /**
  * @param {WebGLRenderingContext} gl The WebGL context.
@@ -27,7 +27,7 @@ function bindAndConfigure(gl, texture, interpolate) {
 /**
  * @param {WebGLRenderingContext} gl The WebGL context.
  * @param {WebGLTexture} texture The texture.
- * @param {import("../DataTile.js").ImageLike} image The image.
+ * @param {import("../DataTile").ImageLike} image The image.
  * @param {boolean} interpolate Interpolate when resampling.
  */
 function uploadImageTexture(gl, texture, image, interpolate) {
@@ -37,9 +37,9 @@ function uploadImageTexture(gl, texture, image, interpolate) {
 }
 
 /**
- * @param {import("./Helper.js").default} helper The WebGL helper.
+ * @param {import("./Helper").default} helper The WebGL helper.
  * @param {WebGLTexture} texture The texture.
- * @param {import("../DataTile.js").ArrayLike} data The pixel data.
+ * @param {import("../DataTile").ArrayLike} data The pixel data.
  * @param {Size} size The pixel size.
  * @param {number} bandCount The band count.
  * @param {boolean} interpolate Interpolate when resampling.
@@ -127,7 +127,7 @@ function createPixelContext() {
 }
 
 /**
- * @typedef {import("../DataTile.js").default|ImageTile|ReprojTile} TileType
+ * @typedef {import("../DataTile").default|ImageTile|ReprojTile} TileType
  */
 
 /**
@@ -135,7 +135,7 @@ function createPixelContext() {
  */
 export class TileTexture extends BaseTileRepresentation {
   /**
-   * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
+   * @param {import("./BaseTileRepresentation").TileRepresentationOptions<TileType>} options The tile texture options.
    */
   constructor(options) {
     super(options);
@@ -187,7 +187,7 @@ export class TileTexture extends BaseTileRepresentation {
     this.textures.length = 0;
 
     /**
-     * @type {import("../DataTile.js").Data}
+     * @type {import("../DataTile").Data}
      */
     let data;
 
@@ -295,7 +295,7 @@ export class TileTexture extends BaseTileRepresentation {
   }
 
   /**
-   * @param {import("../DataTile.js").ImageLike} image The image.
+   * @param {import("../DataTile").ImageLike} image The image.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
    * @return {Uint8ClampedArray|null} The data.
@@ -336,11 +336,11 @@ export class TileTexture extends BaseTileRepresentation {
   }
 
   /**
-   * @param {import("../DataTile.js").ArrayLike} data The data.
+   * @param {import("../DataTile").ArrayLike} data The data.
    * @param {Size} sourceSize The size.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
-   * @return {import("../DataTile.js").ArrayLike|null} The data.
+   * @return {import("../DataTile").ArrayLike|null} The data.
    * @private
    */
   getArrayPixelData_(data, sourceSize, renderCol, renderRow) {
@@ -375,7 +375,7 @@ export class TileTexture extends BaseTileRepresentation {
    * Get data for a pixel.  If the tile is not loaded, null is returned.
    * @param {number} renderCol The column index (in rendered tile space).
    * @param {number} renderRow The row index (in rendered tile space).
-   * @return {import("../DataTile.js").ArrayLike|null} The data.
+   * @return {import("../DataTile").ArrayLike|null} The data.
    */
   getPixelData(renderCol, renderRow) {
     if (!this.loaded) {

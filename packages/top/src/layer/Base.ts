@@ -1,6 +1,6 @@
 
 import { BaseObject } from '@olts/events';
-import LayerProperty from './Property.js';
+import LayerProperty from './Property';
 import { abstract } from '@olts/core/util';
 import { assert } from '@olts/core/asserts';
 import { clamp } from '@olts/core/math';
@@ -19,7 +19,7 @@ import { clamp } from '@olts/core/math';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
  */
@@ -45,7 +45,7 @@ import { clamp } from '@olts/core/math';
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -90,7 +90,7 @@ export class BaseLayer extends BaseObject {
         this.background_ = options.background;
 
         /**
-         * @type {Object<string, *>}
+         * @type {Record<string, *>}
          */
         const properties: { [s: string]: *; } = Object.assign({}, options);
         if (typeof options.properties === 'object') {
@@ -128,7 +128,7 @@ export class BaseLayer extends BaseObject {
         this.setProperties(properties);
 
         /**
-         * @type {import("./Layer.js").State}
+         * @type {import("./Layer").State}
          * @private
          */
         this.state_ = null;
@@ -154,11 +154,11 @@ export class BaseLayer extends BaseObject {
      * is incorrect if the layer is included in a layer group.
      *
      * @param {boolean} [managed] Layer is managed.
-     * @return {import("./Layer.js").State} Layer state.
+     * @return {import("./Layer").State} Layer state.
      */
-    getLayerState(managed: boolean): import("./Layer.js").State {
-        /** @type {import("./Layer.js").State} */
-        const state: import("./Layer.js").State =
+    getLayerState(managed: boolean): import("./Layer").State {
+        /** @type {import("./Layer").State} */
+        const state: import("./Layer").State =
             this.state_ ||
       /** @type {?} */ ({
                 layer: this,
@@ -180,21 +180,21 @@ export class BaseLayer extends BaseObject {
 
     /**
      * @abstract
-     * @param {Array<import("./Layer.js").default>} [array] Array of layers (to be
+     * @param {Array<import("./Layer").default>} [array] Array of layers (to be
      *     modified in place).
-     * @return {Array<import("./Layer.js").default>} Array of layers.
+     * @return {Array<import("./Layer").default>} Array of layers.
      */
-    getLayersArray(array: Array<import("./Layer.js").default>): Array<import("./Layer.js").default> {
+    getLayersArray(array: Array<import("./Layer").default>): Array<import("./Layer").default> {
         return abstract();
     }
 
     /**
      * @abstract
-     * @param {Array<import("./Layer.js").State>} [states] Optional list of layer
+     * @param {Array<import("./Layer").State>} [states] Optional list of layer
      *     states (to be modified in place).
-     * @return {Array<import("./Layer.js").State>} List of layer states.
+     * @return {Array<import("./Layer").State>} List of layer states.
      */
-    getLayerStatesArray(states: Array<import("./Layer.js").State>): Array<import("./Layer.js").State> {
+    getLayerStatesArray(states: Array<import("./Layer").State>): Array<import("./Layer").State> {
         return abstract();
     }
 
@@ -267,9 +267,9 @@ export class BaseLayer extends BaseObject {
 
     /**
      * @abstract
-     * @return {import("../source/Source.js").State} Source state.
+     * @return {import("../source/Source").State} Source state.
      */
-    getSourceState(): import("../source/Source.js").State {
+    getSourceState(): import("../source/Source").State {
         return abstract();
     }
 

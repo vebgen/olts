@@ -1,10 +1,10 @@
 
-import TileImage from './TileImage.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import TileImage from './TileImage';
+import {createXYZ, extentFromProjection} from '../tile-grid';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
@@ -13,14 +13,14 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
+ * @property {ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -35,7 +35,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported images should be wider and taller than the tile size by a value of `2 x gutter`.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get
+ * @property {import("../Tile").UrlFunction} [tileUrlFunction] Optional function to get
  * tile URL given a tile coordinate and the projection.
  * Required if `url` or `urls` are not provided.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`,
@@ -45,7 +45,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */

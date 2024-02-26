@@ -1,6 +1,6 @@
 
-import DataTile from './DataTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
+import DataTile from './DataTile';
+import TileGrid from '../tile-grid/TileGrid';
 import {
   Pool,
   globals as geotiffGlobals,
@@ -13,11 +13,11 @@ import {
   get as getCachedProjection,
   toUserCoordinate,
   toUserExtent,
-} from '../proj.js';
+} from '../proj';
 import {clamp} from '@olts/core/math';
 import {getCenter, getIntersection} from '@olts/core/extent';
-import {error as logError} from '../console.js';
-import {fromCode as unitsFromCode} from '../proj/Units.js';
+import {error as logError} from '../console';
+import {fromCode as unitsFromCode} from '../proj/Units';
 
 /**
  * Determine if an image type is a mask.
@@ -169,7 +169,7 @@ function getResolutions(image, referenceImage) {
 
 /**
  * @param {GeoTIFFImage} image A GeoTIFF.
- * @return {import("../proj/Projection.js").default} The image projection.
+ * @return {import("../proj/Projection").default} The image projection.
  */
 function getProjection(image) {
   const geoKeys = image.geoKeys;
@@ -326,7 +326,7 @@ function getMaxForDataType(array) {
 /**
  * @typedef {Object} GeoTIFFSourceOptions
  * @property {boolean} [forceXHR=false] Whether to force the usage of the browsers XMLHttpRequest API.
- * @property {Object<string, string>} [headers] additional key-value pairs of headers to be passed with each request. Key is the header name, value the header value.
+ * @property {Record<string, string>} [headers] additional key-value pairs of headers to be passed with each request. Key is the header name, value the header value.
  * @property {string} [credentials] How credentials shall be handled. See
  * https://developer.mozilla.org/en-US/docs/Web/API/fetch for reference and possible values
  * @property {number} [maxRanges] The maximum amount of ranges to request in a single multi-range request.
@@ -343,8 +343,8 @@ function getMaxForDataType(array) {
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
  * The list of sources defines a mapping between input bands as they are read from each GeoTIFF and
  * the output bands that are provided by data tiles. To control which bands to read from each GeoTIFF,
- * use the {@link import("./GeoTIFF.js").SourceInfo bands} property. If, for example, you specify two
- * sources, one with 3 bands and {@link import("./GeoTIFF.js").SourceInfo nodata} configured, and
+ * use the {@link import("./GeoTIFF").SourceInfo bands} property. If, for example, you specify two
+ * sources, one with 3 bands and {@link import("./GeoTIFF").SourceInfo nodata} configured, and
  * another with 1 band, the resulting data tiles will have 5 bands: 3 from the first source, 1 alpha
  * band from the first source, and 1 band from the second source.
  * @property {GeoTIFFSourceOptions} [sourceOptions] Additional options to be passed to [geotiff.js](https://geotiffjs.github.io/geotiff.js/module-geotiff.html)'s `fromUrl` or `fromUrls` methods.
@@ -357,7 +357,7 @@ function getMaxForDataType(array) {
  * If instead you want to work with the raw values in a style expression, set this to `false`.  Setting this option
  * to `false` will make it so any `min` and `max` properties on sources are ignored.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
+ * @property {ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
  * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
@@ -849,7 +849,7 @@ export class GeoTIFFSource extends DataTile {
   /**
    * @param {Size} sourceTileSize The source tile size.
    * @param {Array} sourceSamples The source samples.
-   * @return {import("../DataTile.js").Data} The composed tile data.
+   * @return {import("../DataTile").Data} The composed tile data.
    * @private
    */
   composeTile_(sourceTileSize, sourceSamples) {
@@ -980,7 +980,7 @@ export class GeoTIFFSource extends DataTile {
  *     });
  *
  * @function
- * @return {Promise<import("../View.js").ViewOptions>} A promise for view-related properties.
+ * @return {Promise<import("../View").ViewOptions>} A promise for view-related properties.
  * @api
  *
  */

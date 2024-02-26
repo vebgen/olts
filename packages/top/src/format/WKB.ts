@@ -1,6 +1,6 @@
 
-import Feature from '../Feature.js';
-import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
+import Feature from '../Feature';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature';
 import { GeometryCollection } from '@olts/geometry';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
@@ -8,7 +8,7 @@ import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import {get as getProjection} from '../proj.js';
+import {get as getProjection} from '../proj';
 
 import { SimpleGeometry } from '@olts/geometry';
 
@@ -125,10 +125,10 @@ export class WkbReader {
   }
 
   /**
-   * @return {import('../coordinate.js').Coordinate} coords for Point
+   * @return {import('../coordinate').Coordinate} coords for Point
    */
   readPoint() {
-    /** @type import('../coordinate.js').Coordinate */
+    /** @type import('../coordinate').Coordinate */
     const coords = [];
 
     coords.push(this.readDouble());
@@ -144,12 +144,12 @@ export class WkbReader {
   }
 
   /**
-   * @return {Array<import('../coordinate.js').Coordinate>} coords for LineString / LinearRing
+   * @return {Array<import('../coordinate').Coordinate>} coords for LineString / LinearRing
    */
   readLineString() {
     const numPoints = this.readUint32();
 
-    /** @type Array<import('../coordinate.js').Coordinate> */
+    /** @type Array<import('../coordinate').Coordinate> */
     const coords = [];
     for (let i = 0; i < numPoints; i++) {
       coords.push(this.readPoint());
@@ -159,12 +159,12 @@ export class WkbReader {
   }
 
   /**
-   * @return {Array<Array<import('../coordinate.js').Coordinate>>} coords for Polygon like
+   * @return {Array<Array<import('../coordinate').Coordinate>>} coords for Polygon like
    */
   readPolygon() {
     const numRings = this.readUint32();
 
-    /** @type Array<Array<import('../coordinate.js').Coordinate>> */
+    /** @type Array<Array<import('../coordinate').Coordinate>> */
     const rings = [];
     for (let i = 0; i < numRings; i++) {
       rings.push(this.readLineString()); // as a LinearRing
@@ -291,14 +291,14 @@ export class WkbReader {
   }
 
   /**
-   * @return {Array<import('../coordinate.js').Coordinate>} coords for MultiPoint
+   * @return {Array<import('../coordinate').Coordinate>} coords for MultiPoint
    */
   readMultiPoint() {
     return this.readWkbCollection(this.readWkbBlock, WKBGeometryType.POINT);
   }
 
   /**
-   * @return {Array<Array<import('../coordinate.js').Coordinate>>} coords for MultiLineString like
+   * @return {Array<Array<import('../coordinate').Coordinate>>} coords for MultiLineString like
    */
   readMultiLineString() {
     return this.readWkbCollection(
@@ -308,7 +308,7 @@ export class WkbReader {
   }
 
   /**
-   * @return {Array<Array<Array<import('../coordinate.js').Coordinate>>>} coords for MultiPolygon like
+   * @return {Array<Array<Array<import('../coordinate').Coordinate>>>} coords for MultiPolygon like
    */
   readMultiPolygon() {
     return this.readWkbCollection(this.readWkbBlock, WKBGeometryType.POLYGON);
@@ -331,20 +331,20 @@ export class WkbReader {
     switch (typeId) {
       case WKBGeometryType.POINT:
         return new Point(
-          /** @type {import('../coordinate.js').Coordinate} */ (result),
+          /** @type {import('../coordinate').Coordinate} */ (result),
           this.layout_,
         );
 
       case WKBGeometryType.LINE_STRING:
         return new LineString(
-          /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
+          /** @type {Array<import('../coordinate').Coordinate>} */ (result),
           this.layout_,
         );
 
       case WKBGeometryType.POLYGON:
       case WKBGeometryType.TRIANGLE:
         return new Polygon(
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
+          /** @type {Array<Array<import('../coordinate').Coordinate>>} */ (
             result
           ),
           this.layout_,
@@ -352,13 +352,13 @@ export class WkbReader {
 
       case WKBGeometryType.MULTI_POINT:
         return new MultiPoint(
-          /** @type {Array<import('../coordinate.js').Coordinate>} */ (result),
+          /** @type {Array<import('../coordinate').Coordinate>} */ (result),
           this.layout_,
         );
 
       case WKBGeometryType.MULTI_LINE_STRING:
         return new MultiLineString(
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ (
+          /** @type {Array<Array<import('../coordinate').Coordinate>>} */ (
             result
           ),
           this.layout_,
@@ -368,7 +368,7 @@ export class WkbReader {
       case WKBGeometryType.POLYHEDRAL_SURFACE:
       case WKBGeometryType.TIN:
         return new MultiPolygon(
-          /** @type {Array<Array<Array<import('../coordinate.js').Coordinate>>>} */ (
+          /** @type {Array<Array<Array<import('../coordinate').Coordinate>>>} */ (
             result
           ),
           this.layout_,
@@ -445,7 +445,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {import('../coordinate.js').Coordinate} coords coords
+   * @param {import('../coordinate').Coordinate} coords coords
    * @param {GeometryLayout} layout layout
    */
   writePoint(coords, layout) {
@@ -469,7 +469,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<import('../coordinate.js').Coordinate>} coords coords
+   * @param {Array<import('../coordinate').Coordinate>} coords coords
    * @param {GeometryLayout} layout layout
    */
   writeLineString(coords, layout) {
@@ -480,7 +480,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} rings rings
+   * @param {Array<Array<import('../coordinate').Coordinate>>} rings rings
    * @param {GeometryLayout} layout layout
    */
   writePolygon(rings, layout) {
@@ -514,7 +514,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<import('../coordinate.js').Coordinate>} coords coords
+   * @param {Array<import('../coordinate').Coordinate>} coords coords
    * @param {GeometryLayout} layout layout
    */
   writeMultiPoint(coords, layout) {
@@ -526,7 +526,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<Array<import('../coordinate.js').Coordinate>>} coords coords
+   * @param {Array<Array<import('../coordinate').Coordinate>>} coords coords
    * @param {GeometryLayout} layout layout
    */
   writeMultiLineString(coords, layout) {
@@ -538,7 +538,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<Array<Array<import('../coordinate.js').Coordinate>>>} coords coords
+   * @param {Array<Array<Array<import('../coordinate').Coordinate>>>} coords coords
    * @param {GeometryLayout} layout layout
    */
   writeMultiPolygon(coords, layout) {
@@ -609,7 +609,7 @@ export class WkbWriter {
    */
   writeGeometry(geom, srid) {
     /**
-     * @type {Object<GeometryType, WKBGeometryType>}
+     * @type {Record<GeometryType, WKBGeometryType>}
      */
     const wkblut = {
       Point: WKBGeometryType.POINT,
@@ -720,7 +720,7 @@ export class WKB extends FeatureFormat {
   }
 
   /**
-   * @return {import("./Feature.js").Type} Format.
+   * @return {import("./Feature").Type} Format.
    */
   getType() {
     return this.hex_ ? 'text' : 'arraybuffer';
@@ -730,8 +730,8 @@ export class WKB extends FeatureFormat {
    * Read a single feature from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import("../Feature").default} Feature.
    * @api
    */
   readFeature(source, options) {
@@ -744,8 +744,8 @@ export class WKB extends FeatureFormat {
    * Read all features from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {Array<import("../Feature").default>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -763,7 +763,7 @@ export class WKB extends FeatureFormat {
    * Read a single geometry from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {Geometry} Geometry.
    * @api
    */
@@ -787,7 +787,7 @@ export class WKB extends FeatureFormat {
    * Read the projection from a source.
    *
    * @param {string|ArrayBuffer|ArrayBufferView} source Source.
-   * @return {import("../proj/Projection.js").default|undefined} Projection.
+   * @return {import("../proj/Projection").default|undefined} Projection.
    * @api
    */
   readProjection(source) {
@@ -808,8 +808,8 @@ export class WKB extends FeatureFormat {
   /**
    * Encode a feature in this format.
    *
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Feature.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
@@ -820,8 +820,8 @@ export class WKB extends FeatureFormat {
   /**
    * Encode an array of features in this format.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */
@@ -836,7 +836,7 @@ export class WKB extends FeatureFormat {
    * Write a single geometry in this format.
    *
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    * @api
    */

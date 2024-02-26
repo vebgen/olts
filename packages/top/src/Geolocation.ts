@@ -1,12 +1,12 @@
 
-import BaseEvent from './events/Event.js';
+import BaseEvent from './events/Event';
 import { BaseObject, EventsKey } from '@olts/events';
-import { circular as circularPolygon } from '@olts/geometry';
+import { polygonFromCircle } from '@olts/geometry';
 import {
     get as getProjection,
     getTransformFromProjections,
     identityTransform,
-} from './proj.js';
+} from './proj';
 import { toRadians } from '@olts/core/math';
 
 /**
@@ -69,7 +69,7 @@ export class GeolocationError extends BaseEvent {
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
  * See https://www.w3.org/TR/geolocation-API/#position_options_interface.
- * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
+ * @property {ProjectionLike} [projection] The projection the position
  * is reported in.
  */
 
@@ -149,7 +149,7 @@ export class Geolocation extends BaseObject {
 
         /**
          * @private
-         * @type {import("./proj.js").TransformFunction}
+         * @type {import("./proj").TransformFunction}
          */
         this.transform_ = identityTransform;
 
@@ -331,13 +331,13 @@ export class Geolocation extends BaseObject {
 
     /**
      * Get the projection associated with the position.
-     * @return {import("./proj/Projection.js").default|undefined} The projection the position is
+     * @return {Projection|undefined} The projection the position is
      *     reported in.
      * @observable
      * @api
      */
-    getProjection(): import("./proj/Projection.js").default | undefined {
-        return /** @type {import("./proj/Projection.js").default|undefined} */ (
+    getProjection(): Projection | undefined {
+        return /** @type {Projection|undefined} */ (
             this.get(Property.PROJECTION)
         );
     }
@@ -380,12 +380,12 @@ export class Geolocation extends BaseObject {
 
     /**
      * Set the projection to use for transforming the coordinates.
-     * @param {import("./proj.js").ProjectionLike} projection The projection the position is
+     * @param {ProjectionLike} projection The projection the position is
      *     reported in.
      * @observable
      * @api
      */
-    setProjection(projection: import("./proj.js").ProjectionLike) {
+    setProjection(projection: ProjectionLike) {
         this.set(Property.PROJECTION, getProjection(projection));
     }
 

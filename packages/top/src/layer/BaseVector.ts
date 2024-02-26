@@ -1,17 +1,17 @@
 
-import Layer from './Layer.js';
+import Layer from './Layer';
 import RBush from 'rbush';
 import Style, {
   createDefaultStyle,
   toFunction as toStyleFunction,
-} from '../style/Style.js';
+} from '../style/Style';
 import {
   flatStylesToStyleFunction,
   rulesToStyleFunction,
-} from '../render/canvas/style.js';
+} from '../render/canvas/style';
 
 /**
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+ * @template {import("../source/Vector").default|import("../source/VectorTile").default} VectorSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -30,17 +30,17 @@ import {
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
  * @property {VectorSourceType} [source] Source.
- * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use [map.addLayer()]{@link import("../Map.js").default#addLayer}.
+ * use [map.addLayer()]{@link import("../Map").default#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
  * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
@@ -51,10 +51,10 @@ import {
  * the fill and stroke styles of all of those layers regardless of z-index.  To opt out of this
  * behavior and place declutterd features with their own layer configure the layer with a `className`
  * other than `ol-layer`.
- * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
+ * @property {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
- * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
+ * @property {import("./Base").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
  * be recreated during animations. This means that no vectors will be shown clipped, but the
@@ -62,7 +62,7 @@ import {
  * batches will be recreated when no animation is active.
  * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will
  * be recreated during interactions. See also `updateWhileAnimating`.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -79,8 +79,8 @@ const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
- * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
+ * @template {import("../source/Vector").default|import("../source/VectorTile").default} VectorSourceType
+ * @template {import("../renderer/canvas/VectorLayer").default|import("../renderer/canvas/VectorTileLayer").default|import("../renderer/canvas/VectorImageLayer").default|import("../renderer/webgl/PointsLayer").default} RendererType
  * @extends {Layer<VectorSourceType, RendererType>}
  * @api
  */
@@ -115,14 +115,14 @@ export class BaseVectorLayer extends Layer {
 
     /**
      * User provided style.
-     * @type {import("../style/Style.js").StyleLike}
+     * @type {import("../style/Style").StyleLike}
      * @private
      */
     this.style_ = null;
 
     /**
      * Style function for use within the library.
-     * @type {import("../style/Style.js").StyleFunction|undefined}
+     * @type {import("../style/Style").StyleFunction|undefined}
      * @private
      */
     this.styleFunction_ = undefined;
@@ -161,11 +161,11 @@ export class BaseVectorLayer extends Layer {
    * when a hit was detected, or it will be empty.
    *
    * The hit detection algorithm used for this method is optimized for performance, but is less
-   * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map.js").default#getFeaturesAtPixel}.
+   * accurate than the one used in [map.getFeaturesAtPixel()]{@link import("../Map").default#getFeaturesAtPixel}.
    * Text is not considered, and icons are only represented by their bounding box instead of the exact
    * image.
    *
-   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../pixel").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
    * @api
    */
@@ -181,11 +181,11 @@ export class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {function(import("../Feature.js").default, import("../Feature.js").default): number|null|undefined} Render
+   * @return {function(import("../Feature").default, import("../Feature").default): number|null|undefined} Render
    *     order.
    */
   getRenderOrder() {
-    return /** @type {import("../render.js").OrderFunction|null|undefined} */ (
+    return /** @type {import("../render").OrderFunction|null|undefined} */ (
       this.get(Property.RENDER_ORDER)
     );
   }
@@ -193,7 +193,7 @@ export class BaseVectorLayer extends Layer {
   /**
    * Get the style for features.  This returns whatever was passed to the `style`
    * option at construction or to the `setStyle` method.
-   * @return {import("../style/Style.js").StyleLike|null|undefined} Layer style.
+   * @return {import("../style/Style").StyleLike|null|undefined} Layer style.
    * @api
    */
   getStyle() {
@@ -202,7 +202,7 @@ export class BaseVectorLayer extends Layer {
 
   /**
    * Get the style function.
-   * @return {import("../style/Style.js").StyleFunction|undefined} Layer style function.
+   * @return {import("../style/Style").StyleFunction|undefined} Layer style function.
    * @api
    */
   getStyleFunction() {
@@ -227,8 +227,8 @@ export class BaseVectorLayer extends Layer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../Map.js").FrameState} frameState Frame state.
-   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @param {import("../Map").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer").State} layerState Layer state.
    */
   renderDeclutter(frameState, layerState) {
     if (!frameState.declutterTree) {
@@ -241,7 +241,7 @@ export class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @param {import("../render.js").OrderFunction|null|undefined} renderOrder
+   * @param {import("../render").OrderFunction|null|undefined} renderOrder
    *     Render order.
    */
   setRenderOrder(renderOrder) {
@@ -266,7 +266,7 @@ export class BaseVectorLayer extends Layer {
    * })
    * ```
    *
-   * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
+   * @param {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike|null} [style] Layer style.
    * @api
    */
   setStyle(style) {
@@ -281,8 +281,8 @@ export class BaseVectorLayer extends Layer {
  * Coerce the allowed style types into a shorter list of types.  Flat styles, arrays of flat
  * styles, and arrays of rules are converted into style functions.
  *
- * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
- * @return {import("../style/Style.js").StyleLike|null} The style.
+ * @param {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike|null} [style] Layer style.
+ * @return {import("../style/Style").StyleLike|null} The style.
  */
 function toStyleLike(style) {
   if (style === undefined) {
@@ -324,7 +324,7 @@ function toStyleLike(style) {
 
   if ('style' in first) {
     /**
-     * @type Array<import("../style/flat.js").Rule>
+     * @type Array<import("../style/flat").Rule>
      */
     const rules = new Array(length);
     for (let i = 0; i < length; ++i) {
@@ -338,7 +338,7 @@ function toStyleLike(style) {
   }
 
   const flatStyles =
-    /** @type {Array<import("../style/flat.js").FlatStyle>} */ (style);
+    /** @type {Array<import("../style/flat").FlatStyle>} */ (style);
   return flatStylesToStyleFunction(flatStyles);
 }
 

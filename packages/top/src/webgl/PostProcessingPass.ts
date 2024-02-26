@@ -38,7 +38,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Record<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
@@ -184,7 +184,7 @@ export class WebGLPostProcessingPass {
    * Initialize the render target texture of the post process, make sure it is at the
    * right size and bind it as a render target for the next draw calls.
    * The last step to be initialized will be the one where the primitives are rendered.
-   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {import("../Map").FrameState} frameState current frame state
    */
   init(frameState) {
     const gl = this.getGL();
@@ -256,10 +256,10 @@ export class WebGLPostProcessingPass {
 
   /**
    * Render to the next postprocessing pass (or to the canvas if final pass).
-   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {import("../Map").FrameState} frameState current frame state
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map").FrameState):void} [postCompose] Called before composing.
    */
   apply(frameState, nextPass, preCompose, postCompose) {
     const gl = this.getGL();
@@ -338,7 +338,7 @@ export class WebGLPostProcessingPass {
 
   /**
    * Sets the custom uniforms based on what was given in the constructor.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @private
    */
   applyUniforms(frameState) {

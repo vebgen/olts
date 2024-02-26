@@ -1,9 +1,9 @@
 
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { LineString } from '@olts/geometry';
-import TextFeature from './TextFeature.js';
-import {get as getProjection} from '../proj.js';
-import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature';
+import {get as getProjection} from '../proj';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {'barometric' | 'gps' | 'none'} IGCZ
@@ -62,7 +62,7 @@ export class IGC extends TextFeature {
     options = options ? options : {};
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -76,13 +76,13 @@ export class IGC extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromText(text, options) {
     const altitudeMode = this.altitudeMode_;
     const lines = text.split(NEWLINE_RE);
-    /** @type {Object<string, string>} */
+    /** @type {Record<string, string>} */
     const properties = {};
     const flatCoordinates = [];
     let year = 2000;
@@ -155,7 +155,7 @@ export class IGC extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */

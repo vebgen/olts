@@ -1,8 +1,8 @@
 
 
-import TileGrid from '../tilegrid/TileGrid.js';
-import {getJSON, resolveUrl} from '../net.js';
-import {get as getProjection} from '../proj.js';
+import TileGrid from '../tile-grid/TileGrid';
+import {getJSON, resolveUrl} from '../net';
+import {get as getProjection} from '../proj';
 import {getIntersection as intersectExtents} from '@olts/core/extent';
 
 /**
@@ -62,7 +62,7 @@ import {getIntersection as intersectExtents} from '@olts/core/extent';
  */
 
 /**
- * @type {Object<string, boolean>}
+ * @type {Record<string, boolean>}
  */
 const knownMapMediaTypes = {
   'image/png': true,
@@ -72,7 +72,7 @@ const knownMapMediaTypes = {
 };
 
 /**
- * @type {Object<string, boolean>}
+ * @type {Record<string, boolean>}
  */
 const knownVectorMediaTypes = {
   'application/vnd.mapbox-vector-tile': true,
@@ -82,8 +82,8 @@ const knownVectorMediaTypes = {
 /**
  * @typedef {Object} TileSetInfo
  * @property {string} urlTemplate The tile URL template.
- * @property {import("../tilegrid/TileGrid.js").default} grid The tile grid.
- * @property {import("../Tile.js").UrlFunction} urlFunction The tile URL function.
+ * @property {import("../tilegrid/TileGrid").default} grid The tile grid.
+ * @property {import("../Tile").UrlFunction} urlFunction The tile URL function.
  */
 
 /**
@@ -91,7 +91,7 @@ const knownVectorMediaTypes = {
  * @property {string} url The tile set URL.
  * @property {string} mediaType The preferred tile media type.
  * @property {Array<string>} [supportedMediaTypes] The supported media types.
- * @property {import("../proj/Projection.js").default} projection The source projection.
+ * @property {import("../proj/Projection").default} projection The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  */
 
@@ -145,7 +145,7 @@ export function getVectorTileUrlTemplate(
 
   /**
    * Lookup of URL by media type.
-   * @type {Object<string, string>}
+   * @type {Record<string, string>}
    */
   const hrefLookup = {};
 
@@ -209,7 +209,7 @@ function parseTileMatrixSet(
   const matrices = tileMatrixSet.tileMatrices;
 
   /**
-   * @type {Object<string, TileMatrix>}
+   * @type {Record<string, TileMatrix>}
    */
   const matrixLookup = {};
   for (let i = 0; i < matrices.length; ++i) {
@@ -218,7 +218,7 @@ function parseTileMatrixSet(
   }
 
   /**
-   * @type {Object<string, TileMatrixSetLimit>}
+   * @type {Record<string, TileMatrixSetLimit>}
    */
   const limitLookup = {};
 
@@ -294,7 +294,7 @@ function parseTileMatrixSet(
   const context = sourceInfo.context;
   const base = sourceInfo.url;
 
-  /** @type {import('../Tile.js').UrlFunction} */
+  /** @type {import('../Tile').UrlFunction} */
   function tileUrlFunction(tileCoord, pixelRatio, projection) {
     if (!tileCoord) {
       return undefined;

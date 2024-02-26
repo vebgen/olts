@@ -1,21 +1,21 @@
 
 // FIXME draw drag box
 import { BaseEvent as Event, EventsKey } from '@olts/events';
-import PointerInteraction from './Pointer.js';
-import RenderBox from '../render/Box.js';
-import { mouseActionButton } from '../events/condition.js';
+import PointerInteraction from './Pointer';
+import RenderBox from '../render/Box';
+import { mouseActionButton } from '../events/condition';
 
 /**
  * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(this: ?, import("../MapBrowserEvent.js").default, import("../pixel.js").Pixel, import("../pixel.js").Pixel):boolean} EndCondition
+ * @typedef {function(this: ?, import("../MapBrowserEvent").default, import("../pixel").Pixel, import("../pixel").Pixel):boolean} EndCondition
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
- * @property {import("../events/condition.js").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {import("../events/condition").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol/events/condition~mouseActionButton}.
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
@@ -23,7 +23,7 @@ import { mouseActionButton } from '../events/condition.js';
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
- * @property {function(this:DragBox, import("../MapBrowserEvent.js").default):void} [onBoxEnd] Code to execute just
+ * @property {function(this:DragBox, import("../MapBrowserEvent").default):void} [onBoxEnd] Code to execute just
  * before `boxend` is fired.
  */
 
@@ -68,9 +68,9 @@ export class DragBoxEvent extends Event {
     /**
      * @param {string} type The event type.
      * @param {Coordinate} coordinate The event coordinate.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Originating event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Originating event.
      */
-    constructor(type: string, coordinate: Coordinate, mapBrowserEvent: import("../MapBrowserEvent.js").default) {
+    constructor(type: string, coordinate: Coordinate, mapBrowserEvent: import("../MapBrowserEvent").default) {
         super(type);
 
         /**
@@ -83,7 +83,7 @@ export class DragBoxEvent extends Event {
 
         /**
          * @const
-         * @type {import("../MapBrowserEvent.js").default}
+         * @type {import("../MapBrowserEvent").default}
          * @api
          */
         this.mapBrowserEvent = mapBrowserEvent;
@@ -92,7 +92,7 @@ export class DragBoxEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend'|'boxstart', DragBoxEvent, Return> &
@@ -140,7 +140,7 @@ export class DragBox extends PointerInteraction {
         options = options ? options : {};
 
         /**
-         * @type {import("../render/Box.js").default}
+         * @type {import("../render/Box").default}
          * @private
          */
         this.box_ = new RenderBox(options.className || 'ol-dragbox');
@@ -156,14 +156,14 @@ export class DragBox extends PointerInteraction {
         }
 
         /**
-         * @type {import("../pixel.js").Pixel}
+         * @type {import("../pixel").Pixel}
          * @private
          */
         this.startPixel_ = null;
 
         /**
          * @private
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          */
         this.condition_ = options.condition ? options.condition : mouseActionButton;
 
@@ -179,13 +179,13 @@ export class DragBox extends PointerInteraction {
     /**
      * The default condition for determining whether the boxend event
      * should fire.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent The originating MapBrowserEvent
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent The originating MapBrowserEvent
      *     leading to the box end.
-     * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
-     * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
+     * @param {import("../pixel").Pixel} startPixel The starting pixel of the box.
+     * @param {import("../pixel").Pixel} endPixel The end pixel of the box.
      * @return {boolean} Whether or not the boxend condition should be fired.
      */
-    defaultBoxEndCondition(mapBrowserEvent: import("../MapBrowserEvent.js").default, startPixel: import("../pixel.js").Pixel, endPixel: import("../pixel.js").Pixel): boolean {
+    defaultBoxEndCondition(mapBrowserEvent: import("../MapBrowserEvent").default, startPixel: import("../pixel").Pixel, endPixel: import("../pixel").Pixel): boolean {
         const width = endPixel[0] - startPixel[0];
         const height = endPixel[1] - startPixel[1];
         return width * width + height * height >= this.minArea_;
@@ -202,9 +202,9 @@ export class DragBox extends PointerInteraction {
 
     /**
      * Handle pointer drag events.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      */
-    handleDragEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default) {
+    handleDragEvent(mapBrowserEvent: import("../MapBrowserEvent").default) {
         this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
         this.dispatchEvent(
@@ -218,10 +218,10 @@ export class DragBox extends PointerInteraction {
 
     /**
      * Handle pointer up events.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+    handleUpEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
         this.box_.setMap(null);
 
         const completeBox = this.boxEndCondition_(
@@ -244,10 +244,10 @@ export class DragBox extends PointerInteraction {
 
     /**
      * Handle pointer down events.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+    handleDownEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
         if (this.condition_(mapBrowserEvent)) {
             this.startPixel_ = mapBrowserEvent.pixel;
             this.box_.setMap(mapBrowserEvent.map);
@@ -266,9 +266,9 @@ export class DragBox extends PointerInteraction {
 
     /**
      * Function to execute just before `onboxend` is fired
-     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @param {import("../MapBrowserEvent").default} event Event.
      */
-    onBoxEnd(event: import("../MapBrowserEvent.js").default) { }
+    onBoxEnd(event: import("../MapBrowserEvent").default) { }
 }
 
 export default DragBox;

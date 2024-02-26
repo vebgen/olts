@@ -1,20 +1,20 @@
 
-import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasLayerRenderer, {canvasPool} from './Layer.js';
-import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
-import RenderEventType from '../../render/EventType.js';
-import ViewHint from '../../ViewHint.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup';
+import CanvasLayerRenderer, {canvasPool} from './Layer';
+import ExecutorGroup from '../../render/canvas/ExecutorGroup';
+import RenderEventType from '../../render/EventType';
+import ViewHint from '../../ViewHint';
 import {
   HIT_DETECT_RESOLUTION,
   createHitDetectionImageData,
   hitDetect,
-} from '../../render/canvas/hitdetect.js';
+} from '../../render/canvas/hitdetect';
 import {
   apply,
   makeInverse,
   makeScale,
   toString as transformToString,
-} from '../../transform.js';
+} from '../../transform';
 import {
   buffer,
   containsExtent,
@@ -29,7 +29,7 @@ import {
   getTolerance as getRenderTolerance,
   getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
-} from '../vector.js';
+} from '../vector';
 import {equals} from '@olts/core/array';
 import {
   fromUserExtent,
@@ -37,9 +37,9 @@ import {
   getUserProjection,
   toUserExtent,
   toUserResolution,
-} from '../../proj.js';
+} from '../../proj';
 import {getUid} from '@olts/core/util';
-import {wrapX as wrapCoordinateX} from '../../coordinate.js';
+import {wrapX as wrapCoordinateX} from '../../coordinate';
 
 /**
  * Canvas renderer for vector layers.
@@ -47,7 +47,7 @@ import {wrapX as wrapCoordinateX} from '../../coordinate.js';
  */
 export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
-   * @param {import("../../layer/BaseVector.js").default} vectorLayer Vector layer.
+   * @param {import("../../layer/BaseVector").default} vectorLayer Vector layer.
    */
   constructor(vectorLayer) {
     super(vectorLayer);
@@ -66,7 +66,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.hitDetectionImageData_ = null;
 
     /**
-     * @type {Array<import("../../Feature.js").default>}
+     * @type {Array<import("../../Feature").default>}
      */
     this.renderedFeatures_ = null;
 
@@ -120,7 +120,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
+     * @type {function(import("../../Feature").default, import("../../Feature").default): number|null}
      */
     this.renderedRenderOrder_ = null;
 
@@ -162,7 +162,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {ExecutorGroup} executorGroup Executor group.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {import("rbush").default} [declutterTree] Declutter tree.
    */
   renderWorlds(executorGroup, frameState, declutterTree) {
@@ -240,7 +240,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render declutter items for this layer
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    */
   renderDeclutter(frameState) {
     if (this.declutterExecutorGroup) {
@@ -256,7 +256,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Render the layer.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
    * @return {HTMLElement|null} The rendered element.
    */
@@ -341,7 +341,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Asynchronous layer level hit detection.
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../pixel").Pixel} pixel Pixel.
    * @return {Promise<Array<import("../../Feature").default>>} Promise
    * that resolves with an array of features.
    */
@@ -437,10 +437,10 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
-   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -458,11 +458,11 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const rotation = frameState.viewState.rotation;
     const layer = this.getLayer();
 
-    /** @type {!Object<string, import("../Map.js").HitMatch<T>|true>} */
+    /** @type {!Record<string, import("../Map").HitMatch<T>|true>} */
     const features = {};
 
     /**
-     * @param {import("../../Feature.js").FeatureLike} feature Feature.
+     * @param {import("../../Feature").FeatureLike} feature Feature.
      * @param {SimpleGeometry} geometry Geometry.
      * @param {number} distanceSq The squared distance to the click position
      * @return {T|undefined} Callback result.
@@ -530,7 +530,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Handle changes in image style state.
-   * @param {import("../../events/Event.js").default} event Image style change event.
+   * @param {import("../../events/Event").default} event Image style change event.
    * @private
    */
   handleStyleImageChange_(event) {
@@ -539,7 +539,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * Determine whether render should be called.
-   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {boolean} Layer is ready to be rendered.
    */
   prepareFrame(frameState) {
@@ -683,7 +683,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     let ready = true;
     const render =
       /**
-       * @param {import("../../Feature.js").default} feature Feature.
+       * @param {import("../../Feature").default} feature Feature.
        */
       (feature) => {
         let styles;
@@ -706,7 +706,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       };
 
     const userExtent = toUserExtent(extent, projection);
-    /** @type {Array<import("../../Feature.js").default>} */
+    /** @type {Array<import("../../Feature").default>} */
     const features = vectorSource.getFeaturesInExtent(userExtent);
     if (vectorLayerRenderOrder) {
       features.sort(vectorLayerRenderOrder);
@@ -754,12 +754,12 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {import("../../Feature.js").default} feature Feature.
+   * @param {import("../../Feature").default} feature Feature.
    * @param {number} squaredTolerance Squared render tolerance.
-   * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
-   * @param {import("../../proj.js").TransformFunction} [transform] Transform from user to view projection.
-   * @param {import("../../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+   * @param {import("../../style/Style").default|Array<import("../../style/Style").default>} styles The style or array of styles.
+   * @param {import("../../render/canvas/BuilderGroup").default} builderGroup Builder group.
+   * @param {import("../../proj").TransformFunction} [transform] Transform from user to view projection.
+   * @param {import("../../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(

@@ -1,5 +1,5 @@
 
-import FeatureFormat from '../format/Feature.js';
+import FeatureFormat from '../format/Feature';
 import {abstract} from '@olts/core/util';
 
 /**
@@ -15,7 +15,7 @@ export class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @return {import("./Feature.js").Type} Format.
+   * @return {import("./Feature").Type} Format.
    */
   getType() {
     return 'text';
@@ -25,8 +25,8 @@ export class TextFeature extends FeatureFormat {
    * Read the feature from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import("../Feature").default} Feature.
    * @api
    */
   readFeature(source, options) {
@@ -39,9 +39,9 @@ export class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromText(text, options) {
     return abstract();
@@ -51,8 +51,8 @@ export class TextFeature extends FeatureFormat {
    * Read the features from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {Array<import("../Feature").default>} Features.
    * @api
    */
   readFeatures(source, options) {
@@ -65,9 +65,9 @@ export class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromText(text, options) {
     return abstract();
@@ -77,7 +77,7 @@ export class TextFeature extends FeatureFormat {
    * Read the geometry from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {Geometry} Geometry.
    * @api
    */
@@ -91,7 +91,7 @@ export class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -103,7 +103,7 @@ export class TextFeature extends FeatureFormat {
    * Read the projection from the source.
    *
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default|undefined} Projection.
+   * @return {import("../proj/Projection").default|undefined} Projection.
    * @api
    */
   readProjection(source) {
@@ -113,7 +113,7 @@ export class TextFeature extends FeatureFormat {
   /**
    * @param {string} text Text.
    * @protected
-   * @return {import("../proj/Projection.js").default|undefined} Projection.
+   * @return {import("../proj/Projection").default|undefined} Projection.
    */
   readProjectionFromText(text) {
     return this.dataProjection;
@@ -122,8 +122,8 @@ export class TextFeature extends FeatureFormat {
   /**
    * Encode a feature as a string.
    *
-   * @param {import("../Feature.js").default} feature Feature.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Feature.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Encoded feature.
    * @api
    */
@@ -133,8 +133,8 @@ export class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -145,8 +145,8 @@ export class TextFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Encoded features.
    * @api
    */
@@ -156,8 +156,8 @@ export class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -169,7 +169,7 @@ export class TextFeature extends FeatureFormat {
    * Write a single geometry.
    *
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @return {string} Geometry.
    * @api
    */
@@ -180,7 +180,7 @@ export class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */

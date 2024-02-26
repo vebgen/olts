@@ -1,5 +1,5 @@
-import {getAllTextContent, getDocument} from '../xml.js';
-import {padNumber} from '../string.js';
+import {getAllTextContent, getDocument} from '../xml';
+import {padNumber} from '../string';
 
 /**
  * @param {Node} node Node.

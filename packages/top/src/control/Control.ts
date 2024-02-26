@@ -1,8 +1,8 @@
 
 import { BaseObject  } from '@olts/events';
-import MapEventType from '../MapEventType.js';
+import MapEventType from '../MapEventType';
 import {VOID} from '@olts/core/functions';
-import {listen, unlistenByKey} from '../events.js';
+import {listen, unlistenByKey} from '../events';
 import {removeNode} from '@olts/core/dom';
 
 /**
@@ -10,7 +10,7 @@ import {removeNode} from '@olts/core/dom';
  * @property {HTMLElement} [element] The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when
+ * @property {function(import("../MapEvent").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want
@@ -66,13 +66,13 @@ export class Control extends BaseObject {
 
     /**
      * @private
-     * @type {import("../Map.js").default|null}
+     * @type {import("../Map").default|null}
      */
     this.map_ = null;
 
     /**
      * @protected
-     * @type {!Array<import("../events.js").EventsKey>}
+     * @type {!Array<import("../events").EventsKey>}
      */
     this.listenerKeys = [];
 
@@ -95,7 +95,7 @@ export class Control extends BaseObject {
 
   /**
    * Get the map associated with this control.
-   * @return {import("../Map.js").default|null} Map.
+   * @return {import("../Map").default|null} Map.
    * @api
    */
   getMap() {
@@ -107,7 +107,7 @@ export class Control extends BaseObject {
    * Pass `null` to just remove the control from the current map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {import("../Map.js").default|null} map Map.
+   * @param {import("../Map").default|null} map Map.
    * @api
    */
   setMap(map) {
@@ -135,7 +135,7 @@ export class Control extends BaseObject {
 
   /**
    * Renders the control.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @param {import("../MapEvent").default} mapEvent Map event.
    * @api
    */
   render(mapEvent) {}

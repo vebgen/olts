@@ -1,22 +1,22 @@
 
-import Collection from '../Collection.js';
-import CollectionEventType from '../CollectionEventType.js';
+import Collection from '../Collection';
+import CollectionEventType from '../CollectionEventType';
 import { BaseEvent as Event } from '@olts/events';
-import EventType from '../events/EventType.js';
-import Feature from '../Feature.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
+import type { EventType } from '@olts/events';
+import Feature from '../Feature';
+import MapBrowserEventType from '../MapBrowserEventType';
 import { Point } from '@olts/geometry';
-import PointerInteraction from './Pointer.js';
-import RBush from '../structs/RBush.js';
-import VectorEventType from '../source/VectorEventType.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
+import PointerInteraction from './Pointer';
+import RBush from '../structs/RBush';
+import VectorEventType from '../source/VectorEventType';
+import VectorLayer from '../layer/Vector';
+import VectorSource from '../source/Vector';
 import {
     altKeyOnly,
     always,
     primaryAction,
     singleClick,
-} from '../events/condition.js';
+} from '../events/condition';
 import {
     boundingExtent,
     buffer as bufferExtent,
@@ -28,8 +28,8 @@ import {
     equals as coordinatesEqual,
     squaredDistance as squaredCoordinateDistance,
     squaredDistanceToSegment,
-} from '../coordinate.js';
-import { createEditingStyle } from '../style/Style.js';
+} from '../coordinate';
+import { createEditingStyle } from '../style/Style';
 import { equals } from '@olts/core/array';
 import { fromCircle } from '@olts/geometry';
 import {
@@ -38,7 +38,7 @@ import {
     getUserProjection,
     toUserCoordinate,
     toUserExtent,
-} from '../proj.js';
+} from '../proj';
 import { getUid } from '@olts/core/util';
 
 /**
@@ -88,23 +88,23 @@ const ModifyEventType = {
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that
+ * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event will be considered to add or move a
  * vertex to the sketch. Default is
  * {@link module:ol/events/condition.primaryAction}.
- * @property {import("../events/condition.js").Condition} [deleteCondition] A function
+ * @property {import("../events/condition").Condition} [deleteCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. By default,
  * {@link module:ol/events/condition.singleClick} with
  * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
- * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
+ * @property {import("../events/condition").Condition} [insertVertexCondition] A
  * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
  * features. Default is {@link module:ol/events/condition.always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
+ * @property {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike} [style]
  * Style used for the modification point or vertex. For linestrings and polygons, this will
  * be the affected vertex, for circles a point along the circle, and for points the actual
  * point. If not configured, the default edit style is used (see {@link module:ol/style/Style~Style}).
@@ -138,10 +138,10 @@ export class ModifyEvent extends Event {
      * @param {ModifyEventType} type Type.
      * @param {Collection<Feature>} features
      * The features modified.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent
      * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      */
-    constructor(type: ModifyEventType, features: Collection<Feature>, mapBrowserEvent: import("../MapBrowserEvent.js").default) {
+    constructor(type: ModifyEventType, features: Collection<Feature>, mapBrowserEvent: import("../MapBrowserEvent").default) {
         super(type);
 
         /**
@@ -153,7 +153,7 @@ export class ModifyEvent extends Event {
 
         /**
          * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
-         * @type {import("../MapBrowserEvent.js").default}
+         * @type {import("../MapBrowserEvent").default}
          * @api
          */
         this.mapBrowserEvent = mapBrowserEvent;
@@ -162,7 +162,7 @@ export class ModifyEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
@@ -211,7 +211,7 @@ export class Modify extends PointerInteraction {
      * @param {Options} options Options.
      */
     constructor(options: Options) {
-        super(/** @type {import("./Pointer.js").Options} */(options));
+        super(/** @type {import("./Pointer").Options} */(options));
         this.on = this.onInternal as ModifyOnSignature<EventsKey>;
         this.once = this.onceInternal as ModifyOnSignature<EventsKey>;
         this.un = this.unInternal as ModifyOnSignature<void>;
@@ -221,21 +221,21 @@ export class Modify extends PointerInteraction {
 
         /**
          * @private
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          */
         this.condition_ = options.condition ? options.condition : primaryAction;
 
         /**
          * @private
-         * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
+         * @param {import("../MapBrowserEvent").default} mapBrowserEvent Browser event.
          * @return {boolean} Combined condition result.
          */
-        this.defaultDeleteCondition_ = function (mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+        this.defaultDeleteCondition_ = function (mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
             return altKeyOnly(mapBrowserEvent) && singleClick(mapBrowserEvent);
         };
 
         /**
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          * @private
          */
         this.deleteCondition_ = options.deleteCondition
@@ -243,7 +243,7 @@ export class Modify extends PointerInteraction {
             : this.defaultDeleteCondition_;
 
         /**
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          * @private
          */
         this.insertVertexCondition_ = options.insertVertexCondition
@@ -259,13 +259,13 @@ export class Modify extends PointerInteraction {
 
         /**
          * Segments intersecting {@link this.vertexFeature_} by segment uid.
-         * @type {Object<string, boolean>}
+         * @type {Record<string, boolean>}
          * @private
          */
         this.vertexSegments_ = null;
 
         /**
-         * @type {import("../pixel.js").Pixel}
+         * @type {import("../pixel").Pixel}
          * @private
          */
         this.lastPixel_ = [0, 0];
@@ -336,7 +336,7 @@ export class Modify extends PointerInteraction {
         /**
          * @const
          * @private
-         * @type {!Object<string, function(Feature, Geometry): void>}
+         * @type {!Record<string, function(Feature, Geometry): void>}
          */
         this.SEGMENT_WRITERS_ = {
             'Point': this.writePointGeometry_.bind(this),
@@ -403,7 +403,7 @@ export class Modify extends PointerInteraction {
         );
 
         /**
-         * @type {import("../MapBrowserEvent.js").default}
+         * @type {import("../MapBrowserEvent").default}
          * @private
          */
         this.lastPointerEvent_ = null;
@@ -443,11 +443,11 @@ export class Modify extends PointerInteraction {
     }
 
     /**
-     * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
+     * @param {import("../MapBrowserEvent").default} evt Map browser event.
      * @param {Array<Array<SegmentData>>} segments The segments subject to modification.
      * @private
      */
-    willModifyFeatures_(evt: import("../MapBrowserEvent.js").default, segments: Array<Array<SegmentData>>) {
+    willModifyFeatures_(evt: import("../MapBrowserEvent").default, segments: Array<Array<SegmentData>>) {
         if (!this.featuresBeingModified_) {
             this.featuresBeingModified_ = new Collection();
             const features = this.featuresBeingModified_.getArray();
@@ -538,9 +538,9 @@ export class Modify extends PointerInteraction {
      * Remove the interaction from its current map and attach it to the new map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../Map").default} map Map.
      */
-    setMap(map: import("../Map.js").default) {
+    setMap(map: import("../Map").default) {
         this.overlay_.setMap(map);
         super.setMap(map);
     }
@@ -555,38 +555,38 @@ export class Modify extends PointerInteraction {
     }
 
     /**
-     * @param {import("../source/Vector.js").VectorSourceEvent} event Event.
+     * @param {import("../source/Vector").VectorSourceEvent} event Event.
      * @private
      */
-    handleSourceAdd_(event: import("../source/Vector.js").VectorSourceEvent) {
+    handleSourceAdd_(event: import("../source/Vector").VectorSourceEvent) {
         if (event.feature) {
             this.features_.push(event.feature);
         }
     }
 
     /**
-     * @param {import("../source/Vector.js").VectorSourceEvent} event Event.
+     * @param {import("../source/Vector").VectorSourceEvent} event Event.
      * @private
      */
-    handleSourceRemove_(event: import("../source/Vector.js").VectorSourceEvent) {
+    handleSourceRemove_(event: import("../source/Vector").VectorSourceEvent) {
         if (event.feature) {
             this.features_.remove(event.feature);
         }
     }
 
     /**
-     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+     * @param {import("../Collection").CollectionEvent<Feature>} evt Event.
      * @private
      */
-    handleFeatureAdd_(evt: import("../Collection.js").CollectionEvent<Feature>) {
+    handleFeatureAdd_(evt: import("../Collection").CollectionEvent<Feature>) {
         this.addFeature_(evt.element);
     }
 
     /**
-     * @param {import("../events/Event.js").default} evt Event.
+     * @param {import("../events/Event").default} evt Event.
      * @private
      */
-    handleFeatureChange_(evt: import("../events/Event.js").default) {
+    handleFeatureChange_(evt: import("../events/Event").default) {
         if (!this.changingFeature_) {
             const feature = /** @type {Feature} */ (evt.target);
             this.removeFeature_(feature);
@@ -595,10 +595,10 @@ export class Modify extends PointerInteraction {
     }
 
     /**
-     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+     * @param {import("../Collection").CollectionEvent<Feature>} evt Event.
      * @private
      */
-    handleFeatureRemove_(evt: import("../Collection.js").CollectionEvent<Feature>) {
+    handleFeatureRemove_(evt: import("../Collection").CollectionEvent<Feature>) {
         this.removeFeature_(evt.element);
     }
 
@@ -834,10 +834,10 @@ export class Modify extends PointerInteraction {
 
     /**
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the geometry.
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent.js").default): boolean {
+    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
         if (!mapBrowserEvent.originalEvent) {
             return true;
         }
@@ -871,9 +871,9 @@ export class Modify extends PointerInteraction {
 
     /**
      * Handle pointer drag events.
-     * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @param {import("../MapBrowserEvent").default} evt Event.
      */
-    handleDragEvent(evt: import("../MapBrowserEvent.js").default) {
+    handleDragEvent(evt: import("../MapBrowserEvent").default) {
         this.ignoreNextSingleClick_ = false;
         this.willModifyFeatures_(evt, this.dragSegments_);
 
@@ -977,10 +977,10 @@ export class Modify extends PointerInteraction {
 
     /**
      * Handle pointer down events.
-     * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(evt: import("../MapBrowserEvent.js").default): boolean {
+    handleDownEvent(evt: import("../MapBrowserEvent").default): boolean {
         if (!this.condition_(evt)) {
             return false;
         }
@@ -1097,10 +1097,10 @@ export class Modify extends PointerInteraction {
 
     /**
      * Handle pointer up events.
-     * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(evt: import("../MapBrowserEvent.js").default): boolean {
+    handleUpEvent(evt: import("../MapBrowserEvent").default): boolean {
         for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
             const segmentData = this.dragSegments_[i][0];
             const geometry = segmentData.geometry;
@@ -1148,21 +1148,21 @@ export class Modify extends PointerInteraction {
     }
 
     /**
-     * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @param {import("../MapBrowserEvent").default} evt Event.
      * @private
      */
-    handlePointerMove_(evt: import("../MapBrowserEvent.js").default) {
+    handlePointerMove_(evt: import("../MapBrowserEvent").default) {
         this.lastPixel_ = evt.pixel;
         this.handlePointerAtPixel_(evt.pixel, evt.map, evt.coordinate);
     }
 
     /**
-     * @param {import("../pixel.js").Pixel} pixel Pixel
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../pixel").Pixel} pixel Pixel
+     * @param {import("../Map").default} map Map.
      * @param {Coordinate} [coordinate] The pixel Coordinate.
      * @private
      */
-    handlePointerAtPixel_(pixel: import("../pixel.js").Pixel, map: import("../Map.js").default, coordinate: Coordinate) {
+    handlePointerAtPixel_(pixel: import("../pixel").Pixel, map: import("../Map").default, coordinate: Coordinate) {
         const pixelCoordinate = coordinate || map.getCoordinateFromPixel(pixel);
         const projection = map.getView().getProjection();
         const sortByDistance = function (a, b) {
@@ -1231,7 +1231,7 @@ export class Modify extends PointerInteraction {
             const vertexPixel = map.getPixelFromCoordinate(vertex);
             let dist = coordinateDistance(pixel, vertexPixel);
             if (hitPointGeometry || dist <= this.pixelTolerance_) {
-                /** @type {Object<string, boolean>} */
+                /** @type {Record<string, boolean>} */
                 const vertexSegments: { [s: string]: boolean; } = {};
                 vertexSegments[getUid(closestSegment)] = true;
 
@@ -1568,13 +1568,13 @@ function compareIndexes(a: SegmentData, b: SegmentData): number {
  *        which to calculate the distance.
  * @param {SegmentData} segmentData The object describing the line
  *        segment we are calculating the distance to.
- * @param {import("../proj/Projection.js").default} projection The view projection.
+ * @param {import("../proj/Projection").default} projection The view projection.
  * @return {number} The square of the distance between a point and a line segment.
  */
 function projectedDistanceToSegmentDataSquared(
     pointCoordinates: Coordinate,
     segmentData: SegmentData,
-    projection: import("../proj/Projection.js").default,
+    projection: import("../proj/Projection").default,
 ): number {
     const geometry = segmentData.geometry;
 
@@ -1613,10 +1613,10 @@ function projectedDistanceToSegmentDataSquared(
  *        should be found.
  * @param {SegmentData} segmentData The object describing the line
  *        segment which should contain the closest point.
- * @param {import("../proj/Projection.js").default} projection The view projection.
+ * @param {import("../proj/Projection").default} projection The view projection.
  * @return {Coordinate} The point closest to the specified line segment.
  */
-function closestOnSegmentData(pointCoordinates: Coordinate, segmentData: SegmentData, projection: import("../proj/Projection.js").default): Coordinate {
+function closestOnSegmentData(pointCoordinates: Coordinate, segmentData: SegmentData, projection: import("../proj/Projection").default): Coordinate {
     const geometry = segmentData.geometry;
 
     if (
@@ -1649,9 +1649,9 @@ function closestOnSegmentData(pointCoordinates: Coordinate, segmentData: Segment
 }
 
 /**
- * @return {import("../style/Style.js").StyleFunction} Styles.
+ * @return {import("../style/Style").StyleFunction} Styles.
  */
-function getDefaultStyleFunction(): import("../style/Style.js").StyleFunction {
+function getDefaultStyleFunction(): import("../style/Style").StyleFunction {
     const style = createEditingStyle();
     return function (feature, resolution) {
         return style['Point'];

@@ -1,29 +1,29 @@
 
-import TileEventType from './TileEventType.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
-import TileState from '../TileState.js';
-import {createFromTemplates, expandUrl} from '../tileurlfunction.js';
-import {getKeyZXY} from '../tilecoord.js';
+import TileEventType from './TileEventType';
+import TileSource, {TileSourceEvent} from './Tile';
+import type { TileState} from '../tile';
+import {createFromTemplates, expandUrl} from '../tileurlfunction';
+import {getKeyZXY} from '../tile-coord';
 import {getUid} from '@olts/core/util';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Cache size.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection.
- * @property {import("./Source.js").State} [state] State.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] TileGrid.
- * @property {import("../Tile.js").LoadFunction} tileLoadFunction TileLoadFunction.
+ * @property {ProjectionLike} [projection] Projection.
+ * @property {import("./Source").State} [state] State.
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] TileGrid.
+ * @property {import("../Tile").LoadFunction} tileLoadFunction TileLoadFunction.
  * @property {number} [tilePixelRatio] TilePixelRatio.
- * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] TileUrlFunction.
+ * @property {import("../Tile").UrlFunction} [tileUrlFunction] TileUrlFunction.
  * @property {string} [url] Url.
  * @property {Array<string>} [urls] Urls.
  * @property {boolean} [wrapX=true] WrapX.
  * @property {number} [transition] Transition.
  * @property {string} [key] Key.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0] ZDirection.
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0] ZDirection.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  */
@@ -31,7 +31,7 @@ import {getUid} from '@olts/core/util';
 /**
  * Base class for sources providing tiles divided into a tile grid over http.
  *
- * @fires import("./Tile.js").TileSourceEvent
+ * @fires import("./Tile").TileSourceEvent
  */
 export class UrlTile extends TileSource {
   /**
@@ -63,7 +63,7 @@ export class UrlTile extends TileSource {
 
     /**
      * @protected
-     * @type {import("../Tile.js").LoadFunction}
+     * @type {import("../Tile").LoadFunction}
      */
     this.tileLoadFunction = options.tileLoadFunction;
 
@@ -85,14 +85,14 @@ export class UrlTile extends TileSource {
 
     /**
      * @private
-     * @type {!Object<string, boolean>}
+     * @type {!Record<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
   }
 
   /**
    * Return the tile load function of the source.
-   * @return {import("../Tile.js").LoadFunction} TileLoadFunction
+   * @return {import("../Tile").LoadFunction} TileLoadFunction
    * @api
    */
   getTileLoadFunction() {
@@ -101,7 +101,7 @@ export class UrlTile extends TileSource {
 
   /**
    * Return the tile URL function of the source.
-   * @return {import("../Tile.js").UrlFunction} TileUrlFunction
+   * @return {import("../Tile").UrlFunction} TileUrlFunction
    * @api
    */
   getTileUrlFunction() {
@@ -123,23 +123,23 @@ export class UrlTile extends TileSource {
 
   /**
    * Handle tile change events.
-   * @param {import("../events/Event.js").default} event Event.
+   * @param {import("../events/Event").default} event Event.
    * @protected
    */
   handleTileChange(event) {
-    const tile = /** @type {import("../Tile.js").default} */ (event.target);
+    const tile = /** @type {import("../Tile").default} */ (event.target);
     const uid = getUid(tile);
     const tileState = tile.getState();
     let type;
-    if (tileState == TileState.LOADING) {
+    if (tileState == TileStates.LOADING) {
       this.tileLoadingKeys_[uid] = true;
       type = TileEventType.TILELOADSTART;
     } else if (uid in this.tileLoadingKeys_) {
       delete this.tileLoadingKeys_[uid];
       type =
-        tileState == TileState.ERROR
+        tileState == TileStates.ERROR
           ? TileEventType.TILELOADERROR
-          : tileState == TileState.LOADED
+          : tileState == TileStates.LOADED
             ? TileEventType.TILELOADEND
             : undefined;
     }
@@ -150,7 +150,7 @@ export class UrlTile extends TileSource {
 
   /**
    * Set the tile load function of the source.
-   * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("../Tile").LoadFunction} tileLoadFunction Tile load function.
    * @api
    */
   setTileLoadFunction(tileLoadFunction) {
@@ -161,7 +161,7 @@ export class UrlTile extends TileSource {
 
   /**
    * Set the tile URL function of the source.
-   * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
+   * @param {import("../Tile").UrlFunction} tileUrlFunction Tile URL function.
    * @param {string} [key] Optional new tile key for the source.
    * @api
    */
@@ -202,9 +202,9 @@ export class UrlTile extends TileSource {
   }
 
   /**
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {TileCoord} tileCoord Tile coordinate.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {string|undefined} Tile URL.
    */
   tileUrlFunction(tileCoord, pixelRatio, projection) {

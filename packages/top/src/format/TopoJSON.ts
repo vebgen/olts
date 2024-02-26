@@ -1,14 +1,14 @@
 
-import Feature from '../Feature.js';
-import JSONFeature from './JSONFeature.js';
+import Feature from '../Feature';
+import JSONFeature from './JSONFeature';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import {get as getProjection} from '../proj.js';
-import {transformGeometryWithOptions} from './Feature.js';
+import {get as getProjection} from '../proj';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {import("topojson-specification").Topology} TopoJSONTopology
@@ -24,7 +24,7 @@ import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
+ * @property {ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {string} [layerName] Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means
  * that when set to `'layer'`, a topology like
@@ -73,7 +73,7 @@ export class TopoJSON extends JSONFeature {
     this.layers_ = options.layers ? options.layers : null;
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection(
       options.dataProjection ? options.dataProjection : 'EPSG:4326',
@@ -82,7 +82,7 @@ export class TopoJSON extends JSONFeature {
 
   /**
    * @param {Object} object Object.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -151,7 +151,7 @@ export class TopoJSON extends JSONFeature {
   /**
    * @param {Object} object Object.
    * @protected
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    */
   readProjectionFromObject(object) {
     return this.dataProjection;
@@ -160,7 +160,7 @@ export class TopoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object<string, function(TopoJSONGeometry, Array, ...Array=): Geometry>}
+ * @type {Record<string, function(TopoJSONGeometry, Array, ...Array=): Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -315,7 +315,7 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions} [options] Read options.
+ * @param {import("./Feature").ReadOptions} [options] Read options.
  * @return {Array<Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(
@@ -353,7 +353,7 @@ function readFeaturesFromGeometryCollection(
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {import("./Feature.js").ReadOptions} [options] Read options.
+ * @param {import("./Feature").ReadOptions} [options] Read options.
  * @return {Feature} Feature.
  */
 function readFeatureFromGeometry(

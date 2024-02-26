@@ -1,13 +1,13 @@
 
 
-import BaseTileRepresentation from './BaseTileRepresentation.js';
-import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch.js';
-import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import BaseTileRepresentation from './BaseTileRepresentation';
+import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch';
+import WebGLArrayBuffer from './Buffer';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl';
 import {
   create as createTransform,
   translate as translateTransform,
-} from '../transform.js';
+} from '../transform';
 
 /**
  * @typedef {import("../VectorRenderTile").default} TileType
@@ -18,8 +18,8 @@ import {
  */
 export class TileGeometry extends BaseTileRepresentation {
   /**
-   * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
-   * @param {Array<import("../render/webgl/VectorStyleRenderer.js").default>} styleRenderers Array of vector style renderers
+   * @param {import("./BaseTileRepresentation").TileRepresentationOptions<TileType>} options The tile texture options.
+   * @param {Array<import("../render/webgl/VectorStyleRenderer").default>} styleRenderers Array of vector style renderers
    */
   constructor(options, styleRenderers) {
     super(options);
@@ -35,7 +35,7 @@ export class TileGeometry extends BaseTileRepresentation {
     this.styleRenderers_ = styleRenderers;
 
     /**
-     * @type {Array<import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers>}
+     * @type {Array<import("../render/webgl/VectorStyleRenderer").WebGLBuffers>}
      */
     this.buffers = [];
 

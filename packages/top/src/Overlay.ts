@@ -1,9 +1,9 @@
 
 import { BaseObject, EventsKey } from '@olts/events';
-import MapEventType from './MapEventType.js';
+import MapEventType from './MapEventType';
 import { CLASS_SELECTABLE } from '@olts/core/css';
 import { containsExtent } from '@olts/core/extent';
-import { listen, unlistenByKey } from './events.js';
+import { listen, unlistenByKey } from './events';
 import { outerHeight, outerWidth, removeChildren, removeNode } from '@olts/core/dom';
 
 /**
@@ -95,7 +95,7 @@ const Property = {
  *
  * Example:
  *
- *     import Overlay from 'ol/Overlay.js';
+ *     import Overlay from 'ol/Overlay';
  *
  *     // ...
  *     const popup = new Overlay({
@@ -187,7 +187,7 @@ export class Overlay extends BaseObject {
 
         /**
          * @protected
-         * @type {?import("./events.js").EventsKey}
+         * @type {?import("./events").EventsKey}
          */
         this.mapPostrenderListenerKey = null;
 
@@ -231,13 +231,13 @@ export class Overlay extends BaseObject {
 
     /**
      * Get the map associated with this overlay.
-     * @return {import("./Map.js").default|null} The map that the
+     * @return {import("./Map").default|null} The map that the
      * overlay is part of.
      * @observable
      * @api
      */
-    getMap(): import("./Map.js").default | null {
-        return /** @type {import("./Map.js").default|null} */ (
+    getMap(): import("./Map").default | null {
+        return /** @type {import("./Map").default|null} */ (
             this.get(Property.MAP) || null
         );
     }
@@ -358,12 +358,12 @@ export class Overlay extends BaseObject {
 
     /**
      * Set the map to be associated with this overlay.
-     * @param {import("./Map.js").default|null} map The map that the
+     * @param {import("./Map").default|null} map The map that the
      * overlay is part of. Pass `null` to just remove the overlay from the current map.
      * @observable
      * @api
      */
-    setMap(map: import("./Map.js").default | null) {
+    setMap(map: import("./Map").default | null) {
         this.set(Property.MAP, map);
     }
 
@@ -522,11 +522,11 @@ export class Overlay extends BaseObject {
     }
 
     /**
-     * @param {import("./pixel.js").Pixel} pixel The pixel location.
+     * @param {import("./pixel").Pixel} pixel The pixel location.
      * @param {Size|undefined} mapSize The map size.
      * @protected
      */
-    updateRenderedPosition(pixel: import("./pixel.js").Pixel, mapSize: Size | undefined) {
+    updateRenderedPosition(pixel: import("./pixel").Pixel, mapSize: Size | undefined) {
         const style = this.element.style;
         const offset = this.getOffset();
 

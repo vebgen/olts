@@ -1,6 +1,6 @@
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
 import {equals} from '@olts/core/array';
 import {removeChildren, replaceNode} from '@olts/core/dom';
@@ -27,7 +27,7 @@ import {removeChildren, replaceNode} from '@olts/core/dom';
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
  * expanded attributions button.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when
+ * @property {function(import("../MapEvent").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */
@@ -182,7 +182,7 @@ export class Attribution extends Control {
 
   /**
    * Collect a list of visible attributions and set the collapsible state.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @return {Array<string>} Attributions.
    * @private
    */
@@ -210,7 +210,7 @@ export class Attribution extends Control {
 
   /**
    * @private
-   * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @param {?import("../Map").FrameState} frameState Frame state.
    */
   updateElement_(frameState) {
     if (!frameState) {
@@ -321,7 +321,7 @@ export class Attribution extends Control {
 
   /**
    * Update the attribution element.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @param {import("../MapEvent").default} mapEvent Map event.
    * @override
    */
   render(mapEvent) {

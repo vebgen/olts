@@ -1,5 +1,5 @@
 
-import ImageState from '../ImageState.js';
+import ImageState from '../ImageState';
 import {getUid} from '@olts/core/util';
 
 /**
@@ -9,7 +9,7 @@ import {getUid} from '@olts/core/util';
  * unmanaged layers. The third is the {@link SimpleGeometry} of the feature. For features
  * with a GeometryCollection geometry, it will be the first detected geometry from the collection.
  * @template T
- * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>, SimpleGeometry): T} FeatureCallback
+ * @typedef {function(import("../Feature").FeatureLike, import("../layer/Layer").default<import("../source/Source").default>, SimpleGeometry): T} FeatureCallback
  */
 
 /**
@@ -20,9 +20,9 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 /**
  * @const
- * @type {Object<GeometryType,
- *                function(import("../render/canvas/BuilderGroup.js").default, Geometry,
- *                         import("../style/Style.js").default, Object): void>}
+ * @type {Record<GeometryType,
+ *                function(import("../render/canvas/BuilderGroup").default, Geometry,
+ *                         import("../style/Style").default, Object): void>}
  */
 const GEOMETRY_RENDERERS = {
   'Point': renderPointGeometry,
@@ -36,8 +36,8 @@ const GEOMETRY_RENDERERS = {
 };
 
 /**
- * @param {import("../Feature.js").FeatureLike} feature1 Feature 1.
- * @param {import("../Feature.js").FeatureLike} feature2 Feature 2.
+ * @param {import("../Feature").FeatureLike} feature1 Feature 1.
+ * @param {import("../Feature").FeatureLike} feature2 Feature 2.
  * @return {number} Order.
  */
 export function defaultOrder(feature1, feature2) {
@@ -64,11 +64,11 @@ export function getTolerance(resolution, pixelRatio) {
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Builder group.
  * @param {Circle} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderCircleGeometry(
   builderGroup,
@@ -96,13 +96,13 @@ function renderCircleGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../style/Style").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(import("../events/Event.js").default): void} listener Listener function.
- * @param {import("../proj.js").TransformFunction} [transform] Transform from user to view projection.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {function(import("../events/Event").default): void} listener Listener function.
+ * @param {import("../proj").TransformFunction} [transform] Transform from user to view projection.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  * @return {boolean} `true` if style is loading.
  */
 export function renderFeature(
@@ -151,12 +151,12 @@ export function renderFeature(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../style/Style").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {import("../proj.js").TransformFunction} [transform] Optional transform function.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../proj").TransformFunction} [transform] Optional transform function.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderFeatureInternal(
   replayGroup,
@@ -190,10 +190,10 @@ function renderFeatureInternal(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
- * @param {Geometry|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
+ * @param {Geometry|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
   if (geometry.getType() == 'GeometryCollection') {
@@ -216,11 +216,11 @@ function renderGeometry(replayGroup, geometry, style, feature) {
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
  * @param {GeometryCollection} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderGeometryCollectionGeometry(
   replayGroup,
@@ -244,11 +244,11 @@ function renderGeometryCollectionGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
- * @param {LineString|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
+ * @param {LineString|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderLineStringGeometry(
   builderGroup,
@@ -278,11 +278,11 @@ function renderLineStringGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
- * @param {MultiLineString|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
+ * @param {MultiLineString|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiLineStringGeometry(
   builderGroup,
@@ -312,11 +312,11 @@ function renderMultiLineStringGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
  * @param {MultiPolygon} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").default} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiPolygonGeometry(
   builderGroup,
@@ -344,11 +344,11 @@ function renderMultiPolygonGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
- * @param {Point|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
+ * @param {Point|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderPointGeometry(
   builderGroup,
@@ -359,7 +359,7 @@ function renderPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  /** @type {import("../render/canvas").DeclutterImageWithText} */
   let declutterImageWithText;
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -402,11 +402,11 @@ function renderPointGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
- * @param {MultiPoint|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
+ * @param {MultiPoint|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderMultiPointGeometry(
   builderGroup,
@@ -417,7 +417,7 @@ function renderMultiPointGeometry(
 ) {
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  /** @type {import("../render/canvas").DeclutterImageWithText} */
   let declutterImageWithText;
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -460,11 +460,11 @@ function renderMultiPointGeometry(
 }
 
 /**
- * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
- * @param {Polygon|import("../render/Feature.js").default} geometry Geometry.
- * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").FeatureLike} feature Feature.
- * @param {import("../render/canvas/BuilderGroup.js").default} [declutterBuilderGroup] Builder for decluttering.
+ * @param {import("../render/canvas/BuilderGroup").default} builderGroup Replay group.
+ * @param {Polygon|import("../render/Feature").default} geometry Geometry.
+ * @param {import("../style/Style").default} style Style.
+ * @param {import("../Feature").FeatureLike} feature Feature.
+ * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */
 function renderPolygonGeometry(
   builderGroup,

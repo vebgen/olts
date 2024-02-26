@@ -1,12 +1,12 @@
-import EventType from '../events/EventType.js';
-import Interaction, {pan} from './Interaction.js';
-import Key from '../events/Key.js';
-import {noModifierKeys, targetNotEditable} from '../events/condition.js';
-import {rotate as rotateCoordinate} from '../coordinate.js';
+import type { EventType } from '@olts/events';
+import Interaction, {pan} from './Interaction';
+import Key from '../events/Key';
+import {noModifierKeys, targetNotEditable} from '../events/condition';
+import {rotate as rotateCoordinate} from '../coordinate';
 
 /**
  * @typedef {Object} Options
- * @property {import("../events/condition.js").Condition} [condition] A function that
+ * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition.noModifierKeys} and
@@ -39,7 +39,7 @@ export class KeyboardPan extends Interaction {
 
     /**
      * @private
-     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
+     * @param {import("../MapBrowserEvent").default} mapBrowserEvent Browser event.
      * @return {boolean} Combined condition result.
      */
     this.defaultCondition_ = function (mapBrowserEvent) {
@@ -50,7 +50,7 @@ export class KeyboardPan extends Interaction {
 
     /**
      * @private
-     * @type {import("../events/condition.js").Condition}
+     * @type {import("../events/condition").Condition}
      */
     this.condition_ =
       options.condition !== undefined
@@ -75,7 +75,7 @@ export class KeyboardPan extends Interaction {
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} if it was a
    * `KeyEvent`, and decides the direction to pan to (if an arrow key was
    * pressed).
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    */
   handleEvent(mapBrowserEvent) {

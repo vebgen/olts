@@ -1,7 +1,7 @@
-import Layer from './Layer.js';
+import Layer from './Layer';
 
 /**
- * @template {import("../source/Image.js").default} ImageSourceType
+ * @template {import("../source/Image").default} ImageSourceType
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -20,12 +20,12 @@ import Layer from './Layer.js';
  * visible.
  * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link import("../Map.js").default#addLayer map.addLayer()}.
+ * use {@link import("../Map").default#addLayer map.addLayer()}.
  * @property {ImageSourceType} [source] Source for this layer.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -35,8 +35,8 @@ import Layer from './Layer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Image.js").default} ImageSourceType
- * @template {import("../renderer/Layer.js").default} RendererType
+ * @template {import("../source/Image").default} ImageSourceType
+ * @template {import("../renderer/Layer").default} RendererType
  * @extends {Layer<ImageSourceType, RendererType>}
  * @api
  */

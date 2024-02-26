@@ -1,7 +1,7 @@
 
-import {clamp} from '@olts/core/math';
-import {getHeight, getWidth} from '@olts/core/extent';
-import {linearFindNearest} from '@olts/core/array';
+import { clamp } from '@olts/core/math';
+import { getHeight, getWidth } from '@olts/core/extent';
+import { linearFindNearest } from '@olts/core/array';
 
 /**
  * @typedef {function((number|undefined), number, Size, boolean=): (number|undefined)} Type
@@ -17,18 +17,18 @@ import {linearFindNearest} from '@olts/core/array';
  * @return {number} Capped resolution.
  */
 function getViewportClampedResolution(
-  resolution,
-  maxExtent,
-  viewportSize,
-  showFullExtent,
-) {
-  const xResolution = getWidth(maxExtent) / viewportSize[0];
-  const yResolution = getHeight(maxExtent) / viewportSize[1];
+    resolution: number,
+    maxExtent: Extent,
+    viewportSize: Size,
+    showFullExtent: boolean,
+): number {
+    const xResolution = getWidth(maxExtent) / viewportSize[0];
+    const yResolution = getHeight(maxExtent) / viewportSize[1];
 
-  if (showFullExtent) {
-    return Math.min(resolution, Math.max(xResolution, yResolution));
-  }
-  return Math.min(resolution, Math.min(xResolution, yResolution));
+    if (showFullExtent) {
+        return Math.min(resolution, Math.max(xResolution, yResolution));
+    }
+    return Math.min(resolution, Math.min(xResolution, yResolution));
 }
 
 /**
@@ -43,21 +43,21 @@ function getViewportClampedResolution(
  * @param {number} minResolution Min resolution.
  * @return {number} Smoothed resolution.
  */
-function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
-  let result = Math.min(resolution, maxResolution);
-  const ratio = 50;
+function getSmoothClampedResolution(resolution: number, maxResolution: number, minResolution: number): number {
+    let result = Math.min(resolution, maxResolution);
+    const ratio = 50;
 
-  result *=
-    Math.log(1 + ratio * Math.max(0, resolution / maxResolution - 1)) / ratio +
-    1;
-  if (minResolution) {
-    result = Math.max(result, minResolution);
-    result /=
-      Math.log(1 + ratio * Math.max(0, minResolution / resolution - 1)) /
-        ratio +
-      1;
-  }
-  return clamp(result, minResolution / 2, maxResolution * 2);
+    result *=
+        Math.log(1 + ratio * Math.max(0, resolution / maxResolution - 1)) / ratio +
+        1;
+    if (minResolution) {
+        result = Math.max(result, minResolution);
+        result /=
+            Math.log(1 + ratio * Math.max(0, minResolution / resolution - 1)) /
+            ratio +
+            1;
+    }
+    return clamp(result, minResolution / 2, maxResolution * 2);
 }
 
 /**
@@ -68,55 +68,55 @@ function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
  * @return {Type} Zoom function.
  */
 export function createSnapToResolutions(
-  resolutions,
-  smooth,
-  maxExtent,
-  showFullExtent,
-) {
-  smooth = smooth !== undefined ? smooth : true;
-  return (
-    /**
-     * @param {number|undefined} resolution Resolution.
-     * @param {number} direction Direction.
-     * @param {Size} size Viewport size.
-     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
-     * @return {number|undefined} Resolution.
-     */
-    function (resolution, direction, size, isMoving) {
-      if (resolution !== undefined) {
-        const maxResolution = resolutions[0];
-        const minResolution = resolutions[resolutions.length - 1];
-        const cappedMaxRes = maxExtent
-          ? getViewportClampedResolution(
-              maxResolution,
-              maxExtent,
-              size,
-              showFullExtent,
-            )
-          : maxResolution;
+    resolutions: number[],
+    smooth: boolean,
+    maxExtent: Extent,
+    showFullExtent: boolean,
+): Type {
+    smooth = smooth !== undefined ? smooth : true;
+    return (
+        /**
+         * @param {number|undefined} resolution Resolution.
+         * @param {number} direction Direction.
+         * @param {Size} size Viewport size.
+         * @param {boolean} [isMoving] True if an interaction or animation is in progress.
+         * @return {number|undefined} Resolution.
+         */
+        function (resolution: number | undefined, direction: number, size: Size, isMoving: boolean): number | undefined {
+            if (resolution !== undefined) {
+                const maxResolution = resolutions[0];
+                const minResolution = resolutions[resolutions.length - 1];
+                const cappedMaxRes = maxExtent
+                    ? getViewportClampedResolution(
+                        maxResolution,
+                        maxExtent,
+                        size,
+                        showFullExtent,
+                    )
+                    : maxResolution;
 
-        // during interacting or animating, allow intermediary values
-        if (isMoving) {
-          if (!smooth) {
-            return clamp(resolution, minResolution, cappedMaxRes);
-          }
-          return getSmoothClampedResolution(
-            resolution,
-            cappedMaxRes,
-            minResolution,
-          );
-        }
+                // during interacting or animating, allow intermediary values
+                if (isMoving) {
+                    if (!smooth) {
+                        return clamp(resolution, minResolution, cappedMaxRes);
+                    }
+                    return getSmoothClampedResolution(
+                        resolution,
+                        cappedMaxRes,
+                        minResolution,
+                    );
+                }
 
-        const capped = Math.min(cappedMaxRes, resolution);
-        const z = Math.floor(linearFindNearest(resolutions, capped, direction));
-        if (resolutions[z] > cappedMaxRes && z < resolutions.length - 1) {
-          return resolutions[z + 1];
+                const capped = Math.min(cappedMaxRes, resolution);
+                const z = Math.floor(linearFindNearest(resolutions, capped, direction));
+                if (resolutions[z] > cappedMaxRes && z < resolutions.length - 1) {
+                    return resolutions[z + 1];
+                }
+                return resolutions[z];
+            }
+            return undefined;
         }
-        return resolutions[z];
-      }
-      return undefined;
-    }
-  );
+    );
 }
 
 /**
@@ -129,63 +129,63 @@ export function createSnapToResolutions(
  * @return {Type} Zoom function.
  */
 export function createSnapToPower(
-  power,
-  maxResolution,
-  minResolution,
-  smooth,
-  maxExtent,
-  showFullExtent,
-) {
-  smooth = smooth !== undefined ? smooth : true;
-  minResolution = minResolution !== undefined ? minResolution : 0;
+    power: number,
+    maxResolution: number,
+    minResolution: number,
+    smooth: boolean,
+    maxExtent: Extent,
+    showFullExtent: boolean,
+): Type {
+    smooth = smooth !== undefined ? smooth : true;
+    minResolution = minResolution !== undefined ? minResolution : 0;
 
-  return (
-    /**
-     * @param {number|undefined} resolution Resolution.
-     * @param {number} direction Direction.
-     * @param {Size} size Viewport size.
-     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
-     * @return {number|undefined} Resolution.
-     */
-    function (resolution, direction, size, isMoving) {
-      if (resolution !== undefined) {
-        const cappedMaxRes = maxExtent
-          ? getViewportClampedResolution(
-              maxResolution,
-              maxExtent,
-              size,
-              showFullExtent,
-            )
-          : maxResolution;
+    return (
+        /**
+         * @param {number|undefined} resolution Resolution.
+         * @param {number} direction Direction.
+         * @param {Size} size Viewport size.
+         * @param {boolean} [isMoving] True if an interaction or animation is in progress.
+         * @return {number|undefined} Resolution.
+         */
+        function (resolution: number | undefined, direction: number, size: Size, isMoving: boolean): number | undefined {
+            if (resolution !== undefined) {
+                const cappedMaxRes = maxExtent
+                    ? getViewportClampedResolution(
+                        maxResolution,
+                        maxExtent,
+                        size,
+                        showFullExtent,
+                    )
+                    : maxResolution;
 
-        // during interacting or animating, allow intermediary values
-        if (isMoving) {
-          if (!smooth) {
-            return clamp(resolution, minResolution, cappedMaxRes);
-          }
-          return getSmoothClampedResolution(
-            resolution,
-            cappedMaxRes,
-            minResolution,
-          );
+                // during interacting or animating, allow intermediary values
+                if (isMoving) {
+                    if (!smooth) {
+                        return clamp(resolution, minResolution, cappedMaxRes);
+                    }
+                    return getSmoothClampedResolution(
+                        resolution,
+                        cappedMaxRes,
+                        minResolution,
+                    );
+                }
+
+                const tolerance = 1e-9;
+                const minZoomLevel = Math.ceil(
+                    Math.log(maxResolution / cappedMaxRes) / Math.log(power) - tolerance,
+                );
+                const offset = -direction * (0.5 - tolerance) + 0.5;
+                const capped = Math.min(cappedMaxRes, resolution);
+                const cappedZoomLevel = Math.floor(
+                    Math.log(maxResolution / capped) / Math.log(power) + offset,
+                );
+                const zoomLevel = Math.max(minZoomLevel, cappedZoomLevel);
+                const newResolution = maxResolution / Math.pow(power, zoomLevel);
+                return clamp(newResolution, minResolution, cappedMaxRes);
+            }
+            return undefined;
         }
-
-        const tolerance = 1e-9;
-        const minZoomLevel = Math.ceil(
-          Math.log(maxResolution / cappedMaxRes) / Math.log(power) - tolerance,
-        );
-        const offset = -direction * (0.5 - tolerance) + 0.5;
-        const capped = Math.min(cappedMaxRes, resolution);
-        const cappedZoomLevel = Math.floor(
-          Math.log(maxResolution / capped) / Math.log(power) + offset,
-        );
-        const zoomLevel = Math.max(minZoomLevel, cappedZoomLevel);
-        const newResolution = maxResolution / Math.pow(power, zoomLevel);
-        return clamp(newResolution, minResolution, cappedMaxRes);
-      }
-      return undefined;
-    }
-  );
+    );
 }
 
 /**
@@ -197,43 +197,43 @@ export function createSnapToPower(
  * @return {Type} Zoom function.
  */
 export function createMinMaxResolution(
-  maxResolution,
-  minResolution,
-  smooth,
-  maxExtent,
-  showFullExtent,
-) {
-  smooth = smooth !== undefined ? smooth : true;
+    maxResolution: number,
+    minResolution: number,
+    smooth: boolean,
+    maxExtent: Extent,
+    showFullExtent: boolean,
+): Type {
+    smooth = smooth !== undefined ? smooth : true;
 
-  return (
-    /**
-     * @param {number|undefined} resolution Resolution.
-     * @param {number} direction Direction.
-     * @param {Size} size Viewport size.
-     * @param {boolean} [isMoving] True if an interaction or animation is in progress.
-     * @return {number|undefined} Resolution.
-     */
-    function (resolution, direction, size, isMoving) {
-      if (resolution !== undefined) {
-        const cappedMaxRes = maxExtent
-          ? getViewportClampedResolution(
-              maxResolution,
-              maxExtent,
-              size,
-              showFullExtent,
-            )
-          : maxResolution;
+    return (
+        /**
+         * @param {number|undefined} resolution Resolution.
+         * @param {number} direction Direction.
+         * @param {Size} size Viewport size.
+         * @param {boolean} [isMoving] True if an interaction or animation is in progress.
+         * @return {number|undefined} Resolution.
+         */
+        function (resolution: number | undefined, direction: number, size: Size, isMoving: boolean): number | undefined {
+            if (resolution !== undefined) {
+                const cappedMaxRes = maxExtent
+                    ? getViewportClampedResolution(
+                        maxResolution,
+                        maxExtent,
+                        size,
+                        showFullExtent,
+                    )
+                    : maxResolution;
 
-        if (!smooth || !isMoving) {
-          return clamp(resolution, minResolution, cappedMaxRes);
+                if (!smooth || !isMoving) {
+                    return clamp(resolution, minResolution, cappedMaxRes);
+                }
+                return getSmoothClampedResolution(
+                    resolution,
+                    cappedMaxRes,
+                    minResolution,
+                );
+            }
+            return undefined;
         }
-        return getSmoothClampedResolution(
-          resolution,
-          cappedMaxRes,
-          minResolution,
-        );
-      }
-      return undefined;
-    }
-  );
+    );
 }

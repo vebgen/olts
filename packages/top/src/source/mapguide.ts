@@ -1,9 +1,9 @@
 
 
-import {appendParams} from '../uri.js';
-import {decode} from '../Image.js';
+import {appendParams} from '../uri';
+import {decode} from '../Image';
 import {getCenter, getHeight, getWidth} from '@olts/core/extent';
-import {getRequestExtent} from './Image.js';
+import {getRequestExtent} from './Image';
 
 /**
  * @typedef {Object} LoaderOptions
@@ -19,7 +19,7 @@ import {getRequestExtent} from './Image.js';
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Object} [params] Additional query parameters.
- * @property {function(HTMLImageElement, string): Promise<import('../DataTile.js').ImageLike>} [load] Function
+ * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.
  */
@@ -45,7 +45,7 @@ function getScale(extent, size, metersPerUnit, dpi) {
 
 /**
  * @param {string} baseUrl The mapagent url.
- * @param {Object<string, string|number>} params Request parameters.
+ * @param {Record<string, string|number>} params Request parameters.
  * @param {Extent} extent Extent.
  * @param {Size} size Size.
  * @param {boolean} useOverlay If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
@@ -84,13 +84,13 @@ function getUrl(
 /**
  * Creates a loader for MapGuide images.
  * @param {LoaderOptions} options Image ArcGIS Rest Options.
- * @return {import('../Image.js').ImageObjectPromiseLoader} ArcGIS Rest image.
+ * @return {import('../Image').ImageObjectPromiseLoader} ArcGIS Rest image.
  * @api
  */
 export function createLoader(options) {
   const load = options.load || decode;
 
-  /** @type {import('../Image.js').ImageObjectPromiseLoader} */
+  /** @type {import('../Image').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
     const image = new Image();
     if (options.crossOrigin !== null) {

@@ -1,4 +1,4 @@
-import ComparisonBinary from './ComparisonBinary.js';
+import ComparisonBinary from './ComparisonBinary';
 
 /**
  * Represents a `<PropertyIsLessThan>` comparison operator.

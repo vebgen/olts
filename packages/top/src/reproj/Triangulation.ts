@@ -11,7 +11,7 @@ import {
   getWidth,
   intersects,
 } from '@olts/core/extent';
-import {getTransform} from '../proj.js';
+import {getTransform} from '../proj';
 import {modulo} from '@olts/core/math';
 
 /**
@@ -46,8 +46,8 @@ const MAX_TRIANGLE_WIDTH = 0.25;
  */
 export class Triangulation {
   /**
-   * @param {import("../proj/Projection.js").default} sourceProj Source projection.
-   * @param {import("../proj/Projection.js").default} targetProj Target projection.
+   * @param {import("../proj/Projection").default} sourceProj Source projection.
+   * @param {import("../proj/Projection").default} targetProj Target projection.
    * @param {Extent} targetExtent Target extent to triangulate.
    * @param {Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
@@ -62,18 +62,18 @@ export class Triangulation {
     destinationResolution,
   ) {
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      * @private
      */
     this.sourceProj_ = sourceProj;
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      * @private
      */
     this.targetProj_ = targetProj;
 
-    /** @type {!Object<string, Coordinate>} */
+    /** @type {!Record<string, Coordinate>} */
     let transformInvCache = {};
     const transformInv = getTransform(this.targetProj_, this.sourceProj_);
 

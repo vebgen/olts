@@ -7,7 +7,7 @@ import {
   overlapsType,
   parse,
   typeName,
-} from './expression.js';
+} from './expression';
 import {
   fromString,
   lchaToRgba,
@@ -47,7 +47,7 @@ export function newEvaluationContext() {
 }
 
 /**
- * @typedef {function(EvaluationContext):import("./expression.js").LiteralValue} ExpressionEvaluator
+ * @typedef {function(EvaluationContext):import("./expression").LiteralValue} ExpressionEvaluator
  */
 
 /**
@@ -83,9 +83,9 @@ export function newEvaluationContext() {
  */
 
 /**
- * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
+ * @param {import('./expression').EncodedExpression} encoded The encoded expression.
  * @param {number} type The expected type.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The expression evaluator.
  */
 export function buildExpression(encoded, type, context) {
@@ -101,8 +101,8 @@ export function buildExpression(encoded, type, context) {
 }
 
 /**
- * @param {import("./expression.js").Expression} expression The expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import("./expression").Expression} expression The expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileExpression(expression, context) {
@@ -198,8 +198,8 @@ function compileExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileAssertionExpression(expression, context) {
@@ -241,8 +241,8 @@ function compileAssertionExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileAccessorExpression(expression, context) {
@@ -262,8 +262,8 @@ function compileAccessorExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {BooleanEvaluator} The evaluator function.
  */
 function compileComparisonExpression(expression, context) {
@@ -296,8 +296,8 @@ function compileComparisonExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {BooleanEvaluator} The evaluator function.
  */
 function compileLogicalExpression(expression, context) {
@@ -339,8 +339,8 @@ function compileLogicalExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {NumberEvaluator} The evaluator function.
  */
 function compileNumericExpression(expression, context) {
@@ -430,8 +430,8 @@ function compileNumericExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileCaseExpression(expression, context) {
@@ -452,8 +452,8 @@ function compileCaseExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileMatchExpression(expression, context) {
@@ -474,8 +474,8 @@ function compileMatchExpression(expression, context) {
 }
 
 /**
- * @param {import('./expression.js').CallExpression} expression The call expression.
- * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @param {import('./expression').CallExpression} expression The call expression.
+ * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The evaluator function.
  */
 function compileInterpolateExpression(expression, context) {
@@ -553,10 +553,10 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
  * @param {number} base The base.
  * @param {number} value The value.
  * @param {number} input1 The first input value.
- * @param {import('../color.js').Color} rgba1 The first output value.
+ * @param {import('../color').Color} rgba1 The first output value.
  * @param {number} input2 The second input value.
- * @param {import('../color.js').Color} rgba2 The second output value.
- * @return {import('../color.js').Color} The interpolated color.
+ * @param {import('../color').Color} rgba2 The second output value.
+ * @return {import('../color').Color} The interpolated color.
  */
 function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
   const delta = input2 - input1;

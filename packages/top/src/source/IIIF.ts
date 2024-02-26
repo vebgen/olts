@@ -1,17 +1,17 @@
 
 
-import TileGrid from '../tilegrid/TileGrid.js';
-import TileImage from './TileImage.js';
-import {CustomTile} from './Zoomify.js';
-import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
-import {Versions} from '../format/IIIFInfo.js';
+import TileGrid from '../tile-grid/TileGrid';
+import TileImage from './TileImage';
+import {CustomTile} from './Zoomify';
+import {DEFAULT_TILE_SIZE} from '../tile-grid/common';
+import {Versions} from '../format/IIIFInfo';
 import {assert} from '@olts/core/asserts';
 import {getTopLeft} from '@olts/core/extent';
-import {toSize} from '../size.js';
+import {toSize} from '../size';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Size of the cache.
  * @property {null|string} [crossOrigin] The value for the crossOrigin option of the request.
@@ -19,7 +19,7 @@ import {toSize} from '../size.js';
  * @property {string} [format='jpg'] Requested image format.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {ProjectionLike} [projection] Projection.
  * @property {string} [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -28,7 +28,7 @@ import {toSize} from '../size.js';
  * @property {Size} size Size of the image [width, height].
  * @property {Array<Size>} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
- * @property {import("./Source.js").State} [state] Source state.
+ * @property {import("./Source").State} [state] Source state.
  * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
  * features.
  * @property {number} [tilePixelRatio] Tile pixel ratio.
@@ -40,8 +40,8 @@ import {toSize} from '../size.js';
  * @property {number} [transition] Transition.
  * @property {string} [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
- * @property {import("../format/IIIFInfo.js").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {import("../format/IIIFInfo").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -56,7 +56,7 @@ function formatPercentage(percentage) {
  */
 export class IIIF extends TileImage {
   /**
-   * @param {Options} [options] Tile source options. Use {@link import("../format/IIIFInfo.js").IIIFInfo}
+   * @param {Options} [options] Tile source options. Use {@link import("../format/IIIFInfo").IIIFInfo}
    * to parse Image API service information responses into constructor options.
    * @api
    */
@@ -342,7 +342,7 @@ export class IIIF extends TileImage {
     });
 
     /**
-     * @type {number|import("../array.js").NearestDirectionFunction}
+     * @type {number|import("../array").NearestDirectionFunction}
      */
     this.zDirection = partialOptions.zDirection;
   }

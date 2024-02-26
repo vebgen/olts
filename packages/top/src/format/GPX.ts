@@ -1,9 +1,9 @@
 
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
 import { Point } from '@olts/geometry';
-import XMLFeature from './XMLFeature.js';
+import XMLFeature from './XMLFeature';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
@@ -20,8 +20,8 @@ import {
   parseNode,
   pushParseAndPop,
   pushSerializeAndPop,
-} from '../xml.js';
-import {get as getProjection} from '../proj.js';
+} from '../xml';
+import {get as getProjection} from '../proj';
 import {
   readDateTime,
   readDecimal,
@@ -31,8 +31,8 @@ import {
   writeDecimalTextNode,
   writeNonNegativeIntegerTextNode,
   writeStringTextNode,
-} from './xsd.js';
-import {transformGeometryWithOptions} from './Feature.js';
+} from './xsd';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @const
@@ -54,7 +54,7 @@ const SCHEMA_LOCATION =
 
 /**
  * @const
- * @type {Object<string, function(Node, Array<*>): (Feature|undefined)>}
+ * @type {Record<string, function(Node, Array<*>): (Feature|undefined)>}
  */
 const FEATURE_READER = {
   'rte': readRte,
@@ -64,7 +64,7 @@ const FEATURE_READER = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -81,7 +81,7 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -98,7 +98,7 @@ const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -122,7 +122,7 @@ const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -146,7 +146,7 @@ const METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const COPYRIGHT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -156,7 +156,7 @@ const COPYRIGHT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const GPX_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -206,7 +206,7 @@ export class GPX extends XMLFeature {
     options = options ? options : {};
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -297,8 +297,8 @@ export class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -318,8 +318,8 @@ export class GPX extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromNode(node, options) {
     if (!NAMESPACE_URIS.includes(node.namespaceURI)) {
@@ -345,7 +345,7 @@ export class GPX extends XMLFeature {
    * as tracks (`<trk>`).
    *
    * @param {Array<Feature>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Options.
+   * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
    */
@@ -364,7 +364,7 @@ export class GPX extends XMLFeature {
     gpx.setAttribute('creator', 'OpenLayers');
 
     pushSerializeAndPop(
-      /** @type {import("../xml.js").NodeStackItem} */
+      /** @type {import("../xml").NodeStackItem} */
       ({node: gpx}),
       GPX_SERIALIZERS,
       GPX_NODE_FACTORY,
@@ -377,7 +377,7 @@ export class GPX extends XMLFeature {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const RTE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -394,7 +394,7 @@ const RTE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const RTEPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -404,7 +404,7 @@ const RTEPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TRK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -421,7 +421,7 @@ const TRK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TRKSEG_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -430,7 +430,7 @@ const TRKSEG_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const TRKPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -440,7 +440,7 @@ const TRKPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const WPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -473,7 +473,7 @@ const LINK_SEQUENCE = ['text', 'type'];
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const LINK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -483,7 +483,7 @@ const LINK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const RTE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -499,7 +499,7 @@ const RTE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const RTE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -515,14 +515,14 @@ const RTE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const RTEPT_TYPE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, ['ele', 'time']);
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const TRK_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -538,7 +538,7 @@ const TRK_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const TRK_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -560,7 +560,7 @@ const TRKSEG_NODE_FACTORY = makeSimpleNodeFactory('trkpt');
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const TRKSEG_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -569,7 +569,7 @@ const TRKSEG_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string,string[]>}
+ * @type {Record<string,string[]>}
  */
 // @ts-ignore
 const WPT_TYPE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
@@ -595,7 +595,7 @@ const WPT_TYPE_SEQUENCE = makeStructureNS(NAMESPACE_URIS, [
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 // @ts-ignore
 const WPT_TYPE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
@@ -621,7 +621,7 @@ const WPT_TYPE_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, string>}
+ * @type {Record<string, string>}
  */
 const GEOMETRY_TYPE_TO_NODENAME = {
   'Point': 'wpt',
@@ -867,7 +867,7 @@ function parseTrkSeg(node, objectStack) {
  * @return {Feature|undefined} Track.
  */
 function readRte(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+  const options = /** @type {import("./Feature").ReadOptions} */ (
     objectStack[0]
   );
   const values = pushParseAndPop(
@@ -902,7 +902,7 @@ function readRte(node, objectStack) {
  * @return {Feature|undefined} Track.
  */
 function readTrk(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+  const options = /** @type {import("./Feature").ReadOptions} */ (
     objectStack[0]
   );
   const values = pushParseAndPop(
@@ -940,7 +940,7 @@ function readTrk(node, objectStack) {
  * @return {Feature|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+  const options = /** @type {import("./Feature").ReadOptions} */ (
     objectStack[0]
   );
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
@@ -968,7 +968,7 @@ function writeLink(node, value, objectStack) {
   const properties = context['properties'];
   const link = [properties['linkText'], properties['linkType']];
   pushSerializeAndPop(
-    /** @type {import("../xml.js").NodeStackItem} */ ({node: node}),
+    /** @type {import("../xml").NodeStackItem} */ ({node: node}),
     LINK_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY,
     link,
@@ -1016,7 +1016,7 @@ function writeWptType(node, coordinate, objectStack) {
       : WPT_TYPE_SEQUENCE[namespaceURI];
   const values = makeSequence(properties, orderedKeys);
   pushSerializeAndPop(
-    /** @type {import("../xml.js").NodeStackItem} */
+    /** @type {import("../xml").NodeStackItem} */
     ({node: node, 'properties': properties}),
     WPT_TYPE_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY,
@@ -1032,7 +1032,7 @@ function writeWptType(node, coordinate, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+  const options = /** @type {import("./Feature").WriteOptions} */ (
     objectStack[0]
   );
   const properties = feature.getProperties();
@@ -1065,11 +1065,11 @@ function writeRte(node, feature, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+  const options = /** @type {import("./Feature").WriteOptions} */ (
     objectStack[0]
   );
   const properties = feature.getProperties();
-  /** @type {import("../xml.js").NodeStackItem} */
+  /** @type {import("../xml").NodeStackItem} */
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
@@ -1098,7 +1098,7 @@ function writeTrk(node, feature, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeTrkSeg(node, lineString, objectStack) {
-  /** @type {import("../xml.js").NodeStackItem} */
+  /** @type {import("../xml").NodeStackItem} */
   const context = {node: node};
   context['geometryLayout'] = lineString.getLayout();
   context['properties'] = {};
@@ -1117,7 +1117,7 @@ function writeTrkSeg(node, lineString, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
-  const options = /** @type {import("./Feature.js").WriteOptions} */ (
+  const options = /** @type {import("./Feature").WriteOptions} */ (
     objectStack[0]
   );
   const context = objectStack[objectStack.length - 1];

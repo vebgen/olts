@@ -1,6 +1,6 @@
 
-import Feature from '../Feature.js';
-import RenderFeature from '../render/Feature.js';
+import Feature from '../Feature';
+import RenderFeature from '../render/Feature';
 import {
   GeometryCollection,
   LineString,
@@ -9,14 +9,14 @@ import {
   MultiPolygon,
   Point,
   Polygon,
-} from '../geom.js';
+} from '../geom';
 import {abstract} from '@olts/core/util';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
   transformExtent,
-} from '../proj.js';
+} from '../proj';
 import {
   linearRingsAreOriented,
   linearRingssAreOriented,
@@ -26,7 +26,7 @@ import {
 
 /**
  * @typedef {Object} ReadOptions
- * @property {import("../proj.js").ProjectionLike} [dataProjection] Projection of the data we are reading.
+ * @property {ProjectionLike} [dataProjection] Projection of the data we are reading.
  * If not provided, the projection will be derived from the data (where possible) or
  * the `dataProjection` of the format is assigned (where set). If the projection
  * can not be derived from the data and if no `dataProjection` is set for a format,
@@ -35,18 +35,18 @@ import {
  * This is only required when reading data with tile pixels as geometry units. When configured,
  * a `dataProjection` with `TILE_PIXELS` as `units` and the tile's pixel extent as `extent` needs to be
  * provided.
- * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection of the feature geometries
+ * @property {ProjectionLike} [featureProjection] Projection of the feature geometries
  * created by the format reader. If not provided, features will be returned in the
  * `dataProjection`.
  */
 
 /**
  * @typedef {Object} WriteOptions
- * @property {import("../proj.js").ProjectionLike} [dataProjection] Projection of the data we are writing.
+ * @property {ProjectionLike} [dataProjection] Projection of the data we are writing.
  * If not provided, the `dataProjection` of the format is assigned (where set).
  * If no `dataProjection` is set for a format, the features will be returned
  * in the `featureProjection`.
- * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection of the feature geometries
+ * @property {ProjectionLike} [featureProjection] Projection of the feature geometries
  * that will be serialized by the format writer. If not provided, geometries are assumed
  * to be in the `dataProjection` if that is set; in other words, they are not transformed.
  * @property {boolean} [rightHanded] When writing geometries, follow the right-hand
@@ -89,17 +89,17 @@ import {
  * @typedef {Object} FeatureObject
  * @property {string|number} [id] Id.
  * @property {GeometryObject} [geometry] Geometry.
- * @property {Object<string, *>} [properties] Properties.
+ * @property {Record<string, *>} [properties] Properties.
  */
 
 /***
- * @template {import("../Feature.js").FeatureLike} T
- * @typedef {T extends import("../render/Feature.js").default ? typeof import("../render/Feature.js").default : typeof import("../Feature.js").default} FeatureToFeatureClass<T>
+ * @template {import("../Feature").FeatureLike} T
+ * @typedef {T extends import("../render/Feature").default ? typeof import("../render/Feature").default : typeof import("../Feature").default} FeatureToFeatureClass<T>
  */
 
 /***
- * @template {import("../Feature.js").FeatureClass} T
- * @typedef {T[keyof T] extends import("../render/Feature.js").default ? import("../render/Feature.js").default : import("../Feature.js").default} FeatureClassToFeature<T>
+ * @template {import("../Feature").FeatureClass} T
+ * @typedef {T[keyof T] extends import("../render/Feature").default ? import("../render/Feature").default : import("../Feature").default} FeatureClassToFeature<T>
  */
 
 /**
@@ -110,7 +110,7 @@ import {
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
- * @template {import('../Feature.js').FeatureClass} [T=typeof import('../Feature.js').default]
+ * @template {import('../Feature').FeatureClass} [T=typeof import('../Feature').default]
  * @abstract
  * @api
  */
@@ -118,19 +118,19 @@ export class FeatureFormat {
   constructor() {
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default|undefined}
+     * @type {import("../proj/Projection").default|undefined}
      */
     this.dataProjection = undefined;
 
     /**
      * @protected
-     * @type {import("../proj/Projection.js").default|undefined}
+     * @type {import("../proj/Projection").default|undefined}
      */
     this.defaultFeatureProjection = undefined;
 
     /**
      * @protected
-     * @type {import("../Feature.js").FeatureClass}
+     * @type {import("../Feature").FeatureClass}
      */
     this.featureClass = Feature;
 
@@ -203,7 +203,7 @@ export class FeatureFormat {
    * @abstract
    * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").FeatureLike|Array<import("../render/Feature.js").default>} Feature.
+   * @return {import("../Feature").FeatureLike|Array<import("../render/Feature").default>} Feature.
    */
   readFeature(source, options) {
     return abstract();
@@ -215,7 +215,7 @@ export class FeatureFormat {
    * @abstract
    * @param {Document|Element|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {Array<import('../Feature.js').FeatureLike|FeatureClassToFeature<T>>} Features.
+   * @return {Array<import('../Feature').FeatureLike|FeatureClassToFeature<T>>} Features.
    */
   readFeatures(source, options) {
     return abstract();
@@ -238,7 +238,7 @@ export class FeatureFormat {
    *
    * @abstract
    * @param {Document|Element|Object|string} source Source.
-   * @return {import("../proj/Projection.js").default|undefined} Projection.
+   * @return {import("../proj/Projection").default|undefined} Projection.
    */
   readProjection(source) {
     return abstract();
@@ -248,7 +248,7 @@ export class FeatureFormat {
    * Encode a feature in this format.
    *
    * @abstract
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("../Feature").default} feature Feature.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */
@@ -260,7 +260,7 @@ export class FeatureFormat {
    * Encode an array of features in this format.
    *
    * @abstract
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<import("../Feature").default>} features Features.
    * @param {WriteOptions} [options] Write options.
    * @return {string|ArrayBuffer} Result.
    */

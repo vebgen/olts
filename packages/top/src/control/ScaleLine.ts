@@ -1,7 +1,7 @@
 
-import Control from './Control.js';
+import Control from './Control';
 import { CLASS_UNSELECTABLE } from '@olts/core/css';
-import { METERS_PER_UNIT, getPointResolution } from '../proj.js';
+import { METERS_PER_UNIT, getPointResolution } from '../proj';
 
 /**
  * @type {string}
@@ -27,7 +27,7 @@ const DEFAULT_DPI: number = 25.4 / 0.28;
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:units', import("../Object").ObjectEvent, Return> &
  *   CombinedOnSignature<import("../Observable").EventTypes|ObjectEventType
@@ -42,7 +42,7 @@ const DEFAULT_DPI: number = 25.4 / 0.28;
  * adjusted to match the dpi used.
  * @property {number} [maxWidth] Maximum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control
+ * @property {function(import("../MapEvent").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
@@ -122,7 +122,7 @@ export class ScaleLine extends Control {
 
         /**
          * @private
-         * @type {?import("../View.js").State}
+         * @type {?import("../View").State}
          */
         this.viewState_ = null;
 
@@ -467,10 +467,10 @@ export class ScaleLine extends Control {
 
     /**
      * Update the scale line element.
-     * @param {import("../MapEvent.js").default} mapEvent Map event.
+     * @param {import("../MapEvent").default} mapEvent Map event.
      * @override
      */
-    render(mapEvent: import("../MapEvent.js").default) {
+    render(mapEvent: import("../MapEvent").default) {
         const frameState = mapEvent.frameState;
         if (!frameState) {
             this.viewState_ = null;

@@ -1,12 +1,12 @@
 
 
-import TileGrid from './TileGrid.js';
-import {get as getProjection} from '../proj.js';
+import TileGrid from './TileGrid';
+import {get as getProjection} from '../proj';
 
 /**
  * @typedef {Object} Options
  * @property {Extent} [extent] Extent for the tile grid. No tiles
- * outside this extent will be requested by {@link module:ol/source/Tile~TileSource} sources.
+ * outside this extent will be requested by {@link TileSource} sources.
  * When no `origin` or `origins` are configured, the `origin` will be set to the
  * top-left corner of the extent.
  * @property {Coordinate} [origin] The tile grid origin, i.e.

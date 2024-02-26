@@ -1,26 +1,26 @@
 
-import EventTarget from '../events/Target.js';
-import EventType from '../events/EventType.js';
-import ImageTile from '../ImageTile.js';
-import TileState from '../TileState.js';
+import { Target as EventTarget } from '@olts/events';
+import type { EventType } from '@olts/events';
+import ImageTile from '../ImageTile';
+import type { TileState} from '../tile';
 import {abstract} from '@olts/core/util';
 
 /**
- * @typedef {import("../Tile.js").default} BaseTileType
+ * @typedef {import("../Tile").default} BaseTileType
  */
 
 /**
  * @template {BaseTileType} TileType
  * @typedef {Object} TileRepresentationOptions
  * @property {TileType} tile The tile.
- * @property {import("../tilegrid/TileGrid.js").default} grid Tile grid.
- * @property {import("../webgl/Helper.js").default} helper WebGL helper.
+ * @property {import("../tilegrid/TileGrid").default} grid Tile grid.
+ * @property {import("../webgl/Helper").default} helper WebGL helper.
  * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  */
 
 /**
  * Base class for representing a tile in a webgl context
- * @template {import("../Tile.js").default} TileType
+ * @template {import("../Tile").default} TileType
  * @abstract
  */
 export class BaseTileRepresentation extends EventTarget {
@@ -43,7 +43,7 @@ export class BaseTileRepresentation extends EventTarget {
     this.gutter_ = options.gutter || 0;
 
     /**
-     * @type {import("../webgl/Helper.js").default}
+     * @type {import("../webgl/Helper").default}
      * @protected
      */
     this.helper_ = options.helper;
@@ -61,7 +61,7 @@ export class BaseTileRepresentation extends EventTarget {
         this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
       }
       this.tile = tile;
-      this.loaded = tile.getState() === TileState.LOADED;
+      this.loaded = tile.getState() === TileStates.LOADED;
       if (this.loaded) {
         this.uploadTile();
       } else {
@@ -90,7 +90,7 @@ export class BaseTileRepresentation extends EventTarget {
   }
 
   handleTileChange_() {
-    if (this.tile.getState() === TileState.LOADED) {
+    if (this.tile.getState() === TileStates.LOADED) {
       this.loaded = true;
       this.uploadTile();
     }

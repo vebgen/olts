@@ -2,7 +2,7 @@ import {getWidth} from '@olts/core/extent';
 
 /**
  * Compute world params
- * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {import("../../Map").FrameState} frameState Frame state.
  * @param {any} layer The layer
  * @return {number[]} The world start, end and width.
  */

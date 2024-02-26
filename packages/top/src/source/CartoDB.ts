@@ -1,15 +1,15 @@
 
 
-import XYZ from './XYZ.js';
+import XYZ from './XYZ';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
+ * @property {ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [maxZoom=18] Max zoom.
  * @property {number} [minZoom] Minimum zoom.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
@@ -25,7 +25,7 @@ import XYZ from './XYZ.js';
  * @property {string} [account] Username as used to access public Carto dashboard at https://{username}.carto.com/.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -76,7 +76,7 @@ export class CartoDB extends XYZ {
     this.config_ = options.config || {};
 
     /**
-     * @type {!Object<string, CartoDBLayerInfo>}
+     * @type {!Record<string, CartoDBLayerInfo>}
      * @private
      */
     this.templateCache_ = {};

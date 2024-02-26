@@ -1,5 +1,5 @@
 
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { GeometryCollection } from '@olts/geometry';
 import { LineString } from '@olts/geometry';
 import { MultiLineString } from '@olts/geometry';
@@ -7,8 +7,8 @@ import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import TextFeature from './TextFeature.js';
-import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * Geometry constructors
@@ -75,7 +75,7 @@ const TokenType = {
 };
 
 /**
- * @type {Object<GeometryType, string>}
+ * @type {Record<GeometryType, string>}
  */
 const wktTypeLookup = {
   Point: 'POINT',
@@ -629,8 +629,8 @@ export class WKT extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromText(text, options) {
     const geom = this.readGeometryFromText(text, options);
@@ -641,7 +641,7 @@ export class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -666,7 +666,7 @@ export class WKT extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -676,8 +676,8 @@ export class WKT extends TextFeature {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default} feature Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -690,8 +690,8 @@ export class WKT extends TextFeature {
   }
 
   /**
-   * @param {Array<import("../Feature.js").default>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -709,7 +709,7 @@ export class WKT extends TextFeature {
 
   /**
    * @param {Geometry} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -826,7 +826,7 @@ function encodeGeometryLayout(geom) {
 
 /**
  * @const
- * @type {Object<string, function(Geometry): string>}
+ * @type {Record<string, function(Geometry): string>}
  */
 const GeometryEncoder = {
   'Point': encodePointGeometry,

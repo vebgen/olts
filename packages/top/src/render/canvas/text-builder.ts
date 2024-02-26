@@ -90,7 +90,7 @@ export class CanvasTextBuilder extends CanvasBuilder {
     this.textFillState_ = null;
 
     /**
-     * @type {!Object<string, import("../canvas").FillState>}
+     * @type {!Record<string, import("../canvas").FillState>}
      */
     this.fillStates = {};
     this.fillStates[defaultFillStyle] = {fillStyle: defaultFillStyle};
@@ -102,7 +102,7 @@ export class CanvasTextBuilder extends CanvasBuilder {
     this.textStrokeState_ = null;
 
     /**
-     * @type {!Object<string, import("../canvas").StrokeState>}
+     * @type {!Record<string, import("../canvas").StrokeState>}
      */
     this.strokeStates = {};
 
@@ -113,7 +113,7 @@ export class CanvasTextBuilder extends CanvasBuilder {
     this.textState_ = /** @type {import("../canvas").TextState} */ ({});
 
     /**
-     * @type {!Object<string, import("../canvas").TextState>}
+     * @type {!Record<string, import("../canvas").TextState>}
      */
     this.textStates = {};
 

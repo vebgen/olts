@@ -2,7 +2,7 @@
 // FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { Geometry } from '@olts/geometry';
 import { LineString } from '@olts/geometry';
 import { LinearRing } from '@olts/geometry';
@@ -11,7 +11,7 @@ import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import XMLFeature from './XMLFeature.js';
+import XMLFeature from './XMLFeature';
 import {extend} from '@olts/core/array';
 import {
   getAllTextContent,
@@ -20,12 +20,12 @@ import {
   makeReplacer,
   parseNode,
   pushParseAndPop,
-} from '../xml.js';
-import {get as getProjection} from '../proj.js';
+} from '../xml';
+import {get as getProjection} from '../proj';
 import {
   transformExtentWithOptions,
   transformGeometryWithOptions,
-} from './Feature.js';
+} from './Feature';
 
 /**
  * @const
@@ -44,7 +44,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
 
 /**
  * @typedef {Object} Options
- * @property {Object<string, string>|string} [featureNS] Feature
+ * @property {Record<string, string>|string} [featureNS] Feature
  * namespace. If not defined will be derived from GML. If multiple
  * feature types have been configured which come from different feature
  * namespaces, this will be an object with the keys being the prefixes used
@@ -101,7 +101,7 @@ export class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {Object<string, string>|string|undefined}
+     * @type {Record<string, string>|string|undefined}
      */
     this.featureNS = options.featureNS;
 
@@ -118,7 +118,7 @@ export class GMLBase extends XMLFeature {
     this.schemaLocation = '';
 
     /**
-     * @type {Object<string, Object<string, Object>>}
+     * @type {Record<string, Record<string, Object>>}
      */
     this.FEATURE_COLLECTION_PARSERS = {};
     this.FEATURE_COLLECTION_PARSERS[this.namespace] = {
@@ -191,13 +191,13 @@ export class GMLBase extends XMLFeature {
         featureNS = {};
         featureNS[defaultPrefix] = ns;
       }
-      /** @type {Object<string, Object<string, import("../xml.js").Parser>>} */
+      /** @type {Record<string, Record<string, import("../xml").Parser>>} */
       const parsersNS = {};
       const featureTypes = Array.isArray(featureType)
         ? featureType
         : [featureType];
       for (const p in featureNS) {
-        /** @type {Object<string, import("../xml.js").Parser>} */
+        /** @type {Record<string, import("../xml").Parser>} */
         const parsers = {};
         for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
           const featurePrefix = featureTypes[i].includes(':')
@@ -535,7 +535,7 @@ export class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
+   * @param {import("./Feature").ReadOptions} [options] Options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -548,8 +548,8 @@ export class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromNode(node, options) {
     const internalOptions = {
@@ -565,7 +565,7 @@ export class GMLBase extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection").default} Projection.
    */
   readProjectionFromNode(node) {
     return getProjection(
@@ -580,7 +580,7 @@ GMLBase.prototype.namespace = GMLNS;
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -588,7 +588,7 @@ GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -596,7 +596,7 @@ GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {},
@@ -604,7 +604,7 @@ GMLBase.prototype.GEOMETRY_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.MULTIPOINT_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -615,7 +615,7 @@ GMLBase.prototype.MULTIPOINT_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.MULTILINESTRING_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -630,7 +630,7 @@ GMLBase.prototype.MULTILINESTRING_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.MULTIPOLYGON_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -641,7 +641,7 @@ GMLBase.prototype.MULTIPOLYGON_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.POINTMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -651,7 +651,7 @@ GMLBase.prototype.POINTMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.LINESTRINGMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -661,7 +661,7 @@ GMLBase.prototype.LINESTRINGMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.POLYGONMEMBER_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -671,7 +671,7 @@ GMLBase.prototype.POLYGONMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GMLBase.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml': {

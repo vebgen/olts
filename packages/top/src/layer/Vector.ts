@@ -1,5 +1,5 @@
-import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
+import BaseVectorLayer from './BaseVector';
+import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer';
 
 /**
  * Vector data is rendered client-side, as vectors. This layer type provides most accurate rendering
@@ -11,13 +11,13 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import("../source/Vector.js").default} VectorSourceType
+ * @template {import("../source/Vector").default} VectorSourceType
  * @extends {BaseVectorLayer<VectorSourceType, CanvasVectorLayerRenderer>}
  * @api
  */
 export class VectorLayer extends BaseVectorLayer {
   /**
-   * @param {import("./BaseVector.js").Options<VectorSourceType>} [options] Options.
+   * @param {import("./BaseVector").Options<VectorSourceType>} [options] Options.
    */
   constructor(options) {
     super(options);

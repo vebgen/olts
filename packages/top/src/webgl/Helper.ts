@@ -1,25 +1,25 @@
 
-import ContextEventType from '../webgl/ContextEventType.js';
-import Disposable from '../Disposable.js';
-import WebGLPostProcessingPass from './PostProcessingPass.js';
+import ContextEventType from '../webgl/ContextEventType';
+import Disposable from '../Disposable';
+import WebGLPostProcessingPass from './PostProcessingPass';
 import {
   FLOAT,
   UNSIGNED_BYTE,
   UNSIGNED_INT,
   UNSIGNED_SHORT,
   getContext,
-} from '../webgl.js';
-import {clear} from '../obj.js';
+} from '../webgl';
+import {clear} from '../obj';
 import {
   compose as composeTransform,
   create as createTransform,
-} from '../transform.js';
+} from '../transform';
 import {create, fromTransform} from '../vec/mat4.js';
 import {getUid} from '@olts/core/util';
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {import("./Buffer.js").default} buffer Buffer.
+ * @property {import("./Buffer").default} buffer Buffer.
  * @property {WebGLBuffer} webGlBuffer WebGlBuffer.
  */
 
@@ -78,7 +78,7 @@ export const AttributeType = {
 /**
  * Uniform value can be a number, array of numbers (2 to 4), canvas element or a callback returning
  * one of the previous types.
- * @typedef {UniformLiteralValue|function(import("../Map.js").FrameState):UniformLiteralValue} UniformValue
+ * @typedef {UniformLiteralValue|function(import("../Map").FrameState):UniformLiteralValue} UniformValue
  */
 
 /**
@@ -87,12 +87,12 @@ export const AttributeType = {
  * the main canvas which will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
- * @property {Object<string,UniformValue>} [uniforms] Uniform definitions for the post process step
+ * @property {Record<string,UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
  * @typedef {Object} Options
- * @property {Object<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
+ * @property {Record<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  * @property {string} [canvasCacheKey] The cache key for the canvas.
@@ -114,7 +114,7 @@ export const AttributeType = {
  */
 
 /**
- * @type {Object<string,CanvasCacheItem>}
+ * @type {Record<string,CanvasCacheItem>}
  */
 const canvasCache = {};
 
@@ -338,13 +338,13 @@ export class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, BufferCacheEntry>}
+     * @type {!Record<string, BufferCacheEntry>}
      */
     this.bufferCache_ = {};
 
     /**
      * @private
-     * @type {Object<string, Object>}
+     * @type {Record<string, Object>}
      */
     this.extensionCache_ = {};
 
@@ -373,13 +373,13 @@ export class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {import("../transform.js").Transform}
+     * @type {import("../transform").Transform}
      */
     this.offsetRotateMatrix_ = createTransform();
 
     /**
      * @private
-     * @type {import("../transform.js").Transform}
+     * @type {import("../transform").Transform}
      */
     this.offsetScaleMatrix_ = createTransform();
 
@@ -391,13 +391,13 @@ export class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, Object<string, WebGLUniformLocation>>}
+     * @type {Record<string, Record<string, WebGLUniformLocation>>}
      */
     this.uniformLocationsByProgram_ = {};
 
     /**
      * @private
-     * @type {Object<string, Object<string, number>>}
+     * @type {Record<string, Record<string, number>>}
      */
     this.attribLocationsByProgram_ = {};
 
@@ -446,7 +446,7 @@ export class WebGLHelper extends Disposable {
   }
 
   /**
-   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   * @param {Record<string, UniformValue>} uniforms Uniform definitions.
    */
   setUniforms(uniforms) {
     this.uniforms_ = [];
@@ -454,7 +454,7 @@ export class WebGLHelper extends Disposable {
   }
 
   /**
-   * @param {Object<string, UniformValue>} uniforms Uniform definitions.
+   * @param {Record<string, UniformValue>} uniforms Uniform definitions.
    */
   addUniforms(uniforms) {
     for (const name in uniforms) {
@@ -521,7 +521,7 @@ export class WebGLHelper extends Disposable {
   }
 
   /**
-   * @param {import("./Buffer.js").default} buf Buffer.
+   * @param {import("./Buffer").default} buf Buffer.
    */
   deleteBuffer(buf) {
     const gl = this.gl_;
@@ -556,7 +556,7 @@ export class WebGLHelper extends Disposable {
    * Clear the buffer & set the viewport to draw.
    * Post process passes will be initialized here, the first one being bound as a render target for
    * subsequent draw calls.
-   * @param {import("../Map.js").FrameState} frameState current frame state
+   * @param {import("../Map").FrameState} frameState current frame state
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
    * @param {boolean} [enableDepth] If true, enables depth testing.
    */
@@ -615,8 +615,8 @@ export class WebGLHelper extends Disposable {
    * Clear the render target & bind it for future draw operations.
    * This is similar to `prepareDraw`, only post processes will not be applied.
    * Note: the whole viewport will be drawn to the render target, regardless of its size.
-   * @param {import("../Map.js").FrameState} frameState current frame state
-   * @param {import("./RenderTarget.js").default} renderTarget Render target to draw to
+   * @param {import("../Map").FrameState} frameState current frame state
+   * @param {import("./RenderTarget").default} renderTarget Render target to draw to
    * @param {boolean} [disableAlphaBlend] If true, no alpha blending will happen.
    * @param {boolean} [enableDepth] If true, enables depth testing.
    */
@@ -666,9 +666,9 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
-   * @param {import("../Map.js").FrameState} frameState current frame state
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
-   * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {import("../Map").FrameState} frameState current frame state
+   * @param {function(WebGLRenderingContext, import("../Map").FrameState):void} [preCompose] Called before composing.
+   * @param {function(WebGLRenderingContext, import("../Map").FrameState):void} [postCompose] Called before composing.
    */
   finalizeDraw(frameState, preCompose, postCompose) {
     // apply post processes using the next one as target
@@ -706,7 +706,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Sets the default matrix uniforms for a given frame state. This is called internally in `prepareDraw`.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   applyFrameState(frameState) {
     const size = frameState.size;
@@ -746,7 +746,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   applyUniforms(frameState) {
     const gl = this.gl_;
@@ -842,7 +842,7 @@ export class WebGLHelper extends Disposable {
    * Set up a program for use. The program will be set as the current one. Then, the uniforms used
    * in the program will be set based on the current frame state and the helper configuration.
    * @param {WebGLProgram} program Program.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   useProgram(program, frameState) {
     const gl = this.gl_;
@@ -956,7 +956,7 @@ export class WebGLHelper extends Disposable {
   /**
    * Sets the given transform to apply the rotation/translation/scaling of the given frame state.
    * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @param {import("../transform").Transform} transform Transform to update.
    * @return {import("../transform").Transform} The updated transform object.
    */

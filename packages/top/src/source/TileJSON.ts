@@ -5,12 +5,12 @@
  * See https://mapbox.com/developers/api/.
  */
 
-import TileImage from './TileImage.js';
+import TileImage from './TileImage';
 import {applyTransform, intersects} from '@olts/core/extent';
-import {createFromTemplates} from '../tileurlfunction.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import {jsonp as requestJSONP} from '../net.js';
+import {createFromTemplates} from '../tileurlfunction';
+import {createXYZ, extentFromProjection} from '../tile-grid';
+import {get as getProjection, getTransformFromProjections} from '../proj';
+import {jsonp as requestJSONP} from '../net';
 
 /**
  * @typedef {Object} Config
@@ -31,7 +31,7 @@ import {jsonp as requestJSONP} from '../net.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
@@ -44,7 +44,7 @@ import {jsonp as requestJSONP} from '../net.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -56,7 +56,7 @@ import {jsonp as requestJSONP} from '../net.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */

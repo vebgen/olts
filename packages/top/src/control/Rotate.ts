@@ -1,8 +1,8 @@
 
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
+import Control from './Control';
+import type { EventType } from '@olts/events';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '@olts/core/css';
-import {easeOut} from '../easing.js';
+import {easeOut} from '../easing';
 
 /**
  * @typedef {Object} Options
@@ -13,7 +13,7 @@ import {easeOut} from '../easing.js';
  * @property {string} [compassClassName='ol-compass'] CSS class name for the compass.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
- * @property {function(import("../MapEvent.js").default):void} [render] Function called when the control should
+ * @property {function(import("../MapEvent").default):void} [render] Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {function():void} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
@@ -151,7 +151,7 @@ export class Rotate extends Control {
 
   /**
    * Update the rotate control element.
-   * @param {import("../MapEvent.js").default} mapEvent Map event.
+   * @param {import("../MapEvent").default} mapEvent Map event.
    * @override
    */
   render(mapEvent) {

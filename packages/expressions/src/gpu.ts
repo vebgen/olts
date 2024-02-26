@@ -69,7 +69,7 @@ export function colorToGlsl(color: string | import("../../core/src/color").Color
     ]);
 }
 
-/** @type {Object<string, number>} */
+/** @type {Record<string, number>} */
 const stringToFloatMap: { [s: string]: number; } = {};
 let stringToFloatCounter = 0;
 
@@ -134,9 +134,9 @@ export function uniformNameForVariable(variableName: string): string {
 /**
  * @typedef {Object} CompilationContext
  * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
- * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
- * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
- * @property {Object<string, string>} functions Lookup of functions used by the style.
+ * @property {Record<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
+ * @property {Record<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
+ * @property {Record<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/webgl").WebGLStyle} style Literal style.
@@ -212,7 +212,7 @@ function createCompiler(output: (arg0:CompiledExpression[], arg1: CompilationCon
 }
 
 /**
- * @type {Object<string, Compiler>}
+ * @type {Record<string, Compiler>}
  */
 const compilers: { [s: string]: Compiler; } = {
     [Ops.Get]: (context, expression) => {

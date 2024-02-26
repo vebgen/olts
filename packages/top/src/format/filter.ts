@@ -1,29 +1,29 @@
 
-import And from './filter/And.js';
-import Bbox from './filter/Bbox.js';
-import Contains from './filter/Contains.js';
-import DWithin from './filter/DWithin.js';
-import Disjoint from './filter/Disjoint.js';
-import During from './filter/During.js';
-import EqualTo from './filter/EqualTo.js';
-import GreaterThan from './filter/GreaterThan.js';
-import GreaterThanOrEqualTo from './filter/GreaterThanOrEqualTo.js';
-import Intersects from './filter/Intersects.js';
-import IsBetween from './filter/IsBetween.js';
-import IsLike from './filter/IsLike.js';
-import IsNull from './filter/IsNull.js';
-import LessThan from './filter/LessThan.js';
-import LessThanOrEqualTo from './filter/LessThanOrEqualTo.js';
-import Not from './filter/Not.js';
-import NotEqualTo from './filter/NotEqualTo.js';
-import Or from './filter/Or.js';
-import ResourceId from './filter/ResourceId.js';
-import Within from './filter/Within.js';
+import And from './filter/And';
+import Bbox from './filter/Bbox';
+import Contains from './filter/Contains';
+import DWithin from './filter/DWithin';
+import Disjoint from './filter/Disjoint';
+import During from './filter/During';
+import EqualTo from './filter/EqualTo';
+import GreaterThan from './filter/GreaterThan';
+import GreaterThanOrEqualTo from './filter/GreaterThanOrEqualTo';
+import Intersects from './filter/Intersects';
+import IsBetween from './filter/IsBetween';
+import IsLike from './filter/IsLike';
+import IsNull from './filter/IsNull';
+import LessThan from './filter/LessThan';
+import LessThanOrEqualTo from './filter/LessThanOrEqualTo';
+import Not from './filter/Not';
+import NotEqualTo from './filter/NotEqualTo';
+import Or from './filter/Or';
+import ResourceId from './filter/ResourceId';
+import Within from './filter/Within';
 
 /**
  * Create a logical `<And>` operator between two or more filter conditions.
  *
- * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
+ * @param {...import("./filter/Filter").default} conditions Filter conditions.
  * @return {!And} `<And>` operator.
  * @api
  */
@@ -35,7 +35,7 @@ export function and(conditions) {
 /**
  * Create a logical `<Or>` operator between two or more filter conditions.
  *
- * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
+ * @param {...import("./filter/Filter").default} conditions Filter conditions.
  * @return {!Or} `<Or>` operator.
  * @api
  */
@@ -47,7 +47,7 @@ export function or(conditions) {
 /**
  * Represents a logical `<Not>` operator for a filter condition.
  *
- * @param {!import("./filter/Filter.js").default} condition Filter condition.
+ * @param {!import("./filter/Filter").default} condition Filter condition.
  * @return {!Not} `<Not>` operator.
  * @api
  */

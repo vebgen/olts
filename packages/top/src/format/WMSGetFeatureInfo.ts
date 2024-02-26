@@ -1,8 +1,8 @@
 
 import GML2 from './GML2.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeature from './XMLFeature';
 import {extend} from '@olts/core/array';
-import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
+import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml';
 
 /**
  * @typedef {Object} Options
@@ -72,13 +72,13 @@ export class WMSGetFeatureInfo extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature").default>} Features.
    * @private
    */
   readFeatures_(node, objectStack) {
     node.setAttribute('namespaceURI', this.featureNS_);
     const localName = node.localName;
-    /** @type {Array<import("../Feature.js").default>} */
+    /** @type {Array<import("../Feature").default>} */
     let features = [];
     if (node.childNodes.length === 0) {
       return features;
@@ -105,7 +105,7 @@ export class WMSGetFeatureInfo extends XMLFeature {
         context['featureType'] = featureType;
         context['featureNS'] = this.featureNS_;
 
-        /** @type {Object<string, import("../xml.js").Parser>} */
+        /** @type {Record<string, import("../xml").Parser>} */
         const parsers = {};
         parsers[featureType] = makeArrayPusher(
           this.gmlFormat_.readFeatureElement,
@@ -147,8 +147,8 @@ export class WMSGetFeatureInfo extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromNode(node, options) {
     const internalOptions = {};

@@ -1,15 +1,15 @@
 
 // FIXME add typedef for stack state objects
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { LineString } from '@olts/geometry';
 import { Point } from '@olts/geometry';
 import { Polygon } from '@olts/geometry';
-import XMLFeature from './XMLFeature.js';
+import XMLFeature from './XMLFeature';
 import {extend} from '@olts/core/array';
-import {get as getProjection} from '../proj.js';
-import {isEmpty} from '../obj.js';
-import {makeStructureNS, pushParseAndPop} from '../xml.js';
-import {transformGeometryWithOptions} from './Feature.js';
+import {get as getProjection} from '../proj';
+import {isEmpty} from '../obj';
+import {makeStructureNS, pushParseAndPop} from '../xml';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @const
@@ -19,7 +19,7 @@ const NAMESPACE_URIS = [null];
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const WAY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -29,7 +29,7 @@ const WAY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -48,7 +48,7 @@ export class OSMXML extends XMLFeature {
     super();
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
   }
@@ -56,8 +56,8 @@ export class OSMXML extends XMLFeature {
   /**
    * @protected
    * @param {Element} node Node.
-   * @param {import("./Feature.js").ReadOptions} [options] Options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @param {import("./Feature").ReadOptions} [options] Options.
+   * @return {Array<import("../Feature").default>} Features.
    */
   readFeaturesFromNode(node, options) {
     options = this.getReadOptions(node, options);
@@ -110,7 +110,7 @@ export class OSMXML extends XMLFeature {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 // @ts-ignore
 const NODE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
@@ -122,7 +122,7 @@ const NODE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @param {Array<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
-  const options = /** @type {import("./Feature.js").ReadOptions} */ (
+  const options = /** @type {import("./Feature").ReadOptions} */ (
     objectStack[0]
   );
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);

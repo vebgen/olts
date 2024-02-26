@@ -1,69 +1,69 @@
 
-import CollectionEventType from '../CollectionEventType.js';
-import EventType from '../events/EventType.js';
-import PointerInteraction from './Pointer.js';
-import RBush from '../structs/RBush.js';
-import VectorEventType from '../source/VectorEventType.js';
+import CollectionEventType from '../CollectionEventType';
+import type { EventType } from '@olts/events';
+import PointerInteraction from './Pointer';
+import RBush from '../structs/RBush';
+import VectorEventType from '../source/VectorEventType';
 import { FALSE, TRUE } from '@olts/core/functions';
-import { SnapEvent, SnapEventType } from '../events/SnapEvent.js';
+import { SnapEvent, SnapEventType } from '../events/SnapEvent';
 import { boundingExtent, buffer, createEmpty } from '@olts/core/extent';
 import {
     closestOnCircle,
     closestOnSegment,
     squaredDistance,
-} from '../coordinate.js';
+} from '../coordinate';
 import { fromCircle } from '@olts/geometry';
 import {
     fromUserCoordinate,
     getUserProjection,
     toUserCoordinate,
     toUserExtent,
-} from '../proj.js';
+} from '../proj';
 import { getUid } from '@olts/core/util';
-import { listen, unlistenByKey } from '../events.js';
+import { listen, unlistenByKey } from '../events';
 import { EventsKey } from '@olts/events';
 
 /**
  * @typedef {Object} Result
  * @property {Coordinate|null} vertex Vertex.
- * @property {import("../pixel.js").Pixel|null} vertexPixel VertexPixel.
- * @property {import("../Feature.js").default|null} feature Feature.
+ * @property {import("../pixel").Pixel|null} vertexPixel VertexPixel.
+ * @property {import("../Feature").default|null} feature Feature.
  * @property {Array<Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
  */
 
 /**
  * @typedef {Object} SegmentData
- * @property {import("../Feature.js").default} feature Feature.
+ * @property {import("../Feature").default} feature Feature.
  * @property {Array<Coordinate>} segment Segment.
  */
 
 /**
  * @typedef {Object} Options
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Snap to these features. Either this option or source should be provided.
+ * @property {import("../Collection").default<import("../Feature").default>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
- * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
+ * @property {import("../source/Vector").default} [source] Snap to features from this source. Either this option or features should be provided
  */
 
 /**
- * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
- * @return {import("../Feature.js").default|null} Feature.
+ * @param  {import("../source/Vector").VectorSourceEvent|import("../Collection").CollectionEvent<import("../Feature").default>} evt Event.
+ * @return {import("../Feature").default|null} Feature.
  */
-function getFeatureFromEvent(evt: import("../source/Vector.js").VectorSourceEvent | import("../Collection.js").CollectionEvent<import("../Feature.js").default>): import("../Feature.js").default | null {
+function getFeatureFromEvent(evt: import("../source/Vector").VectorSourceEvent | import("../Collection").CollectionEvent<import("../Feature").default>): import("../Feature").default | null {
     if (
-    /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature
+    /** @type {import("../source/Vector").VectorSourceEvent} */ (evt).feature
     ) {
-        return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt)
+        return /** @type {import("../source/Vector").VectorSourceEvent} */ (evt)
             .feature;
     }
     if (
-    /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
+    /** @type {import("../Collection").CollectionEvent<import("../Feature").default>} */ (
             evt
         ).element
     ) {
-        return /** @type {import("../Collection.js").CollectionEvent<import("../Feature.js").default>} */ (
+        return /** @type {import("../Collection").CollectionEvent<import("../Feature").default>} */ (
             evt
         ).element;
     }
@@ -74,7 +74,7 @@ const tempSegment = [];
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'snap', SnapEvent, Return> &
@@ -94,7 +94,7 @@ const tempSegment = [];
  *
  * Example:
  *
- *     import Snap from 'ol/interaction/Snap.js';
+ *     import Snap from 'ol/interaction/Snap';
  *
  *     const snap = new Snap({
  *       source: source
@@ -129,7 +129,7 @@ export class Snap extends PointerInteraction {
     constructor(options: Options) {
         options = options ? options : {};
 
-        const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+        const pointerOptions = /** @type {import("./Pointer").Options} */ (
             options
         );
 
@@ -147,7 +147,7 @@ export class Snap extends PointerInteraction {
         this.un = this.unInternal as SnapOnSignature<void>;
 
         /**
-         * @type {import("../source/Vector.js").default|null}
+         * @type {import("../source/Vector").default|null}
          * @private
          */
         this.source_ = options.source ? options.source : null;
@@ -165,19 +165,19 @@ export class Snap extends PointerInteraction {
         this.edge_ = options.edge !== undefined ? options.edge : true;
 
         /**
-         * @type {import("../Collection.js").default<import("../Feature.js").default>|null}
+         * @type {import("../Collection").default<import("../Feature").default>|null}
          * @private
          */
         this.features_ = options.features ? options.features : null;
 
         /**
-         * @type {Array<import("../events.js").EventsKey>}
+         * @type {Array<import("../events").EventsKey>}
          * @private
          */
         this.featuresListenerKeys_ = [];
 
         /**
-         * @type {Object<string, import("../events.js").EventsKey>}
+         * @type {Record<string, import("../events").EventsKey>}
          * @private
          */
         this.featureChangeListenerKeys_ = {};
@@ -185,7 +185,7 @@ export class Snap extends PointerInteraction {
         /**
          * Extents are preserved so indexed segment can be quickly removed
          * when its feature geometry changes
-         * @type {Object<string, Extent>}
+         * @type {Record<string, Extent>}
          * @private
          */
         this.indexedFeaturesExtents_ = {};
@@ -194,7 +194,7 @@ export class Snap extends PointerInteraction {
          * If a feature geometry changes while a pointer drag|move event occurs, the
          * feature doesn't get updated right away.  It will be at the next 'pointerup'
          * event fired.
-         * @type {!Object<string, import("../Feature.js").default>}
+         * @type {!Record<string, import("../Feature").default>}
          * @private
          */
         this.pendingFeatures_ = {};
@@ -208,7 +208,7 @@ export class Snap extends PointerInteraction {
 
         /**
          * Segment RTree for each layer
-         * @type {import("../structs/RBush.js").default<SegmentData>}
+         * @type {import("../structs/RBush").default<SegmentData>}
          * @private
          */
         this.rBush_ = new RBush();
@@ -216,7 +216,7 @@ export class Snap extends PointerInteraction {
         /**
          * @const
          * @private
-         * @type {Object<string, function(Array<Array<import('../coordinate.js').Coordinate>>, Geometry): void>}
+         * @type {Record<string, function(Array<Array<import('../coordinate').Coordinate>>, Geometry): void>}
          */
         this.GEOMETRY_SEGMENTERS_ = {
             'Point': this.segmentPointGeometry_.bind(this),
@@ -233,12 +233,12 @@ export class Snap extends PointerInteraction {
 
     /**
      * Add a feature to the collection of features that we may snap to.
-     * @param {import("../Feature.js").default} feature Feature.
+     * @param {import("../Feature").default} feature Feature.
      * @param {boolean} [register] Whether to listen to the feature change or not
      *     Defaults to `true`.
      * @api
      */
-    addFeature(feature: import("../Feature.js").default, register: boolean) {
+    addFeature(feature: import("../Feature").default, register: boolean) {
         register = register !== undefined ? register : true;
         const feature_uid = getUid(feature);
         const geometry = feature.getGeometry();
@@ -248,7 +248,7 @@ export class Snap extends PointerInteraction {
                 this.indexedFeaturesExtents_[feature_uid] =
                     geometry.getExtent(createEmpty());
                 const segments =
-          /** @type {Array<Array<import('../coordinate.js').Coordinate>>} */ ([]);
+          /** @type {Array<Array<import('../coordinate').Coordinate>>} */ ([]);
                 segmenter(segments, geometry);
                 if (segments.length === 1) {
                     this.rBush_.insert(boundingExtent(segments[0]), {
@@ -277,12 +277,12 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @return {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} Features.
+     * @return {import("../Collection").default<import("../Feature").default>|Array<import("../Feature").default>} Features.
      * @private
      */
-    getFeatures_(): import("../Collection.js").default<import("../Feature.js").default> | Array<import("../Feature.js").default> {
-        /** @type {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} */
-        let features: import("../Collection.js").default<import("../Feature.js").default> | Array<import("../Feature.js").default>;
+    getFeatures_(): import("../Collection").default<import("../Feature").default> | Array<import("../Feature").default> {
+        /** @type {import("../Collection").default<import("../Feature").default>|Array<import("../Feature").default>} */
+        let features: import("../Collection").default<import("../Feature").default> | Array<import("../Feature").default>;
         if (this.features_) {
             features = this.features_;
         } else if (this.source_) {
@@ -292,11 +292,11 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../MapBrowserEvent.js").default} evt Map browser event.
+     * @param {import("../MapBrowserEvent").default} evt Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(evt: import("../MapBrowserEvent.js").default): boolean {
+    handleEvent(evt: import("../MapBrowserEvent").default): boolean {
         const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
         if (result) {
             evt.coordinate = result.vertex.slice(0, 2);
@@ -314,10 +314,10 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
+     * @param {import("../source/Vector").VectorSourceEvent|import("../Collection").CollectionEvent<import("../Feature").default>} evt Event.
      * @private
      */
-    handleFeatureAdd_(evt: import("../source/Vector.js").VectorSourceEvent | import("../Collection.js").CollectionEvent<import("../Feature.js").default>) {
+    handleFeatureAdd_(evt: import("../source/Vector").VectorSourceEvent | import("../Collection").CollectionEvent<import("../Feature").default>) {
         const feature = getFeatureFromEvent(evt);
         if (feature) {
             this.addFeature(feature);
@@ -325,10 +325,10 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
+     * @param {import("../source/Vector").VectorSourceEvent|import("../Collection").CollectionEvent<import("../Feature").default>} evt Event.
      * @private
      */
-    handleFeatureRemove_(evt: import("../source/Vector.js").VectorSourceEvent | import("../Collection.js").CollectionEvent<import("../Feature.js").default>) {
+    handleFeatureRemove_(evt: import("../source/Vector").VectorSourceEvent | import("../Collection").CollectionEvent<import("../Feature").default>) {
         const feature = getFeatureFromEvent(evt);
         if (feature) {
             this.removeFeature(feature);
@@ -336,11 +336,11 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../events/Event.js").default} evt Event.
+     * @param {import("../events/Event").default} evt Event.
      * @private
      */
-    handleFeatureChange_(evt: import("../events/Event.js").default) {
-        const feature = /** @type {import("../Feature.js").default} */ (evt.target);
+    handleFeatureChange_(evt: import("../events/Event").default) {
+        const feature = /** @type {import("../Feature").default} */ (evt.target);
         if (this.handlingDownUpSequence) {
             const uid = getUid(feature);
             if (!(uid in this.pendingFeatures_)) {
@@ -353,10 +353,10 @@ export class Snap extends PointerInteraction {
 
     /**
      * Handle pointer up events.
-     * @param {import("../MapBrowserEvent.js").default} evt Event.
+     * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(evt: import("../MapBrowserEvent.js").default): boolean {
+    handleUpEvent(evt: import("../MapBrowserEvent").default): boolean {
         const featuresToUpdate = Object.values(this.pendingFeatures_);
         if (featuresToUpdate.length) {
             featuresToUpdate.forEach(this.updateFeature_.bind(this));
@@ -367,12 +367,12 @@ export class Snap extends PointerInteraction {
 
     /**
      * Remove a feature from the collection of features that we may snap to.
-     * @param {import("../Feature.js").default} feature Feature
+     * @param {import("../Feature").default} feature Feature
      * @param {boolean} [unlisten] Whether to unlisten to the feature change
      *     or not. Defaults to `true`.
      * @api
      */
-    removeFeature(feature: import("../Feature.js").default, unlisten: boolean) {
+    removeFeature(feature: import("../Feature").default, unlisten: boolean) {
         const unregister = unlisten !== undefined ? unlisten : true;
         const feature_uid = getUid(feature);
         const extent = this.indexedFeaturesExtents_[feature_uid];
@@ -399,12 +399,12 @@ export class Snap extends PointerInteraction {
      * Remove the interaction from its current map and attach it to the new map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../Map").default} map Map.
      */
-    setMap(map: import("../Map.js").default) {
+    setMap(map: import("../Map").default) {
         const currentMap = this.getMap();
         const keys = this.featuresListenerKeys_;
-        const features = /** @type {Array<import("../Feature.js").default>} */ (
+        const features = /** @type {Array<import("../Feature").default>} */ (
             this.getFeatures_()
         );
 
@@ -454,12 +454,12 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../pixel.js").Pixel} pixel Pixel
+     * @param {import("../pixel").Pixel} pixel Pixel
      * @param {Coordinate} pixelCoordinate Coordinate
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../Map").default} map Map.
      * @return {Result|null} Snap result
      */
-    snapTo(pixel: import("../pixel.js").Pixel, pixelCoordinate: Coordinate, map: import("../Map.js").default): Result | null {
+    snapTo(pixel: import("../pixel").Pixel, pixelCoordinate: Coordinate, map: import("../Map").default): Result | null {
         const projection = map.getView().getProjection();
         const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
 
@@ -571,20 +571,20 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {import("../Feature.js").default} feature Feature
+     * @param {import("../Feature").default} feature Feature
      * @private
      */
-    updateFeature_(feature: import("../Feature.js").default) {
+    updateFeature_(feature: import("../Feature").default) {
         this.removeFeature(feature, false);
         this.addFeature(feature, false);
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {Circle} geometry Geometry.
      * @private
      */
-    segmentCircleGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: Circle) {
+    segmentCircleGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: Circle) {
         const projection = this.getMap().getView().getProjection();
         let circleGeometry = geometry;
         const userProjection = getUserProjection();
@@ -604,11 +604,11 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {GeometryCollection} geometry Geometry.
      * @private
      */
-    segmentGeometryCollectionGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: GeometryCollection) {
+    segmentGeometryCollectionGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: GeometryCollection) {
         const geometries = geometry.getGeometriesArray();
         for (let i = 0; i < geometries.length; ++i) {
             const segmenter = this.GEOMETRY_SEGMENTERS_[geometries[i].getType()];
@@ -619,11 +619,11 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {LineString} geometry Geometry.
      * @private
      */
-    segmentLineStringGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: LineString) {
+    segmentLineStringGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: LineString) {
         const coordinates = geometry.getCoordinates();
         for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
             segments.push(coordinates.slice(i, i + 2));
@@ -631,11 +631,11 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {MultiLineString} geometry Geometry.
      * @private
      */
-    segmentMultiLineStringGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: MultiLineString) {
+    segmentMultiLineStringGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: MultiLineString) {
         const lines = geometry.getCoordinates();
         for (let j = 0, jj = lines.length; j < jj; ++j) {
             const coordinates = lines[j];
@@ -646,22 +646,22 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {MultiPoint} geometry Geometry.
      * @private
      */
-    segmentMultiPointGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: MultiPoint) {
+    segmentMultiPointGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: MultiPoint) {
         geometry.getCoordinates().forEach((point) => {
             segments.push([point]);
         });
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {MultiPolygon} geometry Geometry.
      * @private
      */
-    segmentMultiPolygonGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: MultiPolygon) {
+    segmentMultiPolygonGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: MultiPolygon) {
         const polygons = geometry.getCoordinates();
         for (let k = 0, kk = polygons.length; k < kk; ++k) {
             const rings = polygons[k];
@@ -675,20 +675,20 @@ export class Snap extends PointerInteraction {
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {Point} geometry Geometry.
      * @private
      */
-    segmentPointGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: Point) {
+    segmentPointGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: Point) {
         segments.push([geometry.getCoordinates()]);
     }
 
     /**
-     * @param {Array<Array<import('../coordinate.js').Coordinate>>} segments Segments
+     * @param {Array<Array<import('../coordinate').Coordinate>>} segments Segments
      * @param {Polygon} geometry Geometry.
      * @private
      */
-    segmentPolygonGeometry_(segments: Array<Array<import('../coordinate.js').Coordinate>>, geometry: Polygon) {
+    segmentPolygonGeometry_(segments: Array<Array<import('../coordinate').Coordinate>>, geometry: Polygon) {
         const rings = geometry.getCoordinates();
         for (let j = 0, jj = rings.length; j < jj; ++j) {
             const coordinates = rings[j];

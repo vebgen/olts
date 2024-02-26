@@ -1,41 +1,41 @@
 
-import BaseTileLayer from './BaseTile.js';
-import LayerProperty from '../layer/Property.js';
+import BaseTileLayer from './BaseTile';
+import LayerProperty from '../layer/Property';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
-} from '../renderer/webgl/TileLayer.js';
-import {ColorType, NumberType} from '../expr/expression.js';
+} from '../renderer/webgl/TileLayer';
+import {ColorType, NumberType} from '../expr/expression';
 import {
   PALETTE_TEXTURE_ARRAY,
   getStringNumberEquivalent,
   newCompilationContext,
   uniformNameForVariable,
-} from '../expr/gpu.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
+} from '../expr/gpu';
+import {expressionToGlsl} from '../webgl/styleparser';
 
 /**
- * @typedef {import("../source/DataTile.js").default|import("../source/TileImage.js").default} SourceType
+ * @typedef {import("../source/DataTile").default|import("../source/TileImage").default} SourceType
  */
 
 /**
  * @typedef {Object} Style
  * Translates tile data to rendered pixels.
  *
- * @property {Object<string, (string|number)>} [variables] Style variables.  Each variable must hold a number or string.  These
+ * @property {Record<string, (string|number)>} [variables] Style variables.  Each variable must hold a number or string.  These
  * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
- * {@link import("../expr/expression.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
- * To update style variables, use the {@link import("./WebGLTile.js").default#updateStyleVariables} method.
- * @property {import("../expr/expression.js").ExpressionValue} [color] An expression applied to color values.
- * @property {import("../expr/expression.js").ExpressionValue} [brightness=0] Value used to decrease or increase
+ * {@link import("../expr/expression").ExpressionValue expressions}, using the `['var', 'varName']` operator.
+ * To update style variables, use the {@link import("./WebGLTile").default#updateStyleVariables} method.
+ * @property {import("../expr/expression").ExpressionValue} [color] An expression applied to color values.
+ * @property {import("../expr/expression").ExpressionValue} [brightness=0] Value used to decrease or increase
  * the layer brightness.  Values range from -1 to 1.
- * @property {import("../expr/expression.js").ExpressionValue} [contrast=0] Value used to decrease or increase
+ * @property {import("../expr/expression").ExpressionValue} [contrast=0] Value used to decrease or increase
  * the layer contrast.  Values range from -1 to 1.
- * @property {import("../expr/expression.js").ExpressionValue} [exposure=0] Value used to decrease or increase
+ * @property {import("../expr/expression").ExpressionValue} [exposure=0] Value used to decrease or increase
  * the layer exposure.  Values range from -1 to 1.
- * @property {import("../expr/expression.js").ExpressionValue} [saturation=0] Value used to decrease or increase
+ * @property {import("../expr/expression").ExpressionValue} [saturation=0] Value used to decrease or increase
  * the layer saturation.  Values range from -1 to 1.
- * @property {import("../expr/expression.js").ExpressionValue} [gamma=1] Apply a gamma correction to the layer.
+ * @property {import("../expr/expression").ExpressionValue} [gamma=1] Apply a gamma correction to the layer.
  * Values range from 0 to infinity.
  */
 
@@ -67,22 +67,22 @@ import {expressionToGlsl} from '../webgl/styleparser.js';
  * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
  * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
  * pyramid following the same pattern as a tile grid. **Note:** All sources must have the same band count and content.
- * @property {import("../Map.js").default} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map~Map#addLayer}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
  * @typedef {Object} ParsedStyle
  * @property {string} vertexShader The vertex shader.
  * @property {string} fragmentShader The fragment shader.
- * @property {Object<string,import("../webgl/Helper.js").UniformValue>} uniforms Uniform definitions.
- * @property {Array<import("../webgl/PaletteTexture.js").default>} paletteTextures Palette textures.
+ * @property {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniform definitions.
+ * @property {Array<import("../webgl/PaletteTexture").default>} paletteTextures Palette textures.
  */
 
 /**
@@ -115,7 +115,7 @@ function parseStyle(style, bandCount) {
   `;
 
   /**
-   * @type {import("../expr/gpu.js").CompilationContext}
+   * @type {import("../expr/gpu").CompilationContext}
    */
   const context = {
     ...newCompilationContext(),
@@ -173,7 +173,7 @@ function parseStyle(style, bandCount) {
     );
   }
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Record<string,import("../webgl/Helper").UniformValue>} */
   const uniforms = {};
 
   const numVariables = Object.keys(context.variables).length;
@@ -276,7 +276,7 @@ function parseStyle(style, bandCount) {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @extends BaseTileLayer<SourceType, WebGLTileLayerRenderer>
- * @fires import("../render/Event.js").RenderEvent
+ * @fires import("../render/Event").RenderEvent
  * @api
  */
 export class WebGLTileLayer extends BaseTileLayer {
@@ -325,7 +325,7 @@ export class WebGLTileLayer extends BaseTileLayer {
     this.cacheSize_ = cacheSize;
 
     /**
-     * @type {Object<string, (string|number)>}
+     * @type {Record<string, (string|number)>}
      * @private
      */
     this.styleVariables_ = this.style_.variables || {};
@@ -358,7 +358,7 @@ export class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @return {import("../source/Source.js").State} Source state.
+   * @return {import("../source/Source").State} Source state.
    */
   getSourceState() {
     const source = this.getRenderSource();
@@ -419,7 +419,7 @@ export class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @param {?import("../Map").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
    * @return {HTMLElement} The rendered element.
@@ -486,7 +486,7 @@ export class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * Update any variables used by the layer style and trigger a re-render.
-   * @param {Object<string, number>} variables Variables to update.
+   * @param {Record<string, number>} variables Variables to update.
    * @api
    */
   updateStyleVariables(variables) {

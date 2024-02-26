@@ -46,8 +46,8 @@ export const Attributes = {
  */
 
 /**
- * @typedef {Object<string, AttributeDefinition>} AttributeDefinitions
- * @typedef {Object<string, import("../../webgl/Helper").UniformValue>} UniformDefinitions
+ * @typedef {Record<string, AttributeDefinition>} AttributeDefinitions
+ * @typedef {Record<string, import("../../webgl/Helper").UniformValue>} UniformDefinitions
  */
 
 /**

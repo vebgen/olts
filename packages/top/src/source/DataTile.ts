@@ -1,34 +1,34 @@
 
-import DataTile from '../DataTile.js';
-import EventType from '../events/EventType.js';
-import ReprojDataTile from '../reproj/DataTile.js';
-import TileCache from '../TileCache.js';
-import TileEventType from './TileEventType.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
-import TileState from '../TileState.js';
+import DataTile from '../DataTile';
+import type { EventType } from '@olts/events';
+import ReprojDataTile from '../reproj/DataTile';
+import TileCache from '../TileCache';
+import TileEventType from './TileEventType';
+import TileSource, {TileSourceEvent} from './Tile';
+import type { TileState} from '../tile';
 import {
   createXYZ,
   extentFromProjection,
   getForProjection as getTileGridForProjection,
-} from '../tilegrid.js';
-import {equivalent, get as getProjection} from '../proj.js';
-import {getKeyZXY} from '../tilecoord.js';
+} from '../tile-grid';
+import {equivalent, get as getProjection} from '../proj';
+import {getKeyZXY} from '../tile-coord';
 import {getUid} from '@olts/core/util';
 import {toPromise} from '@olts/core/functions';
-import {toSize} from '../size.js';
+import {toSize} from '../size';
 
 /**
  * Data tile loading function.  The function is called with z, x, and y tile coordinates and
- * returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
- * @typedef {function(number, number, number) : (import("../DataTile.js").Data|Promise<import("../DataTile.js").Data>)} Loader
+ * returns {@link import("../DataTile").Data data} for a tile or a promise for the same.
+ * @typedef {function(number, number, number) : (import("../DataTile").Data|Promise<import("../DataTile").Data>)} Loader
  */
 
 /**
  * @typedef {Object} Options
  * @property {Loader} [loader] Data loader.  Called with z, x, and y tile coordinates.
- * Returns {@link import("../DataTile.js").Data data} for a tile or a promise for the same.
+ * Returns {@link import("../DataTile").Data data} for a tile or a promise for the same.
  * For loaders that generate images, the promise should not resolve until the image is loaded.
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
@@ -38,10 +38,10 @@ import {toSize} from '../size.js';
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
  * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Tile projection.
- * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+ * @property {ProjectionLike} [projection='EPSG:3857'] Tile projection.
+ * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {import("./Source.js").State} [state] The source state.
+ * @property {import("./Source").State} [state] The source state.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
@@ -52,7 +52,7 @@ import {toSize} from '../size.js';
 /**
  * A source for typed array data tiles.
  *
- * @fires import("./Tile.js").TileSourceEvent
+ * @fires import("./Tile").TileSourceEvent
  * @api
  */
 export class DataTileSource extends TileSource {
@@ -95,19 +95,19 @@ export class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {import('../size.js').Size|null}
+     * @type {Size|null}
      */
     this.tileSize_ = options.tileSize ? toSize(options.tileSize) : null;
 
     /**
      * @private
-     * @type {Array<import('../size.js').Size>|null}
+     * @type {Array<Size>|null}
      */
     this.tileSizes_ = null;
 
     /**
      * @private
-     * @type {!Object<string, boolean>}
+     * @type {!Record<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
 
@@ -125,13 +125,13 @@ export class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
+     * @type {!Record<string, import("../tilegrid/TileGrid").default>}
      */
     this.tileGridForProjection_ = {};
 
     /**
      * @private
-     * @type {!Object<string, import("../TileCache.js").default>}
+     * @type {!Record<string, import("../TileCache").default>}
      */
     this.tileCacheForProjection_ = {};
   }
@@ -140,7 +140,7 @@ export class DataTileSource extends TileSource {
    * Set the source tile sizes.  The length of the array is expected to match the number of
    * levels in the tile grid.
    * @protected
-   * @param {Array<import('../size.js').Size>} tileSizes An array of tile sizes.
+   * @param {Array<Size>} tileSizes An array of tile sizes.
    */
   setTileSizes(tileSizes) {
     this.tileSizes_ = tileSizes;
@@ -151,7 +151,7 @@ export class DataTileSource extends TileSource {
    * size.
    * @protected
    * @param {number} z Tile zoom level.
-   * @return {import('../size.js').Size} The source tile size.
+   * @return {Size} The source tile size.
    */
   getTileSize(z) {
     if (this.tileSizes_) {
@@ -165,7 +165,7 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {number} Gutter.
    */
   getGutterForProjection(projection) {
@@ -189,8 +189,8 @@ export class DataTileSource extends TileSource {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {import("../proj/Projection.js").default} targetProj The output projection.
-   * @param {import("../proj/Projection.js").default} sourceProj The input projection.
+   * @param {import("../proj/Projection").default} targetProj The output projection.
+   * @param {import("../proj/Projection").default} sourceProj The input projection.
    * @return {!DataTile} Tile.
    */
   getReprojTile_(z, x, y, targetProj, sourceProj) {
@@ -249,7 +249,7 @@ export class DataTileSource extends TileSource {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection").default} projection Projection.
    * @return {!DataTile} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
@@ -295,22 +295,22 @@ export class DataTileSource extends TileSource {
 
   /**
    * Handle tile change events.
-   * @param {import("../events/Event.js").default} event Event.
+   * @param {import("../events/Event").default} event Event.
    */
   handleTileChange_(event) {
-    const tile = /** @type {import("../Tile.js").default} */ (event.target);
+    const tile = /** @type {import("../Tile").default} */ (event.target);
     const uid = getUid(tile);
     const tileState = tile.getState();
     let type;
-    if (tileState == TileState.LOADING) {
+    if (tileState == TileStates.LOADING) {
       this.tileLoadingKeys_[uid] = true;
       type = TileEventType.TILELOADSTART;
     } else if (uid in this.tileLoadingKeys_) {
       delete this.tileLoadingKeys_[uid];
       type =
-        tileState == TileState.ERROR
+        tileState == TileStates.ERROR
           ? TileEventType.TILELOADERROR
-          : tileState == TileState.LOADED
+          : tileState == TileStates.LOADED
             ? TileEventType.TILELOADEND
             : undefined;
     }
@@ -320,8 +320,8 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {!import("../tilegrid/TileGrid.js").default} Tile grid.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {!import("../tilegrid/TileGrid").default} Tile grid.
    */
   getTileGridForProjection(projection) {
     const thisProj = this.getProjection();
@@ -345,8 +345,8 @@ export class DataTileSource extends TileSource {
    * (e.g. projection has no extent defined) or
    * for optimization reasons (custom tile size, resolutions, ...).
    *
-   * @param {import("../proj.js").ProjectionLike} projection Projection.
-   * @param {import("../tilegrid/TileGrid.js").default} tilegrid Tile grid to use for the projection.
+   * @param {ProjectionLike} projection Projection.
+   * @param {import("../tilegrid/TileGrid").default} tilegrid Tile grid to use for the projection.
    * @api
    */
   setTileGridForProjection(projection, tilegrid) {
@@ -360,8 +360,8 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../TileCache.js").default} Tile cache.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @return {import("../TileCache").default} Tile cache.
    */
   getTileCacheForProjection(projection) {
     const thisProj = this.getProjection();
@@ -377,8 +377,8 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {!Object<string, boolean>} usedTiles Used tiles.
+   * @param {import("../proj/Projection").default} projection Projection.
+   * @param {!Record<string, boolean>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
     const usedTileCache = this.getTileCacheForProjection(projection);

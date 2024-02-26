@@ -1,28 +1,28 @@
 
 import { Circle } from '@olts/geometry';
 import { BaseEvent as Event, EventsKey } from '@olts/events';
-import EventType from '../events/EventType.js';
-import Feature from '../Feature.js';
+import type { EventType } from '@olts/events';
+import Feature from '../Feature';
 import { GeometryCollection } from '@olts/geometry';
-import InteractionProperty from './Property.js';
+import InteractionProperty from './Property';
 import { LineString } from '@olts/geometry';
-import MapBrowserEvent from '../MapBrowserEvent.js';
-import MapBrowserEventType from '../MapBrowserEventType.js';
+import MapBrowserEvent from '../MapBrowserEvent';
+import MapBrowserEventType from '../MapBrowserEventType';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
 import { Point } from '@olts/geometry';
-import PointerInteraction from './Pointer.js';
+import PointerInteraction from './Pointer';
 import Polygon, { fromCircle, makeRegular } from '@olts/geometry';
-import VectorLayer from '../layer/Vector.js';
-import VectorSource from '../source/Vector.js';
+import VectorLayer from '../layer/Vector';
+import VectorSource from '../source/Vector';
 import { FALSE, TRUE } from '@olts/core/functions';
 import {
     always,
     never,
     noModifierKeys,
     shiftKeyOnly,
-} from '../events/condition.js';
+} from '../events/condition';
 import {
     boundingExtent,
     getBottomLeft,
@@ -31,12 +31,12 @@ import {
     getTopRight,
 } from '@olts/core/extent';
 import { clamp, squaredDistance, toFixed } from '@olts/core/math';
-import { createEditingStyle } from '../style/Style.js';
+import { createEditingStyle } from '../style/Style';
 import {
     distance,
     squaredDistance as squaredCoordinateDistance,
-} from '../coordinate.js';
-import { fromUserCoordinate, getUserProjection } from '../proj.js';
+} from '../coordinate';
+import { fromUserCoordinate, getUserProjection } from '../proj';
 import { getStrideForLayout } from '@olts/geometry';
 
 /**
@@ -48,7 +48,7 @@ import { getStrideForLayout } from '@olts/geometry';
  * actually add a point/vertex to the geometry being drawn.  The default of `6`
  * was chosen for the draw interaction to behave correctly on mouse as well as
  * on touch devices.
- * @property {import("../Collection.js").default<Feature>} [features]
+ * @property {import("../Collection").default<Feature>} [features]
  * Destination collection for the drawn features.
  * @property {VectorSource} [source] Destination source for
  * the drawn features.
@@ -64,11 +64,11 @@ import { getStrideForLayout } from '@olts/geometry';
  * @property {number} [minPoints] The number of points that must be drawn
  * before a polygon ring or line string can be finished. Default is `3` for
  * polygon rings and `2` for line strings.
- * @property {import("../events/condition.js").Condition} [finishCondition] A function
+ * @property {import("../events/condition").Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished. Not used when drawing
  * POINT or MULTI_POINT geometries.
- * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
+ * @property {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike} [style]
  * Style for sketch features. The draw interaction can have up to three sketch features, depending on the mode.
  * It will always contain a feature with a `Point` geometry that corresponds to the current cursor position.
  * If the mode is `LineString` or `Polygon`, and there is at least one drawn point, it will also contain a feature with
@@ -82,7 +82,7 @@ import { getStrideForLayout } from '@olts/geometry';
  * Function that is called when a geometry's coordinates are updated.
  * @property {string} [geometryName] Geometry name to use for features created
  * by the draw interaction.
- * @property {import("../events/condition.js").Condition} [condition] A function that
+ * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * By default {@link module:ol/events/condition.noModifierKeys}, i.e. a click,
@@ -90,13 +90,13 @@ import { getStrideForLayout } from '@olts/geometry';
  * @property {boolean} [freehand=false] Operate in freehand mode for lines,
  * polygons, and circles.  This makes the interaction always operate in freehand
  * mode and takes precedence over any `freehandCondition` option.
- * @property {import("../events/condition.js").Condition} [freehandCondition]
+ * @property {import("../events/condition").Condition} [freehandCondition]
  * Condition that activates freehand drawing for lines and polygons. This
  * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether that event should be handled. The
  * default is {@link module:ol/events/condition.shiftKeyOnly}, meaning that the
  * Shift key activates freehand drawing.
- * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
+ * @property {boolean|import("../events/condition").Condition} [trace=false] Trace a portion of another geometry.
  * Ignored when in freehand mode.
  * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
  * not provided, the interaction's `source` will be used.  Tracing requires that the interaction is configured with
@@ -130,7 +130,7 @@ import { getStrideForLayout } from '@olts/geometry';
 /**
  * @typedef {Object} TraceState
  * @property {boolean} active Tracing active.
- * @property {import("../pixel.js").Pixel} [startPx] The initially clicked pixel location.
+ * @property {import("../pixel").Pixel} [startPx] The initially clicked pixel location.
  * @property {Array<TraceTarget>} [targets] Targets available for tracing.
  * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
  * that no trace target is active.
@@ -151,7 +151,7 @@ import { getStrideForLayout } from '@olts/geometry';
  * geometry is the geometry that is returned when the function is called without
  * a second argument.
  * @typedef {function(!SketchCoordType, SimpleGeometry,
- *     import("../proj/Projection.js").default):
+ *     import("../proj/Projection").default):
  *     SimpleGeometry} GeometryFunction
  */
 
@@ -360,12 +360,12 @@ const sharedUpdateInfo: TraceTargetUpdateInfo = { index: -1, endIndex: NaN };
 /**
  * @param {Coordinate} coordinate The coordinate.
  * @param {TraceState} traceState The trace state.
- * @param {import("../Map.js").default} map The map.
+ * @param {import("../Map").default} map The map.
  * @param {number} snapTolerance The snap tolerance.
  * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
  * object is reused between calls and must not be modified by the caller.
  */
-function getTraceTargetUpdate(coordinate: Coordinate, traceState: TraceState, map: import("../Map.js").default, snapTolerance: number): TraceTargetUpdateInfo {
+function getTraceTargetUpdate(coordinate: Coordinate, traceState: TraceState, map: import("../Map").default, snapTolerance: number): TraceTargetUpdateInfo {
     const x = coordinate[0];
     const y = coordinate[1];
 
@@ -573,7 +573,7 @@ function interpolateCoordinate(coordinates: LineCoordType, index: number): Coord
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event").default, Return> &
  *   import("../Observable").OnSignature<ObjectEventType|
  *     'change:active', import("../Object").ObjectEvent, Return> &
  *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
@@ -608,7 +608,7 @@ export class Draw extends PointerInteraction {
      * @param {Options} options Options.
      */
     constructor(options: Options) {
-        const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
+        const pointerOptions = /** @type {import("./Pointer").Options} */ (
             options
         );
         if (!pointerOptions.stopDown) {
@@ -627,7 +627,7 @@ export class Draw extends PointerInteraction {
         this.shouldHandle_ = false;
 
         /**
-         * @type {import("../pixel.js").Pixel}
+         * @type {import("../pixel").Pixel}
          * @private
          */
         this.downPx_ = null;
@@ -666,7 +666,7 @@ export class Draw extends PointerInteraction {
 
         /**
          * Target collection for drawn features.
-         * @type {import("../Collection.js").default<Feature>|null}
+         * @type {import("../Collection").default<Feature>|null}
          * @private
          */
         this.features_ = options.features ? options.features : null;
@@ -731,7 +731,7 @@ export class Draw extends PointerInteraction {
         /**
          * A function to decide if a potential finish coordinate is permissible
          * @private
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          */
         this.finishCondition_ = options.finishCondition
             ? options.finishCondition
@@ -752,10 +752,10 @@ export class Draw extends PointerInteraction {
                 /**
                  * @param {!LineCoordType} coordinates The coordinates.
                  * @param {SimpleGeometry|undefined} geometry Optional geometry.
-                 * @param {import("../proj/Projection.js").default} projection The view projection.
+                 * @param {import("../proj/Projection").default} projection The view projection.
                  * @return {SimpleGeometry} A geometry.
                  */
-                geometryFunction = function (coordinates: LineCoordType, geometry: SimpleGeometry | undefined, projection: import("../proj/Projection.js").default): SimpleGeometry {
+                geometryFunction = function (coordinates: LineCoordType, geometry: SimpleGeometry | undefined, projection: import("../proj/Projection").default): SimpleGeometry {
                     const circle = geometry
                         ? /** @type {Circle} */ (geometry)
                         : new Circle([NaN, NaN]);
@@ -787,10 +787,10 @@ export class Draw extends PointerInteraction {
                 /**
                  * @param {!LineCoordType} coordinates The coordinates.
                  * @param {SimpleGeometry|undefined} geometry Optional geometry.
-                 * @param {import("../proj/Projection.js").default} projection The view projection.
+                 * @param {import("../proj/Projection").default} projection The view projection.
                  * @return {SimpleGeometry} A geometry.
                  */
-                geometryFunction = function (coordinates: LineCoordType, geometry: SimpleGeometry | undefined, projection: import("../proj/Projection.js").default): SimpleGeometry {
+                geometryFunction = function (coordinates: LineCoordType, geometry: SimpleGeometry | undefined, projection: import("../proj/Projection").default): SimpleGeometry {
                     if (geometry) {
                         if (mode === 'Polygon') {
                             if (coordinates[0].length) {
@@ -903,13 +903,13 @@ export class Draw extends PointerInteraction {
 
         /**
          * @private
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          */
         this.condition_ = options.condition ? options.condition : noModifierKeys;
 
         /**
          * @private
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          */
         this.freehandCondition_;
         if (options.freehand) {
@@ -921,7 +921,7 @@ export class Draw extends PointerInteraction {
         }
 
         /**
-         * @type {import("../events/condition.js").Condition}
+         * @type {import("../events/condition").Condition}
          * @private
          */
         this.traceCondition_;
@@ -945,10 +945,10 @@ export class Draw extends PointerInteraction {
     /**
      * Toggle tracing mode or set a tracing condition.
      *
-     * @param {boolean|import("../events/condition.js").Condition} trace A boolean to toggle tracing mode or an event
+     * @param {boolean|import("../events/condition").Condition} trace A boolean to toggle tracing mode or an event
      *     condition that will be checked when a feature is clicked to determine if tracing should be active.
      */
-    setTrace(trace: boolean | import("../events/condition.js").Condition) {
+    setTrace(trace: boolean | import("../events/condition").Condition) {
         let condition;
         if (!trace) {
             condition = never;
@@ -964,9 +964,9 @@ export class Draw extends PointerInteraction {
      * Remove the interaction from its current map and attach it to the new map.
      * Subclasses may set up event handlers to get notified about changes to
      * the map here.
-     * @param {import("../Map.js").default} map Map.
+     * @param {import("../Map").default} map Map.
      */
-    setMap(map: import("../Map.js").default) {
+    setMap(map: import("../Map").default) {
         super.setMap(map);
         this.updateState_();
     }
@@ -982,11 +982,11 @@ export class Draw extends PointerInteraction {
 
     /**
      * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may actually draw or finish the drawing.
-     * @param {import("../MapBrowserEvent.js").default} event Map browser event.
+     * @param {import("../MapBrowserEvent").default} event Map browser event.
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(event: import("../MapBrowserEvent.js").default): boolean {
+    handleEvent(event: import("../MapBrowserEvent").default): boolean {
         if (event.originalEvent.type === EventType.CONTEXTMENU) {
             // Avoid context menu for long taps when drawing on mobile
             event.originalEvent.preventDefault();
@@ -1048,10 +1048,10 @@ export class Draw extends PointerInteraction {
 
     /**
      * Handle pointer down events.
-     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(event: import("../MapBrowserEvent.js").default): boolean {
+    handleDownEvent(event: import("../MapBrowserEvent").default): boolean {
         this.shouldHandle_ = !this.freehand_;
 
         if (this.freehand_) {
@@ -1092,10 +1092,10 @@ export class Draw extends PointerInteraction {
 
     /**
      * Activate or deactivate trace state based on a browser event.
-     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @param {import("../MapBrowserEvent").default} event Event.
      * @private
      */
-    toggleTraceState_(event: import("../MapBrowserEvent.js").default) {
+    toggleTraceState_(event: import("../MapBrowserEvent").default) {
         if (!this.traceSource_ || !this.traceCondition_(event)) {
             return;
         }
@@ -1238,10 +1238,10 @@ export class Draw extends PointerInteraction {
 
     /**
      * Update the trace.
-     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @param {import("../MapBrowserEvent").default} event Event.
      * @private
      */
-    updateTrace_(event: import("../MapBrowserEvent.js").default) {
+    updateTrace_(event: import("../MapBrowserEvent").default) {
         const traceState = this.traceState_;
         if (!traceState.active) {
             return;
@@ -1298,10 +1298,10 @@ export class Draw extends PointerInteraction {
 
     /**
      * Handle pointer up events.
-     * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(event: import("../MapBrowserEvent.js").default): boolean {
+    handleUpEvent(event: import("../MapBrowserEvent").default): boolean {
         let pass = true;
 
         if (this.getPointerCount() === 0) {
@@ -1347,10 +1347,10 @@ export class Draw extends PointerInteraction {
 
     /**
      * Handle move events.
-     * @param {import("../MapBrowserEvent.js").default} event A move event.
+     * @param {import("../MapBrowserEvent").default} event A move event.
      * @private
      */
-    handlePointerMove_(event: import("../MapBrowserEvent.js").default) {
+    handlePointerMove_(event: import("../MapBrowserEvent").default) {
         this.pointerType_ = event.originalEvent.pointerType;
         if (
             this.downPx_ &&
@@ -1381,12 +1381,12 @@ export class Draw extends PointerInteraction {
 
     /**
      * Determine if an event is within the snapping tolerance of the start coord.
-     * @param {import("../pixel.js").Pixel} pixel Pixel.
+     * @param {import("../pixel").Pixel} pixel Pixel.
      * @param {boolean} [tracing] Drawing in trace mode (only stop if at the starting point).
      * @return {boolean} The event is within the snapping tolerance of the start.
      * @private
      */
-    atFinish_(pixel: import("../pixel.js").Pixel, tracing: boolean): boolean {
+    atFinish_(pixel: import("../pixel").Pixel, tracing: boolean): boolean {
         let at = false;
         if (this.sketchFeature_) {
             let potentiallyDone = false;
@@ -1852,9 +1852,9 @@ export class Draw extends PointerInteraction {
 }
 
 /**
- * @return {import("../style/Style.js").StyleFunction} Styles.
+ * @return {import("../style/Style").StyleFunction} Styles.
  */
-function getDefaultStyleFunction(): import("../style/Style.js").StyleFunction {
+function getDefaultStyleFunction(): import("../style/Style").StyleFunction {
     const styles = createEditingStyle();
     return function (feature, resolution) {
         return styles[feature.getGeometry().getType()];

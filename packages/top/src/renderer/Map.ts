@@ -1,21 +1,21 @@
 
-import Disposable from '../Disposable.js';
+import Disposable from '../Disposable';
 import {TRUE} from '@olts/core/functions';
 import {abstract} from '@olts/core/util';
-import {compose as composeTransform, makeInverse} from '../transform.js';
+import {compose as composeTransform, makeInverse} from '../transform';
 import {getWidth} from '@olts/core/extent';
-import {shared as iconImageCache} from '../style/IconImageCache.js';
-import {inView} from '../layer/Layer.js';
-import {wrapX} from '../coordinate.js';
+import {shared as iconImageCache} from '../style/IconImageCache';
+import {inView} from '../layer/Layer';
+import {wrapX} from '../coordinate';
 
 /**
  * @template T
  * @typedef HitMatch
- * @property {import("../Feature.js").FeatureLike} feature Feature.
- * @property {import("../layer/Layer.js").default} layer Layer.
+ * @property {import("../Feature").FeatureLike} feature Feature.
+ * @property {import("../layer/Layer").default} layer Layer.
  * @property {SimpleGeometry} geometry Geometry.
  * @property {number} distanceSq Squared distance.
- * @property {import("./vector.js").FeatureCallback<T>} callback Callback.
+ * @property {import("./vector").FeatureCallback<T>} callback Callback.
  */
 
 /**
@@ -23,29 +23,29 @@ import {wrapX} from '../coordinate.js';
  */
 export class MapRenderer extends Disposable {
   /**
-   * @param {import("../Map.js").default} map Map.
+   * @param {import("../Map").default} map Map.
    */
   constructor(map) {
     super();
 
     /**
      * @private
-     * @type {import("../Map.js").default}
+     * @type {import("../Map").default}
      */
     this.map_ = map;
   }
 
   /**
    * @abstract
-   * @param {import("../render/EventType.js").default} type Event type.
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../render/EventType").default} type Event type.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   dispatchRenderEvent(type, frameState) {
     abstract();
   }
 
   /**
-   * @param {import("../Map.js").FrameState} frameState FrameState.
+   * @param {import("../Map").FrameState} frameState FrameState.
    * @protected
    */
   calculateMatrices2D(frameState) {
@@ -69,12 +69,12 @@ export class MapRenderer extends Disposable {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../Map.js").FrameState} frameState FrameState.
+   * @param {import("../Map").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
-   * @param {import("./vector.js").FeatureCallback<T>} callback Feature callback.
+   * @param {import("./vector").FeatureCallback<T>} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -97,8 +97,8 @@ export class MapRenderer extends Disposable {
 
     /**
      * @param {boolean} managed Managed layer.
-     * @param {import("../Feature.js").FeatureLike} feature Feature.
-     * @param {import("../layer/Layer.js").default} layer Layer.
+     * @param {import("../Feature").FeatureLike} feature Feature.
+     * @param {import("../layer/Layer").default} layer Layer.
      * @param {Geometry} geometry Geometry.
      * @return {T|undefined} Callback result.
      */
@@ -170,10 +170,10 @@ export class MapRenderer extends Disposable {
 
   /**
    * @param {Coordinate} coordinate Coordinate.
-   * @param {import("../Map.js").FrameState} frameState FrameState.
+   * @param {import("../Map").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {boolean} checkWrapped Check for wrapped geometries.
-   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -204,7 +204,7 @@ export class MapRenderer extends Disposable {
   }
 
   /**
-   * @return {import("../Map.js").default} Map.
+   * @return {import("../Map").default} Map.
    */
   getMap() {
     return this.map_;
@@ -213,19 +213,19 @@ export class MapRenderer extends Disposable {
   /**
    * Render.
    * @abstract
-   * @param {?import("../Map.js").FrameState} frameState Frame state.
+   * @param {?import("../Map").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
     abstract();
   }
 
   /**
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    */
   flushDeclutterItems(frameState) {}
 
   /**
-   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("../Map").FrameState} frameState Frame state.
    * @protected
    */
   scheduleExpireIconCache(frameState) {
@@ -236,8 +236,8 @@ export class MapRenderer extends Disposable {
 }
 
 /**
- * @param {import("../Map.js").default} map Map.
- * @param {import("../Map.js").FrameState} frameState Frame state.
+ * @param {import("../Map").default} map Map.
+ * @param {import("../Map").FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
   iconImageCache.expire();

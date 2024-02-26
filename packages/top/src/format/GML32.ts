@@ -1,14 +1,14 @@
 
 import GML2 from './GML2.js';
 import GML3 from './GML3.js';
-import GMLBase from './GMLBase.js';
+import GMLBase from './GMLBase';
 import {
   makeArrayExtender,
   makeArrayPusher,
   makeChildAppender,
   makeReplacer,
-} from '../xml.js';
-import {writeStringTextNode} from '../format/xsd.js';
+} from '../xml';
+import {writeStringTextNode} from '../format/xsd';
 
 /** Feature format for reading and writing data in the GML format
  *            version 3.2.1.
@@ -16,7 +16,7 @@ import {writeStringTextNode} from '../format/xsd.js';
  */
 export class GML32 extends GML3 {
   /**
-   * @param {import("./GMLBase.js").Options} [options] Optional configuration object.
+   * @param {import("./GMLBase").Options} [options] Optional configuration object.
    */
   constructor(options) {
     options = options ? options : {};
@@ -50,7 +50,7 @@ GML32.prototype.namespace = 'http://www.opengis.net/gml/3.2';
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -62,7 +62,7 @@ GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -73,7 +73,7 @@ GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -94,7 +94,7 @@ GML32.prototype.GEOMETRY_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.MULTICURVE_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -105,7 +105,7 @@ GML32.prototype.MULTICURVE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.MULTISURFACE_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -116,7 +116,7 @@ GML32.prototype.MULTISURFACE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.CURVEMEMBER_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -127,7 +127,7 @@ GML32.prototype.CURVEMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.SURFACEMEMBER_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -138,7 +138,7 @@ GML32.prototype.SURFACEMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.SURFACE_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -148,7 +148,7 @@ GML32.prototype.SURFACE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.CURVE_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -158,7 +158,7 @@ GML32.prototype.CURVE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.ENVELOPE_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -169,7 +169,7 @@ GML32.prototype.ENVELOPE_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.PATCHES_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -179,7 +179,7 @@ GML32.prototype.PATCHES_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.SEGMENTS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -191,7 +191,7 @@ GML32.prototype.SEGMENTS_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.MULTIPOINT_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -202,7 +202,7 @@ GML32.prototype.MULTIPOINT_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.MULTILINESTRING_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -217,7 +217,7 @@ GML32.prototype.MULTILINESTRING_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.MULTIPOLYGON_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -228,7 +228,7 @@ GML32.prototype.MULTIPOLYGON_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.POINTMEMBER_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -238,7 +238,7 @@ GML32.prototype.POINTMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.LINESTRINGMEMBER_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -248,7 +248,7 @@ GML32.prototype.LINESTRINGMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.POLYGONMEMBER_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -258,7 +258,7 @@ GML32.prototype.POLYGONMEMBER_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {Record<string, Record<string, import("../xml").Parser>>}
  */
 GML32.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -268,7 +268,7 @@ GML32.prototype.RING_PARSERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.RING_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -278,7 +278,7 @@ GML32.prototype.RING_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.ENVELOPE_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -288,7 +288,7 @@ GML32.prototype.ENVELOPE_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -302,7 +302,7 @@ GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.POINTMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -311,7 +311,7 @@ GML32.prototype.POINTMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {
@@ -325,7 +325,7 @@ GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS = {
 };
 
 /**
- * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ * @type {Record<string, Record<string, import("../xml").Serializer>>}
  */
 GML32.prototype.GEOMETRY_SERIALIZERS = {
   'http://www.opengis.net/gml/3.2': {

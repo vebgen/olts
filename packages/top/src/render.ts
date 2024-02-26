@@ -1,19 +1,19 @@
 
-import CanvasImmediateRenderer from './render/canvas/Immediate.js';
-import {DEVICE_PIXEL_RATIO} from '@olts/core/has';
+import CanvasImmediateRenderer from './render/canvas/Immediate';
+import { DEVICE_PIXEL_RATIO } from '@olts/core/has';
 import {
-  apply as applyTransform,
-  create as createTransform,
-  multiply as multiplyTransform,
-  scale as scaleTransform,
-} from './transform.js';
-import {getSquaredTolerance} from './renderer/vector.js';
-import {getTransformFromProjections, getUserProjection} from './proj.js';
+    apply as applyTransform,
+    create as createTransform,
+    multiply as multiplyTransform,
+    scale as scaleTransform,
+} from './transform';
+import { getSquaredTolerance } from './renderer/vector';
+import { getTransformFromProjections, getUserProjection } from './proj';
 
 /**
  * @typedef {Object} State
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
- * @property {import("./Feature.js").FeatureLike} feature Feature.
+ * @property {import("./Feature").FeatureLike} feature Feature.
  * @property {SimpleGeometry} geometry Geometry.
  * @property {number} pixelRatio Pixel ratio used by the layer renderer.
  * @property {number} resolution Resolution that the render batch was created and optimized for.
@@ -26,7 +26,7 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * It takes two instances of {@link module:ol/Feature~Feature} or
  * {@link module:ol/render/Feature~RenderFeature} and returns a `{number}`.
  *
- * @typedef {function(import("./Feature.js").FeatureLike, import("./Feature.js").FeatureLike):number} OrderFunction
+ * @typedef {function(import("./Feature").FeatureLike, import("./Feature").FeatureLike):number} OrderFunction
  */
 
 /**
@@ -46,8 +46,8 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * The units for geometry coordinates are css pixels relative to the top left
  * corner of the canvas element.
  * ```js
- * import {toContext} from 'ol/render.js';
- * import Fill from 'ol/style/Fill.js';
+ * import {toContext} from 'ol/render';
+ * import Fill from 'ol/style/Fill';
  * import { Polygon } from '@olts/geometry';
  *
  * const canvas = document.createElement('canvas');
@@ -66,74 +66,74 @@ import {getTransformFromProjections, getUserProjection} from './proj.js';
  * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */
-export function toContext(context, options) {
-  const canvas = context.canvas;
-  options = options ? options : {};
-  const pixelRatio = options.pixelRatio || DEVICE_PIXEL_RATIO;
-  const size = options.size;
-  if (size) {
-    canvas.width = size[0] * pixelRatio;
-    canvas.height = size[1] * pixelRatio;
-    canvas.style.width = size[0] + 'px';
-    canvas.style.height = size[1] + 'px';
-  }
-  const extent = [0, 0, canvas.width, canvas.height];
-  const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
-  return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
+export function toContext(context: CanvasRenderingContext2D, options: ToContextOptions): CanvasImmediateRenderer {
+    const canvas = context.canvas;
+    options = options ? options : {};
+    const pixelRatio = options.pixelRatio || DEVICE_PIXEL_RATIO;
+    const size = options.size;
+    if (size) {
+        canvas.width = size[0] * pixelRatio;
+        canvas.height = size[1] * pixelRatio;
+        canvas.style.width = size[0] + 'px';
+        canvas.style.height = size[1] + 'px';
+    }
+    const extent = [0, 0, canvas.width, canvas.height];
+    const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
+    return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
 }
 
 /**
  * Gets a vector context for drawing to the event's canvas.
- * @param {import("./render/Event.js").default} event Render event.
+ * @param {import("./render/Event").default} event Render event.
  * @return {CanvasImmediateRenderer} Vector context.
  * @api
  */
-export function getVectorContext(event) {
-  if (!(event.context instanceof CanvasRenderingContext2D)) {
-    throw new Error('Only works for render events from Canvas 2D layers');
-  }
+export function getVectorContext(event: import("./render/Event").default): CanvasImmediateRenderer {
+    if (!(event.context instanceof CanvasRenderingContext2D)) {
+        throw new Error('Only works for render events from Canvas 2D layers');
+    }
 
-  // canvas may be at a different pixel ratio than frameState.pixelRatio
-  const a = event.inversePixelTransform[0];
-  const b = event.inversePixelTransform[1];
-  const canvasPixelRatio = Math.sqrt(a * a + b * b);
-  const frameState = event.frameState;
-  const transform = multiplyTransform(
-    event.inversePixelTransform.slice(),
-    frameState.coordinateToPixelTransform,
-  );
-  const squaredTolerance = getSquaredTolerance(
-    frameState.viewState.resolution,
-    canvasPixelRatio,
-  );
-  let userTransform;
-  const userProjection = getUserProjection();
-  if (userProjection) {
-    userTransform = getTransformFromProjections(
-      userProjection,
-      frameState.viewState.projection,
+    // canvas may be at a different pixel ratio than frameState.pixelRatio
+    const a = event.inversePixelTransform[0];
+    const b = event.inversePixelTransform[1];
+    const canvasPixelRatio = Math.sqrt(a * a + b * b);
+    const frameState = event.frameState;
+    const transform = multiplyTransform(
+        event.inversePixelTransform.slice(),
+        frameState.coordinateToPixelTransform,
     );
-  }
+    const squaredTolerance = getSquaredTolerance(
+        frameState.viewState.resolution,
+        canvasPixelRatio,
+    );
+    let userTransform;
+    const userProjection = getUserProjection();
+    if (userProjection) {
+        userTransform = getTransformFromProjections(
+            userProjection,
+            frameState.viewState.projection,
+        );
+    }
 
-  return new CanvasImmediateRenderer(
-    event.context,
-    canvasPixelRatio,
-    frameState.extent,
-    transform,
-    frameState.viewState.rotation,
-    squaredTolerance,
-    userTransform,
-  );
+    return new CanvasImmediateRenderer(
+        event.context,
+        canvasPixelRatio,
+        frameState.extent,
+        transform,
+        frameState.viewState.rotation,
+        squaredTolerance,
+        userTransform,
+    );
 }
 
 /**
  * Gets the pixel of the event's canvas context from the map viewport's CSS pixel.
- * @param {import("./render/Event.js").default} event Render event.
- * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
+ * @param {import("./render/Event").default} event Render event.
+ * @param {import("./pixel").Pixel} pixel CSS pixel relative to the top-left
  * corner of the map viewport.
- * @return {import("./pixel.js").Pixel} Pixel on the event's canvas context.
+ * @return {import("./pixel").Pixel} Pixel on the event's canvas context.
  * @api
  */
-export function getRenderPixel(event, pixel) {
-  return applyTransform(event.inversePixelTransform, pixel.slice(0));
+export function getRenderPixel(event: import("./render/Event").default, pixel: import("./pixel").Pixel): import("./pixel").Pixel {
+    return applyTransform(event.inversePixelTransform, pixel.slice(0));
 }

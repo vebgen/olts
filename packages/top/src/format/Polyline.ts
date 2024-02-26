@@ -1,12 +1,12 @@
 
-import Feature from '../Feature.js';
+import Feature from '../Feature';
 import { LineString } from '@olts/geometry';
-import TextFeature from './TextFeature.js';
+import TextFeature from './TextFeature';
 import {flipXY} from '@olts/geometry/flat';
-import {get as getProjection} from '../proj.js';
+import {get as getProjection} from '../proj';
 import {getStrideForLayout} from '@olts/geometry';
 import {inflateCoordinates} from '@olts/geometry/flat';
-import {transformGeometryWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {Object} Options
@@ -38,7 +38,7 @@ export class Polyline extends TextFeature {
     options = options ? options : {};
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection").default}
      */
     this.dataProjection = getProjection('EPSG:4326');
 
@@ -60,8 +60,8 @@ export class Polyline extends TextFeature {
   /**
    * @protected
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
+   * @return {import("../Feature").default} Feature.
    */
   readFeatureFromText(text, options) {
     const geometry = this.readGeometryFromText(text, options);
@@ -70,7 +70,7 @@ export class Polyline extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<Feature>} Features.
    */
@@ -81,7 +81,7 @@ export class Polyline extends TextFeature {
 
   /**
    * @param {string} text Text.
-   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
    */
@@ -105,8 +105,8 @@ export class Polyline extends TextFeature {
   }
 
   /**
-   * @param {import("../Feature.js").default<LineString>} feature Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("../Feature").default<LineString>} feature Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -119,8 +119,8 @@ export class Polyline extends TextFeature {
   }
 
   /**
-   * @param {Array<import("../Feature.js").default<LineString>>} features Features.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {Array<import("../Feature").default<LineString>>} features Features.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */
@@ -130,7 +130,7 @@ export class Polyline extends TextFeature {
 
   /**
    * @param {LineString} geometry Geometry.
-   * @param {import("./Feature.js").WriteOptions} [options] Write options.
+   * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
    * @return {string} Text.
    */

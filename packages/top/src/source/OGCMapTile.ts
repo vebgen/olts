@@ -1,6 +1,6 @@
-import TileImage from './TileImage.js';
-import {getTileSetInfo} from './ogcTileUtil.js';
-import {error as logError} from '../console.js';
+import TileImage from './TileImage';
+import {getTileSetInfo} from './ogcTileUtil';
+import {error as logError} from '../console';
 
 /**
  * @typedef {Object} Options
@@ -9,10 +9,10 @@ import {error as logError} from '../console.js';
  * (zoom level), `{tileRow}`, and `{tileCol}` variables in the URL will always be provided by the source.
  * @property {string} [mediaType] The content type for the tiles (e.g. "image/png").  If not provided,
  * the source will try to find a link with rel="item" that uses a supported image type.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. By default, the projection
+ * @property {ProjectionLike} [projection] Projection. By default, the projection
  * will be derived from the `crs` of the `tileMatrixSet`.  You can override this by supplying
  * a projection to the constructor.
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
@@ -21,7 +21,7 @@ import {error as logError} from '../console.js';
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(tile, src) {
  *   tile.getImage().src = src;
@@ -69,7 +69,7 @@ export class OGCMapTile extends TileImage {
   }
 
   /**
-   * @param {import("./ogcTileUtil.js").TileSetInfo} tileSetInfo Tile set info.
+   * @param {import("./ogcTileUtil").TileSetInfo} tileSetInfo Tile set info.
    * @private
    */
   handleTileSetInfo_(tileSetInfo) {

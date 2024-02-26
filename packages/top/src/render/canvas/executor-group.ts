@@ -26,7 +26,7 @@ export class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
-   * @param {!Object<string, !Object<import("../canvas").BuilderType, import("../canvas").SerializableInstructions>>} allInstructions
+   * @param {!Record<string, !Record<import("../canvas").BuilderType, import("../canvas").SerializableInstructions>>} allInstructions
    * The serializable instructions.
    * @param {number} [renderBuffer] Optional rendering buffer.
    */
@@ -35,7 +35,7 @@ export class ExecutorGroup {
     resolution: number,
     pixelRatio: number,
     overlaps: boolean,
-    allInstructions: { [s: string]: !Object<import ("../canvas").BuilderType, import ("../canvas").SerializableInstructions>; },
+    allInstructions: { [s: string]: !Record<import ("../canvas").BuilderType, import ("../canvas").SerializableInstructions>; },
     renderBuffer: number,
   ) {
     /**
@@ -70,7 +70,7 @@ export class ExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<import("../canvas").BuilderType, import("./Executor").default>>}
+     * @type {!Record<string, !Record<import("../canvas").BuilderType, import("./Executor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -106,9 +106,9 @@ export class ExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<import("../canvas").BuilderType, import("../canvas").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Record<string, !Record<import("../canvas").BuilderType, import("../canvas").SerializableInstructions>>} allInstructions The serializable instructions
    */
-  createExecutors_(allInstructions: { [s: string]: !Object<import ("../canvas").BuilderType, import ("../canvas").SerializableInstructions>; }) {
+  createExecutors_(allInstructions: { [s: string]: !Record<import ("../canvas").BuilderType, import ("../canvas").SerializableInstructions>; }) {
     for (const zIndex in allInstructions) {
       let executors = this.executorsByZIndex_[zIndex];
       if (executors === undefined) {
@@ -365,7 +365,7 @@ export class ExecutorGroup {
  * This cache is used to store arrays of indexes for calculated pixel circles
  * to increase performance.
  * It is a static property to allow each Replaygroup to access it.
- * @type {Object<number, number[]>}
+ * @type {Record<number, number[]>}
  */
 const circlePixelIndexArrayCache: { [n: number]: number[]; } = {};
 

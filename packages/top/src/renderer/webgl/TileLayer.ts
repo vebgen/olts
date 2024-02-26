@@ -1,24 +1,24 @@
 
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
-import TileState from '../../TileState.js';
-import TileTexture from '../../webgl/TileTexture.js';
-import WebGLArrayBuffer from '../../webgl/Buffer.js';
+import ReprojDataTile from '../../reproj/DataTile';
+import ReprojTile from '../../reproj/Tile';
+import type { TileState} from '../../tile';
+import TileTexture from '../../webgl/TileTexture';
+import WebGLArrayBuffer from '../../webgl/Buffer';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
   getCacheKey,
-} from './TileLayerBase.js';
-import {AttributeType} from '../../webgl/Helper.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
-import {apply as applyTransform} from '../../transform.js';
+} from './TileLayerBase';
+import {AttributeType} from '../../webgl/Helper';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl';
+import {apply as applyTransform} from '../../transform';
 import {
   boundingExtent,
   containsCoordinate,
   getIntersection,
 } from '@olts/core/extent';
-import {fromUserExtent} from '../../proj.js';
+import {fromUserExtent} from '../../proj';
 import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
-import {toSize} from '../../size.js';
+import {toSize} from '../../size';
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -35,7 +35,7 @@ export const Attributes = {
 };
 
 /**
- * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
+ * @type {Array<import('../../webgl/Helper').AttributeDescription>}
  */
 const attributeDescriptions = [
   {
@@ -49,20 +49,20 @@ const attributeDescriptions = [
  * @typedef {Object} Options
  * @property {string} vertexShader Vertex shader source.
  * @property {string} fragmentShader Fragment shader source.
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
+ * @property {Record<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
- * @property {Array<import("../../webgl/PaletteTexture.js").default>} [paletteTextures] Palette textures.
+ * @property {Array<import("../../webgl/PaletteTexture").default>} [paletteTextures] Palette textures.
  * @property {number} [cacheSize=512] The texture cache size.
  */
 
 /**
- * @typedef {import("../../layer/WebGLTile.js").default} LayerType
+ * @typedef {import("../../layer/WebGLTile").default} LayerType
  */
 /**
- * @typedef {import("../../webgl/TileTexture.js").TileType} TileTextureType
+ * @typedef {import("../../webgl/TileTexture").TileType} TileTextureType
  */
 /**
- * @typedef {import("../../webgl/TileTexture.js").default} TileTextureRepresentation
+ * @typedef {import("../../webgl/TileTexture").default} TileTextureRepresentation
  */
 
 /**
@@ -115,7 +115,7 @@ export class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.indices_.fromArray([0, 1, 3, 1, 2, 3]);
 
     /**
-     * @type {Array<import("../../webgl/PaletteTexture.js").default>}
+     * @type {Array<import("../../webgl/PaletteTexture").default>}
      * @private
      */
     this.paletteTextures_ = options.paletteTextures || [];
@@ -253,7 +253,7 @@ export class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../pixel").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
    */
   getData(pixel) {
@@ -324,7 +324,7 @@ export class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       const tile = tileTexture.tile;
       if (
         (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-        tile.getState() === TileState.EMPTY
+        tile.getState() === TileStates.EMPTY
       ) {
         return null;
       }

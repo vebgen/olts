@@ -1,14 +1,14 @@
 
-import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
+import {DEFAULT_TILE_SIZE} from '../tile-grid/common';
 
-import ImageTile from '../ImageTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
-import TileImage from './TileImage.js';
-import TileState from '../TileState.js';
+import ImageTile from '../ImageTile';
+import TileGrid from '../tile-grid/TileGrid';
+import TileImage from './TileImage';
+import type { TileState} from '../tile';
 import {createCanvasContext2D} from '@olts/core/dom';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction.js';
+import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction';
 import {getCenter} from '@olts/core/extent';
-import {toSize} from '../size.js';
+import {toSize} from '../size';
 
 /**
  * @typedef {'default' | 'truncated'} TierSizeCalculation
@@ -17,12 +17,12 @@ import {toSize} from '../size.js';
 export class CustomTile extends ImageTile {
   /**
    * @param {Size} tileSize Full tile size.
-   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileState.js").default} state State.
+   * @param {TileCoord} tileCoord Tile coordinate.
+   * @param {import("../TileState").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
-   * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
-   * @param {import("../Tile.js").Options} [options] Tile options.
+   * @param {import("../Tile").LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("../Tile").Options} [options] Tile options.
    */
   constructor(
     tileSize,
@@ -56,7 +56,7 @@ export class CustomTile extends ImageTile {
       return this.zoomifyImage_;
     }
     const image = super.getImage();
-    if (this.state == TileState.LOADED) {
+    if (this.state == TileStates.LOADED) {
       const tileSize = this.tileSize_;
       if (image.width == tileSize[0] && image.height == tileSize[1]) {
         this.zoomifyImage_ = image;
@@ -73,14 +73,14 @@ export class CustomTile extends ImageTile {
 
 /**
  * @typedef {Object} Options
- * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {ProjectionLike} [projection] Projection.
  * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -105,7 +105,7 @@ export class CustomTile extends ImageTile {
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number} [tileSize=256] Tile size. Same tile size is used for all zoom levels.
- * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
+ * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
@@ -195,14 +195,14 @@ export class Zoomify extends TileImage {
 
     /**
      * @param {string} template Template.
-     * @return {import("../Tile.js").UrlFunction} Tile URL function.
+     * @return {import("../Tile").UrlFunction} Tile URL function.
      */
     function createFromTemplate(template) {
       return (
         /**
-         * @param {import("../tilecoord.js").TileCoord} tileCoord Tile Coordinate.
+         * @param {TileCoord} tileCoord Tile Coordinate.
          * @param {number} pixelRatio Pixel ratio.
-         * @param {import("../proj/Projection.js").default} projection Projection.
+         * @param {import("../proj/Projection").default} projection Projection.
          * @return {string|undefined} Tile URL.
          */
         function (tileCoord, pixelRatio, projection) {
@@ -254,7 +254,7 @@ export class Zoomify extends TileImage {
     });
 
     /**
-     * @type {number|import("../array.js").NearestDirectionFunction}
+     * @type {number|import("../array").NearestDirectionFunction}
      */
     this.zDirection = options.zDirection;
 
