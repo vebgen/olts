@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/PolygonBuilder
- */
+
 import CanvasBuilder from './Builder';
 import CanvasInstruction, {
     beginPathInstruction,
@@ -84,10 +82,10 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
 
     /**
-     * @param {import("../../geom/Circle").default} circleGeometry Circle geometry.
+     * @param {Circle} circleGeometry Circle geometry.
      * @param {default} feature Feature.
      */
-    drawCircle(circleGeometry: import("../../geom/Circle").default, feature: default) {
+    drawCircle(circleGeometry: Circle, feature: default) {
         const state = this.state;
         const fillStyle = state.fillStyle;
         const strokeStyle = state.strokeStyle;
@@ -140,10 +138,10 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
 
     /**
-     * @param {import("../../geom/Polygon").default|import("../Feature").default} polygonGeometry Polygon geometry.
+     * @param {Polygon|import("../Feature").default} polygonGeometry Polygon geometry.
      * @param {FeatureLike} feature Feature.
      */
-    drawPolygon(polygonGeometry: import("../../geom/Polygon").default | import("../Feature").default, feature: FeatureLike) {
+    drawPolygon(polygonGeometry: Polygon | import("../Feature").default, feature: FeatureLike) {
         const state = this.state;
         const fillStyle = state.fillStyle;
         const strokeStyle = state.strokeStyle;
@@ -183,10 +181,10 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
 
     /**
-     * @param {import("../../geom/MultiPolygon").default} multiPolygonGeometry MultiPolygon geometry.
+     * @param {MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
      * @param {FeatureLike} feature Feature.
      */
-    drawMultiPolygon(multiPolygonGeometry: import("../../geom/MultiPolygon").default, feature: FeatureLike) {
+    drawMultiPolygon(multiPolygonGeometry: MultiPolygon, feature: FeatureLike) {
         const state = this.state;
         const fillStyle = state.fillStyle;
         const strokeStyle = state.strokeStyle;

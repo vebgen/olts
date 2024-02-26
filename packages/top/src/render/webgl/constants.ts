@@ -1,6 +1,4 @@
-/**
- * @module ol/render/webgl/constants
- */
+
 
 import { Transform } from "@olts/core/transform";
 

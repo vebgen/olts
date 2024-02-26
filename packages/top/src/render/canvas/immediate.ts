@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/Immediate
- */
+
 // FIXME test, especially polygons with holes and multipolygons
 // FIXME need to handle large thick features (where pixel size matters)
 // FIXME add offset and end to ol/geom/flat/transform~transform2D?
@@ -10,7 +8,7 @@ import {asColorLike} from '../../colorlike';
 import {
   compose as composeTransform,
   create as createTransform,
-} from '../../transform';
+} from '@olts/core/transform';
 import {
   defaultFillStyle,
   defaultFont,
@@ -24,11 +22,11 @@ import {
   defaultTextAlign,
   defaultTextBaseline,
 } from '../canvas';
-import {equals} from '../../array';
-import {intersects} from '../../extent';
-import {toFixed} from '../../math';
-import {transform2D} from '../../geom/flat/transform';
-import {transformGeom2D} from '../../geom/SimpleGeometry';
+import {equals} from '@olts/core/array';
+import {intersects} from '@olts/core/extent';
+import {toFixed} from '@olts/core/math';
+import {transform2D} from '@olts/geometry/flat';
+import {transformGeom2D} from '@olts/geometry';
 
 /**
  * @classdesc
@@ -483,12 +481,12 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a circle geometry into the canvas.  Rendering is immediate and uses
    * the current fill and stroke styles.
    *
-   * @param {import("../../geom/Circle").default} geometry Circle geometry.
+   * @param {Circle} geometry Circle geometry.
    * @api
    */
-  drawCircle(geometry: import("../../geom/Circle").default) {
+  drawCircle(geometry: Circle) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/Circle").default} */ (
+      geometry = /** @type {Circle} */ (
         geometry.simplifyTransformed(
           this.squaredTolerance_,
           this.userTransform_,
@@ -558,10 +556,10 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a geometry into the canvas.  Call
    * {@link module:ol/render/canvas/Immediate~CanvasImmediateRenderer#setStyle renderer.setStyle()} first to set the rendering style.
    *
-   * @param {import("../../geom/Geometry").default|import("../Feature").default} geometry The geometry to render.
+   * @param {Geometry|import("../Feature").default} geometry The geometry to render.
    * @api
    */
-  drawGeometry(geometry: import("../../geom/Geometry").default | import("../Feature").default) {
+  drawGeometry(geometry: Geometry | import("../Feature").default) {
     const type = geometry.getType();
     switch (type) {
       case 'Point':
@@ -571,43 +569,43 @@ class CanvasImmediateRenderer extends VectorContext {
         break;
       case 'LineString':
         this.drawLineString(
-          /** @type {import("../../geom/LineString").default} */ (geometry),
+          /** @type {LineString} */ (geometry),
         );
         break;
       case 'Polygon':
         this.drawPolygon(
-          /** @type {import("../../geom/Polygon").default} */ (geometry),
+          /** @type {Polygon} */ (geometry),
         );
         break;
       case 'MultiPoint':
         this.drawMultiPoint(
-          /** @type {import("../../geom/MultiPoint").default} */ (geometry),
+          /** @type {MultiPoint} */ (geometry),
         );
         break;
       case 'MultiLineString':
         this.drawMultiLineString(
-          /** @type {import("../../geom/MultiLineString").default} */ (
+          /** @type {MultiLineString} */ (
             geometry
           ),
         );
         break;
       case 'MultiPolygon':
         this.drawMultiPolygon(
-          /** @type {import("../../geom/MultiPolygon").default} */ (
+          /** @type {MultiPolygon} */ (
             geometry
           ),
         );
         break;
       case 'GeometryCollection':
         this.drawGeometryCollection(
-          /** @type {import("../../geom/GeometryCollection").default} */ (
+          /** @type {GeometryCollection} */ (
             geometry
           ),
         );
         break;
       case 'Circle':
         this.drawCircle(
-          /** @type {import("../../geom/Circle").default} */ (geometry),
+          /** @type {Circle} */ (geometry),
         );
         break;
       default:
@@ -637,9 +635,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a GeometryCollection to the canvas.  Rendering is immediate and
    * uses the current styles appropriate for each geometry in the collection.
    *
-   * @param {import("../../geom/GeometryCollection").default} geometry Geometry collection.
+   * @param {GeometryCollection} geometry Geometry collection.
    */
-  drawGeometryCollection(geometry: import("../../geom/GeometryCollection").default) {
+  drawGeometryCollection(geometry: GeometryCollection) {
     const geometries = geometry.getGeometriesArray();
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       this.drawGeometry(geometries[i]);
@@ -675,11 +673,11 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
    * uses the current style.
    *
-   * @param {import("../../geom/MultiPoint").default|import("../Feature").default} geometry MultiPoint geometry.
+   * @param {MultiPoint|import("../Feature").default} geometry MultiPoint geometry.
    */
-  drawMultiPoint(geometry: import("../../geom/MultiPoint").default | import("../Feature").default) {
+  drawMultiPoint(geometry: MultiPoint | import("../Feature").default) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/MultiPoint").default} */ (
+      geometry = /** @type {MultiPoint} */ (
         geometry.simplifyTransformed(
           this.squaredTolerance_,
           this.userTransform_,
@@ -700,11 +698,11 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a LineString into the canvas.  Rendering is immediate and uses
    * the current style.
    *
-   * @param {import("../../geom/LineString").default|import("../Feature").default} geometry LineString geometry.
+   * @param {LineString|import("../Feature").default} geometry LineString geometry.
    */
-  drawLineString(geometry: import("../../geom/LineString").default | import("../Feature").default) {
+  drawLineString(geometry: LineString | import("../Feature").default) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/LineString").default} */ (
+      geometry = /** @type {LineString} */ (
         geometry.simplifyTransformed(
           this.squaredTolerance_,
           this.userTransform_,
@@ -738,12 +736,12 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a MultiLineString geometry into the canvas.  Rendering is immediate
    * and uses the current style.
    *
-   * @param {import("../../geom/MultiLineString").default|import("../Feature").default} geometry MultiLineString geometry.
+   * @param {MultiLineString|import("../Feature").default} geometry MultiLineString geometry.
    */
-  drawMultiLineString(geometry: import("../../geom/MultiLineString").default | import("../Feature").default) {
+  drawMultiLineString(geometry: MultiLineString | import("../Feature").default) {
     if (this.squaredTolerance_) {
       geometry =
-        /** @type {import("../../geom/MultiLineString").default} */ (
+        /** @type {MultiLineString} */ (
           geometry.simplifyTransformed(
             this.squaredTolerance_,
             this.userTransform_,
@@ -783,11 +781,11 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
    * the current style.
    *
-   * @param {import("../../geom/Polygon").default|import("../Feature").default} geometry Polygon geometry.
+   * @param {Polygon|import("../Feature").default} geometry Polygon geometry.
    */
-  drawPolygon(geometry: import("../../geom/Polygon").default | import("../Feature").default) {
+  drawPolygon(geometry: Polygon | import("../Feature").default) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/Polygon").default} */ (
+      geometry = /** @type {Polygon} */ (
         geometry.simplifyTransformed(
           this.squaredTolerance_,
           this.userTransform_,
@@ -828,11 +826,11 @@ class CanvasImmediateRenderer extends VectorContext {
   /**
    * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
    * uses the current style.
-   * @param {import("../../geom/MultiPolygon").default} geometry MultiPolygon geometry.
+   * @param {MultiPolygon} geometry MultiPolygon geometry.
    */
-  drawMultiPolygon(geometry: import("../../geom/MultiPolygon").default) {
+  drawMultiPolygon(geometry: MultiPolygon) {
     if (this.squaredTolerance_) {
-      geometry = /** @type {import("../../geom/MultiPolygon").default} */ (
+      geometry = /** @type {MultiPolygon} */ (
         geometry.simplifyTransformed(
           this.squaredTolerance_,
           this.userTransform_,

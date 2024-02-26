@@ -1,8 +1,6 @@
-/**
- * @module ol/render/webgl/renderinstructions
- */
-import {apply as applyTransform} from '../../transform';
-import {transform2D} from '../../geom/flat/transform';
+
+import {apply as applyTransform} from '@olts/core/transform';
+import {transform2D} from '@olts/geometry/flat';
 
 /**
  * @param {Float32Array} renderInstructions Render instructions

@@ -1,6 +1,4 @@
-/**
- * @module ol/render/Box
- */
+
 
 import { Pixel } from '@olts/core/coordinate';
 import { Polygon } from '@olts/geometry';

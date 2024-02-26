@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/ImageBuilder
- */
+
 import { Extent } from '@olts/core/extent';
 import CanvasBuilder from './Builder';
 import CanvasInstruction from './Instruction';
@@ -165,10 +163,10 @@ class CanvasImageBuilder extends CanvasBuilder {
     }
 
     /**
-     * @param {import("../../geom/MultiPoint").default|import("../Feature").default} multiPointGeometry MultiPoint geometry.
+     * @param {MultiPoint|import("../Feature").default} multiPointGeometry MultiPoint geometry.
      * @param {FeatureLike} feature Feature.
      */
-    drawMultiPoint(multiPointGeometry: import("../../geom/MultiPoint").default | import("../Feature").default, feature: FeatureLike) {
+    drawMultiPoint(multiPointGeometry: MultiPoint | import("../Feature").default, feature: FeatureLike) {
         if (!this.image_) {
             return;
         }

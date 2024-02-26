@@ -1,14 +1,12 @@
-/**
- * @module ol/render/canvas/style
- */
 
-import Circle from '../../style/Circle';
-import Fill from '../../style/Fill';
-import Icon from '../../style/Icon';
-import RegularShape from '../../style/RegularShape';
-import Stroke from '../../style/Stroke';
-import Style from '../../style/Style';
-import Text from '../../style/Text';
+
+import { Circle } from '@olts/style';
+import { Fill } from '@olts/style';
+import { Icon } from '@olts/style';
+import { RegularShape } from '@olts/style';
+import { Stroke } from '@olts/style';
+import { Style } from '@olts/style';
+import { Text } from '@olts/style';
 import {
   BooleanType,
   ColorType,
@@ -19,7 +17,7 @@ import {
   newParsingContext,
 } from '../../expr/expression';
 import {buildExpression, newEvaluationContext} from '../../expr/cpu';
-import {isEmpty} from '../../obj';
+import {isEmpty} from '@olts/core/js-obj';
 import {toSize} from '../../size';
 
 /**

@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/Executor
- */
+
 import CanvasInstruction from './Instruction';
 import {TEXT_ALIGN} from './text-builder';
 import {
@@ -8,8 +6,8 @@ import {
   compose as composeTransform,
   create as createTransform,
   setFromArray as transformSetFromArray,
-} from '../../transform';
-import {createEmpty, createOrUpdate, intersects} from '../../extent';
+} from '@olts/core/transform';
+import {createEmpty, createOrUpdate, intersects} from '@olts/core/extent';
 import {
   defaultPadding,
   defaultTextAlign,
@@ -18,10 +16,10 @@ import {
   getTextDimensions,
   measureAndCacheTextWidth,
 } from '../canvas';
-import {drawTextOnPath} from '../../geom/flat/textpath';
-import {equals} from '../../array';
-import {lineStringLength} from '../../geom/flat/length';
-import {transform2D} from '../../geom/flat/transform';
+import {drawTextOnPath} from '@olts/geometry/flat';
+import {equals} from '@olts/core/array';
+import {lineStringLength} from '@olts/geometry/flat';
+import {transform2D} from '@olts/geometry/flat';
 import { Coordinate } from '@olts/core/coordinate';
 import { Extent } from '@olts/core/extent';
 
@@ -53,7 +51,7 @@ import { Extent } from '@olts/core/extent';
 
 /**
  * @template T
- * @typedef {function(FeatureLike, import("../../geom/SimpleGeometry").default): T} FeatureCallback
+ * @typedef {function(FeatureLike, SimpleGeometry): T} FeatureCallback
  */
 
 const tmpExtent: Extent = createEmpty();
@@ -760,7 +758,7 @@ class Executor {
           d = /** @type {number} */ (instruction[1]);
           dd = instruction[2];
           const geometry =
-            /** @type {import("../../geom/SimpleGeometry").default} */ (
+            /** @type {SimpleGeometry} */ (
               instruction[3]
             );
           const renderer = instruction[4];

@@ -7,7 +7,7 @@ import {
     clone,
     containsCoordinate,
     coordinateRelationship,
-} from '../../extent';
+} from '@olts/core/extent';
 import {
     defaultFillStyle,
     defaultLineCap,
@@ -18,7 +18,7 @@ import {
     defaultMiterLimit,
     defaultStrokeStyle,
 } from '../canvas';
-import { equals, reverseSubArray } from '../../array';
+import { equals, reverseSubArray } from '@olts/core/array';
 import {
     inflateCoordinates,
     inflateCoordinatesArray,
@@ -241,12 +241,12 @@ class CanvasBuilder extends VectorContext {
     }
 
     /**
-     * @param {import("../../geom/SimpleGeometry").default} geometry Geometry.
+     * @param {SimpleGeometry} geometry Geometry.
      * @param {FeatureLike} feature Feature.
      * @param {Function} renderer Renderer.
      * @param {Function} hitDetectionRenderer Renderer.
      */
-    drawCustom(geometry: import("../../geom/SimpleGeometry").default, feature: FeatureLike, renderer: Function, hitDetectionRenderer: Function) {
+    drawCustom(geometry: SimpleGeometry, feature: FeatureLike, renderer: Function, hitDetectionRenderer: Function) {
         this.beginGeometry(geometry, feature);
 
         const type = geometry.getType();
@@ -259,12 +259,12 @@ class CanvasBuilder extends VectorContext {
         switch (type) {
             case 'MultiPolygon':
                 flatCoordinates =
-          /** @type {import("../../geom/MultiPolygon").default} */ (
+          /** @type {MultiPolygon} */ (
                         geometry
                     ).getOrientedFlatCoordinates();
                 builderEndss = [];
                 const endss =
-          /** @type {import("../../geom/MultiPolygon").default} */ (
+          /** @type {MultiPolygon} */ (
                         geometry
                     ).getEndss();
                 offset = 0;
@@ -301,14 +301,14 @@ class CanvasBuilder extends VectorContext {
                 builderEnds = [];
                 flatCoordinates =
                     type == 'Polygon'
-                        ? /** @type {import("../../geom/Polygon").default} */ (
+                        ? /** @type {Polygon} */ (
                             geometry
                         ).getOrientedFlatCoordinates()
                         : geometry.getFlatCoordinates();
                 offset = this.drawCustomCoordinates_(
                     flatCoordinates,
                     0,
-          /** @type {import("../../geom/Polygon").default|import("../../geom/MultiLineString").default} */(
+          /** @type {Polygon|MultiLineString} */(
                         geometry
                     ).getEnds(),
                     stride,
@@ -409,10 +409,10 @@ class CanvasBuilder extends VectorContext {
 
     /**
      * @protected
-     * @param {import("../../geom/Geometry").default|import("../Feature").default} geometry The geometry.
+     * @param {Geometry|import("../Feature").default} geometry The geometry.
      * @param {FeatureLike} feature Feature.
      */
-    beginGeometry(geometry: import("../../geom/Geometry").default | import("../Feature").default, feature: FeatureLike) {
+    beginGeometry(geometry: Geometry | import("../Feature").default, feature: FeatureLike) {
         this.beginGeometryInstruction1_ = [
             CanvasInstruction.BEGIN_GEOMETRY,
             feature,

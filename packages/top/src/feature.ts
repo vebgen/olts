@@ -60,8 +60,8 @@ export interface ObjectWithGeometry<G = Geometry> {
  * ```js
  *
  * import Feature from 'ol/Feature.js';
- * import Polygon from 'ol/geom/Polygon.js';
- * import Point from 'ol/geom/Point.js';
+ * import { Polygon } from '@olts/geometry';
+ * import { Point } from '@olts/geometry';
  *
  * const feature = new Feature({
  *   geometry: new Polygon(polyCoords),

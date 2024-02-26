@@ -1,9 +1,7 @@
-/**
- * @module ol/render/webgl/utils
- */
+
 import earcut from 'earcut';
-import {apply as applyTransform} from '../../transform';
-import {clamp} from '../../math';
+import {apply as applyTransform} from '@olts/core/transform';
+import {clamp} from '@olts/core/math';
 
 export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
 

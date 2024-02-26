@@ -1,6 +1,3 @@
-/**
- * @module ol/render/EventType
- */
 
 /**
  * @enum {string}

@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas
- */
+
 import { BaseObject } from '@olts/events';
 import { WORKER_OFFSCREEN_CANVAS } from '@olts/core/has';
 import { clear } from '@olts/core/js-obj';

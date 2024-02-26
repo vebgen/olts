@@ -142,7 +142,7 @@ export function createHitDetectionImageData(
             const type = geometry.getType();
             if (type === 'GeometryCollection') {
                 const geometries =
-          /** @type {import("../../geom/GeometryCollection").default} */ (
+          /** @type {GeometryCollection} */ (
                         geometry
                     ).getGeometriesArrayRecursive();
                 for (let i = 0, ii = geometries.length; i < ii; ++i) {

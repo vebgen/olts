@@ -1,6 +1,4 @@
-/**
- * @module ol/render/webgl/VectorStyleRenderer
- */
+
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl';
 import {AttributeType} from '../../webgl/Helper';
@@ -9,7 +7,7 @@ import {colorEncodeId} from './utils';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
-} from '../../transform';
+} from '@olts/core/transform';
 import {create as createWebGLWorker} from '../../worker/webgl';
 import {
   generateLineStringRenderInstructions,
@@ -341,12 +339,12 @@ class VectorStyleRenderer {
 
   /**
    * @param {Float32Array|null} renderInstructions Render instructions
-   * @param {import("../../geom/Geometry").Type} geometryType Geometry type
+   * @param {GeometryType} geometryType Geometry type
    * @param {import("../../transform").Transform} transform Transform to apply to coordinates
    * @return {Promise<Array<WebGLArrayBuffer>>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
    */
-  generateBuffersForType_(renderInstructions: Float32Array | null, geometryType: import("../../geom/Geometry").Type, transform: import("../../transform").Transform): Promise<Array<WebGLArrayBuffer>> | null {
+  generateBuffersForType_(renderInstructions: Float32Array | null, geometryType: GeometryType, transform: import("../../transform").Transform): Promise<Array<WebGLArrayBuffer>> | null {
     if (renderInstructions === null) {
       return null;
     }

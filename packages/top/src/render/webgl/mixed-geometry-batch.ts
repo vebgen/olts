@@ -1,6 +1,4 @@
-/**
- * @module ol/render/webgl/MixedGeometryBatch
- */
+
 import Feature from '../../feature';
 import {RenderFeature} from '../feature';
 

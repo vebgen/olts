@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/LineStringBuilder
- */
+
 import CanvasBuilder from './Builder';
 import CanvasInstruction, {
   beginPathInstruction,
@@ -48,10 +46,10 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @param {import("../../geom/LineString").default|import("../Feature").default} lineStringGeometry Line string geometry.
+   * @param {LineString|import("../Feature").default} lineStringGeometry Line string geometry.
    * @param {FeatureLike} feature Feature.
    */
-  drawLineString(lineStringGeometry: import("../../geom/LineString").default | import("../Feature").default, feature: FeatureLike) {
+  drawLineString(lineStringGeometry: LineString | import("../Feature").default, feature: FeatureLike) {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
@@ -86,10 +84,10 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   }
 
   /**
-   * @param {import("../../geom/MultiLineString").default|import("../Feature").default} multiLineStringGeometry MultiLineString geometry.
+   * @param {MultiLineString|import("../Feature").default} multiLineStringGeometry MultiLineString geometry.
    * @param {FeatureLike} feature Feature.
    */
-  drawMultiLineString(multiLineStringGeometry: import("../../geom/MultiLineString").default | import("../Feature").default, feature: FeatureLike) {
+  drawMultiLineString(multiLineStringGeometry: MultiLineString | import("../Feature").default, feature: FeatureLike) {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;

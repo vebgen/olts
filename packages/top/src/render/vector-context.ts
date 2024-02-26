@@ -1,6 +1,3 @@
-/**
- * @module ol/render/VectorContext
- */
 
 /**
  * @classdesc
@@ -12,19 +9,19 @@ class VectorContext {
   /**
    * Render a geometry with a custom renderer.
    *
-   * @param {import("../geom/SimpleGeometry").default} geometry Geometry.
+   * @param {SimpleGeometry} geometry Geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
    * @param {Function} hitDetectionRenderer Renderer.
    */
-  drawCustom(geometry: import("../geom/SimpleGeometry").default, feature: import("../Feature").FeatureLike, renderer: Function, hitDetectionRenderer: Function) {}
+  drawCustom(geometry: SimpleGeometry, feature: import("../Feature").FeatureLike, renderer: Function, hitDetectionRenderer: Function) {}
 
   /**
    * Render a geometry.
    *
-   * @param {import("../geom/Geometry").default} geometry The geometry to render.
+   * @param {Geometry} geometry The geometry to render.
    */
-  drawGeometry(geometry: import("../geom/Geometry").default) {}
+  drawGeometry(geometry: Geometry) {}
 
   /**
    * Set the rendering style.
@@ -34,10 +31,10 @@ class VectorContext {
   setStyle(style: import("../style/Style").default) {}
 
   /**
-   * @param {import("../geom/Circle").default} circleGeometry Circle geometry.
+   * @param {Circle} circleGeometry Circle geometry.
    * @param {import("../Feature").default} feature Feature.
    */
-  drawCircle(circleGeometry: import("../geom/Circle").default, feature: import("../Feature").default) {}
+  drawCircle(circleGeometry: Circle, feature: import("../Feature").default) {}
 
   /**
    * @param {import("../Feature").default} feature Feature.
@@ -46,52 +43,52 @@ class VectorContext {
   drawFeature(feature: import("../Feature").default, style: import("../style/Style").default) {}
 
   /**
-   * @param {import("../geom/GeometryCollection").default} geometryCollectionGeometry Geometry collection.
+   * @param {GeometryCollection} geometryCollectionGeometry Geometry collection.
    * @param {import("../Feature").default} feature Feature.
    */
-  drawGeometryCollection(geometryCollectionGeometry: import("../geom/GeometryCollection").default, feature: import("../Feature").default) {}
+  drawGeometryCollection(geometryCollectionGeometry: GeometryCollection, feature: import("../Feature").default) {}
 
   /**
-   * @param {import("../geom/LineString").default|import("./Feature").default} lineStringGeometry Line string geometry.
+   * @param {LineString|import("./Feature").default} lineStringGeometry Line string geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawLineString(lineStringGeometry: import("../geom/LineString").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawLineString(lineStringGeometry: LineString | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/MultiLineString").default|import("./Feature").default} multiLineStringGeometry MultiLineString geometry.
+   * @param {MultiLineString|import("./Feature").default} multiLineStringGeometry MultiLineString geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawMultiLineString(multiLineStringGeometry: import("../geom/MultiLineString").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawMultiLineString(multiLineStringGeometry: MultiLineString | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/MultiPoint").default|import("./Feature").default} multiPointGeometry MultiPoint geometry.
+   * @param {MultiPoint|import("./Feature").default} multiPointGeometry MultiPoint geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawMultiPoint(multiPointGeometry: import("../geom/MultiPoint").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawMultiPoint(multiPointGeometry: MultiPoint | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/MultiPolygon").default} multiPolygonGeometry MultiPolygon geometry.
+   * @param {MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawMultiPolygon(multiPolygonGeometry: import("../geom/MultiPolygon").default, feature: import("../Feature").FeatureLike) {}
+  drawMultiPolygon(multiPolygonGeometry: MultiPolygon, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/Point").default|import("./Feature").default} pointGeometry Point geometry.
+   * @param {Point|import("./Feature").default} pointGeometry Point geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawPoint(pointGeometry: import("../geom/Point").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawPoint(pointGeometry: Point | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/Polygon").default|import("./Feature").default} polygonGeometry Polygon geometry.
+   * @param {Polygon|import("./Feature").default} polygonGeometry Polygon geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawPolygon(polygonGeometry: import("../geom/Polygon").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawPolygon(polygonGeometry: Polygon | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
-   * @param {import("../geom/SimpleGeometry").default|import("./Feature").default} geometry Geometry.
+   * @param {SimpleGeometry|import("./Feature").default} geometry Geometry.
    * @param {import("../Feature").FeatureLike} feature Feature.
    */
-  drawText(geometry: import("../geom/SimpleGeometry").default | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
+  drawText(geometry: SimpleGeometry | import("./Feature").default, feature: import("../Feature").FeatureLike) {}
 
   /**
    * @param {import("../style/Fill").default} fillStyle Fill style.

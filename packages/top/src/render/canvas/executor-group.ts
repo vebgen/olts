@@ -1,17 +1,15 @@
-/**
- * @module ol/render/canvas/ExecutorGroup
- */
+
 
 import Executor from './Executor';
-import {ascending} from '../../array';
-import {buffer, createEmpty, extendCoordinate} from '../../extent';
+import {ascending} from '@olts/core/array';
+import {Extent, buffer, createEmpty, extendCoordinate} from '@olts/core/extent';
 import {
   compose as composeTransform,
   create as createTransform,
-} from '../../transform';
-import {createCanvasContext2D} from '../../dom';
-import {isEmpty} from '../../obj';
-import {transform2D} from '../../geom/flat/transform';
+} from '@olts/core/transform';
+import {createCanvasContext2D} from '@olts/core/dom';
+import {isEmpty} from '@olts/core/js-obj';
+import {transform2D} from '@olts/geometry/flat';
 
 /**
  * @const
@@ -151,7 +149,7 @@ class ExecutorGroup {
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(FeatureLike, import("../../geom/SimpleGeometry").default, number): T} callback Feature callback.
+   * @param {function(FeatureLike, SimpleGeometry, number): T} callback Feature callback.
    * @param {Array<FeatureLike>} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
@@ -161,7 +159,7 @@ class ExecutorGroup {
     resolution: number,
     rotation: number,
     hitTolerance: number,
-    callback: (arg0: FeatureLike, arg1: import("../../geom/SimpleGeometry").default, arg2: number) => T,
+    callback: (arg0: FeatureLike, arg1: SimpleGeometry, arg2: number) => T,
     declutteredFeatures: Array<FeatureLike>,
   ): T | undefined {
     hitTolerance = Math.round(hitTolerance);
@@ -218,10 +216,10 @@ class ExecutorGroup {
 
     /**
      * @param {FeatureLike} feature Feature.
-     * @param {import("../../geom/SimpleGeometry").default} geometry Geometry.
+     * @param {SimpleGeometry} geometry Geometry.
      * @return {T|undefined} Callback result.
      */
-    function featureCallback(feature: FeatureLike, geometry: import("../../geom/SimpleGeometry").default): T | undefined {
+    function featureCallback(feature: FeatureLike, geometry: SimpleGeometry): T | undefined {
       const imageData = context.getImageData(
         0,
         0,

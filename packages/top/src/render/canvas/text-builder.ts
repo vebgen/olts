@@ -1,6 +1,4 @@
-/**
- * @module ol/render/canvas/TextBuilder
- */
+
 import CanvasBuilder from './Builder';
 import CanvasInstruction from './Instruction';
 import {asColorLike} from '../../colorlike';
@@ -20,9 +18,9 @@ import {
   registerFont,
 } from '../canvas';
 import {getUid} from '../../util';
-import {intersects} from '../../extent';
-import {lineChunk} from '../../geom/flat/linechunk';
-import {matchingChunk} from '../../geom/flat/straightchunk';
+import {intersects} from '@olts/core/extent';
+import {lineChunk} from '@olts/geometry/flat';
+import {matchingChunk} from '@olts/geometry/flat';
 /**
  * @const
  * @type {{left: 0, center: 0.5, right: 1, top: 0, middle: 0.5, hanging: 0.2, alphabetic: 0.8, ideographic: 0.8, bottom: 1}}
@@ -157,10 +155,10 @@ class CanvasTextBuilder extends CanvasBuilder {
   }
 
   /**
-   * @param {import("../../geom/SimpleGeometry").default|import("../Feature").default} geometry Geometry.
+   * @param {SimpleGeometry|import("../Feature").default} geometry Geometry.
    * @param {FeatureLike} feature Feature.
    */
-  drawText(geometry: import("../../geom/SimpleGeometry").default | import("../Feature").default, feature: FeatureLike) {
+  drawText(geometry: SimpleGeometry | import("../Feature").default, feature: FeatureLike) {
     const fillState = this.textFillState_;
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
@@ -190,16 +188,16 @@ class CanvasTextBuilder extends CanvasBuilder {
       if (geometryType == 'LineString') {
         ends = [flatCoordinates.length];
       } else if (geometryType == 'MultiLineString') {
-        ends = /** @type {import("../../geom/MultiLineString").default} */ (
+        ends = /** @type {MultiLineString} */ (
           geometry
         ).getEnds();
       } else if (geometryType == 'Polygon') {
-        ends = /** @type {import("../../geom/Polygon").default} */ (geometry)
+        ends = /** @type {Polygon} */ (geometry)
           .getEnds()
           .slice(0, 1);
       } else if (geometryType == 'MultiPolygon') {
         const endss =
-          /** @type {import("../../geom/MultiPolygon").default} */ (
+          /** @type {MultiPolygon} */ (
             geometry
           ).getEndss();
         ends = [];
@@ -256,32 +254,32 @@ class CanvasTextBuilder extends CanvasBuilder {
         case 'Point':
         case 'MultiPoint':
           flatCoordinates =
-            /** @type {import("../../geom/MultiPoint").default} */ (
+            /** @type {MultiPoint} */ (
               geometry
             ).getFlatCoordinates();
           break;
         case 'LineString':
           flatCoordinates =
-            /** @type {import("../../geom/LineString").default} */ (
+            /** @type {LineString} */ (
               geometry
             ).getFlatMidpoint();
           break;
         case 'Circle':
           flatCoordinates =
-            /** @type {import("../../geom/Circle").default} */ (
+            /** @type {Circle} */ (
               geometry
             ).getCenter();
           break;
         case 'MultiLineString':
           flatCoordinates =
-            /** @type {import("../../geom/MultiLineString").default} */ (
+            /** @type {MultiLineString} */ (
               geometry
             ).getFlatMidpoints();
           stride = 2;
           break;
         case 'Polygon':
           flatCoordinates =
-            /** @type {import("../../geom/Polygon").default} */ (
+            /** @type {Polygon} */ (
               geometry
             ).getFlatInteriorPoint();
           if (!textState.overflow) {
@@ -291,7 +289,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           break;
         case 'MultiPolygon':
           const interiorPoints =
-            /** @type {import("../../geom/MultiPolygon").default} */ (
+            /** @type {MultiPolygon} */ (
               geometry
             ).getFlatInteriorPoints();
           flatCoordinates = [];

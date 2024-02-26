@@ -1,6 +1,3 @@
-/**
- * @module ol/render/Event
- */
 
 import Event from '../events/Event';
 
