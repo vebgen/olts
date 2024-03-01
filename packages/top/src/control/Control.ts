@@ -1,6 +1,6 @@
 
 import { BaseObject  } from '@olts/events';
-import MapEventType from '../MapEventType';
+import MapEventType from '../Map/event-types';
 import {VOID} from '@olts/core/functions';
 import {listen, unlistenByKey} from '../events';
 import {removeNode} from '@olts/core/dom';
@@ -126,7 +126,7 @@ export class Control extends BaseObject {
       target.appendChild(this.element);
       if (this.render !== VOID) {
         this.listenerKeys.push(
-          listen(map, MapEventType.POSTRENDER, this.render, this),
+          listen(map, MapEventTypes.POSTRENDER, this.render, this),
         );
       }
       map.render();

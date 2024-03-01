@@ -75,8 +75,8 @@ const GPX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @typedef {Object} GPXLink
- * @property {string} [text] text
- * @property {string} [type] type
+ * @property [text] text
+ * @property [type] type
  */
 
 /**
@@ -91,8 +91,8 @@ const LINK_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @typedef {Object} GPXAuthor
- * @property {string} [name] name
- * @property {string} [email] email
+ * @property [name] name
+ * @property [email] email
  * @property {GPXLink} [link] link
  */
 
@@ -109,12 +109,12 @@ const AUTHOR_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @typedef {Object} GPXMetadata
- * @property {string} [name] name
- * @property {string} [desc] desc
+ * @property [name] name
+ * @property [desc] desc
  * @property {GPXAuthor} [author] author
  * @property {GPXLink} [link] link
- * @property {number} [time] time
- * @property {string} [keywords] keywords
+ * @property [time] time
+ * @property [keywords] keywords
  * @property {number[]} [bounds] bounds
  * @property {Object} [extensions] extensions
  *
@@ -139,9 +139,9 @@ const METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @typedef {Object} GPXCopyright
- * @property {string} [author] author
- * @property {number} [year] year
- * @property {string} [license] license
+ * @property [author] author
+ * @property [year] year
+ * @property [license] license
  */
 
 /**
@@ -218,7 +218,7 @@ export class GPX extends XMLFeature {
   }
 
   /**
-   * @param {Array<Feature>} features List of features.
+   * @param {Feature[]} features List of features.
    * @private
    */
   handleReadExtensions_(features) {
@@ -326,7 +326,7 @@ export class GPX extends XMLFeature {
       return [];
     }
     if (node.localName == 'gpx') {
-      /** @type {Array<Feature>} */
+      /** @type {Feature[]} */
       const features = pushParseAndPop([], GPX_PARSERS, node, [
         this.getReadOptions(node, options),
       ]);
@@ -344,7 +344,7 @@ export class GPX extends XMLFeature {
    * LineString geometries are output as routes (`<rte>`), and MultiLineString
    * as tracks (`<trk>`).
    *
-   * @param {Array<Feature>} features Features.
+   * @param {Feature[]} features Features.
    * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
@@ -467,7 +467,7 @@ const WPT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 
 /**
  * @const
- * @type {Array<string>}
+ * @type {string[]}
  */
 const LINK_SEQUENCE = ['text', 'type'];
 
@@ -632,7 +632,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
 /**
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [nodeName] Node name.
+ * @param [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 function GPX_NODE_FACTORY(value, objectStack, nodeName) {
@@ -659,14 +659,14 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
     parseFloat(node.getAttribute('lat')),
   );
   if ('ele' in values) {
-    flatCoordinates.push(/** @type {number} */ (values['ele']));
+    flatCoordinates.push(/** @type */ (values['ele']));
     delete values['ele'];
     layoutOptions.hasZ = true;
   } else {
     flatCoordinates.push(0);
   }
   if ('time' in values) {
-    flatCoordinates.push(/** @type {number} */ (values['time']));
+    flatCoordinates.push(/** @type */ (values['time']));
     delete values['time'];
     layoutOptions.hasM = true;
   } else {
@@ -721,7 +721,7 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
 
 /**
  * @param {Element} node Node.
- * @param {Array<any>} objectStack Object stack.
+ * @param {any[]} objectStack Object stack.
  * @return {GPXAuthor | undefined} Person object.
  */
 function readAuthor(node, objectStack) {
@@ -734,7 +734,7 @@ function readAuthor(node, objectStack) {
 
 /**
  * @param {Element} node Node.
- * @param {Array<any>} objectStack Object stack.
+ * @param {any[]} objectStack Object stack.
  * @return {GPXCopyright | undefined} Person object.
  */
 function readCopyright(node, objectStack) {
@@ -959,7 +959,7 @@ function readWpt(node, objectStack) {
 
 /**
  * @param {Element} node Node.
- * @param {string} value Value for the link's `href` attribute.
+ * @param value Value for the link's `href` attribute.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeLink(node, value, objectStack) {

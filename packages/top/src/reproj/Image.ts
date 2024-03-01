@@ -32,8 +32,8 @@ export class ReprojImage extends ImageWrapper {
    * @param {import("../proj/Projection").default} sourceProj Source projection (of the data).
    * @param {import("../proj/Projection").default} targetProj Target projection.
    * @param {Extent} targetExtent Target extent.
-   * @param {number} targetResolution Target resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param targetResolution Target resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
    * @param {boolean} interpolate Use linear interpolation when resampling.
@@ -224,7 +224,7 @@ export class ReprojImage extends ImageWrapper {
       } else {
         this.sourceListenerKey_ = listen(
           this.sourceImage_,
-          EventType.CHANGE,
+          EventTypes.CHANGE,
           function (e) {
             const sourceState = this.sourceImage_.getState();
             if (

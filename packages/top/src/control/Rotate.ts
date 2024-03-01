@@ -6,12 +6,12 @@ import {easeOut} from '../easing';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-rotate'] CSS class name.
+ * @property [className='ol-rotate'] CSS class name.
  * @property {string|HTMLElement} [label='⇧'] Text label to use for the rotate button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
- * @property {string} [compassClassName='ol-compass'] CSS class name for the compass.
- * @property {number} [duration=250] Animation duration in milliseconds.
+ * @property [tipLabel='Reset rotation'] Text label to use for the rotate tip.
+ * @property [compassClassName='ol-compass'] CSS class name for the compass.
+ * @property [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
  * @property {function(import("../MapEvent").default):void} [render] Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
@@ -75,7 +75,7 @@ export class Rotate extends Control {
     button.appendChild(this.label_);
 
     button.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this),
       false,
     );

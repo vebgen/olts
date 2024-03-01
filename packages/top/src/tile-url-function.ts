@@ -3,7 +3,7 @@ import { modulo } from '@olts/core/math';
 import { hash as tileCoordHash } from './tile-coord';
 
 /**
- * @param {string} template Template.
+ * @param template Template.
  * @param {TileGrid} tileGrid Tile grid.
  * @return {import("./Tile").UrlFunction} Tile URL function.
  */
@@ -15,7 +15,7 @@ export function createFromTemplate(template: string, tileGrid: TileGrid): import
     return (
         /**
          * @param {TileCoord} tileCoord Tile Coordinate.
-         * @param {number} pixelRatio Pixel ratio.
+         * @param pixelRatio Pixel ratio.
          * @param {Projection} projection Projection.
          * @return {string|undefined} Tile URL.
          */
@@ -43,11 +43,11 @@ export function createFromTemplate(template: string, tileGrid: TileGrid): import
 }
 
 /**
- * @param {Array<string>} templates Templates.
+ * @param {string[]} templates Templates.
  * @param {TileGrid} tileGrid Tile grid.
  * @return {import("./Tile").UrlFunction} Tile URL function.
  */
-export function createFromTemplates(templates: Array<string>, tileGrid: TileGrid): import("./Tile").UrlFunction {
+export function createFromTemplates(templates: string[], tileGrid: TileGrid): import("./Tile").UrlFunction {
     const len = templates.length;
     const tileUrlFunctions = new Array(len);
     for (let i = 0; i < len; ++i) {
@@ -67,7 +67,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions: Array<import("./Til
     return (
         /**
          * @param {TileCoord} tileCoord Tile Coordinate.
-         * @param {number} pixelRatio Pixel ratio.
+         * @param pixelRatio Pixel ratio.
          * @param {Projection} projection Projection.
          * @return {string|undefined} Tile URL.
          */
@@ -84,7 +84,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions: Array<import("./Til
 
 /**
  * @param {TileCoord} tileCoord Tile coordinate.
- * @param {number} pixelRatio Pixel ratio.
+ * @param pixelRatio Pixel ratio.
  * @param {Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
@@ -93,10 +93,10 @@ export function nullTileUrlFunction(tileCoord: TileCoord, pixelRatio: number, pr
 }
 
 /**
- * @param {string} url URL.
- * @return {Array<string>} Array of urls.
+ * @param url URL.
+ * @return {string[]} Array of urls.
  */
-export function expandUrl(url: string): Array<string> {
+export function expandUrl(url: string): string[] {
     const urls = [];
     let match = /\{([a-z])-([a-z])\}/.exec(url);
     if (match) {

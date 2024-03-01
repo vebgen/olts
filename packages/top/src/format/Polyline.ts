@@ -10,7 +10,7 @@ import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {Object} Options
- * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
+ * @property [factor=1e5] The factor by which the coordinates values will be scaled.
  * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
@@ -59,7 +59,7 @@ export class Polyline extends TextFeature {
 
   /**
    * @protected
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {import("../Feature").default} Feature.
    */
@@ -69,10 +69,10 @@ export class Polyline extends TextFeature {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature>} Features.
+   * @return {Feature[]} Features.
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);
@@ -80,7 +80,7 @@ export class Polyline extends TextFeature {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
@@ -108,7 +108,7 @@ export class Polyline extends TextFeature {
    * @param {import("../Feature").default<LineString>} feature Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeatureText(feature, options) {
     const geometry = feature.getGeometry();
@@ -122,7 +122,7 @@ export class Polyline extends TextFeature {
    * @param {Array<import("../Feature").default<LineString>>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeaturesText(features, options) {
     return this.writeFeatureText(features[0], options);
@@ -132,7 +132,7 @@ export class Polyline extends TextFeature {
    * @param {LineString} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeGeometryText(geometry, options) {
     geometry =
@@ -153,11 +153,11 @@ export class Polyline extends TextFeature {
  * Attention: This function will modify the passed array!
  *
  * @param {number[]} numbers A list of n-dimensional points.
- * @param {number} stride The number of dimension of the points in the list.
- * @param {number} [factor] The factor by which the numbers will be
+ * @param stride The number of dimension of the points in the list.
+ * @param [factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
- * @return {string} The encoded string.
+ * @return The encoded string.
  * @api
  */
 export function encodeDeltas(numbers, stride, factor) {
@@ -185,10 +185,10 @@ export function encodeDeltas(numbers, stride, factor) {
 /**
  * Decode a list of n-dimensional points from an encoded string
  *
- * @param {string} encoded An encoded string.
- * @param {number} stride The number of dimension of the points in the
+ * @param encoded An encoded string.
+ * @param stride The number of dimension of the points in the
  *     encoded string.
- * @param {number} [factor] The factor by which the resulting numbers will
+ * @param [factor] The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
  * @return {number[]} A list of n-dimensional points.
  * @api
@@ -222,10 +222,10 @@ export function decodeDeltas(encoded, stride, factor) {
  * Attention: This function will modify the passed array!
  *
  * @param {number[]} numbers A list of floating point numbers.
- * @param {number} [factor] The factor by which the numbers will be
+ * @param [factor] The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
- * @return {string} The encoded string.
+ * @return The encoded string.
  * @api
  */
 export function encodeFloats(numbers, factor) {
@@ -240,8 +240,8 @@ export function encodeFloats(numbers, factor) {
 /**
  * Decode a list of floating point numbers from an encoded string
  *
- * @param {string} encoded An encoded string.
- * @param {number} [factor] The factor by which the result will be divided.
+ * @param encoded An encoded string.
+ * @param [factor] The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {number[]} A list of floating point numbers.
  * @api
@@ -261,7 +261,7 @@ export function decodeFloats(encoded, factor) {
  * Attention: This function will modify the passed array!
  *
  * @param {number[]} numbers A list of signed integers.
- * @return {string} The encoded string.
+ * @return The encoded string.
  */
 export function encodeSignedIntegers(numbers) {
   for (let i = 0, ii = numbers.length; i < ii; ++i) {
@@ -274,7 +274,7 @@ export function encodeSignedIntegers(numbers) {
 /**
  * Decode a list of signed integers from an encoded string
  *
- * @param {string} encoded An encoded string.
+ * @param encoded An encoded string.
  * @return {number[]} A list of signed integers.
  */
 export function decodeSignedIntegers(encoded) {
@@ -290,7 +290,7 @@ export function decodeSignedIntegers(encoded) {
  * Encode a list of unsigned integers and return an encoded string
  *
  * @param {number[]} numbers A list of unsigned integers.
- * @return {string} The encoded string.
+ * @return The encoded string.
  */
 export function encodeUnsignedIntegers(numbers) {
   let encoded = '';
@@ -303,7 +303,7 @@ export function encodeUnsignedIntegers(numbers) {
 /**
  * Decode a list of unsigned integers from an encoded string
  *
- * @param {string} encoded An encoded string.
+ * @param encoded An encoded string.
  * @return {number[]} A list of unsigned integers.
  */
 export function decodeUnsignedIntegers(encoded) {
@@ -327,8 +327,8 @@ export function decodeUnsignedIntegers(encoded) {
 /**
  * Encode one single unsigned integer and return an encoded string
  *
- * @param {number} num Unsigned integer that should be encoded.
- * @return {string} The encoded string.
+ * @param num Unsigned integer that should be encoded.
+ * @return The encoded string.
  */
 export function encodeUnsignedInteger(num) {
   let value,

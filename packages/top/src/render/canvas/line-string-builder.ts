@@ -8,10 +8,10 @@ import {defaultLineDash, defaultLineDashOffset} from '../canvas';
 
 export class CanvasLineStringBuilder extends CanvasBuilder {
   /**
-   * @param {number} tolerance Tolerance.
+   * @param tolerance Tolerance.
    * @param {Extent} maxExtent Maximum extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    */
   constructor(tolerance: number, maxExtent: Extent, resolution: number, pixelRatio: number) {
     super(tolerance, maxExtent, resolution, pixelRatio);
@@ -19,11 +19,11 @@ export class CanvasLineStringBuilder extends CanvasBuilder {
 
   /**
    * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
+   * @param offset Offset.
+   * @param end End.
+   * @param stride Stride.
    * @private
-   * @return {number} end.
+   * @return end.
    */
   drawFlatCoordinates_(flatCoordinates: number[], offset: number, end: number, stride: number): number {
     const myBegin = this.coordinates.length;
@@ -117,7 +117,7 @@ export class CanvasLineStringBuilder extends CanvasBuilder {
       offset = this.drawFlatCoordinates_(
         flatCoordinates,
         offset,
-        /** @type {number} */ (ends[i]),
+        /** @type */ (ends[i]),
         stride,
       );
     }

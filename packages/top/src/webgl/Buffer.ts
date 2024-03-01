@@ -35,8 +35,8 @@ export const BufferUsage = {
  */
 export class WebGLArrayBuffer {
   /**
-   * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
-   * @param {number} [usage] Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
+   * @param type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+   * @param [usage] Intended usage, either `STATIC_DRAW`, `STREAM_DRAW` or `DYNAMIC_DRAW`.
    * Default is `DYNAMIC_DRAW`.
    */
   constructor(type, usage) {
@@ -66,7 +66,7 @@ export class WebGLArrayBuffer {
 
   /**
    * Populates the buffer with an array of the given size (all values will be zeroes).
-   * @param {number} size Array size
+   * @param size Array size
    * @return {WebGLArrayBuffer} This
    */
   ofSize(size) {
@@ -96,7 +96,7 @@ export class WebGLArrayBuffer {
   }
 
   /**
-   * @return {number} Buffer type.
+   * @return Buffer type.
    */
   getType() {
     return this.type_;
@@ -111,7 +111,7 @@ export class WebGLArrayBuffer {
   }
 
   /**
-   * @return {number} Usage.
+   * @return Usage.
    */
   getUsage() {
     return this.usage_;
@@ -119,7 +119,7 @@ export class WebGLArrayBuffer {
 
   /**
    * Will return 0 if the buffer is not initialized
-   * @return {number} Array size
+   * @return Array size
    */
   getSize() {
     return this.array_ ? this.array_.length : 0;
@@ -128,7 +128,7 @@ export class WebGLArrayBuffer {
 
 /**
  * Returns a typed array constructor based on the given buffer type
- * @param {number} type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+ * @param type Buffer type, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
  * @return {Float32ArrayConstructor|Uint32ArrayConstructor} The typed array class to use for this buffer.
  */
 export function getArrayClassForType(type) {

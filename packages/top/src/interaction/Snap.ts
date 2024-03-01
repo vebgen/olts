@@ -28,13 +28,13 @@ import { EventsKey } from '@olts/events';
  * @property {Coordinate|null} vertex Vertex.
  * @property {import("../pixel").Pixel|null} vertexPixel VertexPixel.
  * @property {import("../Feature").default|null} feature Feature.
- * @property {Array<Coordinate>|null} segment Segment, or `null` if snapped to a vertex.
+ * @property {Coordinate[]|null} segment Segment, or `null` if snapped to a vertex.
  */
 
 /**
  * @typedef {Object} SegmentData
  * @property {import("../Feature").default} feature Feature.
- * @property {Array<Coordinate>} segment Segment.
+ * @property {Coordinate[]} segment Segment.
  */
 
 /**
@@ -42,7 +42,7 @@ import { EventsKey } from '@olts/events';
  * @property {import("../Collection").default<import("../Feature").default>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
- * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
+ * @property [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
  * @property {import("../source/Vector").default} [source] Snap to features from this source. Either this option or features should be provided
  */
@@ -108,17 +108,17 @@ const tempSegment = [];
 export class Snap extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: SnapOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: SnapOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: SnapOnSignature<void>;
 
@@ -269,7 +269,7 @@ export class Snap extends PointerInteraction {
         if (register) {
             this.featureChangeListenerKeys_[feature_uid] = listen(
                 feature,
-                EventType.CHANGE,
+                EventTypes.CHANGE,
                 this.handleFeatureChange_,
                 this,
             );
@@ -296,7 +296,7 @@ export class Snap extends PointerInteraction {
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(evt: import("../MapBrowserEvent").default): boolean {
+    handleEvent(evt: import("../Map/browser-event").default): boolean {
         const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
         if (result) {
             evt.coordinate = result.vertex.slice(0, 2);
@@ -356,7 +356,7 @@ export class Snap extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(evt: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(evt: import("../Map/browser-event").default): boolean {
         const featuresToUpdate = Object.values(this.pendingFeatures_);
         if (featuresToUpdate.length) {
             featuresToUpdate.forEach(this.updateFeature_.bind(this));

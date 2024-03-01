@@ -10,7 +10,7 @@ import RenderFeature from '../render/Feature';
 import Source from './Source';
 import VectorEventType from './VectorEventType';
 import { TRUE, VOID } from '@olts/core/functions';
-import { all as allStrategy } from '../loadingstrategy';
+import { all as allStrategy } from '../loading-strategy';
 import { assert } from '@olts/core/asserts';
 import { Extent, containsExtent, equals, wrapAndSliceX } from '@olts/core/extent';
 import { extend } from '@olts/core/array';
@@ -37,9 +37,9 @@ import { FeatureClass } from '../Feature';
  */
 export class VectorSourceEvent extends Event {
     /**
-     * @param {string} type Type.
+     * @param type Type.
      * @param {FeatureClass} [feature] Feature.
-     * @param {Array<FeatureClass>} [features] Features.
+     * @param {FeatureClass[]} [features] Features.
      */
     constructor(type: string, feature: FeatureClass, features:FeatureClass[]) {
         super(type);
@@ -53,7 +53,7 @@ export class VectorSourceEvent extends Event {
 
         /**
          * The loaded features for the `FEATURESLOADED` event, `undefined` otherwise.
-         * @type {Array<FeatureClass>|undefined}
+         * @type {FeatureClass[]|undefined}
          * @api
          */
         this.features = features;
@@ -62,7 +62,7 @@ export class VectorSourceEvent extends Event {
 
 /***
  * @template {import("../Feature").FeatureLike} [T=import("../Feature").default]
- * @typedef {T extends RenderFeature ? T|Array<T> : T} FeatureClassOrArrayOfRenderFeatures
+ * @typedef {T extends RenderFeature ? T|T[] : T} FeatureClassOrArrayOfRenderFeatures
  */
 
 /***
@@ -78,7 +78,7 @@ export class VectorSourceEvent extends Event {
  * @template {import("../Feature").FeatureLike} FeatureType
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {Array<FeatureType>|Collection<FeatureType>} [features]
+ * @property {FeatureType[]|Collection<FeatureType>} [features]
  * Features. If provided as {@link Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {import("../format/Feature").default<import("../format/Feature").FeatureToFeatureClass<FeatureType>>} [format] The feature format used by the XHR
@@ -179,17 +179,17 @@ export class VectorSourceEvent extends Event {
 export class VectorSource extends Source {
 
     /**
-     * 
+     *
      */
     override on: VectorSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: VectorSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: VectorSourceOnSignature<void>;
 
@@ -307,7 +307,7 @@ export class VectorSource extends Source {
 
         /** @type {Collection<FeatureType>} */
         let collection: Collection<FeatureType>;
-        /** @type {Array<FeatureType>} */
+        /** @type {FeatureType[]} */
         let features:FeatureType[];
         if (Array.isArray(options.features)) {
             features = options.features;
@@ -376,7 +376,7 @@ export class VectorSource extends Source {
     }
 
     /**
-     * @param {string} featureKey Unique identifier for the feature.
+     * @param featureKey Unique identifier for the feature.
      * @param {FeatureType} feature The feature.
      * @private
      */
@@ -385,7 +385,7 @@ export class VectorSource extends Source {
             return;
         }
         this.featureChangeKeys_[featureKey] = [
-            listen(feature, EventType.CHANGE, this.handleFeatureChange_, this),
+            listen(feature, EventTypes.CHANGE, this.handleFeatureChange_, this),
             listen(
                 feature,
                 ObjectEventType.PROPERTYCHANGE,
@@ -396,7 +396,7 @@ export class VectorSource extends Source {
     }
 
     /**
-     * @param {string} featureKey Unique identifier for the feature.
+     * @param featureKey Unique identifier for the feature.
      * @param {FeatureType} feature The feature.
      * @return {boolean} The feature is "valid", in the sense that it is also a
      *     candidate for insertion into the Rtree.
@@ -435,7 +435,7 @@ export class VectorSource extends Source {
 
     /**
      * Add a batch of features to the source.
-     * @param {Array<FeatureType>} features Features to add.
+     * @param {FeatureType[]} features Features to add.
      * @api
      */
     addFeatures(features:FeatureType[]) {
@@ -445,12 +445,12 @@ export class VectorSource extends Source {
 
     /**
      * Add features without firing a `change` event.
-     * @param {Array<FeatureType>} features Features.
+     * @param {FeatureType[]} features Features.
      * @protected
      */
     addFeaturesInternal(features:FeatureType[]) {
         const extents = [];
-        /** @type {Array<FeatureType>} */
+        /** @type {FeatureType[]} */
         const newFeatures:FeatureType[] = [];
         /** @typeFeatureType[] */
         const geometryFeatures:FeatureType[] = [];
@@ -721,7 +721,7 @@ export class VectorSource extends Source {
     /**
      * Get a snapshot of the features currently on the source in random order. The returned array
      * is a copy, the features are references to the features in the source.
-     * @return {Array<FeatureType>} Features.
+     * @return {FeatureType[]} Features.
      * @api
      */
     getFeatures():FeatureType[] {
@@ -762,7 +762,7 @@ export class VectorSource extends Source {
      * @param {Extent} extent Extent.
      * @param {import("../proj/Projection").default} [projection] Include features
      * where `extent` exceeds the x-axis bounds of `projection` and wraps around the world.
-     * @return {Array<FeatureType>} Features.
+     * @return {FeatureType[]} Features.
      * @api
      */
     getFeaturesInExtent(extent: Extent, projection: import("../proj/Projection").default):FeatureType[] {
@@ -882,7 +882,7 @@ export class VectorSource extends Source {
     /**
      * Get a feature by its internal unique identifier (using `getUid`).
      *
-     * @param {string} uid Feature identifier.
+     * @param uid Feature identifier.
      * @return {FeatureType|null} The feature (or `null` if not found).
      */
     getFeatureByUid(uid: string): FeatureType | null {
@@ -993,7 +993,7 @@ export class VectorSource extends Source {
 
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
+     * @param resolution Resolution.
      * @param {import("../proj/Projection").default} projection Projection.
      */
     loadFeatures(extent: Extent, resolution: number, projection: import("../proj/Projection").default) {

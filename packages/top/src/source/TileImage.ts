@@ -14,7 +14,7 @@ import {getUid} from '@olts/core/util';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -22,7 +22,7 @@ import {getUid} from '@olts/core/util';
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("./Source").State} [state] Source state.
  * @property {typeof import("../ImageTile").default} [tileClass] Class used to instantiate image tiles.
@@ -34,22 +34,22 @@ import {getUid} from '@olts/core/util';
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service. For example, if the tile
+ * @property [tilePixelRatio=1] The pixel ratio used by the tile service. For example, if the tile
  * service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
  * @property {import("../Tile").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
- * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @property [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
- * @property {Array<string>} [urls] An array of URL templates.
+ * @property {string[]} [urls] An array of URL templates.
  * @property {boolean} [wrapX] Whether to wrap the world horizontally. The default, is to
  * request out-of-bounds tiles from the server. When set to `false`, only one
  * world will be rendered. When set to `true`, tiles will be requested for one
  * world only, but they will be wrapped horizontally to render multiple worlds.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {string} [key] Optional tile key for proper cache fetching
+ * @property [key] Optional tile key for proper cache fetching
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
@@ -162,7 +162,7 @@ export class TileImage extends UrlTile {
 
   /**
    * @param {import("../proj/Projection").default} projection Projection.
-   * @return {number} Gutter.
+   * @return Gutter.
    */
   getGutterForProjection(projection) {
     if (
@@ -176,7 +176,7 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @return {number} Gutter.
+   * @return Gutter.
    */
   getGutter() {
     return 0;
@@ -184,7 +184,7 @@ export class TileImage extends UrlTile {
 
   /**
    * Return the key to be used for all tiles in the source.
-   * @return {string} The key for all tiles.
+   * @return The key for all tiles.
    */
   getKey() {
     let key = super.getKey();
@@ -245,12 +245,12 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
-   * @param {string} key The key set on the tile.
+   * @param key The key set on the tile.
    * @return {!ImageTile} Tile.
    * @private
    */
@@ -272,15 +272,15 @@ export class TileImage extends UrlTile {
       this.tileOptions,
     );
     tile.key = key;
-    tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
+    tile.addEventListener(EventTypes.CHANGE, this.handleTileChange.bind(this));
     return tile;
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {!(ImageTile|ReprojTile)} Tile.
    */
@@ -344,10 +344,10 @@ export class TileImage extends UrlTile {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection").default} projection Projection.
    * @return {!ImageTile} Tile.
    * @protected
@@ -430,7 +430,7 @@ export class TileImage extends UrlTile {
 
 /**
  * @param {ImageTile} imageTile Image tile.
- * @param {string} src Source.
+ * @param src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =

@@ -1,9 +1,9 @@
+import { ValueOf } from "@olts/core";
 
 /**
  * Constants for event names.
- * @enum {string}
  */
-export default {
+export const PointerEventTypes = {
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
@@ -13,3 +13,9 @@ export default {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel',
 };
+
+
+/**
+ *
+ */
+export type PointerEventType = ValueOf<typeof PointerEventTypes>;

@@ -111,9 +111,9 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
    * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {!import("../../Tile").default} Tile.
    */
@@ -217,7 +217,7 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {Record<number, Record<string, import("../../Tile").default>>} tiles Lookup of loaded tiles by zoom level.
-   * @param {number} zoom Zoom level.
+   * @param zoom Zoom level.
    * @param {import("../../Tile").default} tile Tile.
    * @return {boolean|void} If `false`, the tile will not be considered loaded.
    */
@@ -572,11 +572,11 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../ImageTile").default} tile Tile.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} x Left of the tile.
-   * @param {number} y Top of the tile.
-   * @param {number} w Width of the tile.
-   * @param {number} h Height of the tile.
-   * @param {number} gutter Tile gutter.
+   * @param x Left of the tile.
+   * @param y Top of the tile.
+   * @param w Width of the tile.
+   * @param h Height of the tile.
+   * @param gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
    */
   drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
@@ -689,11 +689,11 @@ export class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {import("../../source/Tile").default} tileSource Tile source.
    * @param {import("../../tilegrid/TileGrid").default} tileGrid Tile grid.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
    * @param {Extent} extent Extent.
-   * @param {number} currentZ Current Z.
-   * @param {number} preload Load low resolution tiles up to `preload` levels.
+   * @param currentZ Current Z.
+   * @param preload Load low resolution tiles up to `preload` levels.
    * @param {function(import("../../Tile").default):void} [tileCallback] Tile callback.
    * @protected
    */

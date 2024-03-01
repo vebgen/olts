@@ -15,10 +15,10 @@ import { getTransformFromProjections, getUserProjection } from './proj';
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
  * @property {import("./Feature").FeatureLike} feature Feature.
  * @property {SimpleGeometry} geometry Geometry.
- * @property {number} pixelRatio Pixel ratio used by the layer renderer.
- * @property {number} resolution Resolution that the render batch was created and optimized for.
+ * @property pixelRatio Pixel ratio used by the layer renderer.
+ * @property resolution Resolution that the render batch was created and optimized for.
  * This is not the view's resolution that is being rendered.
- * @property {number} rotation Rotation of the rendered layer in radians.
+ * @property rotation Rotation of the rendered layer in radians.
  */
 
 /**
@@ -35,7 +35,7 @@ import { getTransformFromProjections, getUserProjection } from './proj';
  * pixels. When provided, both canvas and css size will be set according to the
  * `pixelRatio`. If not provided, the current canvas and css sizes will not be
  * altered.
- * @property {number} [pixelRatio=window.devicePixelRatio] Pixel ratio (canvas
+ * @property [pixelRatio=window.devicePixelRatio] Pixel ratio (canvas
  * pixel to css pixel ratio) for the canvas.
  */
 

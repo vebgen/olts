@@ -14,11 +14,11 @@ import { mouseActionButton } from '../events/condition';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
+ * @property [className='ol-dragbox'] CSS class name for styling the box.
  * @property {import("../events/condition").Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol/events/condition~mouseActionButton}.
- * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
+ * @property [minArea=64] The minimum area of the box in pixel, this value is used by the default
  * `boxEndCondition` function.
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s to indicate whether a `boxend` event should be fired.
@@ -66,11 +66,11 @@ const DragBoxEventType = {
  */
 export class DragBoxEvent extends Event {
     /**
-     * @param {string} type The event type.
+     * @param type The event type.
      * @param {Coordinate} coordinate The event coordinate.
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Originating event.
      */
-    constructor(type: string, coordinate: Coordinate, mapBrowserEvent: import("../MapBrowserEvent").default) {
+    constructor(type: string, coordinate: Coordinate, mapBrowserEvent: import("../Map/browser-event").default) {
         super(type);
 
         /**
@@ -114,17 +114,17 @@ export class DragBoxEvent extends Event {
 export class DragBox extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: DragBoxOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: DragBoxOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: DragBoxOnSignature<void>;
 
@@ -185,7 +185,7 @@ export class DragBox extends PointerInteraction {
      * @param {import("../pixel").Pixel} endPixel The end pixel of the box.
      * @return {boolean} Whether or not the boxend condition should be fired.
      */
-    defaultBoxEndCondition(mapBrowserEvent: import("../MapBrowserEvent").default, startPixel: import("../pixel").Pixel, endPixel: import("../pixel").Pixel): boolean {
+    defaultBoxEndCondition(mapBrowserEvent: import("../Map/browser-event").default, startPixel: import("../pixel").Pixel, endPixel: import("../pixel").Pixel): boolean {
         const width = endPixel[0] - startPixel[0];
         const height = endPixel[1] - startPixel[1];
         return width * width + height * height >= this.minArea_;
@@ -204,7 +204,7 @@ export class DragBox extends PointerInteraction {
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      */
-    handleDragEvent(mapBrowserEvent: import("../MapBrowserEvent").default) {
+    handleDragEvent(mapBrowserEvent: import("../Map/browser-event").default) {
         this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
         this.dispatchEvent(
@@ -221,7 +221,7 @@ export class DragBox extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         this.box_.setMap(null);
 
         const completeBox = this.boxEndCondition_(
@@ -247,7 +247,7 @@ export class DragBox extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleDownEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         if (this.condition_(mapBrowserEvent)) {
             this.startPixel_ = mapBrowserEvent.pixel;
             this.box_.setMap(mapBrowserEvent.map);
@@ -268,7 +268,7 @@ export class DragBox extends PointerInteraction {
      * Function to execute just before `onboxend` is fired
      * @param {import("../MapBrowserEvent").default} event Event.
      */
-    onBoxEnd(event: import("../MapBrowserEvent").default) { }
+    onBoxEnd(event: import("../Map/browser-event").default) { }
 }
 
 export default DragBox;

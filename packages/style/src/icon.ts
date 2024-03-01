@@ -720,7 +720,7 @@ export class Icon extends ImageStyle {
      */
     listenImageChange(listener: ListenImageChange) {
         this.iconImage_.addEventListener(
-            EventType.CHANGE, listener as Listener
+            EventTypes.CHANGE, listener as Listener
         );
     }
 
@@ -740,7 +740,7 @@ export class Icon extends ImageStyle {
      */
     unlistenImageChange(listener: ListenImageChange) {
         this.iconImage_.removeEventListener(
-            EventType.CHANGE, listener as Listener
+            EventTypes.CHANGE, listener as Listener
         );
     }
 

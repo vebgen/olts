@@ -14,8 +14,8 @@ import ImageWrapper from './Image';
 export class ImageCanvas extends ImageWrapper {
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      * @param {HTMLCanvasElement} canvas Canvas.
      * @param {Loader} [loader] Optional loader function to
      *     support asynchronous canvas drawing.

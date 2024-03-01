@@ -9,7 +9,7 @@ export class Disjoint extends Spatial {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Geometry} geometry Geometry.
-   * @param {string} [srsName] SRS name. No srsName attribute will be
+   * @param [srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */
   constructor(geometryName, geometry, srsName) {

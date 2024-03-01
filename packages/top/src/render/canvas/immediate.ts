@@ -39,11 +39,11 @@ import {transformGeom2D} from '@olts/geometry';
 export class CanvasImmediateRenderer extends VectorContext {
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {Extent} extent Extent.
    * @param {import("../../transform").Transform} transform Transform.
-   * @param {number} viewRotation View rotation.
-   * @param {number} [squaredTolerance] Optional squared tolerance for simplification.
+   * @param viewRotation View rotation.
+   * @param [squaredTolerance] Optional squared tolerance for simplification.
    * @param {import("../../proj").TransformFunction} [userTransform] Transform from user to view projection.
    */
   constructor(
@@ -272,9 +272,9 @@ export class CanvasImmediateRenderer extends VectorContext {
 
   /**
    * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
+   * @param offset Offset.
+   * @param end End.
+   * @param stride Stride.
    * @private
    */
   drawImages_(flatCoordinates: number[], offset: number, end: number, stride: number) {
@@ -359,9 +359,9 @@ export class CanvasImmediateRenderer extends VectorContext {
 
   /**
    * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
+   * @param offset Offset.
+   * @param end End.
+   * @param stride Stride.
    * @private
    */
   drawText_(flatCoordinates: number[], offset: number, end: number, stride: number) {
@@ -424,12 +424,12 @@ export class CanvasImmediateRenderer extends VectorContext {
 
   /**
    * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
+   * @param offset Offset.
+   * @param end End.
+   * @param stride Stride.
    * @param {boolean} close Close.
    * @private
-   * @return {number} end End.
+   * @return end End.
    */
   moveToLineTo_(flatCoordinates: number[], offset: number, end: number, stride: number, close: boolean): number {
     const context = this.context_;
@@ -457,11 +457,11 @@ export class CanvasImmediateRenderer extends VectorContext {
 
   /**
    * @param {number[]} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
+   * @param offset Offset.
    * @param {number[]} ends Ends.
-   * @param {number} stride Stride.
+   * @param stride Stride.
    * @private
-   * @return {number} End.
+   * @return End.
    */
   drawRings_(flatCoordinates: number[], offset: number, ends: number[], stride: number): number {
     for (let i = 0, ii = ends.length; i < ii; ++i) {

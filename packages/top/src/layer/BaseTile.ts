@@ -16,24 +16,24 @@ import TileProperty from './TileProperty';
 /**
  * @template {import("../source/Tile").default} TileSourceType
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
+ * @property [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {TileSourceType} [source] Source for this layer.
  * @property {import("../Map").default} [map] Sets the layer as overlay on a map. The map will not manage
@@ -59,17 +59,17 @@ import TileProperty from './TileProperty';
 export class BaseTileLayer extends Layer {
 
     /**
-     * 
+     *
      */
     override on: BaseTileLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: BaseTileLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: BaseTileLayerOnSignature<void>;
 
@@ -98,17 +98,17 @@ export class BaseTileLayer extends Layer {
 
     /**
      * Return the level as number to which we will preload tiles up to.
-     * @return {number} The level to preload tiles up to.
+     * @return The level to preload tiles up to.
      * @observable
      * @api
      */
     getPreload(): number {
-        return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+        return /** @type */ (this.get(TileProperty.PRELOAD));
     }
 
     /**
      * Set the level as number to which we will preload tiles up to.
-     * @param {number} preload The level to preload tiles up to.
+     * @param preload The level to preload tiles up to.
      * @observable
      * @api
      */

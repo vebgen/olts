@@ -47,12 +47,12 @@ const attributeDescriptions = [
 
 /**
  * @typedef {Object} Options
- * @property {string} vertexShader Vertex shader source.
- * @property {string} fragmentShader Fragment shader source.
+ * @property vertexShader Vertex shader source.
+ * @property fragmentShader Fragment shader source.
  * @property {Record<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {Array<import("../../webgl/PaletteTexture").default>} [paletteTextures] Palette textures.
- * @property {number} [cacheSize=512] The texture cache size.
+ * @property [cacheSize=512] The texture cache size.
  */
 
 /**

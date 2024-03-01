@@ -20,27 +20,27 @@ import { assert } from '@olts/core/asserts';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {import("../render").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
- * @property {number} [renderBuffer=100] The buffer in pixels around the tile extent used by the
+ * @property [renderBuffer=100] The buffer in pixels around the tile extent used by the
  * renderer when getting features from the vector tile for the rendering or hit-detection.
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
@@ -78,7 +78,7 @@ import { assert } from '@olts/core/asserts';
  * will be recreated when no animation is active.
  * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will be
  * recreated during interactions. See also `updateWhileAnimating`.
- * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
+ * @property [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -97,20 +97,20 @@ import { assert } from '@olts/core/asserts';
 export class VectorTileLayer extends BaseVectorLayer {
 
     /**
-     * 
+     *
      */
     override on: VectorTileLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: VectorTileLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: VectorTileLayerOnSignature<void>;
-    
+
     /**
      * @param {Options} [options] Options.
      */
@@ -195,12 +195,12 @@ export class VectorTileLayer extends BaseVectorLayer {
 
     /**
      * Return the level as number to which we will preload tiles up to.
-     * @return {number} The level to preload tiles up to.
+     * @return The level to preload tiles up to.
      * @observable
      * @api
      */
     getPreload(): number {
-        return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+        return /** @type */ (this.get(TileProperty.PRELOAD));
     }
 
     /**
@@ -217,7 +217,7 @@ export class VectorTileLayer extends BaseVectorLayer {
 
     /**
      * Set the level as number to which we will preload tiles up to.
-     * @param {number} preload The level to preload tiles up to.
+     * @param preload The level to preload tiles up to.
      * @observable
      * @api
      */

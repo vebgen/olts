@@ -26,8 +26,8 @@ let context: CanvasRenderingContext2D;
 
 /**
  * @param {Uint8ClampedArray} data Image data.
- * @param {number} width Number of columns.
- * @param {number} height Number of rows.
+ * @param width Number of columns.
+ * @param height Number of rows.
  * @return {ImageData} Image data.
  */
 export function newImageData(data: Uint8ClampedArray, width: number, height: number): ImageData {
@@ -45,11 +45,11 @@ export function newImageData(data: Uint8ClampedArray, width: number, height: num
 
 /**
  * @typedef {Object} MinionData
- * @property {Array<ArrayBuffer>} buffers Array of buffers.
+ * @property {ArrayBuffer[]} buffers Array of buffers.
  * @property {Object} meta Operation metadata.
  * @property {boolean} imageOps The operation is an image operation.
- * @property {number} width The width of the image.
- * @property {number} height The height of the image.
+ * @property width The width of the image.
+ * @property height The height of the image.
  */
 
 /* istanbul ignore next */
@@ -186,22 +186,22 @@ function createFauxWorker(config: ProcessorOptions, onMessage: (arg0: FauxMessag
 }
 
 /**
- * @typedef {function(Error, ImageData, (Object|Array<Object>)): void} JobCallback
+ * @typedef {function(Error, ImageData, (Object|Object[])): void} JobCallback
  */
 
 /**
  * @typedef {Object} Job
  * @property {Object} meta Job metadata.
- * @property {Array<ImageData>} inputs Array of input data.
+ * @property {ImageData[]} inputs Array of input data.
  * @property {JobCallback} callback Called when the job is complete.
  */
 
 /**
  * @typedef {Object} ProcessorOptions
- * @property {number} threads Number of workers to spawn.
+ * @property threads Number of workers to spawn.
  * @property {Operation} operation The operation.
  * @property {Record<string, Function>} [lib] Functions that will be made available to operations run in a worker.
- * @property {number} queue The number of queued jobs to allow.
+ * @property queue The number of queued jobs to allow.
  * @property {boolean} [imageOps=false] Pass all the image data to the operation instead of a single pixel.
  */
 
@@ -226,7 +226,7 @@ export class Processor extends Disposable {
         }
 
         /**
-         * @type {Array<Worker>}
+         * @type {Worker[]}
          */
         const workers:Worker[] = new Array(threads);
         if (threads) {
@@ -242,7 +242,7 @@ export class Processor extends Disposable {
         this._workers = workers;
 
         /**
-         * @type {Array<Job>}
+         * @type {Job[]}
          * @private
          */
         this._queue = [];
@@ -265,7 +265,7 @@ export class Processor extends Disposable {
 
     /**
      * Run operation on input data.
-     * @param {Array<ImageData>} inputs Array of image data.
+     * @param {ImageData[]} inputs Array of image data.
      * @param {Object} meta A user data object.  This is passed to all operations
      *     and must be serializable.
      * @param {function(Error, ImageData, Object): void} callback Called when work
@@ -346,7 +346,7 @@ export class Processor extends Disposable {
 
     /**
      * Handle messages from the worker.
-     * @param {number} index The worker index.
+     * @param index The worker index.
      * @param {MessageEvent} event The message event.
      */
     _onWorkerMessage(index: number, event: MessageEvent) {
@@ -419,7 +419,7 @@ export class Processor extends Disposable {
  * data object is accessible from raster events, where it can be initialized in
  * "beforeoperations" and accessed again in "afteroperations".
  *
- * @typedef {function((Array<number[]>|Array<ImageData>), Object):
+ * @typedef {function((Array<number[]>|ImageData[]), Object):
  *     (number[]|ImageData)} Operation
  */
 
@@ -460,9 +460,9 @@ const RasterEventType = {
  */
 export class RasterSourceEvent extends Event {
     /**
-     * @param {string} type Type.
+     * @param type Type.
      * @param {import("../Map").FrameState} frameState The frame state.
-     * @param {Object|Array<Object>} data An object made available to operations.  For "afteroperations" evenets
+     * @param {Object|Object[]} data An object made available to operations.  For "afteroperations" evenets
      * this will be an array of objects if more than one thread is used.
      */
     constructor(type: string, frameState: import("../Map").FrameState, data: object |object[]) {
@@ -500,7 +500,7 @@ export class RasterSourceEvent extends Event {
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
  * @property {Object} [lib] Functions that will be made available to operations run in a worker.
- * @property {number} [threads] By default, operations will be run in a single worker thread.
+ * @property [threads] By default, operations will be run in a single worker thread.
  * To avoid using workers altogether, set `threads: 0`.  For pixel operations, operations can
  * be run in multiple worker threads.  Note that there is additional overhead in
  * transferring data to multiple workers, and that depending on the user's
@@ -536,17 +536,17 @@ export class RasterSourceEvent extends Event {
 export class RasterSource extends ImageSource {
 
     /**
-     * 
+     *
      */
     override on: RasterSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: RasterSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: RasterSourceOnSignature<void>;
 
@@ -588,7 +588,7 @@ export class RasterSource extends ImageSource {
 
         const changed = this.changed.bind(this);
         for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-            this.layers_[i].addEventListener(EventType.CHANGE, changed);
+            this.layers_[i].addEventListener(EventTypes.CHANGE, changed);
         }
 
         /** @type {boolean} */
@@ -704,7 +704,7 @@ export class RasterSource extends ImageSource {
     /**
      * Update the stored frame state.
      * @param {Extent} extent The view extent (in map units).
-     * @param {number} resolution The view resolution.
+     * @param resolution The view resolution.
      * @param {import("../proj/Projection").default} projection The view projection.
      * @return {import("../Map").FrameState} The updated frame state.
      * @private
@@ -757,8 +757,8 @@ export class RasterSource extends ImageSource {
 
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      * @param {import("../proj/Projection").default} projection Projection.
      * @return {import("../ImageCanvas").default} Single image.
      */
@@ -834,7 +834,7 @@ export class RasterSource extends ImageSource {
      * @param {import("../Map").FrameState} frameState The frame state.
      * @param {Error} err Any error during processing.
      * @param {ImageData} output The output image data.
-     * @param {Object|Array<Object>} data The user data (or an array if more than one thread).
+     * @param {Object|Object[]} data The user data (or an array if more than one thread).
      * @private
      */
     onWorkerComplete_(frameState: import("../Map").FrameState, err: Error, output: ImageData, data: object |object[]) {

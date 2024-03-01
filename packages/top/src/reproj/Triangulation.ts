@@ -17,8 +17,8 @@ import {modulo} from '@olts/core/math';
 /**
  * Single triangle; consists of 3 source points and 3 target points.
  * @typedef {Object} Triangle
- * @property {Array<Coordinate>} source Source.
- * @property {Array<Coordinate>} target Target.
+ * @property {Coordinate[]} source Source.
+ * @property {Coordinate[]} target Target.
  */
 
 /**
@@ -50,7 +50,7 @@ export class Triangulation {
    * @param {import("../proj/Projection").default} targetProj Target projection.
    * @param {Extent} targetExtent Target extent to triangulate.
    * @param {Extent} maxSourceExtent Maximal source extent that can be used.
-   * @param {number} errorThreshold Acceptable error (in source units).
+   * @param errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
    */
   constructor(
@@ -103,7 +103,7 @@ export class Triangulation {
     this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
     /**
-     * @type {Array<Triangle>}
+     * @type {Triangle[]}
      * @private
      */
     this.triangles_ = [];
@@ -277,7 +277,7 @@ export class Triangulation {
    * @param {Coordinate} bSrc The source b coordinate.
    * @param {Coordinate} cSrc The source c coordinate.
    * @param {Coordinate} dSrc The source d coordinate.
-   * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
+   * @param maxSubdivision Maximal allowed subdivision of the quad.
    * @private
    */
   addQuad_(a, b, c, d, aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
@@ -285,7 +285,7 @@ export class Triangulation {
     const sourceCoverageX = this.sourceWorldWidth_
       ? getWidth(sourceQuadExtent) / this.sourceWorldWidth_
       : null;
-    const sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
+    const sourceWorldWidth = /** @type */ (this.sourceWorldWidth_);
 
     // when the quad is wrapped in the source projection
     // it covers most of the projection extent, but not fully
@@ -489,7 +489,7 @@ export class Triangulation {
   }
 
   /**
-   * @return {Array<Triangle>} Array of the calculated triangles.
+   * @return {Triangle[]} Array of the calculated triangles.
    */
   getTriangles() {
     return this.triangles_;

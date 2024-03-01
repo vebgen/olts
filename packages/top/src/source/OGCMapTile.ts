@@ -4,22 +4,22 @@ import {error as logError} from '../console';
 
 /**
  * @typedef {Object} Options
- * @property {string} url URL to the OGC Map Tileset endpoint.
+ * @property url URL to the OGC Map Tileset endpoint.
  * @property {Object} [context] A lookup of values to use in the tile URL template.  The `{tileMatrix}`
  * (zoom level), `{tileRow}`, and `{tileCol}` variables in the URL will always be provided by the source.
- * @property {string} [mediaType] The content type for the tiles (e.g. "image/png").  If not provided,
+ * @property [mediaType] The content type for the tiles (e.g. "image/png").  If not provided,
  * the source will try to find a link with rel="item" that uses a supported image type.
  * @property {ProjectionLike} [projection] Projection. By default, the projection
  * will be derived from the `crs` of the `tileMatrixSet`.  You can override this by supplying
  * a projection to the constructor.
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
+ * @property [cacheSize] Tile cache size. The default depends on the screen size. Will be ignored if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
@@ -28,7 +28,7 @@ import {error as logError} from '../console';
  * };
  * ```
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  */
 

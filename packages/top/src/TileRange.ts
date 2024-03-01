@@ -5,10 +5,10 @@
  */
 export class TileRange {
     /**
-     * @param {number} minX Minimum X.
-     * @param {number} maxX Maximum X.
-     * @param {number} minY Minimum Y.
-     * @param {number} maxY Maximum Y.
+     * @param minX Minimum X.
+     * @param maxX Maximum X.
+     * @param minY Minimum Y.
+     * @param maxY Maximum Y.
      */
     constructor(minX: number, maxX: number, minY: number, maxY: number) {
         /**
@@ -54,8 +54,8 @@ export class TileRange {
     }
 
     /**
-     * @param {number} x Tile coordinate x.
-     * @param {number} y Tile coordinate y.
+     * @param x Tile coordinate x.
+     * @param y Tile coordinate y.
      * @return {boolean} Contains coordinate.
      */
     containsXY(x: number, y: number): boolean {
@@ -94,7 +94,7 @@ export class TileRange {
     }
 
     /**
-     * @return {number} Height.
+     * @return Height.
      */
     getHeight(): number {
         return this.maxY - this.minY + 1;
@@ -108,7 +108,7 @@ export class TileRange {
     }
 
     /**
-     * @return {number} Width.
+     * @return Width.
      */
     getWidth(): number {
         return this.maxX - this.minX + 1;
@@ -129,10 +129,10 @@ export class TileRange {
 }
 
 /**
- * @param {number} minX Minimum X.
- * @param {number} maxX Maximum X.
- * @param {number} minY Minimum Y.
- * @param {number} maxY Maximum Y.
+ * @param minX Minimum X.
+ * @param maxX Maximum X.
+ * @param minY Minimum Y.
+ * @param maxY Maximum Y.
  * @param {TileRange} [tileRange] TileRange.
  * @return {TileRange} Tile range.
  */

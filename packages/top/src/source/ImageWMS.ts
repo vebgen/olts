@@ -25,11 +25,11 @@ import {get as getProjection, transform} from '../proj';
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * @property [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {number[]} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {string} [url] WMS service URL.
+ * @property [url] WMS service URL.
  */
 
 /**
@@ -116,7 +116,7 @@ export class ImageWMS extends ImageSource {
    * projection. Return `undefined` if the GetFeatureInfo URL cannot be
    * constructed.
    * @param {Coordinate} coordinate Coordinate.
-   * @param {number} resolution Resolution.
+   * @param resolution Resolution.
    * @param {ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
@@ -155,7 +155,7 @@ export class ImageWMS extends ImageSource {
    * resolution and possibly including any passed specific parameters. Returns
    * `undefined` if the GetLegendGraphic URL cannot be constructed.
    *
-   * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
+   * @param [resolution] Resolution. If set to undefined, `SCALE`
    *     will not be calculated and included in URL.
    * @param {Object} [params] GetLegendGraphic params. If `LAYER` is set, the
    *     request is generated for this wms layer, else it will try to use the
@@ -189,8 +189,8 @@ export class ImageWMS extends ImageSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {import("../Image").default} Single image.
    */

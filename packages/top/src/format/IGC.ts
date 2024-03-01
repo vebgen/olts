@@ -75,7 +75,7 @@ export class IGC extends TextFeature {
 
   /**
    * @protected
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {import("../Feature").default} Feature.
    */
@@ -154,10 +154,10 @@ export class IGC extends TextFeature {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature>} Features.
+   * @return {Feature[]} Features.
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);

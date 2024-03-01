@@ -30,21 +30,21 @@ import {toSize} from '../size';
  * For loaders that generate images, the promise should not resolve until the image is loaded.
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
- * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
+ * @property [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
+ * @property [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|Size} [tileSize=[256, 256]] The pixel width and height of the source tiles.
  * This may be different than the rendered pixel size if a `tileGrid` is provided.
- * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
+ * @property [gutter=0] The size in pixels of the gutter around data tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
- * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
+ * @property [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {ProjectionLike} [projection='EPSG:3857'] Tile projection.
  * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {import("./Source").State} [state] The source state.
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
- * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
- * @property {number} [bandCount=4] Number of bands represented in the data.
+ * @property [transition] Transition time when fading in new tiles (in milliseconds).
+ * @property [bandCount=4] Number of bands represented in the data.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  */
@@ -101,7 +101,7 @@ export class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {Array<Size>|null}
+     * @type {Size[]|null}
      */
     this.tileSizes_ = null;
 
@@ -140,7 +140,7 @@ export class DataTileSource extends TileSource {
    * Set the source tile sizes.  The length of the array is expected to match the number of
    * levels in the tile grid.
    * @protected
-   * @param {Array<Size>} tileSizes An array of tile sizes.
+   * @param {Size[]} tileSizes An array of tile sizes.
    */
   setTileSizes(tileSizes) {
     this.tileSizes_ = tileSizes;
@@ -150,7 +150,7 @@ export class DataTileSource extends TileSource {
    * Get the source tile size at the given zoom level.  This may be different than the rendered tile
    * size.
    * @protected
-   * @param {number} z Tile zoom level.
+   * @param z Tile zoom level.
    * @return {Size} The source tile size.
    */
   getTileSize(z) {
@@ -166,7 +166,7 @@ export class DataTileSource extends TileSource {
 
   /**
    * @param {import("../proj/Projection").default} projection Projection.
-   * @return {number} Gutter.
+   * @return Gutter.
    */
   getGutterForProjection(projection) {
     const thisProj = this.getProjection();
@@ -186,9 +186,9 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
    * @param {import("../proj/Projection").default} targetProj The output projection.
    * @param {import("../proj/Projection").default} sourceProj The input projection.
    * @return {!DataTile} Tile.
@@ -245,10 +245,10 @@ export class DataTileSource extends TileSource {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {!DataTile} Tile.
    */
@@ -287,7 +287,7 @@ export class DataTileSource extends TileSource {
 
     const tile = new DataTile(options);
     tile.key = this.getKey();
-    tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
+    tile.addEventListener(EventTypes.CHANGE, this.handleTileChange_);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

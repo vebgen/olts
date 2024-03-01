@@ -10,6 +10,7 @@ import Kinetic from '../Kinetic';
 import MouseWheelZoom from './MouseWheelZoom';
 import PinchRotate from './PinchRotate';
 import PinchZoom from './PinchZoom';
+import { Interaction } from './Interaction';
 
 /**
  * @typedef {Object} DefaultsOptions
@@ -27,10 +28,24 @@ import PinchZoom from './PinchZoom';
  * @property {boolean} [dragPan=true] Whether drag pan is desired.
  * @property {boolean} [pinchRotate=true] Whether pinch rotate is desired.
  * @property {boolean} [pinchZoom=true] Whether pinch zoom is desired.
- * @property {number} [zoomDelta] Zoom level delta when using keyboard or double click zoom.
- * @property {number} [zoomDuration] Duration of the zoom animation in
+ * @property [zoomDelta] Zoom level delta when using keyboard or double click zoom.
+ * @property [zoomDuration] Duration of the zoom animation in
  * milliseconds.
  */
+interface DefaultsOptions {
+    altShiftDragRotate?: boolean;
+    onFocusOnly?: boolean;
+    doubleClickZoom?: boolean;
+    keyboard?: boolean;
+    mouseWheelZoom?: boolean;
+    shiftDragZoom?: boolean;
+    dragPan?: boolean;
+    pinchRotate?: boolean;
+    pinchZoom?: boolean;
+    zoomDelta?: number;
+    zoomDuration?: number;
+}
+
 
 /**
  * Set of interactions included in maps by default. Specific interactions can be
@@ -53,16 +68,16 @@ import PinchZoom from './PinchZoom';
  * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
  * @param {DefaultsOptions} [options] Defaults options.
- * @return {Collection<import("./Interaction").default>}
+ * @return {Collection<Interaction>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api
  */
-export function defaults(options) {
+export function defaults(options?: DefaultsOptions): Collection<Interaction> {
   options = options ? options : {};
 
-  /** @type {Collection<import("./Interaction").default>} */
-  const interactions = new Collection();
+  /** @type {Collection<Interaction>} */
+  const interactions: Collection<Interaction> = new Collection();
 
   const kinetic = new Kinetic(-0.005, 0.05, 100);
 

@@ -3,7 +3,7 @@ import CanvasBuilderGroup from '../../render/canvas/BuilderGroup';
 import CanvasExecutorGroup from '../../render/canvas/ExecutorGroup';
 import CanvasTileLayerRenderer from './TileLayer';
 import type { TileState} from '../../tile';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import {
   HIT_DETECT_RESOLUTION,
   createHitDetectionImageData,
@@ -94,7 +94,7 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
    * @return {boolean|undefined} Tile needs to be rendered.
    */
@@ -111,9 +111,9 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
    * @param {import("../../Map").FrameState} frameState Frame state.
    * @return {!import("../../Tile").default} Tile.
    */
@@ -179,7 +179,7 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
    * @private
    */
@@ -319,7 +319,7 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
@@ -350,7 +350,7 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     /**
      * @param {import("../../Feature").FeatureLike} feature Feature.
      * @param {SimpleGeometry} geometry Geometry.
-     * @param {number} distanceSq The squared distance to the click position.
+     * @param distanceSq The squared distance to the click position.
      * @return {T|undefined} Callback result.
      */
     const featureCallback = function (feature, geometry, distanceSq) {
@@ -727,7 +727,7 @@ export class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../Feature").FeatureLike} feature Feature.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param squaredTolerance Squared tolerance.
    * @param {import("../../style/Style").default|Array<import("../../style/Style").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup").default} builderGroup Replay group.
    * @param {import("../../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder group for decluttering.

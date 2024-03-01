@@ -19,7 +19,7 @@ import {intersects} from '@olts/core/extent';
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {string} url Image URL.
+ * @property url Image URL.
  */
 
 /**
@@ -80,7 +80,7 @@ export class Static extends ImageSource {
     );
 
     this.image.addEventListener(
-      EventType.CHANGE,
+      EventTypes.CHANGE,
       this.handleImageChange.bind(this),
     );
   }
@@ -96,8 +96,8 @@ export class Static extends ImageSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {import("../Image").default} Single image.
    */
@@ -110,7 +110,7 @@ export class Static extends ImageSource {
 
   /**
    * Return the URL used for this image source.
-   * @return {string} URL.
+   * @return URL.
    * @api
    */
   getUrl() {

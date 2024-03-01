@@ -42,27 +42,27 @@ import {expressionToGlsl} from '../webgl/styleparser';
 /**
  * @typedef {Object} Options
  * @property {Style} [style] Style to apply to the layer.
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
+ * @property [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
  * @property {SourceType} [source] Source for this layer.
- * @property {Array<SourceType>|function(Extent, number):Array<SourceType>} [sources] Array
+ * @property {SourceType[]|function(Extent, number):SourceType[]} [sources] Array
  * of sources for this layer. Takes precedence over `source`. Can either be an array of sources, or a function that
  * expects an extent and a resolution (in view projection units per pixel) and returns an array of sources. See
  * {@link module:ol/source.sourcesFromTileGrid} for a helper function to generate sources that are organized in a
@@ -72,22 +72,22 @@ import {expressionToGlsl} from '../webgl/styleparser';
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map~Map#addLayer}.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
- * @property {number} [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
+ * @property [cacheSize=512] The internal texture cache size.  This needs to be large enough to render
  * two zoom levels worth of tiles.
  * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
  * @typedef {Object} ParsedStyle
- * @property {string} vertexShader The vertex shader.
- * @property {string} fragmentShader The fragment shader.
+ * @property vertexShader The vertex shader.
+ * @property fragmentShader The fragment shader.
  * @property {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniform definitions.
  * @property {Array<import("../webgl/PaletteTexture").default>} paletteTextures Palette textures.
  */
 
 /**
  * @param {Style} style The layer style.
- * @param {number} [bandCount] The number of bands.
+ * @param [bandCount] The number of bands.
  * @return {ParsedStyle} Shaders and uniforms generated from the style.
  */
 function parseStyle(style, bandCount) {
@@ -295,7 +295,7 @@ export class WebGLTileLayer extends BaseTileLayer {
     super(options);
 
     /**
-     * @type {Array<SourceType>|function(Extent, number):Array<SourceType>}
+     * @type {SourceType[]|function(Extent, number):SourceType[]}
      * @private
      */
     this.sources_ = options.sources;
@@ -336,8 +336,8 @@ export class WebGLTileLayer extends BaseTileLayer {
   /**
    * Gets the sources for this layer, for a given extent and resolution.
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @return {Array<SourceType>} Sources.
+   * @param resolution Resolution.
+   * @return {SourceType[]} Sources.
    */
   getSources(extent, resolution) {
     const source = this.getSource();
@@ -379,7 +379,7 @@ export class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @private
-   * @return {number} The number of source bands.
+   * @return The number of source bands.
    */
   getSourceBandCount_() {
     const max = Number.MAX_SAFE_INTEGER;
@@ -403,7 +403,7 @@ export class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @param {import("../Map").FrameState} frameState Frame state.
-   * @param {Array<SourceType>} sources Sources.
+   * @param {SourceType[]} sources Sources.
    * @return {HTMLElement} Canvas.
    */
   renderSources(frameState, sources) {

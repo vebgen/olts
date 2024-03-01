@@ -11,7 +11,7 @@ import {getHeight, getWidth} from '@olts/core/extent';
  * @property {Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image. When using this loader with an
  * `ol/source/Image`, the same extent must be set as `extent` of the `ol/layer/Image`.
- * @property {string} url Image URL.
+ * @property url Image URL.
  * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.

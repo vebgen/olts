@@ -64,7 +64,7 @@ const GEOMETRY_WRITERS = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [geometryName] Geometry name to use when creating features.
+ * @property [geometryName] Geometry name to use when creating features.
  */
 
 /**
@@ -92,7 +92,7 @@ export class EsriJSON extends JSONFeature {
   /**
    * @param {Object} object Object.
    * @param {import("./Feature").ReadOptions} [options] Read options.
-   * @param {string} [idField] Name of the field where to get the id from.
+   * @param [idField] Name of the field where to get the id from.
    * @protected
    * @return {import("../Feature").default} Feature.
    */
@@ -108,7 +108,7 @@ export class EsriJSON extends JSONFeature {
       feature.setProperties(esriJSONFeature.attributes, true);
       const id = esriJSONFeature.attributes[idField];
       if (id !== undefined) {
-        feature.setId(/** @type {number} */ (id));
+        feature.setId(/** @type */ (id));
       }
     }
     return feature;
@@ -118,7 +118,7 @@ export class EsriJSON extends JSONFeature {
    * @param {Object} object Object.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature>} Features.
+   * @return {Feature[]} Features.
    */
   readFeaturesFromObject(object, options) {
     options = options ? options : {};
@@ -476,7 +476,7 @@ function writeLineStringGeometry(lineString, options) {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
     paths: [
-      /** @type {Array<EsriJSONPosition>} */ (lineString.getCoordinates()),
+      /** @type {EsriJSONPosition[]} */ (lineString.getCoordinates()),
     ],
   };
 }
@@ -492,7 +492,7 @@ function writePolygonGeometry(polygon, options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (
+    rings: /** @type {Array<EsriJSONPosition[]>} */ (
       polygon.getCoordinates(false)
     ),
   };
@@ -508,7 +508,7 @@ function writeMultiLineStringGeometry(multiLineString, options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    paths: /** @type {Array<Array<EsriJSONPosition>>} */ (
+    paths: /** @type {Array<EsriJSONPosition[]>} */ (
       multiLineString.getCoordinates()
     ),
   };
@@ -524,7 +524,7 @@ function writeMultiPointGeometry(multiPoint, options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    points: /** @type {Array<EsriJSONPosition>} */ (
+    points: /** @type {EsriJSONPosition[]} */ (
       multiPoint.getCoordinates()
     ),
   };
@@ -547,7 +547,7 @@ function writeMultiPolygonGeometry(geometry, options) {
   return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (output),
+    rings: /** @type {Array<EsriJSONPosition[]>} */ (output),
   };
 }
 

@@ -2,7 +2,7 @@
 
 export class PaletteTexture {
   /**
-   * @param {string} name The name of the texture.
+   * @param name The name of the texture.
    * @param {Uint8Array} data The texture data.
    */
   constructor(name, data) {

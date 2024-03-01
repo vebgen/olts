@@ -3,7 +3,6 @@ import BaseLayer from './Base';
 import Collection from '../Collection';
 import CollectionEventType from '../CollectionEventType';
 import { BaseEvent as Event } from '@olts/events';
-import type { EventType } from '@olts/events';
 import ObjectEventType from '../ObjectEventType';
 import { assert } from '@olts/core/asserts';
 import { clear } from '../obj';
@@ -11,9 +10,9 @@ import { getIntersection } from '@olts/core/extent';
 import { getUid } from '@olts/core/util';
 import { listen, unlistenByKey } from '../events';
 
-/**
- * @typedef {'addlayer'|'removelayer'} EventType
- */
+
+type EventType = 'addlayer' | 'removelayer';
+
 
 /**
  * A layer group triggers 'addlayer' and 'removelayer' events when layers are added to or removed from
@@ -22,20 +21,22 @@ import { listen, unlistenByKey } from '../events';
  */
 export class GroupEvent extends Event {
     /**
-     * @param {EventType} type The event type.
-     * @param {BaseLayer} layer The layer.
+     * The added or removed layer.
+     *
+     * @api
+     */
+    layer: BaseLayer;
+
+    /**
+     * @param type The event type.
+     * @param layer The layer.
      */
     constructor(type: EventType, layer: BaseLayer) {
         super(type);
-
-        /**
-         * The added or removed layer.
-         * @type {BaseLayer}
-         * @api
-         */
         this.layer = layer;
     }
 }
+
 
 /***
  * @template Return
@@ -47,21 +48,21 @@ export class GroupEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {Array<import("./Base").default>|Collection<import("./Base").default>} [layers] Child layers.
  * @property {Record<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
@@ -85,17 +86,17 @@ const Property = {
 export class LayerGroup extends BaseLayer {
 
     /**
-     * 
+     *
      */
     override on: GroupOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: GroupOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: GroupOnSignature<void>;
 
@@ -184,7 +185,7 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * @param {BaseLayer} layer The layer.
+     * @param layer The layer.
      */
     registerLayerListeners_(layer: BaseLayer) {
         const listenerKeys = [
@@ -194,7 +195,7 @@ export class LayerGroup extends BaseLayer {
                 this.handleLayerChange_,
                 this,
             ),
-            listen(layer, EventType.CHANGE, this.handleLayerChange_, this),
+            listen(layer, EventTypes.CHANGE, this.handleLayerChange_, this),
         ];
 
         if (layer instanceof LayerGroup) {
@@ -292,15 +293,16 @@ export class LayerGroup extends BaseLayer {
     }
 
     /**
-     * Get the layer states list and use this groups z-index as the default
-     * for all layers in this and nested groups, if it is unset at this point.
-     * If dest is not provided and this group's z-index is undefined
-     * 0 is used a the default z-index.
-     * @param {Array<import("./Layer").State>} [dest] Optional list
-     * of layer states (to be modified in place).
-     * @return {Array<import("./Layer").State>} List of layer states.
+     * Get the layer states list and use this groups z-index as the default for
+     * all layers in this and nested groups, if it is unset at this point.
+     *
+     * If dest is not provided and this group's z-index is undefined 0 is used
+     * a the default z-index.
+     *
+     * @param dest Optional list of layer states (to be modified in place).
+     * @return List of layer states.
      */
-    getLayerStatesArray(dest: Array<import("./Layer").State>): Array<import("./Layer").State> {
+    getLayerStatesArray(dest?: LayerState[]): LayerState[] {
         const states = dest !== undefined ? dest : [];
         const pos = states.length;
 

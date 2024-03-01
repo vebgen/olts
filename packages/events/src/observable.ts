@@ -115,7 +115,7 @@ export class Observable extends EventTarget {
      */
     changed() {
         ++this.revision_;
-        this.dispatchEvent(EventType.CHANGE);
+        this.dispatchEvent(EventTypes.CHANGE);
     }
 
     /**

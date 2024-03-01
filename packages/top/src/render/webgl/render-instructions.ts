@@ -6,8 +6,8 @@ import {transform2D} from '@olts/geometry/flat';
  * @param {Float32Array} renderInstructions Render instructions
  * @param {import('./VectorStyleRenderer').AttributeDefinitions} customAttributes Custom attributes
  * @param {import("./MixedGeometryBatch").GeometryBatchItem} batchEntry Batch item
- * @param {number} currentIndex Current index
- * @return {number} The amount of values pushed
+ * @param currentIndex Current index
+ * @return The amount of values pushed
  */
 function pushCustomAttributesInRenderInstructions(
   renderInstructions: Float32Array,
@@ -38,7 +38,7 @@ function pushCustomAttributesInRenderInstructions(
 
 /**
  * @param {import('./VectorStyleRenderer').AttributeDefinitions} customAttributes Custom attributes
- * @return {number} Cumulated size of all attributes
+ * @return Cumulated size of all attributes
  */
 export function getCustomAttributesSize(customAttributes: import('./VectorStyleRenderer').AttributeDefinitions): number {
   return Object.keys(customAttributes).reduce(

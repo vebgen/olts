@@ -32,11 +32,11 @@ export class ReprojTile extends Tile {
    * @param {import("../tilegrid/TileGrid").default} targetTileGrid Target tile grid.
    * @param {TileCoord} tileCoord Coordinate of the tile.
    * @param {TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {number} gutter Gutter of the source tiles.
+   * @param pixelRatio Pixel ratio.
+   * @param gutter Gutter of the source tiles.
    * @param {FunctionType} getTileFunction
    *     Function returning source tiles (z, x, y, pixelRatio).
-   * @param {number} [errorThreshold] Acceptable reprojection error (in px).
+   * @param [errorThreshold] Acceptable reprojection error (in px).
    * @param {boolean} [renderEdges] Render reprojection edges.
    * @param {import("../Tile").Options} [options] Tile options.
    */
@@ -302,7 +302,7 @@ export class ReprojTile extends Tile {
 
           const sourceListenKey = listen(
             tile,
-            EventType.CHANGE,
+            EventTypes.CHANGE,
             function (e) {
               const state = tile.getState();
               if (

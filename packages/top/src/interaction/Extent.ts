@@ -1,7 +1,7 @@
 
 import { BaseEvent as Event } from '@olts/events';
 import Feature from '../Feature';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 import { Point } from '@olts/geometry';
 import PointerInteraction from './Pointer';
 import VectorLayer from '../layer/Vector';
@@ -29,7 +29,7 @@ import { toUserExtent } from '../proj';
  * @property {import("../style/Style").StyleLike} [boxStyle]
  * Style for the drawn extent box. Defaults to the `Polygon` editing style
  * documented in {@link module:ol/style/Style~Style}
- * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
+ * @property [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style").StyleLike} [pointerStyle]
  * Style for the cursor used to draw the extent. Defaults to the `Point` editing style
@@ -91,17 +91,17 @@ export class ExtentEvent extends Event {
 export class Extent extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: ExtentOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: ExtentOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: ExtentOnSignature<void>;
 
@@ -256,7 +256,7 @@ export class Extent extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent pointer move event
      * @private
      */
-    handlePointerMove_(mapBrowserEvent: import("../MapBrowserEvent").default) {
+    handlePointerMove_(mapBrowserEvent: import("../Map/browser-event").default) {
         const pixel = mapBrowserEvent.pixel;
         const map = mapBrowserEvent.map;
 
@@ -315,7 +315,7 @@ export class Extent extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         if (!mapBrowserEvent.originalEvent || !this.condition_(mapBrowserEvent)) {
             return true;
         }
@@ -337,7 +337,7 @@ export class Extent extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleDownEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         const pixel = mapBrowserEvent.pixel;
         const map = mapBrowserEvent.map;
 
@@ -397,7 +397,7 @@ export class Extent extends PointerInteraction {
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      */
-    handleDragEvent(mapBrowserEvent: import("../MapBrowserEvent").default) {
+    handleDragEvent(mapBrowserEvent: import("../Map/browser-event").default) {
         if (this.pointerHandler_) {
             const pixelCoordinate = mapBrowserEvent.coordinate;
             this.setExtent(this.pointerHandler_(pixelCoordinate));
@@ -410,7 +410,7 @@ export class Extent extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         this.pointerHandler_ = null;
         //If bbox is zero area, set to null;
         const extent = this.getExtentInternal();
@@ -524,9 +524,9 @@ function getEdgeHandler(fixedP1: Coordinate, fixedP2: Coordinate): (arg0: Coordi
 
 /**
  * @param {Extent} extent extent
- * @return {Array<Array<Coordinate>>} extent line segments
+ * @return {Array<Coordinate[]>} extent line segments
  */
-function getSegments(extent: Extent): Array<Array<Coordinate>> {
+function getSegments(extent: Extent): Array<Coordinate[]> {
     return [
         [
             [extent[0], extent[1]],

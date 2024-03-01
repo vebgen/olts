@@ -1,6 +1,6 @@
 
 import Interaction from './Interaction';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 
 /**
  * @typedef {Object} Options
@@ -77,7 +77,7 @@ export class PointerInteraction extends Interaction {
     this.handlingDownUpSequence = false;
 
     /**
-     * @type {Array<PointerEvent>}
+     * @type {PointerEvent[]}
      * @protected
      */
     this.targetPointers = [];
@@ -86,7 +86,7 @@ export class PointerInteraction extends Interaction {
   /**
    * Returns the current number of pointers involved in the interaction,
    * e.g. `2` when two fingers are used.
-   * @return {number} The number of pointers.
+   * @return The number of pointers.
    * @api
    */
   getPointerCount() {
@@ -186,7 +186,7 @@ export class PointerInteraction extends Interaction {
 }
 
 /**
- * @param {Array<PointerEvent>} pointerEvents List of events.
+ * @param {PointerEvent[]} pointerEvents List of events.
  * @return {{clientX: number, clientY: number}} Centroid pixel.
  */
 export function centroid(pointerEvents) {

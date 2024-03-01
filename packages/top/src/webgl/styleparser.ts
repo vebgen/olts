@@ -25,8 +25,8 @@ import {asArray} from '@olts/core/color';
  * will be read and modified during the parsing operation.
  * @param {import("../expr/gpu").CompilationContext} compilationContext Compilation context
  * @param {import("../expr/expression").EncodedExpression} value Value
- * @param {number} [expectedType] Expected final type (can be several types combined)
- * @return {string} GLSL-compatible output
+ * @param [expectedType] Expected final type (can be several types combined)
+ * @return GLSL-compatible output
  */
 export function expressionToGlsl(compilationContext, value, expectedType) {
   const parsingContext = newParsingContext();
@@ -63,7 +63,7 @@ const UNPACK_COLOR_FN = `vec4 unpackColor(vec2 packedColor) {
 }`;
 
 /**
- * @param {number} type Value type
+ * @param type Value type
  * @return {1|2|3|4} The amount of components for this value
  */
 function getGlslSizeFromType(type) {
@@ -77,7 +77,7 @@ function getGlslSizeFromType(type) {
 }
 
 /**
- * @param {number} type Value type
+ * @param type Value type
  * @return {'float'|'vec2'|'vec3'|'vec4'} The corresponding GLSL type for this value
  */
 function getGlslTypeFromType(type) {
@@ -91,7 +91,7 @@ function getGlslTypeFromType(type) {
 /**
  * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
  * @param {Object|string} input The hash input, either an object or string
- * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
+ * @return Hash (if the object cannot be serialized, it is based on `getUid`)
  */
 export function computeHash(input) {
   const hash = JSON.stringify(input)
@@ -160,12 +160,12 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
 }
 
 /**
- * @param {string} distanceField The distance field expression
+ * @param distanceField The distance field expression
  * @param {string|null} fillColor The fill color expression; null if no fill
  * @param {string|null} strokeColor The stroke color expression; null if no stroke
  * @param {string|null} strokeWidth The stroke width expression; null if no stroke
  * @param {string|null} opacity The opacity expression; null if no stroke
- * @return {string} The final color expression, based on the distance field and given params
+ * @return The final color expression, based on the distance field and given params
  */
 function getColorFromDistanceField(
   distanceField,
@@ -197,8 +197,8 @@ function getColorFromDistanceField(
  * @param {ShaderBuilder} builder Shader builder
  * @param {Record<string,import("../webgl/Helper").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
- * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
- * @return {string} The image size expression
+ * @param textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
+ * @return The image size expression
  */
 function parseImageProperties(style, builder, uniforms, prefix, textureId) {
   const image = new Image();
@@ -229,9 +229,9 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
  * @param {import("../style/webgl").WebGLStyle} style Style
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {import("../expr/gpu").CompilationContext} context Shader compilation context (vertex or fragment)
- * @param {string} imageSize Pixel size of the full image as a GLSL expression
- * @param {string} sampleSize Pixel size of the sample in the image as a GLSL expression
- * @return {string} The offset expression
+ * @param imageSize Pixel size of the full image as a GLSL expression
+ * @param sampleSize Pixel size of the sample in the image as a GLSL expression
+ * @return The offset expression
  */
 function parseImageOffsetProperties(
   style,
@@ -933,7 +933,7 @@ export function parseLiteralStyle(style) {
     if (variable.type === StringType) {
       callback = () =>
         getStringNumberEquivalent(
-          /** @type {string} */ (style.variables[variable.name]),
+          /** @type */ (style.variables[variable.name]),
         );
     } else if (variable.type === ColorType) {
       callback = () =>
@@ -948,7 +948,7 @@ export function parseLiteralStyle(style) {
       callback = () =>
         /** @type {boolean} */ (style.variables[variable.name]) ? 1.0 : 0.0;
     } else {
-      callback = () => /** @type {number} */ (style.variables[variable.name]);
+      callback = () => /** @type */ (style.variables[variable.name]);
     }
     uniforms[uniformName] = callback;
   });

@@ -39,23 +39,23 @@ export const TEXT_ALIGN: { left: 0; center: 0.5; right: 1; top: 0; middle: 0.5; 
 
 export class CanvasTextBuilder extends CanvasBuilder {
   /**
-   * @param {number} tolerance Tolerance.
+   * @param tolerance Tolerance.
    * @param {Extent} maxExtent Maximum extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    */
   constructor(tolerance: number, maxExtent: Extent, resolution: number, pixelRatio: number) {
     super(tolerance, maxExtent, resolution, pixelRatio);
 
     /**
      * @private
-     * @type {Array<HTMLCanvasElement>}
+     * @type {HTMLCanvasElement[]}
      */
     this.labels_ = null;
 
     /**
      * @private
-     * @type {string|Array<string>}
+     * @type {string|string[]}
      */
     this.text_ = '';
 
@@ -490,8 +490,8 @@ export class CanvasTextBuilder extends CanvasBuilder {
 
   /**
    * @private
-   * @param {number} begin Begin.
-   * @param {number} end End.
+   * @param begin Begin.
+   * @param end End.
    */
   drawChars_(begin: number, end: number) {
     const strokeState = this.textStrokeState_;

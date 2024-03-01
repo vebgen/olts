@@ -11,17 +11,17 @@ import {
 
 /**
  * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * @property [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
+ * @property [vertexShader] Vertex shader source
+ * @property [fragmentShader] Fragment shader source
  * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
 /**
  * @typedef {Object} Options
  * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
- * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {PostProcessesOptions[]} [postProcesses] Post-processes definitions
  */
 
 /**

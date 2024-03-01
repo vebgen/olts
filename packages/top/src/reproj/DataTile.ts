@@ -27,13 +27,13 @@ import {listen, unlistenByKey} from '../events';
  * @property {import("../tilegrid/TileGrid").default} targetTileGrid Target tile grid.
  * @property {TileCoord} tileCoord Coordinate of the tile.
  * @property {TileCoord} [wrappedTileCoord] Coordinate of the tile wrapped in X.
- * @property {number} pixelRatio Pixel ratio.
- * @property {number} gutter Gutter of the source tiles.
+ * @property pixelRatio Pixel ratio.
+ * @property gutter Gutter of the source tiles.
  * @property {TileGetter} getTileFunction Function returning source tiles (z, x, y, pixelRatio).
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
- * @property {number} [errorThreshold] Acceptable reprojection error (in px).
- * @property {number} [transition=250] A duration for tile opacity
+ * @property [errorThreshold] Acceptable reprojection error (in px).
+ * @property [transition=250] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  */
 
@@ -104,7 +104,7 @@ export class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {!Array<DataTile>}
+     * @type {!DataTile[]}
      */
     this.sourceTiles_ = [];
 
@@ -450,7 +450,7 @@ export class ReprojDataTile extends DataTile {
 
       const sourceListenKey = listen(
         tile,
-        EventType.CHANGE,
+        EventTypes.CHANGE,
         function () {
           const state = tile.getState();
           if (

@@ -15,7 +15,7 @@ import {abstract} from '@olts/core/util';
  * @property {TileType} tile The tile.
  * @property {import("../tilegrid/TileGrid").default} grid Tile grid.
  * @property {import("../webgl/Helper").default} helper WebGL helper.
- * @property {number} [gutter=0] The size in pixels of the gutter around image tiles to ignore.
+ * @property [gutter=0] The size in pixels of the gutter around image tiles to ignore.
  */
 
 /**
@@ -58,7 +58,7 @@ export class BaseTileRepresentation extends EventTarget {
   setTile(tile) {
     if (tile !== this.tile) {
       if (this.tile) {
-        this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+        this.tile.removeEventListener(EventTypes.CHANGE, this.handleTileChange_);
       }
       this.tile = tile;
       this.loaded = tile.getState() === TileStates.LOADED;
@@ -71,7 +71,7 @@ export class BaseTileRepresentation extends EventTarget {
             image.crossOrigin = 'anonymous';
           }
         }
-        tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
+        tile.addEventListener(EventTypes.CHANGE, this.handleTileChange_);
       }
     }
   }
@@ -86,7 +86,7 @@ export class BaseTileRepresentation extends EventTarget {
 
   setReady() {
     this.ready = true;
-    this.dispatchEvent(EventType.CHANGE);
+    this.dispatchEvent(EventTypes.CHANGE);
   }
 
   handleTileChange_() {
@@ -97,7 +97,7 @@ export class BaseTileRepresentation extends EventTarget {
   }
 
   disposeInternal() {
-    this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+    this.tile.removeEventListener(EventTypes.CHANGE, this.handleTileChange_);
   }
 }
 

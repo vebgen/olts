@@ -1,11 +1,11 @@
 
 import Interaction from './Interaction';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=400] Animation duration in milliseconds. *
- * @property {number} [delta=1] The zoom delta applied on move of one pixel. *
+ * @property [duration=400] Animation duration in milliseconds. *
+ * @property [delta=1] The zoom delta applied on move of one pixel. *
  * @property {function(boolean):boolean} [stopDown]
  * Should the down event be propagated to other interactions, or should be
  * stopped?
@@ -68,7 +68,7 @@ export class DblClickDragZoom extends Interaction {
     this.trackedPointers_ = {};
 
     /**
-     * @type {Array<PointerEvent>}
+     * @type {PointerEvent[]}
      * @protected
      */
     this.targetPointers = [];

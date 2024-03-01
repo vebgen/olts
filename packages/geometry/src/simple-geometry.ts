@@ -186,7 +186,7 @@ export abstract class SimpleGeometry extends Geometry {
                     this.stride = 2;
                     return;
                 }
-                coordinates = /** @type {Array<unknown>} */ (coordinates[0]);
+                coordinates = /** @type {unknown[]} */ (coordinates[0]);
             }
             stride = coordinates.length;
             layout = getLayoutForStride(stride);

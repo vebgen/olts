@@ -1,37 +1,37 @@
 
 import type { EventType } from '@olts/events';
 import Interaction from './Interaction';
-import MapEventType from '../MapEventType';
+import MapEventType from '../Map/event-types';
 import {listen, unlistenByKey} from '../events';
 import {toFixed} from '@olts/core/math';
 
 /**
- * @param {number} number A number.
- * @return {number} A number with at most 5 decimal places.
+ * @param number A number.
+ * @return A number with at most 5 decimal places.
  */
 function to5(number) {
   return toFixed(number, 5);
 }
 
 /**
- * @param {string} string A string.
- * @return {number} A number representing the string.
+ * @param string A string.
+ * @return A number representing the string.
  */
 function readNumber(string) {
   return parseFloat(string);
 }
 
 /**
- * @param {number} number A number.
- * @return {string} A string representing the number.
+ * @param number A number.
+ * @return A string representing the number.
  */
 function writeNumber(number) {
   return to5(number).toString();
 }
 
 /**
- * @param {number} a A number.
- * @param {number} b A number.
+ * @param a A number.
+ * @param b A number.
  * @return {boolean} The numbers are different.
  */
 function differentNumber(a, b) {
@@ -59,11 +59,11 @@ function differentArray(a, b) {
 /**
  * @typedef {Object} Options
  * @property {boolean|import('../View').AnimationOptions} [animate=true] Animate view transitions.
- * @property {Array<Params>} [params=['x', 'y', 'z', 'r', 'l']] Properties to track. Default is to track
+ * @property {Params[]} [params=['x', 'y', 'z', 'r', 'l']] Properties to track. Default is to track
  * `x` (center x), `y` (center y), `z` (zoom), `r` (rotation) and `l` (layers).
  * @property {boolean} [replace=false] Replace the current URL without creating the new entry in browser history.
  * By default, changes in the map state result in a new entry being added to the browser history.
- * @property {string} [prefix=''] By default, the URL will be updated with search parameters x, y, z, and r.  To
+ * @property [prefix=''] By default, the URL will be updated with search parameters x, y, z, and r.  To
  * avoid collisions with existing search parameters that your application uses, you can supply a custom prefix for
  * the ones used by this interaction (e.g. 'ol:').
  */
@@ -157,8 +157,8 @@ export class Link extends Interaction {
 
   /**
    * @private
-   * @param {string} name A parameter name.
-   * @return {string} A name with the prefix applied.
+   * @param name A parameter name.
+   * @return A name with the prefix applied.
    */
   getParamName_(name) {
     if (!this.prefix_) {
@@ -170,7 +170,7 @@ export class Link extends Interaction {
   /**
    * @private
    * @param {URLSearchParams} params The search params.
-   * @param {string} name The unprefixed parameter name.
+   * @param name The unprefixed parameter name.
    * @return {string|null} The parameter value.
    */
   get_(params, name) {
@@ -180,8 +180,8 @@ export class Link extends Interaction {
   /**
    * @private
    * @param {URLSearchParams} params The search params.
-   * @param {string} name The unprefixed parameter name.
-   * @param {string} value The param value.
+   * @param name The unprefixed parameter name.
+   * @param value The param value.
    */
   set_(params, name, value) {
     if (!(name in this.params_)) {
@@ -193,7 +193,7 @@ export class Link extends Interaction {
   /**
    * @private
    * @param {URLSearchParams} params The search params.
-   * @param {string} name The unprefixed parameter name.
+   * @param name The unprefixed parameter name.
    */
   delete_(params, name) {
     if (!(name in this.params_)) {
@@ -227,8 +227,8 @@ export class Link extends Interaction {
    */
   registerListeners_(map) {
     this.listenerKeys_.push(
-      listen(map, MapEventType.MOVEEND, this.updateUrl_, this),
-      listen(map.getLayerGroup(), EventType.CHANGE, this.updateUrl_, this),
+      listen(map, MapEventTypes.MOVEEND, this.updateUrl_, this),
+      listen(map.getLayerGroup(), EventTypes.CHANGE, this.updateUrl_, this),
       listen(map, 'change:layergroup', this.handleChangeLayerGroup_, this),
     );
 
@@ -369,7 +369,7 @@ export class Link extends Interaction {
    * Register a listener for a URL search parameter.  The callback will be called with a new value
    * when the corresponding search parameter changes due to history events (e.g. browser navigation).
    *
-   * @param {string} key The URL search parameter.
+   * @param key The URL search parameter.
    * @param {Callback} callback The function to call when the search parameter changes.
    * @return {string|null} The initial value of the search parameter (or null if absent from the URL).
    * @api
@@ -387,7 +387,7 @@ export class Link extends Interaction {
    * Update the URL with a new search parameter value.  If the value is null, it will be
    * deleted from the search parameters.
    *
-   * @param {string} key The URL search parameter.
+   * @param key The URL search parameter.
    * @param {string|null} value The updated value (or null to remove it from the URL).
    * @api
    */

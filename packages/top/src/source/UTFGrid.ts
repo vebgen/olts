@@ -5,7 +5,7 @@ import Tile from '../tile';
 import TileSource from './Tile';
 import type { TileState} from '../tile';
 import {applyTransform, intersects} from '@olts/core/extent';
-import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction';
+import {createFromTemplates, nullTileUrlFunction} from '../tile-url-function';
 import {createXYZ, extentFromProjection} from '../tile-grid';
 import {getKeyZXY} from '../tile-coord';
 import {get as getProjection, getTransformFromProjections} from '../proj';
@@ -14,8 +14,8 @@ import {jsonp as requestJSONP} from '../net';
 
 /**
  * @typedef {Object} UTFGridJSON
- * @property {Array<string>} grid The grid.
- * @property {Array<string>} keys The keys.
+ * @property {string[]} grid The grid.
+ * @property {string[]} keys The keys.
  * @property {Record<string, Object>} [data] Optional data.
  */
 
@@ -23,7 +23,7 @@ export class CustomTile extends Tile {
   /**
    * @param {TileCoord} tileCoord Tile coordinate.
    * @param {import("../TileState").default} state State.
-   * @param {string} src Image source URI.
+   * @param src Image source URI.
    * @param {Extent} extent Extent of the tile.
    * @param {boolean} preemptive Load the tile when visible (before it's needed).
    * @param {boolean} jsonp Load the tile as a script.
@@ -51,13 +51,13 @@ export class CustomTile extends Tile {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {string[]}
      */
     this.grid_ = null;
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {string[]}
      */
     this.keys_ = null;
 
@@ -136,7 +136,7 @@ export class CustomTile extends Tile {
       this.state = TileStates.IDLE;
       listenOnce(
         this,
-        EventType.CHANGE,
+        EventTypes.CHANGE,
         function (e) {
           callback(this.getData(coordinate));
         },
@@ -156,7 +156,7 @@ export class CustomTile extends Tile {
 
   /**
    * Return the key to be used for all tiles in the source.
-   * @return {string} The key for all tiles.
+   * @return The key for all tiles.
    */
   getKey() {
     return this.src_;
@@ -259,7 +259,7 @@ export class CustomTile extends Tile {
  * Useful when the server does not support CORS..
  * @property {import("./TileJSON").Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
- * @property {string} [url] TileJSON endpoint that provides the configuration for this source.
+ * @property [url] TileJSON endpoint that provides the configuration for this source.
  * Request will be made through JSONP. If not provided, `tileJSON` must be configured.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -372,7 +372,7 @@ export class UTFGrid extends TileSource {
    * for given coordinate and resolution (or `null` if not yet loaded or
    * in case of an error).
    * @param {Coordinate} coordinate Coordinate.
-   * @param {number} resolution Resolution.
+   * @param resolution Resolution.
    * @param {function(*): void} callback Callback.
    * @param {boolean} [request] If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
@@ -462,10 +462,10 @@ export class UTFGrid extends TileSource {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {!CustomTile} Tile.
    */
@@ -494,9 +494,9 @@ export class UTFGrid extends TileSource {
 
   /**
    * Marks a tile coord as being used, without triggering a load.
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
    */
   useTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);

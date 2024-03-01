@@ -4,13 +4,11 @@ import { Projection } from '@olts/core/proj';
 
 /**
  *
- * @type {boolean}
- * @private
  */
 let withCredentials: boolean = false;
 
 /**
- * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
+ * {@link VectorSource} sources use a function of this type to
  * load features.
  *
  * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
@@ -19,21 +17,22 @@ let withCredentials: boolean = false;
  * the loaded features passed as an argument and an optional failure callback with no arguments. If
  * the callbacks are not used, the corresponding vector source will not fire `'featuresloadend'` and
  * `'featuresloaderror'` events. `this` within the function is bound to the
- * {@link module:ol/source/Vector~VectorSource} it's called from.
+ * {@link VectorSource} it's called from.
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile").default),
- *           Extent,
- *           number,
- *           Projection,
- *           function(Array<import("./Feature").default>): void=,
- *           function(): void=): void} FeatureLoader
  * @api
  */
+export type FeatureLoader = function(this: (import ("./source/Vector").default | import ("./VectorTile").default ),
+    Extent,
+    number,
+    Projection,
+    function(Array<import ("./Feature").default >): void=,
+    function(): void=): void;
+
 
 /**
- * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
+ * {@link VectorSource} sources use a function of this type to
  * get the url to load features from.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area
@@ -48,7 +47,7 @@ let withCredentials: boolean = false;
  * @param {string|FeatureUrlFunction} url Feature URL service.
  * @param {import("./format/Feature").default} format Feature format.
  * @param {Extent} extent Extent.
- * @param {number} resolution Resolution.
+ * @param resolution Resolution.
  * @param {Projection} projection Projection.
  * @param {function(Array<import("./Feature").default>, Projection): void} success Success
  *      Function called with the loaded features and optionally with the data projection.
@@ -136,7 +135,7 @@ export function loadFeaturesXhr(
 export function xhr(url: string | FeatureUrlFunction, format: import("./format/Feature").default<typeof import("./Feature").default | typeof import("./render/Feature").default>): FeatureLoader {
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
+     * @param resolution Resolution.
      * @param {Projection} projection Projection.
      * @param {function(Array<import("./Feature").default>): void} [success] Success
      *      Function called when loading succeeded.

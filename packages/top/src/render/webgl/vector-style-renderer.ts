@@ -39,7 +39,7 @@ export const Attributes = {
 /**
  * @typedef {Object} AttributeDefinition A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
- * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
+ * @property [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
  * @property {function(this:import("./MixedGeometryBatch").GeometryBatchItem, FeatureLike):number|number[]} callback This callback computes the numerical value of the
  * attribute for a given feature.
@@ -52,9 +52,9 @@ export const Attributes = {
 
 /**
  * @typedef {Object} WebGLBuffers
- * @property {Array<WebGLArrayBuffer>} polygonBuffers Array containing indices and vertices buffers for polygons
- * @property {Array<WebGLArrayBuffer>} lineStringBuffers Array containing indices and vertices buffers for line strings
- * @property {Array<WebGLArrayBuffer>} pointBuffers Array containing indices and vertices buffers for points
+ * @property {WebGLArrayBuffer[]} polygonBuffers Array containing indices and vertices buffers for polygons
+ * @property {WebGLArrayBuffer[]} lineStringBuffers Array containing indices and vertices buffers for line strings
+ * @property {WebGLArrayBuffer[]} pointBuffers Array containing indices and vertices buffers for points
  * @property {import("../../transform").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
@@ -67,8 +67,8 @@ export const Attributes = {
 
 /**
  * @typedef {Object} ShaderProgram An object containing both shaders (vertex and fragment)
- * @property {string} vertex Vertex shader source
- * @property {string} fragment Fragment shader source
+ * @property vertex Vertex shader source
+ * @property fragment Fragment shader source
  */
 
 /**
@@ -340,10 +340,10 @@ export class VectorStyleRenderer {
    * @param {Float32Array|null} renderInstructions Render instructions
    * @param {GeometryType} geometryType Geometry type
    * @param {import("../../transform").Transform} transform Transform to apply to coordinates
-   * @return {Promise<Array<WebGLArrayBuffer>>|null} Indices buffer and vertices buffer; null if nothing to render
+   * @return {Promise<WebGLArrayBuffer[]>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
    */
-  generateBuffersForType_(renderInstructions: Float32Array | null, geometryType: GeometryType, transform: import("../../transform").Transform): Promise<Array<WebGLArrayBuffer>> | null {
+  generateBuffersForType_(renderInstructions: Float32Array | null, geometryType: GeometryType, transform: import("../../transform").Transform): Promise<WebGLArrayBuffer[]> | null {
     if (renderInstructions === null) {
       return null;
     }

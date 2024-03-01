@@ -18,7 +18,7 @@ import {
 } from '@olts/core/extent';
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {HTMLCanvasElement[]}
  */
 export const canvasPool = [];
 
@@ -106,8 +106,8 @@ export class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import('../../DataTile').ImageLike} image Image.
-   * @param {number} col The column index.
-   * @param {number} row The row index.
+   * @param col The column index.
+   * @param row The row index.
    * @return {Uint8ClampedArray|null} The image data.
    */
   getImageData(image, col, row) {
@@ -129,7 +129,7 @@ export class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import('../../Map').FrameState} frameState Frame state.
-   * @return {string} Background color.
+   * @return Background color.
    */
   getBackground(frameState) {
     const layer = this.getLayer();
@@ -143,8 +143,8 @@ export class CanvasLayerRenderer extends LayerRenderer {
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
-   * @param {string} transform CSS Transform.
-   * @param {string} [backgroundColor] Background color.
+   * @param transform CSS Transform.
+   * @param [backgroundColor] Background color.
    */
   useContainer(target, transform, backgroundColor) {
     const layerClassName = this.getLayer().getClassName();
@@ -277,12 +277,12 @@ export class CanvasLayerRenderer extends LayerRenderer {
   /**
    * Creates a transform for rendering to an element that will be rotated after rendering.
    * @param {Coordinate} center Center.
-   * @param {number} resolution Resolution.
-   * @param {number} rotation Rotation.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {number} width Width of the rendered element (in pixels).
-   * @param {number} height Height of the rendered element (in pixels).
-   * @param {number} offsetX Offset on the x-axis in view coordinates.
+   * @param resolution Resolution.
+   * @param rotation Rotation.
+   * @param pixelRatio Pixel ratio.
+   * @param width Width of the rendered element (in pixels).
+   * @param height Height of the rendered element (in pixels).
+   * @param offsetX Offset on the x-axis in view coordinates.
    * @protected
    * @return {!import("../../transform").Transform} Transform.
    */

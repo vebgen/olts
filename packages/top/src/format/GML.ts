@@ -18,7 +18,7 @@ const GML = GML3;
  * @function
  * @param {Array<import("../Feature").default>} features Features.
  * @param {import("./Feature").WriteOptions} [options] Options.
- * @return {string} Result.
+ * @return Result.
  * @api
  */
 GML.prototype.writeFeatures;

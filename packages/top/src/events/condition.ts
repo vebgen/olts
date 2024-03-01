@@ -1,5 +1,5 @@
 
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 import {FALSE, TRUE} from '@olts/core/functions';
 import {MAC, WEBKIT} from '@olts/core/has';
 import {assert} from '@olts/core/asserts';

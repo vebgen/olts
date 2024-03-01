@@ -57,7 +57,7 @@ import {
  * exterior and counter-clockwise for interior rings).  Note that not all
  * formats support this.  The GeoJSON format does use this property when writing
  * geometries.
- * @property {number} [decimals] Maximum number of decimal places for coordinates.
+ * @property [decimals] Maximum number of decimal places for coordinates.
  * Coordinates are stored internally as floats, but floating-point arithmetic can create
  * coordinates with a large number of decimal places, not generally wanted on output.
  * Set a number here to round coordinates. Can also be used to ensure that
@@ -78,7 +78,7 @@ import {
  */
 
 /**
- * @typedef {Array<GeometryObject>} GeometryCollectionObject
+ * @typedef {GeometryObject[]} GeometryCollectionObject
  */
 
 /**
@@ -136,7 +136,7 @@ export class FeatureFormat {
 
     /**
      * A list media types supported by the format in descending order of preference.
-     * @type {Array<string>}
+     * @type {string[]}
      */
     this.supportedMediaTypes = null;
   }
@@ -387,7 +387,7 @@ function orientFlatCoordinates(flatCoordinates, ends, stride) {
 /**
  * @param {FeatureObject} object Feature object.
  * @param {WriteOptions|ReadOptions} [options] Options.
- * @return {RenderFeature|Array<RenderFeature>} Render feature.
+ * @return {RenderFeature|RenderFeature[]} Render feature.
  */
 export function createRenderFeature(object, options) {
   const geometry = object.geometry;

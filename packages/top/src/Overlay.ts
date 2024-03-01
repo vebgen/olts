@@ -1,6 +1,6 @@
 
 import { BaseObject, EventsKey } from '@olts/events';
-import MapEventType from './MapEventType';
+import MapEventType from './Map/event-types';
 import { CLASS_SELECTABLE } from '@olts/core/css';
 import { containsExtent } from '@olts/core/extent';
 import { listen, unlistenByKey } from './events';
@@ -42,13 +42,13 @@ import { outerHeight, outerWidth, removeChildren, removeNode } from '@olts/core/
  * controls.
  * @property {PanIntoViewOptions|boolean} [autoPan=false] Pan the map when calling
  * `setPosition`, so that the overlay is entirely visible in the current viewport.
- * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
+ * @property [className='ol-overlay-container ol-selectable'] CSS class
  * name.
  */
 
 /**
  * @typedef {Object} PanOptions
- * @property {number} [duration=1000] The duration of the animation in
+ * @property [duration=1000] The duration of the animation in
  * milliseconds.
  * @property {function(number):number} [easing] The easing function to use. Can
  * be one from {@link module:ol/easing} or a custom function.
@@ -58,7 +58,7 @@ import { outerHeight, outerWidth, removeChildren, removeNode } from '@olts/core/
 /**
  * @typedef {Object} PanIntoViewOptions
  * @property {PanOptions} [animation={}] The animation parameters for the pan
- * @property {number} [margin=20] The margin (in pixels) between the
+ * @property [margin=20] The margin (in pixels) between the
  * overlay and the borders of the map when panning into view.
  */
 
@@ -108,17 +108,17 @@ const Property = {
  */
 export class Overlay extends BaseObject {
     /**
-     * 
+     *
      */
     override on: OverlayOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: OverlayOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: OverlayOnSignature<void>;
 
@@ -300,7 +300,7 @@ export class Overlay extends BaseObject {
         if (map) {
             this.mapPostrenderListenerKey = listen(
                 map,
-                MapEventType.POSTRENDER,
+                MapEventTypes.POSTRENDER,
                 this.render,
                 this,
             );

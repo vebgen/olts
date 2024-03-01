@@ -6,9 +6,9 @@
  */
 export class Kinetic {
     /**
-     * @param {number} decay Rate of decay (must be negative).
-     * @param {number} minVelocity Minimum velocity (pixels/millisecond).
-     * @param {number} delay Delay to consider to calculate the kinetic
+     * @param decay Rate of decay (must be negative).
+     * @param minVelocity Minimum velocity (pixels/millisecond).
+     * @param delay Delay to consider to calculate the kinetic
      *     initial values (milliseconds).
      */
     constructor(decay: number, minVelocity: number, delay: number) {
@@ -59,8 +59,8 @@ export class Kinetic {
     }
 
     /**
-     * @param {number} x X.
-     * @param {number} y Y.
+     * @param x X.
+     * @param y Y.
      */
     update(x: number, y: number) {
         this.points_.push(x, y, Date.now());
@@ -105,14 +105,14 @@ export class Kinetic {
     }
 
     /**
-     * @return {number} Total distance travelled (pixels).
+     * @return Total distance travelled (pixels).
      */
     getDistance(): number {
         return (this.minVelocity_ - this.initialVelocity_) / this.decay_;
     }
 
     /**
-     * @return {number} Angle of the kinetic panning animation (radians).
+     * @return Angle of the kinetic panning animation (radians).
      */
     getAngle(): number {
         return this.angle_;

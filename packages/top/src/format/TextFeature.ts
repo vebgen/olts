@@ -38,7 +38,7 @@ export class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {import("../Feature").default} Feature.
@@ -64,7 +64,7 @@ export class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Array<import("../Feature").default>} Features.
@@ -90,7 +90,7 @@ export class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
@@ -111,7 +111,7 @@ export class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @protected
    * @return {import("../proj/Projection").default|undefined} Projection.
    */
@@ -124,7 +124,7 @@ export class TextFeature extends FeatureFormat {
    *
    * @param {import("../Feature").default} feature Feature.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded feature.
+   * @return Encoded feature.
    * @api
    */
   writeFeature(feature, options) {
@@ -136,7 +136,7 @@ export class TextFeature extends FeatureFormat {
    * @param {import("../Feature").default} feature Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeatureText(feature, options) {
     return abstract();
@@ -147,7 +147,7 @@ export class TextFeature extends FeatureFormat {
    *
    * @param {Array<import("../Feature").default>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded features.
+   * @return Encoded features.
    * @api
    */
   writeFeatures(features, options) {
@@ -159,7 +159,7 @@ export class TextFeature extends FeatureFormat {
    * @param {Array<import("../Feature").default>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeaturesText(features, options) {
     return abstract();
@@ -170,7 +170,7 @@ export class TextFeature extends FeatureFormat {
    *
    * @param {Geometry} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Geometry.
+   * @return Geometry.
    * @api
    */
   writeGeometry(geometry, options) {
@@ -182,7 +182,7 @@ export class TextFeature extends FeatureFormat {
    * @param {Geometry} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeGeometryText(geometry, options) {
     return abstract();
@@ -191,7 +191,7 @@ export class TextFeature extends FeatureFormat {
 
 /**
  * @param {Document|Element|Object|string} source Source.
- * @return {string} Text.
+ * @return Text.
  */
 function getText(source) {
   if (typeof source === 'string') {

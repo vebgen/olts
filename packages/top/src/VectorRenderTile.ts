@@ -6,17 +6,17 @@ import { getUid } from '@olts/core/util';
  * @typedef {Object} ReplayState
  * @property {boolean} dirty Dirty.
  * @property {null|import("./render").OrderFunction} renderedRenderOrder RenderedRenderOrder.
- * @property {number} renderedTileRevision RenderedTileRevision.
- * @property {number} renderedResolution RenderedResolution.
- * @property {number} renderedRevision RenderedRevision.
- * @property {number} renderedTileResolution RenderedTileResolution.
- * @property {number} renderedTileZ RenderedTileZ.
+ * @property renderedTileRevision RenderedTileRevision.
+ * @property renderedResolution RenderedResolution.
+ * @property renderedRevision RenderedRevision.
+ * @property renderedTileResolution RenderedTileResolution.
+ * @property renderedTileZ RenderedTileZ.
  */
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {HTMLCanvasElement[]}
  */
-const canvasPool: Array<HTMLCanvasElement> = [];
+const canvasPool: HTMLCanvasElement[] = [];
 
 export class VectorRenderTile extends Tile {
     /**

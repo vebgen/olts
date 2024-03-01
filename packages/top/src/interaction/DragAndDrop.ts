@@ -90,17 +90,17 @@ export class DragAndDropEvent extends Event {
 export class DragAndDrop extends Interaction {
 
     /**
-     * 
+     *
      */
     override on: DragAndDropOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: DragAndDropOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: DragAndDropOnSignature<void>;
 
@@ -225,10 +225,10 @@ export class DragAndDrop extends Interaction {
         if (map) {
             const dropArea = this.target ? this.target : map.getViewport();
             this.dropListenKeys_ = [
-                listen(dropArea, EventType.DROP, this.handleDrop, this),
-                listen(dropArea, EventType.DRAGENTER, this.handleStop, this),
-                listen(dropArea, EventType.DRAGOVER, this.handleStop, this),
-                listen(dropArea, EventType.DROP, this.handleStop, this),
+                listen(dropArea, EventTypes.DROP, this.handleDrop, this),
+                listen(dropArea, EventTypes.DRAGENTER, this.handleStop, this),
+                listen(dropArea, EventTypes.DRAGOVER, this.handleStop, this),
+                listen(dropArea, EventTypes.DROP, this.handleStop, this),
             ];
         }
     }
@@ -265,7 +265,7 @@ export class DragAndDrop extends Interaction {
 
     /**
      * @param {import("../format/Feature").default} format Format.
-     * @param {string} text Text.
+     * @param text Text.
      * @param {import("../format/Feature").ReadOptions} options Read options.
      * @private
      * @return {Array<import("../Feature").default>} Features.
@@ -300,7 +300,7 @@ export class DragAndDrop extends Interaction {
             const file = files.item(i);
             const reader = new FileReader();
             reader.addEventListener(
-                EventType.LOAD,
+                EventTypes.LOAD,
                 this.handleResult_.bind(this, file),
             );
             if (this.readAsBuffer_) {

@@ -11,17 +11,17 @@ const tmpArray_: number[] = [];
 /**
  * An object holding positions both in an index and a vertex buffer.
  * @typedef {Object} BufferPositions
- * @property {number} vertexPosition Position in the vertex buffer
- * @property {number} indexPosition Position in the index buffer
+ * @property vertexPosition Position in the vertex buffer
+ * @property indexPosition Position in the index buffer
  */
 const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
 
 /**
  * @param {Float32Array} buffer Buffer
- * @param {number} pos Position
- * @param {number} x X
- * @param {number} y Y
- * @param {number} index Index
+ * @param pos Position
+ * @param x X
+ * @param y Y
+ * @param index Index
  */
 function writePointVertex(buffer: Float32Array, pos: number, x: number, y: number, index: number) {
   buffer[pos + 0] = x;
@@ -32,14 +32,14 @@ function writePointVertex(buffer: Float32Array, pos: number, x: number, y: numbe
 /**
  * Pushes a quad (two triangles) based on a point geometry
  * @param {Float32Array} instructions Array of render instructions for points.
- * @param {number} elementIndex Index from which render instructions will be read.
+ * @param elementIndex Index from which render instructions will be read.
  * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
  * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
- * @param {number} customAttributesSize Amount of custom attributes for each element.
+ * @param customAttributesSize Amount of custom attributes for each element.
  * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
  * @return {BufferPositions} New buffer positions where to write next
- * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
- * @property {number} indexPosition New position in the index buffer where future writes should start.
+ * @property vertexPosition New position in the vertex buffer where future writes should start.
+ * @property indexPosition New position in the index buffer where future writes should start.
  * @private
  */
 export function writePointFeatureToBuffers(
@@ -124,16 +124,16 @@ export function writePointFeatureToBuffers(
  *            p0                  p1
  *
  * @param {Float32Array} instructions Array of render instructions for lines.s
- * @param {number} segmentStartIndex Index of the segment start point from which render instructions will be read.
- * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
+ * @param segmentStartIndex Index of the segment start point from which render instructions will be read.
+ * @param segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
  * @param {number[]} vertexArray Array containing vertices.
  * @param {number[]} indexArray Array containing indices.
  * @param {number[]} customAttributes Array of custom attributes value
  * @param {import('../../transform').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
- * @param {number} currentLength Cumulated length of segments processed so far
- * @param {number} currentAngleTangentSum Cumulated tangents of the join angles processed so far
+ * @param currentLength Cumulated length of segments processed so far
+ * @param currentAngleTangentSum Cumulated tangents of the join angles processed so far
  * @return {{length: number, angle: number}} Cumulated length with the newly processed segment (in world units), new sum of the join angle tangents
  * @private
  */
@@ -173,7 +173,7 @@ export function writeLineSegmentToBuffers(
    * @param {import("../../coordinate").Coordinate} p0 Point 0
    * @param {import("../../coordinate").Coordinate} pA Point A
    * @param {import("../../coordinate").Coordinate} pB Point B
-   * @return {number} a value in [0, 2PI]
+   * @return a value in [0, 2PI]
    */
   function angleBetween(p0: import("../../coordinate").Coordinate, pA: import("../../coordinate").Coordinate, pB: import("../../coordinate").Coordinate): number {
     const lenA = Math.sqrt(
@@ -237,9 +237,9 @@ export function writeLineSegmentToBuffers(
   }
 
   /**
-   * @param {number} vertexIndex From 0 to 3, indicating position in the quad
-   * @param {number} angleSum Sum of the join angles encountered so far (used to compute distance offset
-   * @return {number} A float value containing both information
+   * @param vertexIndex From 0 to 3, indicating position in the quad
+   * @param angleSum Sum of the join angles encountered so far (used to compute distance offset
+   * @return A float value containing both information
    */
   function computeParameters(vertexIndex: number, angleSum: number): number {
     if (angleSum === 0) {
@@ -320,11 +320,11 @@ export function writeLineSegmentToBuffers(
 /**
  * Pushes several triangles to form a polygon, including holes
  * @param {Float32Array} instructions Array of render instructions for lines.
- * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
+ * @param polygonStartIndex Index of the polygon start point from which render instructions will be read.
  * @param {number[]} vertexArray Array containing vertices.
  * @param {number[]} indexArray Array containing indices.
- * @param {number} customAttributesSize Amount of custom attributes for each element.
- * @return {number} Next polygon instructions index
+ * @param customAttributesSize Amount of custom attributes for each element.
+ * @return Next polygon instructions index
  * @private
  */
 export function writePolygonTrianglesToBuffers(
@@ -386,7 +386,7 @@ export function getBlankImageData(): ImageData {
 /**
  * Generates a color array based on a numerical id
  * Note: the range for each component is 0 to 1 with 256 steps
- * @param {number} id Id
+ * @param id Id
  * @param {number[]} [array] Reusable array
  * @return {number[]} Color array containing the encoded id
  */
@@ -405,7 +405,7 @@ export function colorEncodeId(id: number, array: number[]): number[] {
  * Reads an id from a color-encoded array
  * Note: the expected range for each component is 0 to 1 with 256 steps.
  * @param {number[]} color Color array containing the encoded id
- * @return {number} Decoded id
+ * @return Decoded id
  */
 export function colorDecodeId(color: number[]): number {
   let id = 0;

@@ -11,7 +11,7 @@ export function readBoolean(node) {
 }
 
 /**
- * @param {string} string String.
+ * @param string String.
  * @return {boolean|undefined} Boolean.
  */
 export function readBooleanString(string) {
@@ -42,7 +42,7 @@ export function readDecimal(node) {
 }
 
 /**
- * @param {string} string String.
+ * @param string String.
  * @return {number|undefined} Decimal.
  */
 export function readDecimalString(string) {
@@ -64,7 +64,7 @@ export function readPositiveInteger(node) {
 }
 
 /**
- * @param {string} string String.
+ * @param string String.
  * @return {number|undefined} Non negative integer.
  */
 export function readNonNegativeIntegerString(string) {
@@ -93,7 +93,7 @@ export function writeBooleanTextNode(node, bool) {
 
 /**
  * @param {Node} node Node to append a CDATA Section with the string to.
- * @param {string} string String.
+ * @param string String.
  */
 export function writeCDATASection(node, string) {
   node.appendChild(getDocument().createCDATASection(string));
@@ -101,7 +101,7 @@ export function writeCDATASection(node, string) {
 
 /**
  * @param {Node} node Node to append a TextNode with the dateTime to.
- * @param {number} dateTime DateTime in seconds.
+ * @param dateTime DateTime in seconds.
  */
 export function writeDateTimeTextNode(node, dateTime) {
   const date = new Date(dateTime * 1000);
@@ -123,7 +123,7 @@ export function writeDateTimeTextNode(node, dateTime) {
 
 /**
  * @param {Node} node Node to append a TextNode with the decimal to.
- * @param {number} decimal Decimal.
+ * @param decimal Decimal.
  */
 export function writeDecimalTextNode(node, decimal) {
   const string = decimal.toPrecision();
@@ -132,7 +132,7 @@ export function writeDecimalTextNode(node, decimal) {
 
 /**
  * @param {Node} node Node to append a TextNode with the decimal to.
- * @param {number} nonNegativeInteger Non negative integer.
+ * @param nonNegativeInteger Non negative integer.
  */
 export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
   const string = nonNegativeInteger.toString();
@@ -141,7 +141,7 @@ export function writeNonNegativeIntegerTextNode(node, nonNegativeInteger) {
 
 /**
  * @param {Node} node Node to append a TextNode with the string to.
- * @param {string} string String.
+ * @param string String.
  */
 export function writeStringTextNode(node, string) {
   node.appendChild(getDocument().createTextNode(string));

@@ -6,8 +6,8 @@ import Feature from '../Feature';
 import { GeometryCollection } from '@olts/geometry';
 import InteractionProperty from './Property';
 import { LineString } from '@olts/geometry';
-import MapBrowserEvent from '../MapBrowserEvent';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEvent from '../Map/browser-event';
+import MapBrowserEventType from '../Map/browser-event-types';
 import { MultiLineString } from '@olts/geometry';
 import { MultiPoint } from '@olts/geometry';
 import { MultiPolygon } from '@olts/geometry';
@@ -43,7 +43,7 @@ import { getStrideForLayout } from '@olts/geometry';
  * @typedef {Object} Options
  * @property {GeometryType} type Geometry type of
  * the geometries being drawn with this instance.
- * @property {number} [clickTolerance=6] The maximum distance in pixels between
+ * @property [clickTolerance=6] The maximum distance in pixels between
  * "down" and "up" for a "up" event to be considered a "click" event and
  * actually add a point/vertex to the geometry being drawn.  The default of `6`
  * was chosen for the draw interaction to behave correctly on mouse as well as
@@ -52,16 +52,16 @@ import { getStrideForLayout } from '@olts/geometry';
  * Destination collection for the drawn features.
  * @property {VectorSource} [source] Destination source for
  * the drawn features.
- * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown
+ * @property [dragVertexDelay=500] Delay in milliseconds after pointerdown
  * before the current vertex can be dragged to its exact position.
- * @property {number} [snapTolerance=12] Pixel distance for snapping to the
+ * @property [snapTolerance=12] Pixel distance for snapping to the
  * drawing finish. Must be greater than `0`.
  * @property {boolean} [stopClick=false] Stop click, singleclick, and
  * doubleclick events from firing during drawing.
- * @property {number} [maxPoints] The number of points that can be drawn before
+ * @property [maxPoints] The number of points that can be drawn before
  * a polygon ring or line string is finished. By default there is no
  * restriction.
- * @property {number} [minPoints] The number of points that must be drawn
+ * @property [minPoints] The number of points that must be drawn
  * before a polygon ring or line string can be finished. Default is `3` for
  * polygon rings and `2` for line strings.
  * @property {import("../events/condition").Condition} [finishCondition] A function
@@ -80,7 +80,7 @@ import { getStrideForLayout } from '@olts/geometry';
  * center is the drawn point and the radius is determined by the distance between the drawn point and the cursor.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
- * @property {string} [geometryName] Geometry name to use for features created
+ * @property [geometryName] Geometry name to use for features created
  * by the draw interaction.
  * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
@@ -114,12 +114,12 @@ import { getStrideForLayout } from '@olts/geometry';
 
 /**
  * Coordinate type when drawing lines.
- * @typedef {Array<Coordinate>} LineCoordType
+ * @typedef {Coordinate[]} LineCoordType
  */
 
 /**
  * Coordinate type when drawing polygons.
- * @typedef {Array<Array<Coordinate>>} PolyCoordType
+ * @typedef {Array<Coordinate[]>} PolyCoordType
  */
 
 /**
@@ -131,18 +131,18 @@ import { getStrideForLayout } from '@olts/geometry';
  * @typedef {Object} TraceState
  * @property {boolean} active Tracing active.
  * @property {import("../pixel").Pixel} [startPx] The initially clicked pixel location.
- * @property {Array<TraceTarget>} [targets] Targets available for tracing.
- * @property {number} [targetIndex] The index of the currently traced target.  A value of -1 indicates
+ * @property {TraceTarget[]} [targets] Targets available for tracing.
+ * @property [targetIndex] The index of the currently traced target.  A value of -1 indicates
  * that no trace target is active.
  */
 
 /**
  * @typedef {Object} TraceTarget
- * @property {Array<Coordinate>} coordinates Target coordinates.
+ * @property {Coordinate[]} coordinates Target coordinates.
  * @property {boolean} ring The target coordinates are a linear ring.
- * @property {number} startIndex The index of first traced coordinate.  A fractional index represents an
+ * @property startIndex The index of first traced coordinate.  A fractional index represents an
  * edge intersection.  Index values for rings will wrap (may be negative or larger than coordinates length).
- * @property {number} endIndex The index of last traced coordinate.  Details from startIndex also apply here.
+ * @property endIndex The index of last traced coordinate.  Details from startIndex also apply here.
  */
 
 /**
@@ -208,12 +208,12 @@ export class DrawEvent extends Event {
 
 /**
  * @param {Coordinate} coordinate The coordinate.
- * @param {Array<Feature>} features The candidate features.
- * @return {Array<TraceTarget>} The trace targets.
+ * @param {Feature[]} features The candidate features.
+ * @return {TraceTarget[]} The trace targets.
  */
 function getTraceTargets(coordinate: Coordinate, features:Feature[]):TraceTarget[] {
     /**
-     * @type {Array<TraceTarget>}
+     * @type {TraceTarget[]}
      */
     const targets:TraceTarget[] = [];
 
@@ -229,7 +229,7 @@ function getTraceTargets(coordinate: Coordinate, features:Feature[]):TraceTarget
 /**
  * @param {Coordinate} a One coordinate.
  * @param {Coordinate} b Another coordinate.
- * @return {number} The squared distance between the two coordinates.
+ * @return The squared distance between the two coordinates.
  */
 function getSquaredDistance(a: Coordinate, b: Coordinate): number {
     return squaredDistance(a[0], a[1], b[0], b[1]);
@@ -237,7 +237,7 @@ function getSquaredDistance(a: Coordinate, b: Coordinate): number {
 
 /**
  * @param {LineCoordType} coordinates The ring coordinates.
- * @param {number} index The index.  May be wrapped.
+ * @param index The index.  May be wrapped.
  * @return {Coordinate} The coordinate.
  */
 function getCoordinate(coordinates: LineCoordType, index: number): Coordinate {
@@ -256,9 +256,9 @@ function getCoordinate(coordinates: LineCoordType, index: number): Coordinate {
  * be less than the start index to indicate the direction of travel.  The start and end index may have
  * a fractional part to indicate a point between two coordinates.
  * @param {LineCoordType} coordinates Ring coordinates.
- * @param {number} startIndex The start index.
- * @param {number} endIndex The end index.
- * @return {number} The cumulative squared distance along the ring path.
+ * @param startIndex The start index.
+ * @param endIndex The end index.
+ * @return The cumulative squared distance along the ring path.
  */
 function getCumulativeSquaredDistance(coordinates: LineCoordType, startIndex: number, endIndex: number): number {
     let lowIndex, highIndex;
@@ -305,7 +305,7 @@ function getCumulativeSquaredDistance(coordinates: LineCoordType, startIndex: nu
 /**
  * @param {Coordinate} coordinate The coordinate.
  * @param {Geometry} geometry The candidate geometry.
- * @param {Array<TraceTarget>} targets The trace targets.
+ * @param {TraceTarget[]} targets The trace targets.
  */
 function appendGeometryTraceTargets(coordinate: Coordinate, geometry: Geometry, targets:TraceTarget[]) {
     if (geometry instanceof LineString) {
@@ -348,8 +348,8 @@ function appendGeometryTraceTargets(coordinate: Coordinate, geometry: Geometry, 
 
 /**
  * @typedef {Object} TraceTargetUpdateInfo
- * @property {number} index The new target index.
- * @property {number} endIndex The new segment end index.
+ * @property index The new target index.
+ * @property endIndex The new segment end index.
  */
 
 /**
@@ -361,7 +361,7 @@ const sharedUpdateInfo: TraceTargetUpdateInfo = { index: -1, endIndex: NaN };
  * @param {Coordinate} coordinate The coordinate.
  * @param {TraceState} traceState The trace state.
  * @param {import("../Map").default} map The map.
- * @param {number} snapTolerance The snap tolerance.
+ * @param snapTolerance The snap tolerance.
  * @return {TraceTargetUpdateInfo} Information about the new trace target.  The returned
  * object is reused between calls and must not be modified by the caller.
  */
@@ -476,9 +476,9 @@ function getTraceTargetUpdate(coordinate: Coordinate, traceState: TraceState, ma
 
 /**
  * @param {Coordinate} coordinate The clicked coordinate.
- * @param {Array<Coordinate>} coordinates The geometry component coordinates.
+ * @param {Coordinate[]} coordinates The geometry component coordinates.
  * @param {boolean} ring The coordinates represent a linear ring.
- * @param {Array<TraceTarget>} targets The trace targets.
+ * @param {TraceTarget[]} targets The trace targets.
  */
 function appendTraceTarget(coordinate: Coordinate, coordinates:Coordinate[], ring: boolean, targets:TraceTarget[]) {
     const x = coordinate[0];
@@ -502,8 +502,8 @@ function appendTraceTarget(coordinate: Coordinate, coordinates:Coordinate[], rin
 
 /**
  * @typedef {Object} PointSegmentRelationship
- * @property {number} along The closest point expressed as a fraction along the segment length.
- * @property {number} squaredDistance The squared distance of the point to the segment.
+ * @property along The closest point expressed as a fraction along the segment length.
+ * @property squaredDistance The squared distance of the point to the segment.
  */
 
 /**
@@ -512,8 +512,8 @@ function appendTraceTarget(coordinate: Coordinate, coordinates:Coordinate[], rin
 const sharedRel: PointSegmentRelationship = { along: 0, squaredDistance: 0 };
 
 /**
- * @param {number} x The point x.
- * @param {number} y The point y.
+ * @param x The point x.
+ * @param y The point y.
  * @param {Coordinate} start The segment start.
  * @param {Coordinate} end The segment end.
  * @return {PointSegmentRelationship} The point segment relationship.  The returned object is
@@ -542,7 +542,7 @@ function getPointSegmentRelationship(x: number, y: number, start: Coordinate, en
 
 /**
  * @param {LineCoordType} coordinates The coordinates.
- * @param {number} index The index.  May be fractional and may wrap.
+ * @param index The index.  May be fractional and may wrap.
  * @return {Coordinate} The interpolated coordinate.
  */
 function interpolateCoordinate(coordinates: LineCoordType, index: number): Coordinate {
@@ -590,17 +590,17 @@ function interpolateCoordinate(coordinates: LineCoordType, index: number): Coord
 export class Draw extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: DrawOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: DrawOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: DrawOnSignature<void>;
 
@@ -986,8 +986,8 @@ export class Draw extends PointerInteraction {
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(event: import("../MapBrowserEvent").default): boolean {
-        if (event.originalEvent.type === EventType.CONTEXTMENU) {
+    handleEvent(event: import("../Map/browser-event").default): boolean {
+        if (event.originalEvent.type === EventTypes.CONTEXTMENU) {
             // Avoid context menu for long taps when drawing on mobile
             event.originalEvent.preventDefault();
         }
@@ -1051,7 +1051,7 @@ export class Draw extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(event: import("../MapBrowserEvent").default): boolean {
+    handleDownEvent(event: import("../Map/browser-event").default): boolean {
         this.shouldHandle_ = !this.freehand_;
 
         if (this.freehand_) {
@@ -1095,7 +1095,7 @@ export class Draw extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @private
      */
-    toggleTraceState_(event: import("../MapBrowserEvent").default) {
+    toggleTraceState_(event: import("../Map/browser-event").default) {
         if (!this.traceSource_ || !this.traceCondition_(event)) {
             return;
         }
@@ -1133,7 +1133,7 @@ export class Draw extends PointerInteraction {
 
     /**
      * @param {TraceTarget} target The trace target.
-     * @param {number} endIndex The new end index of the trace.
+     * @param endIndex The new end index of the trace.
      * @private
      */
     addOrRemoveTracedCoordinates_(target: TraceTarget, endIndex: number) {
@@ -1166,8 +1166,8 @@ export class Draw extends PointerInteraction {
     }
 
     /**
-     * @param {number} fromIndex The start index.
-     * @param {number} toIndex The end index.
+     * @param fromIndex The start index.
+     * @param toIndex The end index.
      * @private
      */
     removeTracedCoordinates_(fromIndex: number, toIndex: number) {
@@ -1199,8 +1199,8 @@ export class Draw extends PointerInteraction {
 
     /**
      * @param {TraceTarget} target The trace target.
-     * @param {number} fromIndex The start index.
-     * @param {number} toIndex The end index.
+     * @param fromIndex The start index.
+     * @param toIndex The end index.
      * @private
      */
     addTracedCoordinates_(target: TraceTarget, fromIndex: number, toIndex: number) {
@@ -1241,7 +1241,7 @@ export class Draw extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @private
      */
-    updateTrace_(event: import("../MapBrowserEvent").default) {
+    updateTrace_(event: import("../Map/browser-event").default) {
         const traceState = this.traceState_;
         if (!traceState.active) {
             return;
@@ -1301,7 +1301,7 @@ export class Draw extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(event: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(event: import("../Map/browser-event").default): boolean {
         let pass = true;
 
         if (this.getPointerCount() === 0) {
@@ -1350,7 +1350,7 @@ export class Draw extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event A move event.
      * @private
      */
-    handlePointerMove_(event: import("../MapBrowserEvent").default) {
+    handlePointerMove_(event: import("../Map/browser-event").default) {
         this.pointerType_ = event.originalEvent.pointerType;
         if (
             this.downPx_ &&
@@ -1607,7 +1607,7 @@ export class Draw extends PointerInteraction {
     }
 
     /**
-     * @param {number} n The number of points to remove.
+     * @param n The number of points to remove.
      */
     removeLastPoints_(n: number) {
         if (!this.sketchFeature_) {
@@ -1865,9 +1865,9 @@ function getDefaultStyleFunction(): import("../style/Style").StyleFunction {
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of a
  * {@link import("@olts/geometry").Circle} geometry.
- * @param {number} [sides] Number of sides of the regular polygon.
+ * @param [sides] Number of sides of the regular polygon.
  *     Default is 32.
- * @param {number} [angle] Angle of the first point in counter-clockwise
+ * @param [angle] Angle of the first point in counter-clockwise
  *     radians. 0 means East.
  *     Default is the angle defined by the heading from the center of the
  *     regular polygon to the current pointer position.

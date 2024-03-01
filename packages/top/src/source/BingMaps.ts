@@ -2,14 +2,14 @@
 
 import TileImage from './TileImage';
 import {applyTransform, intersects} from '@olts/core/extent';
-import {createFromTileUrlFunctions} from '../tileurlfunction';
+import {createFromTileUrlFunctions} from '../tile-url-function';
 import {createOrUpdate} from '../tile-coord';
 import {createXYZ, extentFromProjection} from '../tile-grid';
 import {get as getProjection, getTransformFromProjections} from '../proj';
 
 /**
  * @param {TileCoord} tileCoord Tile coord.
- * @return {string} Quad key.
+ * @return Quad key.
  */
 export function quadKey(tileCoord) {
   const z = tileCoord[0];
@@ -44,15 +44,15 @@ const TOS_ATTRIBUTION =
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
- * @property {string} [culture='en-us'] Culture code.
- * @property {string} key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
- * @property {string} imagerySet Type of imagery.
+ * @property [culture='en-us'] Culture code.
+ * @property key Bing Maps API key. Get yours at https://www.bingmapsportal.com/.
+ * @property imagerySet Type of imagery.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
@@ -61,7 +61,7 @@ const TOS_ATTRIBUTION =
  * };
  * ```
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -73,38 +73,38 @@ const TOS_ATTRIBUTION =
 
 /**
  * @typedef {Object} BingMapsImageryMetadataResponse
- * @property {number} statusCode The response status code
- * @property {string} statusDescription The response status description
- * @property {string} authenticationResultCode The authentication result code
- * @property {Array<ResourceSet>} resourceSets The array of resource sets
+ * @property statusCode The response status code
+ * @property statusDescription The response status description
+ * @property authenticationResultCode The authentication result code
+ * @property {ResourceSet[]} resourceSets The array of resource sets
  */
 
 /**
  * @typedef {Object} ResourceSet
- * @property {Array<Resource>} resources Resources.
+ * @property {Resource[]} resources Resources.
  */
 
 /**
  * @typedef {Object} Resource
- * @property {number} imageHeight The image height
- * @property {number} imageWidth The image width
- * @property {number} zoomMin The minimum zoom level
- * @property {number} zoomMax The maximum zoom level
- * @property {string} imageUrl The image URL
- * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
- * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
+ * @property imageHeight The image height
+ * @property imageWidth The image width
+ * @property zoomMin The minimum zoom level
+ * @property zoomMax The maximum zoom level
+ * @property imageUrl The image URL
+ * @property {string[]} imageUrlSubdomains The image URL subdomains for rotation
+ * @property {ImageryProvider[]} [imageryProviders] The array of ImageryProviders
  */
 
 /**
  * @typedef {Object} ImageryProvider
- * @property {Array<CoverageArea>} coverageAreas The coverage areas
- * @property {string} [attribution] The attribution
+ * @property {CoverageArea[]} coverageAreas The coverage areas
+ * @property [attribution] The attribution
  */
 
 /**
  * @typedef {Object} CoverageArea
- * @property {number} zoomMin The minimum zoom
- * @property {number} zoomMax The maximum zoom
+ * @property zoomMin The minimum zoom
+ * @property zoomMax The maximum zoom
  * @property {number[]} bbox The coverage bounding box
  */
 
@@ -186,7 +186,7 @@ export class BingMaps extends TileImage {
   /**
    * Get the api key used for this source.
    *
-   * @return {string} The api key.
+   * @return The api key.
    * @api
    */
   getApiKey() {
@@ -196,7 +196,7 @@ export class BingMaps extends TileImage {
   /**
    * Get the imagery set associated with this source.
    *
-   * @return {string} The imagery set.
+   * @return The imagery set.
    * @api
    */
   getImagerySet() {
@@ -250,7 +250,7 @@ export class BingMaps extends TileImage {
         return (
           /**
            * @param {TileCoord} tileCoord Tile coordinate.
-           * @param {number} pixelRatio Pixel ratio.
+           * @param pixelRatio Pixel ratio.
            * @param {import("../proj/Projection").default} projection Projection.
            * @return {string|undefined} Tile URL.
            */

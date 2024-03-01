@@ -14,7 +14,7 @@ import {hash as tileCoordHash} from '../tile-coord';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -24,7 +24,7 @@ import {hash as tileCoordHash} from '../tile-coord';
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {number} [gutter=0]
+ * @property [gutter=0]
  * The size in pixels of the gutter around image tiles to ignore. By setting
  * this property to a non-zero value, images will be requested that are wider
  * and taller than the tile size by a value of `2 x gutter`.
@@ -36,7 +36,7 @@ import {hash as tileCoordHash} from '../tile-coord';
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {typeof import("../ImageTile").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
@@ -54,14 +54,14 @@ import {hash as tileCoordHash} from '../tile-coord';
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {string} [url] WMS service URL.
- * @property {Array<string>} [urls] WMS service urls.
+ * @property [url] WMS service URL.
+ * @property {string[]} [urls] WMS service urls.
  * Use this instead of `url` when the WMS supports multiple urls for GetMap requests.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world
  * will be rendered. When `true`, tiles will be requested for one world only,
  * but they will be wrapped horizontally to render multiple worlds.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -147,7 +147,7 @@ export class TileWMS extends TileImage {
    * projection. Return `undefined` if the GetFeatureInfo URL cannot be
    * constructed.
    * @param {Coordinate} coordinate Coordinate.
-   * @param {number} resolution Resolution.
+   * @param resolution Resolution.
    * @param {ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
@@ -221,7 +221,7 @@ export class TileWMS extends TileImage {
    * resolution and possibly including any passed specific parameters. Returns
    * `undefined` if the GetLegendGraphic URL cannot be constructed.
    *
-   * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
+   * @param [resolution] Resolution. If set to undefined, `SCALE`
    *     will not be calculated and included in URL.
    * @param {Object} [params] GetLegendGraphic params. If `LAYER` is set, the
    *     request is generated for this wms layer, else it will try to use the
@@ -261,11 +261,11 @@ export class TileWMS extends TileImage {
 
     Object.assign(baseParams, params);
 
-    return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
+    return appendParams(/** @type */ (this.urls[0]), baseParams);
   }
 
   /**
-   * @return {number} Gutter.
+   * @return Gutter.
    */
   getGutter() {
     return this.gutter_;
@@ -284,7 +284,7 @@ export class TileWMS extends TileImage {
   /**
    * @param {TileCoord} tileCoord Tile coordinate.
    * @param {Extent} tileExtent Tile extent.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {Object} params Params.
    * @return {string|undefined} Request URL.
@@ -318,8 +318,8 @@ export class TileWMS extends TileImage {
 
   /**
    * Get the tile pixel ratio for this source.
-   * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param pixelRatio Pixel ratio.
+   * @return Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
     return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
@@ -327,7 +327,7 @@ export class TileWMS extends TileImage {
 
   /**
    * @private
-   * @return {string} The key for the current params.
+   * @return The key for the current params.
    */
   getKeyForParams_() {
     let i = 0;
@@ -359,7 +359,7 @@ export class TileWMS extends TileImage {
 
   /**
    * @param {TileCoord} tileCoord The tile coordinate
-   * @param {number} pixelRatio The pixel ratio
+   * @param pixelRatio The pixel ratio
    * @param {import("../proj/Projection").default} projection The projection
    * @return {string|undefined} The tile URL
    * @override

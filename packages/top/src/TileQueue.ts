@@ -1,31 +1,34 @@
 
-import type { EventType } from '@olts/events';
-import PriorityQueue, { DROP } from './structs/PriorityQueue';
-import type { TileState } from './tile';
+import { EventTypes, type EventType } from '@olts/events';
+import {PriorityQueue, DROP } from '@olts/core/structs';
+import type { Tile, TileState } from './tile';
+import { FrameState } from './Map';
+import { Coordinate } from '@olts/core/coordinate';
 
-/**
- * @typedef {function(import("./Tile").default, string, Coordinate, number): number} PriorityFunction
- */
+type PriorityFunction = (tile: Tile, arg1: string, coord: Coordinate, arg2: number) => number;
+
 
 export class TileQueue extends PriorityQueue {
     /**
-     * @param {PriorityFunction} tilePriorityFunction Tile priority function.
-     * @param {function(): ?} tileChangeCallback Function called on each tile change event.
+     * @param tilePriorityFunction Tile priority function.
+     * @param tileChangeCallback Function called on each tile change event.
      */
-    constructor(tilePriorityFunction: PriorityFunction, tileChangeCallback: () => ?) {
+    constructor(
+        tilePriorityFunction: PriorityFunction, tileChangeCallback: () => any
+    ) {
         super(
             /**
              * @param {Array} element Element.
-             * @return {number} Priority.
+             * @return Priority.
              */
-            function (element: Array<any>): number {
+            function (element: any[]): number {
                 return tilePriorityFunction.apply(null, element);
             },
             /**
              * @param {Array} element Element.
-             * @return {string} Key.
+             * @return Key.
              */
-            function (element: Array<any>): string {
+            function (element: any[]): string {
                 return /** @type {import("./Tile").default} */ (element[0]).getKey();
             },
         );
@@ -56,17 +59,17 @@ export class TileQueue extends PriorityQueue {
      * @param {Array} element Element.
      * @return {boolean} The element was added to the queue.
      */
-    enqueue(element: Array<any>): boolean {
+    override enqueue(element: any[]): boolean {
         const added = super.enqueue(element);
         if (added) {
             const tile = element[0];
-            tile.addEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+            tile.addEventListener(EventTypes.CHANGE, this.boundHandleTileChange_);
         }
         return added;
     }
 
     /**
-     * @return {number} Number of tiles loading.
+     * @return Number of tiles loading.
      */
     getTilesLoading(): number {
         return this.tilesLoading_;
@@ -85,7 +88,7 @@ export class TileQueue extends PriorityQueue {
             state === TileStates.EMPTY
         ) {
             if (state !== TileStates.ERROR) {
-                tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+                tile.removeEventListener(EventTypes.CHANGE, this.boundHandleTileChange_);
             }
             const tileKey = tile.getKey();
             if (tileKey in this.tilesLoadingKeys_) {
@@ -97,8 +100,8 @@ export class TileQueue extends PriorityQueue {
     }
 
     /**
-     * @param {number} maxTotalLoading Maximum number tiles to load simultaneously.
-     * @param {number} maxNewLoads Maximum number of new tiles to load.
+     * @param maxTotalLoading Maximum number tiles to load simultaneously.
+     * @param maxNewLoads Maximum number of new tiles to load.
      */
     loadMoreTiles(maxTotalLoading: number, maxNewLoads: number) {
         let newLoads = 0;
@@ -124,16 +127,16 @@ export class TileQueue extends PriorityQueue {
 export default TileQueue;
 
 /**
- * @param {import('./Map').FrameState} frameState Frame state.
- * @param {import("./Tile").default} tile Tile.
- * @param {string} tileSourceKey Tile source key.
- * @param {Coordinate} tileCenter Tile center.
- * @param {number} tileResolution Tile resolution.
- * @return {number} Tile priority.
+ * @param frameState Frame state.
+ * @param tile Tile.
+ * @param tileSourceKey Tile source key.
+ * @param tileCenter Tile center.
+ * @param tileResolution Tile resolution.
+ * @return Tile priority.
  */
 export function getTilePriority(
-    frameState: import('./Map').FrameState,
-    tile: import("./Tile").default,
+    frameState: FrameState,
+    tile: Tile,
     tileSourceKey: string,
     tileCenter: Coordinate,
     tileResolution: number,

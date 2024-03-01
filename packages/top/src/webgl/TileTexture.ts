@@ -41,7 +41,7 @@ function uploadImageTexture(gl, texture, image, interpolate) {
  * @param {WebGLTexture} texture The texture.
  * @param {import("../DataTile").ArrayLike} data The pixel data.
  * @param {Size} size The pixel size.
- * @param {number} bandCount The band count.
+ * @param bandCount The band count.
  * @param {boolean} interpolate Interpolate when resampling.
  */
 function uploadDataTexture(
@@ -141,7 +141,7 @@ export class TileTexture extends BaseTileRepresentation {
     super(options);
 
     /**
-     * @type {Array<WebGLTexture>}
+     * @type {WebGLTexture[]}
      */
     this.textures = [];
 
@@ -291,13 +291,13 @@ export class TileTexture extends BaseTileRepresentation {
     for (let i = 0; i < this.textures.length; ++i) {
       gl.deleteTexture(this.textures[i]);
     }
-    this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
+    this.tile.removeEventListener(EventTypes.CHANGE, this.handleTileChange_);
   }
 
   /**
    * @param {import("../DataTile").ImageLike} image The image.
-   * @param {number} renderCol The column index (in rendered tile space).
-   * @param {number} renderRow The row index (in rendered tile space).
+   * @param renderCol The column index (in rendered tile space).
+   * @param renderRow The row index (in rendered tile space).
    * @return {Uint8ClampedArray|null} The data.
    * @private
    */
@@ -338,8 +338,8 @@ export class TileTexture extends BaseTileRepresentation {
   /**
    * @param {import("../DataTile").ArrayLike} data The data.
    * @param {Size} sourceSize The size.
-   * @param {number} renderCol The column index (in rendered tile space).
-   * @param {number} renderRow The row index (in rendered tile space).
+   * @param renderCol The column index (in rendered tile space).
+   * @param renderRow The row index (in rendered tile space).
    * @return {import("../DataTile").ArrayLike|null} The data.
    * @private
    */
@@ -373,8 +373,8 @@ export class TileTexture extends BaseTileRepresentation {
 
   /**
    * Get data for a pixel.  If the tile is not loaded, null is returned.
-   * @param {number} renderCol The column index (in rendered tile space).
-   * @param {number} renderRow The row index (in rendered tile space).
+   * @param renderCol The column index (in rendered tile space).
+   * @param renderRow The row index (in rendered tile space).
    * @return {import("../DataTile").ArrayLike|null} The data.
    */
   getPixelData(renderCol, renderRow) {

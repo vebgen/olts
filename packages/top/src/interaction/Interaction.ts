@@ -37,17 +37,17 @@ import { easeOut, linear } from '../easing';
 export class Interaction extends BaseObject {
 
     /**
-     * 
+     *
      */
     override on: InteractionOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: InteractionOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: InteractionOnSignature<void>;
 
@@ -98,7 +98,7 @@ export class Interaction extends BaseObject {
      * @return {boolean} `false` to stop event propagation.
      * @api
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         return true;
     }
 
@@ -126,7 +126,7 @@ export class Interaction extends BaseObject {
 /**
  * @param {import("../View").default} view View.
  * @param {Coordinate} delta Delta.
- * @param {number} [duration] Duration.
+ * @param [duration] Duration.
  */
 export function pan(view: import("../View").default, delta: Coordinate, duration: number) {
     const currentCenter = view.getCenterInternal();
@@ -142,9 +142,9 @@ export function pan(view: import("../View").default, delta: Coordinate, duration
 
 /**
  * @param {import("../View").default} view View.
- * @param {number} delta Delta from previous zoom level.
+ * @param delta Delta from previous zoom level.
  * @param {Coordinate} [anchor] Anchor coordinate in the user projection.
- * @param {number} [duration] Duration.
+ * @param [duration] Duration.
  */
 export function zoomByDelta(view: import("../View").default, delta: number, anchor: Coordinate, duration: number) {
     const currentZoom = view.getZoom();

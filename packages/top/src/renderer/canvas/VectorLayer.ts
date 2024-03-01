@@ -3,7 +3,7 @@ import CanvasBuilderGroup from '../../render/canvas/BuilderGroup';
 import CanvasLayerRenderer, {canvasPool} from './Layer';
 import ExecutorGroup from '../../render/canvas/ExecutorGroup';
 import RenderEventType from '../../render/EventType';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import {
   HIT_DETECT_RESOLUTION,
   createHitDetectionImageData,
@@ -438,7 +438,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
@@ -464,7 +464,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     /**
      * @param {import("../../Feature").FeatureLike} feature Feature.
      * @param {SimpleGeometry} geometry Geometry.
-     * @param {number} distanceSq The squared distance to the click position
+     * @param distanceSq The squared distance to the click position
      * @return {T|undefined} Callback result.
      */
     const featureCallback = function (feature, geometry, distanceSq) {
@@ -755,7 +755,7 @@ export class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../Feature").default} feature Feature.
-   * @param {number} squaredTolerance Squared render tolerance.
+   * @param squaredTolerance Squared render tolerance.
    * @param {import("../../style/Style").default|Array<import("../../style/Style").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/BuilderGroup").default} builderGroup Builder group.
    * @param {import("../../proj").TransformFunction} [transform] Transform from user to view projection.

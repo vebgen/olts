@@ -10,7 +10,7 @@ import {get as getProjection} from '../proj';
  * A function that takes a {@link import("../View").ViewStateLayerStateExtent} and returns a string or
  * an array of strings representing source attributions.
  *
- * @typedef {function(import("../View").ViewStateLayerStateExtent): (string|Array<string>)} Attribution
+ * @typedef {function(import("../View").ViewStateLayerStateExtent): (string|string[])} Attribution
  */
 
 /**
@@ -21,7 +21,7 @@ import {get as getProjection} from '../proj';
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
  * * a function that returns a string or array of strings ({@link module:ol/source/Source~Attribution})
  *
- * @typedef {string|Array<string>|Attribution} AttributionLike
+ * @typedef {string|string[]|Attribution} AttributionLike
  */
 
 /**
@@ -41,14 +41,13 @@ import {get as getProjection} from '../proj';
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
  *
  * A generic `change` event is triggered when the state of the source changes.
- * @abstract
  * @api
  */
-export class Source extends BaseObject {
+export abstract class Source extends BaseObject {
   /**
    * @param {Options} options Source options.
    */
-  constructor(options) {
+  constructor(options: Options) {
     super();
 
     /**
@@ -125,7 +124,7 @@ export class Source extends BaseObject {
    * @return {?Attribution} Attribution function.
    * @api
    */
-  getAttributions() {
+  getAttributions(): Attribution | null {
     return this.attributions_;
   }
 
@@ -133,7 +132,7 @@ export class Source extends BaseObject {
    * @return {boolean} Attributions are collapsible.
    * @api
    */
-  getAttributionsCollapsible() {
+  getAttributionsCollapsible(): boolean {
     return this.attributionsCollapsible_;
   }
 
@@ -142,7 +141,7 @@ export class Source extends BaseObject {
    * @return {import("../proj/Projection").default|null} Projection.
    * @api
    */
-  getProjection() {
+  getProjection(): import("../proj/Projection").default | null {
     return this.projection;
   }
 
@@ -150,14 +149,14 @@ export class Source extends BaseObject {
    * @param {import("../proj/Projection").default} [projection] Projection.
    * @return {number[]|null} Resolutions.
    */
-  getResolutions(projection) {
+  getResolutions(projection: import("../proj/Projection").default): number[] | null {
     return null;
   }
 
   /**
    * @return {Promise<import("../View").ViewOptions>} A promise for view-related properties.
    */
-  getView() {
+  getView(): Promise<import("../View").ViewOptions> {
     return this.viewPromise_;
   }
 
@@ -166,21 +165,21 @@ export class Source extends BaseObject {
    * @return {import("./Source").State} State.
    * @api
    */
-  getState() {
+  getState(): import("./Source").State {
     return this.state_;
   }
 
   /**
    * @return {boolean|undefined} Wrap X.
    */
-  getWrapX() {
+  getWrapX(): boolean | undefined {
     return this.wrapX_;
   }
 
   /**
    * @return {boolean} Use linear interpolation when resampling.
    */
-  getInterpolate() {
+  getInterpolate(): boolean {
     return this.interpolate_;
   }
 
@@ -195,11 +194,11 @@ export class Source extends BaseObject {
   /**
    * Set the attributions of the source.
    * @param {AttributionLike|undefined} attributions Attributions.
-   *     Can be passed as `string`, `Array<string>`, {@link module:ol/source/Source~Attribution},
+   *     Can be passed as `string`, `string[]`, {@link module:ol/source/Source~Attribution},
    *     or `undefined`.
    * @api
    */
-  setAttributions(attributions) {
+  setAttributions(attributions: AttributionLike | undefined) {
     this.attributions_ = adaptAttributions(attributions);
     this.changed();
   }
@@ -208,7 +207,7 @@ export class Source extends BaseObject {
    * Set the state of the source.
    * @param {import("./Source").State} state State.
    */
-  setState(state) {
+  setState(state: import("./Source").State) {
     this.state_ = state;
     this.changed();
   }
@@ -219,7 +218,7 @@ export class Source extends BaseObject {
  * @param {AttributionLike|undefined} attributionLike The attribution option.
  * @return {Attribution|null} An attribution function (or null).
  */
-function adaptAttributions(attributionLike) {
+function adaptAttributions(attributionLike: AttributionLike | undefined): Attribution | null {
   if (!attributionLike) {
     return null;
   }

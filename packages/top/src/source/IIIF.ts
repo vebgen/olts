@@ -13,32 +13,32 @@ import {toSize} from '../size';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Size of the cache.
+ * @property [cacheSize] Size of the cache.
  * @property {null|string} [crossOrigin] The value for the crossOrigin option of the request.
  * @property {Extent} [extent=[0, -height, width, 0]] The extent.
- * @property {string} [format='jpg'] Requested image format.
+ * @property [format='jpg'] Requested image format.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {ProjectionLike} [projection] Projection.
- * @property {string} [quality] Requested IIIF image quality. Default is 'native'
+ * @property [quality] Requested IIIF image quality. Default is 'native'
  * for version 1, 'default' for versions 2 and 3.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number[]} [resolutions] Supported resolutions as given in IIIF 'scaleFactors'
  * @property {Size} size Size of the image [width, height].
- * @property {Array<Size>} [sizes] Supported scaled image sizes.
+ * @property {Size[]} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
  * @property {import("./Source").State} [state] Source state.
- * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
+ * @property {string[]} [supports=[]] Supported IIIF region and size calculation
  * features.
- * @property {number} [tilePixelRatio] Tile pixel ratio.
+ * @property [tilePixelRatio] Tile pixel ratio.
  * @property {number|Size} [tileSize] Tile size.
  * Same tile size is used for all zoom levels. If tile size is a number,
  * a square tile is assumed. If the IIIF image service supports arbitrary
  * tiling (sizeByH, sizeByW, sizeByWh or sizeByPct as well as regionByPx or regionByPct
  * are supported), the default tilesize is 256.
- * @property {number} [transition] Transition.
- * @property {string} [url] Base URL of the IIIF Image service.
+ * @property [transition] Transition.
+ * @property [url] Base URL of the IIIF Image service.
  * This should be the same as the IIIF Image ID.
  * @property {import("../format/IIIFInfo").Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]

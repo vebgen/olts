@@ -11,7 +11,7 @@ export class DWithin extends Spatial {
    * @param {!Geometry} geometry Geometry.
    * @param {!number} distance Distance.
    * @param {!string} unit Unit.
-   * @param {string} [srsName] SRS name. No srsName attribute will be
+   * @param [srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */
   constructor(geometryName, geometry, distance, unit, srsName) {

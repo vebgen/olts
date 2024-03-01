@@ -3,12 +3,12 @@ import Collection from '../Collection';
 import Control from './Control';
 import type { EventType } from '@olts/events';
 import Map from '../Map';
-import MapEventType from '../MapEventType';
-import MapProperty from '../MapProperty';
+import MapEventType from '../Map/event-types';
+import MapProperty from '../Map/property';
 import ObjectEventType from '../ObjectEventType';
 import Overlay from '../Overlay';
 import View from '../View';
-import ViewProperty from '../ViewProperty';
+import {ViewProperty} from '../view';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '@olts/core/css';
 import {
   containsExtent,
@@ -37,7 +37,7 @@ const MIN_RATIO = 0.1;
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-overviewmap'] CSS class name.
+ * @property [className='ol-overviewmap'] CSS class name.
  * @property {boolean} [collapsed=true] Whether the control should start collapsed or not (expanded).
  * @property {string|HTMLElement} [collapseLabel='‹'] Text label to use for the
  * expanded overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
@@ -51,7 +51,7 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [rotateWithView=false] Whether the control view should rotate with the main map view.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
+ * @property [tipLabel='Overview map'] Text label to use for the button tip.
  * @property {View} [view] Custom view for the overview map (should use same projection as main map). If not provided,
  * a default view with the same projection as the main map will be used.
  */
@@ -152,7 +152,7 @@ export class OverviewMap extends Control {
     button.appendChild(activeLabel);
 
     button.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this),
       false,
     );
@@ -313,7 +313,7 @@ export class OverviewMap extends Control {
    * @private
    */
   handleMapPropertyChange_(event) {
-    if (event.key === MapProperty.VIEW) {
+    if (event.key === MapProperties.VIEW) {
       const oldView = /** @type {import("../View").default} */ (
         event.oldValue
       );
@@ -324,7 +324,7 @@ export class OverviewMap extends Control {
       this.bindView_(newView);
     } else if (
       !this.ovmap_.isRendered() &&
-      (event.key === MapProperty.TARGET || event.key === MapProperty.SIZE)
+      (event.key === MapProperties.TARGET || event.key === MapProperties.SIZE)
     ) {
       this.ovmap_.updateSize();
     }
@@ -530,7 +530,7 @@ export class OverviewMap extends Control {
     }
     this.ovmapPostrenderKey_ = listenOnce(
       this.ovmap_,
-      MapEventType.POSTRENDER,
+      MapEventTypes.POSTRENDER,
       function (event) {
         delete this.ovmapPostrenderKey_;
         this.updateBox_();

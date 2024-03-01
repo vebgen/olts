@@ -36,11 +36,11 @@ const DEFAULT_DPI: number = 25.4 / 0.28;
 
 /**
  * @typedef {Object} Options
- * @property {string} [className] CSS class name. The default is `ol-scale-bar` when configured with
+ * @property [className] CSS class name. The default is `ol-scale-bar` when configured with
  * `bar: true`. Otherwise the default is `ol-scale-line`.
- * @property {number} [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
+ * @property [minWidth=64] Minimum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
- * @property {number} [maxWidth] Maximum width in pixels at the OGC default dpi. The width will be
+ * @property [maxWidth] Maximum width in pixels at the OGC default dpi. The width will be
  * adjusted to match the dpi used.
  * @property {function(import("../MapEvent").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
@@ -48,7 +48,7 @@ const DEFAULT_DPI: number = 25.4 / 0.28;
  * to be rendered outside of the map's viewport.
  * @property {Units} [units='metric'] Units.
  * @property {boolean} [bar=false] Render scalebars instead of a line.
- * @property {number} [steps=4] Number of steps the scalebar should use. Use even numbers
+ * @property [steps=4] Number of steps the scalebar should use. Use even numbers
  * for best results. Only applies when `bar` is `true`.
  * @property {boolean} [text=false] Render the text scale above of the scalebar. Only applies
  * when `bar` is `true`.
@@ -71,17 +71,17 @@ const DEFAULT_DPI: number = 25.4 / 0.28;
  */
 export class ScaleLine extends Control {
     /**
-     * 
+     *
      */
     override on: ScaleLineOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: ScaleLineOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: ScaleLineOnSignature<void>;
 
@@ -362,10 +362,10 @@ export class ScaleLine extends Control {
 
     /**
      * @private
-     * @param {number} width The current width of the scalebar.
-     * @param {number} scale The current scale.
-     * @param {string} suffix The suffix to append to the scale text.
-     * @return {string} The stringified HTML of the scalebar.
+     * @param width The current width of the scalebar.
+     * @param scale The current scale.
+     * @param suffix The suffix to append to the scale text.
+     * @return The stringified HTML of the scalebar.
      */
     createScaleBar(width: number, scale: number, suffix: string): string {
         const resolutionScale = this.getScaleForResolution();
@@ -408,7 +408,7 @@ export class ScaleLine extends Control {
     /**
      * Creates a marker at given position
      * @param {'absolute'|'relative'} position The position, absolute or relative
-     * @return {string} The stringified div containing the marker
+     * @return The stringified div containing the marker
      */
     createMarker(position: 'absolute' | 'relative'): string {
         const top = position === 'absolute' ? 3 : -10;
@@ -422,12 +422,12 @@ export class ScaleLine extends Control {
 
     /**
      * Creates the label for a marker marker at given position
-     * @param {number} i The iterator
-     * @param {number} width The width the scalebar will currently use
+     * @param i The iterator
+     * @param width The width the scalebar will currently use
      * @param {boolean} isLast Flag indicating if we add the last step text
-     * @param {number} scale The current scale for the whole scalebar
-     * @param {string} suffix The suffix for the scale
-     * @return {string} The stringified div containing the step text
+     * @param scale The current scale for the whole scalebar
+     * @param suffix The suffix for the scale
+     * @return The stringified div containing the step text
      */
     createStepText(i: number, width: number, isLast: boolean, scale: number, suffix: string): string {
         const length =
@@ -451,7 +451,7 @@ export class ScaleLine extends Control {
 
     /**
      * Returns the appropriate scale for the given resolution and units.
-     * @return {number} The appropriate scale.
+     * @return The appropriate scale.
      */
     getScaleForResolution(): number {
         const resolution = getPointResolution(
@@ -470,7 +470,7 @@ export class ScaleLine extends Control {
      * @param {import("../MapEvent").default} mapEvent Map event.
      * @override
      */
-    render(mapEvent: import("../MapEvent").default) {
+    render(mapEvent: import("../Map/events").default) {
         const frameState = mapEvent.frameState;
         if (!frameState) {
             this.viewState_ = null;

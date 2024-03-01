@@ -133,7 +133,7 @@ export class JSONFeature extends FeatureFormat {
    *
    * @param {import("../Feature").default} feature Feature.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded feature.
+   * @return Encoded feature.
    * @api
    */
   writeFeature(feature, options) {
@@ -155,7 +155,7 @@ export class JSONFeature extends FeatureFormat {
    *
    * @param {Array<import("../Feature").default>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded features.
+   * @return Encoded features.
    * @api
    */
   writeFeatures(features, options) {
@@ -177,7 +177,7 @@ export class JSONFeature extends FeatureFormat {
    *
    * @param {Geometry} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded geometry.
+   * @return Encoded geometry.
    * @api
    */
   writeGeometry(geometry, options) {

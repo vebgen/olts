@@ -5,15 +5,15 @@ import {error as logError} from '../console';
 
 /**
  * @typedef {Object} Options
- * @property {string} url URL to the OGC Vector Tileset endpoint.
+ * @property url URL to the OGC Vector Tileset endpoint.
  * @property {Object} [context] A lookup of values to use in the tile URL template.  The `{tileMatrix}`
  * (zoom level), `{tileRow}`, and `{tileCol}` variables in the URL will always be provided by the source.
  * @property {import("../format/Feature").default} format Feature parser for tiles.
- * @property {string} [mediaType] The content type for the tiles (e.g. "application/vnd.mapbox-vector-tile").  If not provided,
+ * @property [mediaType] The content type for the tiles (e.g. "application/vnd.mapbox-vector-tile").  If not provided,
  * the source will try to find a link with rel="item" that uses a vector type supported by the configured format.
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -21,7 +21,7 @@ import {error as logError} from '../console';
  * @property {ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
  * @property {typeof import("../VectorTile").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile~VectorTile}.
- * @property {number} [transition] A duration for tile opacity
+ * @property [transition] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world

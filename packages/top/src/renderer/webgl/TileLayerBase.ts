@@ -44,8 +44,8 @@ const empty = {};
 /**
  * Transform a zoom level into a depth value; zoom level zero has a depth value of 0.5, and increasing values
  * have a depth trending towards 0
- * @param {number} z A zoom level.
- * @return {number} A depth value.
+ * @param z A zoom level.
+ * @return A depth value.
  */
 function depthForZ(z) {
   return 1 / (z + 2);
@@ -81,7 +81,7 @@ function lookupHasTile(tileRepresentationLookup, tile) {
  * Add a tile representation to the lookup.
  * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of tile representations by zoom level.
  * @param {AbstractTileRepresentation} tileRepresentation A tile representation.
- * @param {number} z The zoom level.
+ * @param z The zoom level.
  */
 function addTileRepresentationToLookup(
   tileRepresentationLookup,
@@ -131,7 +131,7 @@ export function getCacheKey(source, tileCoord) {
  * @typedef {Object} Options
  * @property {Record<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
- * @property {number} [cacheSize=512] The tile representation cache size.
+ * @property [cacheSize=512] The tile representation cache size.
  * @property {Array<import('./Layer').PostProcessesOptions>} [postProcesses] Post-processes definitions.
  */
 
@@ -277,9 +277,9 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {import("../../Map").FrameState} frameState Frame state.
    * @param {Extent} extent The extent to be rendered.
-   * @param {number} initialZ The zoom level.
+   * @param initialZ The zoom level.
    * @param {TileRepresentationLookup} tileRepresentationLookup The zoom level.
-   * @param {number} preload Number of additional levels to load.
+   * @param preload Number of additional levels to load.
    */
   enqueueTiles(
     frameState,
@@ -425,13 +425,13 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../transform").Transform} tileTransform Tile transform
    * @param {import("../../Map").FrameState} frameState Frame state
    * @param {Extent} renderExtent Render extent
-   * @param {number} tileResolution Tile resolution
+   * @param tileResolution Tile resolution
    * @param {Size} tileSize Tile size
    * @param {Coordinate} tileOrigin Tile origin
    * @param {Extent} tileExtent tile Extent
-   * @param {number} depth Depth
-   * @param {number} gutter Gutter
-   * @param {number} alpha Alpha
+   * @param depth Depth
+   * @param gutter Gutter
+   * @param alpha Alpha
    * @protected
    */
   renderTile(
@@ -450,9 +450,9 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {TileRepresentation} tileRepresentation Tile representation
-   * @param {number} tileZ Tile Z
+   * @param tileZ Tile Z
    * @param {Extent} extent Render extent
-   * @param {number} depth Depth
+   * @param depth Depth
    * @protected
    */
   renderTileMask(tileRepresentation, tileZ, extent, depth) {}
@@ -753,7 +753,7 @@ export class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * zoom level.  Loaded tiles will be added to the provided tile representation lookup.
    * @param {import("../../tilegrid/TileGrid").default} tileGrid The tile grid.
    * @param {TileCoord} tileCoord The target tile coordinate.
-   * @param {number} altZ The alternate zoom level.
+   * @param altZ The alternate zoom level.
    * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of
    * tile representations by zoom level.
    * @return {boolean} The tile coordinate is covered by loaded tiles at the alternate zoom level.

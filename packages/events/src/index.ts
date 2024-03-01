@@ -27,7 +27,10 @@ export { Key } from './key';
 
 
 export type { ObjectEventType } from './object';
-export { BaseObject, ObjectEvent } from './object';
+export {
+    Types as ObjectEventTypes,
+    BaseObject, ObjectEvent
+} from './object';
 
 
 export type {

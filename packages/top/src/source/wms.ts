@@ -32,12 +32,12 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  */
 
 /**
- * @param {string} baseUrl Base URL.
+ * @param baseUrl Base URL.
  * @param {Extent} extent Extent.
  * @param {Size} size Size.
  * @param {import("../proj/Projection").default} projection Projection.
  * @param {Object} params WMS params. Will be modified in place.
- * @return {string} Request URL.
+ * @return Request URL.
  */
 export function getRequestUrl(baseUrl, extent, size, projection, params) {
   params['WIDTH'] = size[0];
@@ -54,18 +54,18 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
   }
   params['BBOX'] = bbox.join(',');
 
-  return appendParams(/** @type {string} */ (baseUrl), params);
+  return appendParams(/** @type */ (baseUrl), params);
 }
 
 /**
  * @param {import("../extent").Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio pixel ratio.
+ * @param resolution Resolution.
+ * @param pixelRatio pixel ratio.
  * @param {import("../proj").Projection} projection Projection.
- * @param {string} url WMS service url.
+ * @param url WMS service url.
  * @param {Object} params WMS params.
  * @param {import("./wms").ServerType} serverType The type of the remote WMS server.
- * @return {string} Image src.
+ * @return Image src.
  */
 export function getImageSrc(
   extent,
@@ -113,7 +113,7 @@ export function getImageSrc(
 
 /**
  * @param {Object} params WMS params.
- * @param {string} request WMS `REQUEST`.
+ * @param request WMS `REQUEST`.
  * @return {Object} WMS params with required properties set.
  */
 export function getRequestParams(params, request) {
@@ -142,12 +142,12 @@ export function getRequestParams(params, request) {
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT` and `BBOX` will be set
  * dynamically. `CRS` (`SRS` for WMS version < 1.3.0) will is derived from the `proection` config.
  * @property {ProjectionLike} [projection] Projection. Default is 'EPSG:3857'.
- * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * @property [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {import("./wms").ServerType} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
  * Only needed if `hidpi` is `true`.
- * @property {string} url WMS service URL.
+ * @property url WMS service URL.
  * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.
@@ -198,7 +198,7 @@ export function createLoader(options) {
  * `application/json`. If `QUERY_LAYERS` is not provided, then the layers specified in the `LAYERS`
  * parameter will be used.
  * @param {Coordinate} coordinate Coordinate.
- * @param {number} resolution Resolution.
+ * @param resolution Resolution.
  * @return {string|undefined} GetFeatureInfo URL.
  * @api
  */
@@ -247,7 +247,7 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
  * cannot be constructed.
  *
  * @param {LoaderOptions} options Options passed the `createWMSLoader()` function.
- * @param {number} [resolution] Resolution. If not provided, `SCALE` will not be calculated and
+ * @param [resolution] Resolution. If not provided, `SCALE` will not be calculated and
  * included in URL.
  * @return {string|undefined} GetLegendGraphic URL.
  * @api

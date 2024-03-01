@@ -136,8 +136,8 @@ const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
 
 /**
  * Get a string representation for a type.
- * @param {number} type The type.
- * @return {string} The type name.
+ * @param type The type.
+ * @return The type name.
  */
 export function typeName(type) {
   const names = [];
@@ -156,8 +156,8 @@ export function typeName(type) {
 }
 
 /**
- * @param {number} broad The broad type.
- * @param {number} specific The specific type.
+ * @param broad The broad type.
+ * @param specific The specific type.
  * @return {boolean} The broad type includes the specific type.
  */
 export function includesType(broad, specific) {
@@ -165,8 +165,8 @@ export function includesType(broad, specific) {
 }
 
 /**
- * @param {number} oneType One type.
- * @param {number} otherType Another type.
+ * @param oneType One type.
+ * @param otherType Another type.
  * @return {boolean} The set of types overlap (share a common specific type)
  */
 export function overlapsType(oneType, otherType) {
@@ -174,8 +174,8 @@ export function overlapsType(oneType, otherType) {
 }
 
 /**
- * @param {number} type The type.
- * @param {number} expected The expected type.
+ * @param type The type.
+ * @param expected The expected type.
  * @return {boolean} The given type is exactly the expected type.
  */
 export function isType(type, expected) {
@@ -188,7 +188,7 @@ export function isType(type, expected) {
 
 export class LiteralExpression {
   /**
-   * @param {number} type The value type.
+   * @param type The value type.
    * @param {LiteralValue} value The literal value.
    */
   constructor(type, value) {
@@ -199,8 +199,8 @@ export class LiteralExpression {
 
 export class CallExpression {
   /**
-   * @param {number} type The return type.
-   * @param {string} operator The operator.
+   * @param type The return type.
+   * @param operator The operator.
    * @param {...Expression} args The arguments.
    */
   constructor(type, operator, ...args) {
@@ -237,8 +237,8 @@ export function newParsingContext() {
 }
 
 /**
- * @param {string} typeHint Type hint
- * @return {number} Resulting value type (will be a single type)
+ * @param typeHint Type hint
+ * @return Resulting value type (will be a single type)
  */
 function getTypeFromHint(typeHint) {
   switch (typeHint) {
@@ -264,7 +264,7 @@ function getTypeFromHint(typeHint) {
 /**
  * @param {EncodedExpression} encoded The encoded expression.
  * @param {ParsingContext} context The parsing context.
- * @param {number} [typeHint] Optional type hint
+ * @param [typeHint] Optional type hint
  * @return {Expression} The parsed expression result.
  */
 export function parse(encoded, context, typeHint) {
@@ -382,7 +382,7 @@ const parsers = {
     ([_, typeHint]) => {
       if (typeHint !== undefined) {
         return getTypeFromHint(
-          /** @type {string} */ (
+          /** @type */ (
             /** @type {LiteralExpression} */ (typeHint).value
           ),
         );
@@ -630,7 +630,7 @@ const parsers = {
 };
 
 /**
- * @typedef {function(Array<EncodedExpression>, ParsingContext,Expression[], number?):Array<Expression>|void} ArgValidator
+ * @typedef {function(EncodedExpression[], ParsingContext,Expression[], number?):Expression[]|void} ArgValidator
  * An argument validator applies various checks to an encoded expression arguments
  * Returns the parsed arguments if any.
  * Third argument is the array of parsed arguments from previous validators
@@ -710,8 +710,8 @@ function withNoArgs(encoded, context) {
 }
 
 /**
- * @param {number} minArgs The minimum number of arguments.
- * @param {number} maxArgs The maximum number of arguments.
+ * @param minArgs The minimum number of arguments.
+ * @param maxArgs The maximum number of arguments.
  * @return {ArgValidator} The argument validator
  */
 function withArgsCount(minArgs, maxArgs) {
@@ -738,7 +738,7 @@ function withArgsCount(minArgs, maxArgs) {
 }
 
 /**
- * @param {number} argType The argument type.
+ * @param argType The argument type.
  * @return {ArgValidator} The argument validator
  */
 function parseArgsOfType(argType) {
@@ -746,7 +746,7 @@ function parseArgsOfType(argType) {
     const operation = encoded[0];
     const argCount = encoded.length - 1;
     /**
-     * @type {Array<Expression>}
+     * @type {Expression[]}
      */
     const args = new Array(argCount);
     for (let i = 0; i < argCount; ++i) {
@@ -1067,9 +1067,9 @@ function parsePaletteArgs(encoded, context) {
 }
 
 /**
- * @param {number|function(Array<Expression>):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
+ * @param {number|function(Expression[]):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
  * arguments
- * @param {Array<ArgValidator>} argValidators A chain of argument validators; the return value of the last validator
+ * @param {ArgValidator[]} argValidators A chain of argument validators; the return value of the last validator
  * will be used as parsed arguments
  * @return {Parser} The parser.
  */
@@ -1109,7 +1109,7 @@ function createParser(returnType, ...argValidators) {
 /**
  * @param {Array} encoded The encoded expression.
  * @param {ParsingContext} context The parsing context.
- * @param {number} [typeHint] Optional type hint
+ * @param [typeHint] Optional type hint
  * @return {Expression} The parsed expression.
  */
 function parseCallExpression(encoded, context, typeHint) {

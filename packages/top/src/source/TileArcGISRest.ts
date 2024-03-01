@@ -10,7 +10,7 @@ import {hash as tileCoordHash} from '../tile-coord';
 /**
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -33,7 +33,7 @@ import {hash as tileCoordHash} from '../tile-coord';
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * The projection code must contain a numeric end portion separated by :
  * or the entire code must form a valid ArcGIS SpatialReference definition.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.
  * The default is
@@ -42,12 +42,12 @@ import {hash as tileCoordHash} from '../tile-coord';
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The
+ * @property [url] ArcGIS Rest service URL for a Map Service or Image Service. The
  * url should include /MapServer or /ImageServer.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.  To disable the opacity
+ * @property [transition] Duration of the opacity transition for rendering.  To disable the opacity
  * transition, pass `transition: 0`.
- * @property {Array<string>} [urls] ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS
+ * @property {string[]} [urls] ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS
  * Service supports multiple urls for export requests.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -108,7 +108,7 @@ export class TileArcGISRest extends TileImage {
 
   /**
    * @private
-   * @return {string} The key for the current params.
+   * @return The key for the current params.
    */
   getKeyForParams_() {
     let i = 0;
@@ -133,7 +133,7 @@ export class TileArcGISRest extends TileImage {
    * @param {TileCoord} tileCoord Tile coordinate.
    * @param {Size} tileSize Tile size.
    * @param {Extent} tileExtent Tile extent.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {Object} params Params.
    * @return {string|undefined} Request URL.
@@ -173,8 +173,8 @@ export class TileArcGISRest extends TileImage {
 
   /**
    * Get the tile pixel ratio for this source.
-   * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param pixelRatio Pixel ratio.
+   * @return Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
     return this.hidpi_ ? pixelRatio : 1;
@@ -192,7 +192,7 @@ export class TileArcGISRest extends TileImage {
 
   /**
    * @param {TileCoord} tileCoord The tile coordinate
-   * @param {number} pixelRatio The pixel ratio
+   * @param pixelRatio The pixel ratio
    * @param {import("../proj/Projection").default} projection The projection
    * @return {string|undefined} The tile URL
    * @override

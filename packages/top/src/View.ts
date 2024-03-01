@@ -1,10 +1,36 @@
 
-import { BaseObject, EventsKey } from '@olts/events';
-import ViewHint from './ViewHint';
-import ViewProperty from './ViewProperty';
-import { DEFAULT_TILE_SIZE } from './tile-grid/common';
+import { 
+    BaseEvent, BaseObject, CombinedOnSignature, 
+    EventType, EventsKey, ObjectEvent, ObjectEventType, OnSignature 
+} from '@olts/events';
+import { easeOut, inAndOut } from '@olts/core/easing';
+import {
+    Extent,
+    getCenter,
+    getForViewAndSize,
+    getHeight,
+    getWidth,
+    isEmpty,
+} from '@olts/core/extent';
+import { VOID } from '@olts/core/functions';
+import {
+    Coordinate,
+    Pixel,
+    add as addCoordinate,
+    equals as coordinatesEqual,
+    equals,
+    rotate as rotateCoordinate,
+} from '@olts/core/coordinate';
+import { assert } from '@olts/core/asserts';
+import { clamp, modulo } from '@olts/core/math';
+import { linearFindNearest } from '@olts/core/array';
+import { SimpleGeometry, polygonFromExtent } from '@olts/geometry';
+import type { ValueOf } from '@olts/core';
+import { Size } from '@olts/core/size';
 import {
     METERS_PER_UNIT,
+    Projection,
+    ProjectionLike,
     createProjection,
     disableCoordinateWarning,
     fromUserCoordinate,
@@ -12,82 +38,140 @@ import {
     getUserProjection,
     toUserCoordinate,
     toUserExtent,
-} from './proj';
-import { VOID } from '@olts/core/functions';
-import {
-    add as addCoordinate,
-    equals as coordinatesEqual,
-    equals,
-    rotate as rotateCoordinate,
-} from './coordinate';
-import { assert } from '@olts/core/asserts';
+} from '@olts/core/proj';
+
+import { DEFAULT_TILE_SIZE } from './tile-grid/common';
 import { none as centerNone, createExtent } from './center-constraint';
-import { clamp, modulo } from '@olts/core/math';
 import {
     createMinMaxResolution,
     createSnapToPower,
     createSnapToResolutions,
-} from './resolutionconstraint';
+} from './resolution-constraint';
 import {
     createSnapToN,
     createSnapToZero,
     disable,
     none as rotationNone,
-} from './rotationconstraint';
-import { easeOut, inAndOut } from '@olts/core/easing';
-import {
-    getCenter,
-    getForViewAndSize,
-    getHeight,
-    getWidth,
-    isEmpty,
-} from '@olts/core/extent';
-import { linearFindNearest } from '@olts/core/array';
-import { fromExtent as polygonFromExtent } from '@olts/geometry';
+} from './rotation-constraint';
+import type { Type as CenterConstraintType } from './center-constraint';
+import type { Type as ResolutionConstraintType } from './resolution-constraint';
+import type { Type as RotationConstraintType } from './rotation-constraint';
+import { State as LayerState } from './layer/Layer';
+
+/**
+ * 
+ */
+export const ViewHints = {
+    ANIMATING: 0,
+    INTERACTING: 1,
+} as const;
+
+export type ViewHint = ValueOf<typeof ViewHints>;
+
+
+/**
+ * 
+ */
+export const ViewProperties = {
+    CENTER: 'center',
+    RESOLUTION: 'resolution',
+    ROTATION: 'rotation',
+} as const;
+
+export type ViewProperty = ValueOf<typeof ViewProperties>;
+
 
 /**
  * An animation configuration
+ */
+export interface Animation {
+    /**
+     * Source center.
+     */
+    sourceCenter?: Coordinate;
+
+    /**
+     * Target center.
+     */
+    targetCenter?: Coordinate;
+
+    /**
+     * Source resolution.
+     */
+    sourceResolution?: number;
+
+    /**
+     * Target resolution.
+     */
+    targetResolution?: number;
+
+    /**
+     * Source rotation.
+     */
+    sourceRotation?: number;
+
+    /**
+     * Target rotation.
+     */
+    targetRotation?: number;
+
+    /**
+     * Anchor.
+     */
+    anchor?: Coordinate;
+
+    /**
+     * Start.
+     */
+    start: number;
+
+    /**
+     * Duration.
+     */
+    duration: number;
+
+    /**
+     * Complete.
+     */
+    complete: boolean;
+
+    /**
+     * Easing.
+     */
+    easing: (arg0: number) => number;
+
+    /**
+     * Callback.
+     */
+    callback: (arg0: boolean) => void;
+}
+
+
+/**
+ * 
+ */
+export interface Constraints {
+    /**
+     * Center.
+     */
+    center: CenterConstraintType;
+
+    /**
+     * Resolution.
+     */
+    resolution: ResolutionConstraintType;
+
+    /**
+     * Rotation.
+     */
+    rotation: RotationConstraintType;
+}
+
+
+/**
  *
- * @typedef {Object} Animation
- * @property {Coordinate} [sourceCenter] Source center.
- * @property {Coordinate} [targetCenter] Target center.
- * @property {number} [sourceResolution] Source resolution.
- * @property {number} [targetResolution] Target resolution.
- * @property {number} [sourceRotation] Source rotation.
- * @property {number} [targetRotation] Target rotation.
- * @property {Coordinate} [anchor] Anchor.
- * @property {number} start Start.
- * @property {number} duration Duration.
- * @property {boolean} complete Complete.
- * @property {function(number):number} easing Easing.
- * @property {function(boolean):void} callback Callback.
- */
-
-/**
- * @typedef {Object} Constraints
- * @property {import("./centerconstraint").Type} center Center.
- * @property {import("./resolutionconstraint").Type} resolution Resolution.
- * @property {import("./rotationconstraint").Type} rotation Rotation.
- */
-
-/**
- * @typedef {Object} FitOptions
- * @property {Size} [size] The size in pixels of the box to
- * fit the extent into. Defaults to the size of the map the view is associated with.
- * If no map or multiple maps are connected to the view, provide the desired box size
- * (e.g. `map.getSize()`).
- * @property {!number[]} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
- * cleared inside the view. Values in the array are top, right, bottom and left
- * padding.
- * @property {boolean} [nearest=false] If the view `constrainResolution` option is `true`,
- * get the nearest extent instead of the closest that actually fits the view.
- * @property {number} [minResolution=0] Minimum resolution that we zoom to.
- * @property {number} [maxZoom] Maximum zoom level that we zoom to. If
- * `minResolution` is given, this property is ignored.
- * @property {number} [duration] The duration of the animation in milliseconds.
- * By default, there is no animation to the target extent.
  * @property {function(number):number} [easing] The easing function used during
- * the animation (defaults to {@link module:ol/easing.inAndOut}).
+ * the animation (defaults to {@link easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.
@@ -95,162 +179,444 @@ import { fromExtent as polygonFromExtent } from '@olts/geometry';
  * its final position. The callback will be called with `true` if the animation
  * series completed on its own or `false` if it was cancelled.
  */
+export interface FitOptions {
+    /**
+     * The size in pixels of the box to fit the extent into. 
+     *
+     * Defaults to the size of the map the view is associated with. If no map
+     * or multiple maps are connected to the view, provide the desired box size
+     * (e.g. `map.getSize()`).
+     */
+    size?: Size;
+
+    /**
+     * Padding (in pixels) to be cleared inside the view.
+     *
+     * Values in the array are top, right, bottom and left padding.
+     */
+    padding?: [number, number, number, number];
+
+    /**
+     * If the view `constrainResolution` option is `true`, get the nearest
+     * extent instead of the closest that actually fits the view.
+     */
+    nearest?: boolean;
+
+    /**
+     * Minimum resolution that we zoom to.
+     */
+    minResolution?: number;
+
+    /**
+     * Maximum zoom level that we zoom to.
+     *
+     * If `minResolution` is given, this property is ignored.
+     */
+    maxZoom?: number;
+
+    /**
+     * The duration of the animation in milliseconds.
+     *
+     * By default, there is no animation to the target extent.
+     */
+    duration?: number;
+
+    /**
+     * The easing function used during the animation (defaults to
+     * {@link easing.inAndOut}).
+     *
+     * The function will be called for each frame with a number representing a
+     * fraction of the animation's duration.
+     *
+     * The function should return a number between 0 and 1 representing the
+     * progress toward the destination state.
+     */
+    easing?: (fraction: number) => number;
+
+    /**
+     * Function called when the view is in its final position.
+     *
+     * The callback will be called with `true` if the animation series
+     * completed on its own or `false` if it was cancelled.
+     */
+    callback?: (completed: boolean) => void;
+}
+
 
 /**
- * @typedef {Object} ViewOptions
- * @property {Coordinate} [center] The initial center for
- * the view. If a user projection is not set, the coordinate system for the center is
- * specified with the `projection` option. Layer sources will not be fetched if this
- * is not set, but the center can be set later with {@link #setCenter}.
- * @property {boolean|number} [constrainRotation=true] Rotation constraint.
- * `false` means no constraint. `true` means no constraint, but snap to zero
- * near zero. A number constrains the rotation to that number of values. For
- * example, `4` will constrain the rotation to 0, 90, 180, and 270 degrees.
- * @property {boolean} [enableRotation=true] Enable rotation.
- * If `false`, a rotation constraint that always sets the rotation to zero is
- * used. The `constrainRotation` option has no effect if `enableRotation` is
- * `false`.
- * @property {Extent} [extent] The extent that constrains the
- * view, in other words, nothing outside of this extent can be visible on the map.
- * @property {boolean} [constrainOnlyCenter=false] If true, the extent
- * constraint will only apply to the view center and not the whole extent.
- * @property {boolean} [smoothExtentConstraint=true] If true, the extent
- * constraint will be applied smoothly, i.e. allow the view to go slightly outside
- * of the given `extent`.
- * @property {number} [maxResolution] The maximum resolution used to determine
- * the resolution constraint. It is used together with `minResolution` (or
- * `maxZoom`) and `zoomFactor`. If unspecified it is calculated in such a way
- * that the projection's validity extent fits in a 256x256 px tile. If the
- * projection is Spherical Mercator (the default) then `maxResolution` defaults
- * to `40075016.68557849 / 256 = 156543.03392804097`.
- * @property {number} [minResolution] The minimum resolution used to determine
- * the resolution constraint.  It is used together with `maxResolution` (or
- * `minZoom`) and `zoomFactor`.  If unspecified it is calculated assuming 29
- * zoom levels (with a factor of 2). If the projection is Spherical Mercator
- * (the default) then `minResolution` defaults to
- * `40075016.68557849 / 256 / Math.pow(2, 28) = 0.0005831682455839253`.
- * @property {number} [maxZoom=28] The maximum zoom level used to determine the
- * resolution constraint. It is used together with `minZoom` (or
- * `maxResolution`) and `zoomFactor`.  Note that if `minResolution` is also
- * provided, it is given precedence over `maxZoom`.
- * @property {number} [minZoom=0] The minimum zoom level used to determine the
- * resolution constraint. It is used together with `maxZoom` (or
- * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
- * provided, it is given precedence over `minZoom`.
- * @property {boolean} [multiWorld=false] If `false` the view is constrained so
- * only one world is visible, and you cannot pan off the edge.  If `true` the map
- * may show multiple worlds at low zoom levels.  Only used if the `projection` is
- * global.  Note that if `extent` is also provided it is given precedence.
- * @property {boolean} [constrainResolution=false] If true, the view will always
- * animate to the closest zoom level after an interaction; false means
- * intermediary zoom levels are allowed.
- * @property {boolean} [smoothResolutionConstraint=true] If true, the resolution
- * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
- * the given resolution or zoom bounds.
- * @property {boolean} [showFullExtent=false] Allow the view to be zoomed out to
- * show the full configured extent. By default, when a view is configured with an
- * extent, users will not be able to zoom out so the viewport exceeds the extent in
- * either dimension. This means the full extent may not be visible if the viewport
- * is taller or wider than the aspect ratio of the configured extent. If
- * showFullExtent is true, the user will be able to zoom out so that the viewport
- * exceeds the height or width of the configured extent, but not both, allowing the
- * full extent to be shown.
- * @property {ProjectionLike} [projection='EPSG:3857'] The
- * projection. The default is Spherical Mercator.
- * @property {number} [resolution] The initial resolution for the view. The
- * units are `projection` units per pixel (e.g. meters per pixel). An
- * alternative to setting this is to set `zoom`. Layer sources will not be
- * fetched if neither this nor `zoom` are defined, but they can be set later
- * with {@link #setZoom} or {@link #setResolution}.
- * @property {number[]} [resolutions] Resolutions that determine the
- * zoom levels if specified. The index in the array corresponds to the zoom level,
- * therefore the resolution values have to be in descending order. It also constrains
- * the resolution by the minimum and maximum value. If set the `maxResolution`,
- * `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
- * @property {number} [rotation=0] The initial rotation for the view in radians
- * (positive rotation clockwise, 0 means North).
- * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
- * level used to calculate the initial resolution for the view.
- * @property {number} [zoomFactor=2] The zoom factor used to compute the
- * corresponding resolution.
- * @property {!number[]} [padding=[0, 0, 0, 0]] Padding (in css pixels).
- * If the map viewport is partially covered with other content (overlays) along
- * its edges, this setting allows to shift the center of the viewport away from
- * that content. The order of the values is top, right, bottom, left.
+ *
  */
+export interface ViewOptions {
+    /**
+     * The initial center for the view.
+     *
+     * If a user projection is not set, the coordinate system for the center is
+     * specified with the `projection` option. Layer sources will not be
+     * fetched if this is not set, but the center can be set later with
+     * {@link #setCenter}.
+     */
+    center?: Coordinate;
+
+    /**
+     * Rotation constraint.
+     *
+     * `false` means no constraint. `true` means no constraint, but snap to
+     * zero near zero. A number constrains the rotation to that number of
+     * values. For example, `4` will constrain the rotation to 0, 90, 180, and
+     * 270 degrees.
+     */
+    constrainRotation?: boolean | number;
+
+    /**
+     * Enable rotation.
+     *
+     * If `false`, a rotation constraint that always sets the rotation to zero
+     * is used. The `constrainRotation` option has no effect if `enableRotation`
+     * is `false`.
+     */
+    enableRotation?: boolean;
+
+    /**
+     * The extent that constrains the view.
+     *
+     * In other words, nothing outside of this extent can be visible on the
+     * map.
+     */
+    extent?: Extent;
+
+    /**
+     * If true, the extent constraint will only apply to the view center and
+     * not the whole extent.
+     */
+    constrainOnlyCenter?: boolean;
+
+    /**
+     * If true, the extent constraint will be applied smoothly, i.e. allow the
+     * view to go slightly outside of the given `extent`.
+     */
+    smoothExtentConstraint?: boolean;
+
+    /**
+     * The maximum resolution used to determine the resolution constraint.
+     *
+     * It is used together with `minResolution` (or `maxZoom`) and
+     * `zoomFactor`.
+     *
+     * If unspecified it is calculated in such a way that the projection's
+     * validity extent fits in a 256x256 px tile.
+     *
+     * If the projection is Spherical Mercator (the default) then
+     * `maxResolution` defaults to `40075016.68557849 / 256 =
+     * 156543.03392804097`.
+     */
+    maxResolution?: number;
+
+    /**
+     * The minimum resolution used to determine the resolution constraint.
+     *
+     * It is used together with `maxResolution` (or `minZoom`) and
+     * `zoomFactor`.
+     *
+     * If unspecified it is calculated assuming 29 zoom levels (with a factor
+     * of 2).
+     *
+     * If the projection is Spherical Mercator (the default) then
+     * `minResolution` defaults to `40075016.68557849 / 256 / Math.pow(2, 28) =
+     * 0.0005831682455839253`.
+     */
+    minResolution?: number;
+
+    /**
+     * The maximum zoom level used to determine the resolution constraint.
+     *
+     * It is used together with `minZoom` (or `maxResolution`) and
+     * `zoomFactor`.  Note that if `minResolution` is also provided, it is
+     * given precedence over `maxZoom`.
+     * 
+     * @default 28
+     */
+    maxZoom?: number;
+
+    /**
+     * The minimum zoom level used to determine the resolution constraint.
+     *
+     * It is used together with `maxZoom` (or `minResolution`) and
+     * `zoomFactor`. Note that if `maxResolution` is also provided, it is given
+     * precedence over `minZoom`.
+     * 
+     * @default 0
+     */
+    minZoom?: number;
+
+    /**
+     * If `false` the view is constrained so only one world is visible, and you
+     * cannot pan off the edge. 
+     *
+     * If `true` the map may show multiple worlds at low zoom levels.  Only
+     * used if the `projection` is global.
+     *
+     * Note that if `extent` is also provided it is given precedence.
+     * 
+     * @default false
+     */
+    multiWorld?: boolean;
+
+    /**
+     * If true, the view will always animate to the closest zoom level after an
+     * interaction; false means intermediary zoom levels are allowed.
+     * 
+     * @default false
+     */
+    constrainResolution?: boolean;
+
+    /**
+     * If true, the resolution min/max values will be applied smoothly, i. e.
+     * allow the view to exceed slightly the given resolution or zoom bounds.
+     */
+    smoothResolutionConstraint?: boolean;
+
+    /**
+     * Allow the view to be zoomed out to show the full configured extent.
+     *
+     * By default, when a view is configured with an extent, users will not be
+     * able to zoom out so the viewport exceeds the extent in either dimension.
+     * This means the full extent may not be visible if the viewport is taller
+     * or wider than the aspect ratio of the configured extent.
+     *
+     * If showFullExtent is true, the user will be able to zoom out so that the
+     * viewport exceeds the height or width of the configured extent, but not
+     * both, allowing the full extent to be shown.
+     * 
+     * @default false
+     */
+    showFullExtent?: boolean;
+
+    /**
+     * The projection. The default is Spherical Mercator.
+     * 
+     * @default 'EPSG:3857'
+     */
+    projection?: string | ProjectionLike;
+
+    /**
+     * The initial resolution for the view.
+     *
+     * The units are `projection` units per pixel (e.g. meters per pixel).
+     *
+     * An alternative to setting this is to set `zoom`. Layer sources will not
+     * be fetched if neither this nor `zoom` are defined, but they can be set
+     * later with {@link #setZoom} or {@link #setResolution}.
+     */
+    resolution?: number;
+
+    /**
+     * Resolutions that determine the zoom levels if specified.
+     *
+     * The index in the array corresponds to the zoom level, therefore the
+     * resolution values have to be in descending order. It also constrains the
+     * resolution by the minimum and maximum value.
+     *
+     * If set the `maxResolution`, `minResolution`, `minZoom`, `maxZoom`, and
+     * `zoomFactor` options are ignored.
+     */
+    resolutions?: number[];
+
+    /**
+     * The initial rotation for the view in radians.
+     * 
+     * The positive rotation is clockwise, 0 means North.
+     *
+     * @default 0
+     */
+    rotation?: number;
+
+    /**
+     * Zoom level used to calculate the initial resolution for the view.
+     *
+     * Only used if `resolution` is not defined. 
+     */
+    zoom?: number;
+
+    /**
+     * The zoom factor used to compute the corresponding resolution.
+     * 
+     * @default 2
+     */
+    zoomFactor?: number;
+
+    /**
+     * Padding (in css pixels).
+     *
+     * If the map viewport is partially covered with other content (overlays)
+     * along its edges, this setting allows to shift the center of the viewport
+     * away from that content. The order of the values is top, right, bottom,
+     * left.
+     * 
+     * @default [0, 0, 0, 0]
+     */
+    padding?: [number, number, number, number];
+}
+
 
 /**
- * @typedef {Object} AnimationOptions
- * @property {Coordinate} [center] The center of the view at the end of
- * the animation.
- * @property {number} [zoom] The zoom level of the view at the end of the
- * animation. This takes precedence over `resolution`.
- * @property {number} [resolution] The resolution of the view at the end
- * of the animation.  If `zoom` is also provided, this option will be ignored.
- * @property {number} [rotation] The rotation of the view at the end of
- * the animation.
- * @property {Coordinate} [anchor] Optional anchor to remain fixed
- * during a rotation or resolution animation.
- * @property {number} [duration=1000] The duration of the animation in milliseconds.
- * @property {function(number):number} [easing] The easing function used
- * during the animation (defaults to {@link module:ol/easing.inAndOut}).
- * The function will be called for each frame with a number representing a
- * fraction of the animation's duration.  The function should return a number
- * between 0 and 1 representing the progress toward the destination state.
+ * 
  */
+export interface AnimationOptions {
+    /**
+     * The center of the view at the end of the animation.
+     */
+    center?: Coordinate;
+
+    /**
+     * The zoom level of the view at the end of the animation.
+     *
+     * This takes precedence over `resolution`.
+     */
+    zoom?: number;
+
+    /**
+     * The resolution of the view at the end of the animation.
+     *
+     * If `zoom` is also provided, this option will be ignored.
+     */
+    resolution?: number;
+
+    /**
+     * The rotation of the view at the end of the animation.
+     */
+    rotation?: number;
+
+    /**
+     * Optional anchor to remain fixed during a rotation or resolution
+     * animation.
+     */
+    anchor?: Coordinate;
+
+    /**
+     * The duration of the animation in milliseconds.
+     *
+     * @default 1000
+     */
+    duration?: number;
+
+    /**
+     * The easing function used during the animation (defaults to
+     * {@link easing.inAndOut}).
+     *
+     * The function will be called for each frame with a number representing a
+     * fraction of the animation's duration. The function should return a number
+     * between 0 and 1 representing the progress toward the destination state.
+     */
+    easing?: (fraction: number) => number;
+}
+
 
 /**
- * @typedef {Object} State
- * @property {Coordinate} center Center (in view projection coordinates).
- * @property {Projection} projection Projection.
- * @property {number} resolution Resolution.
- * @property {Coordinate} [nextCenter] The next center during an animation series.
- * @property {number} [nextResolution] The next resolution during an animation series.
- * @property {number} [nextRotation] The next rotation during an animation series.
- * @property {number} rotation Rotation.
- * @property {number} zoom Zoom.
+ * 
  */
+export interface State {
+    /**
+     * Center (in view projection coordinates).
+     */
+    center: Coordinate;
+
+    /**
+     * Projection.
+     */
+    projection: string | ProjectionLike;
+
+    /**
+     * Resolution.
+     */
+    resolution: number;
+
+    /**
+     * The next center during an animation series.
+     */
+    nextCenter?: Coordinate;
+
+    /**
+     * The next resolution during an animation series.
+     */
+    nextResolution?: number;
+
+    /**
+     * The next rotation during an animation series.
+     */
+    nextRotation?: number;
+
+    /**
+     * Rotation.
+     */
+    rotation: number;
+
+    /**
+     * Zoom.
+     */
+    zoom: number;
+}
+
 
 /**
- * Like {@link import("./Map").FrameState}, but just `viewState` and `extent`.
- * @typedef {Object} ViewStateLayerStateExtent
- * @property {State} viewState View state.
- * @property {Extent} extent Extent (in user projection coordinates).
- * @property {Array<import("./layer/Layer").State>} [layerStatesArray] Layer states.
+ * Like {@link FrameState}, but just `viewState` and `extent`.
  */
+export interface ViewStateLayerStateExtent {
+    /**
+     * View state.
+     */
+    viewState: State;
+
+    /**
+     * Extent (in user projection coordinates).
+     */
+    extent: Extent;
+
+    /**
+     * Layer states.
+     */
+    layerStatesArray?: LayerState[];
+}
+
+
 
 /**
  * Default min zoom level for the map view.
- * @type {number}
  */
 const DEFAULT_MIN_ZOOM: number = 0;
 
-/**
- * @typedef {ObjectEventType|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
- */
+
+export type ViewObjectEventTypes =
+    | ObjectEventType
+    | 'change:center'
+    | 'change:resolution'
+    | 'change:rotation';
+
 
 /***
- * @template Return
- * @typedef {OnSignature<EventTypes, Event, Return> &
- *   OnSignature<ViewObjectEventTypes, ObjectEvent, Return> &
- *   CombinedOnSignature<EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
+ * 
  */
+export type ViewOnSignature<Return> =
+    & OnSignature<EventType, BaseEvent, Return>
+    & OnSignature<ViewObjectEventTypes, ObjectEvent, Return>
+    & CombinedOnSignature<EventType | ViewObjectEventTypes, Return>;
+
+
 
 /**
  * A View object represents a simple 2D view of the map.
  *
- * This is the object to act upon to change the center, resolution,
- * and rotation of the map.
+ * This is the object to act upon to change the center, resolution, and
+ * rotation of the map.
  *
- * A View has a `projection`. The projection determines the
- * coordinate system of the center, and its units determine the units of the
- * resolution (projection units per pixel). The default projection is
- * Web Mercator (EPSG:3857).
+ * A View has a `projection`. The projection determines the coordinate system
+ * of the center, and its units determine the units of the resolution
+ * (projection units per pixel). The default projection is Web Mercator
+ * (EPSG:3857).
  *
  * ### The view states
  *
- * A View is determined by three states: `center`, `resolution`,
- * and `rotation`. Each state has a corresponding getter and setter, e.g.
+ * A View is determined by three states: `center`, `resolution`, and
+ * `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
  * The `zoom` state is actually not saved on the view: all computations
@@ -261,27 +627,27 @@ const DEFAULT_MIN_ZOOM: number = 0;
  * ### The constraints
  *
  * `setCenter`, `setResolution` and `setRotation` can be used to change the
- * states of the view, but any constraint defined in the constructor will
- * be applied along the way.
+ * states of the view, but any constraint defined in the constructor will be
+ * applied along the way.
  *
  * A View object can have a *resolution constraint*, a *rotation constraint*
  * and a *center constraint*.
  *
- * The *resolution constraint* typically restricts min/max values and
- * snaps to specific resolutions. It is determined by the following
- * options: `resolutions`, `maxResolution`, `maxZoom` and `zoomFactor`.
- * If `resolutions` is set, the other three options are ignored. See
- * documentation for each option for more information. By default, the view
- * only has a min/max restriction and allow intermediary zoom levels when
- * pinch-zooming for example.
+ * The *resolution constraint* typically restricts min/max values and snaps to
+ * specific resolutions. It is determined by the following options:
+ * `resolutions`, `maxResolution`, `maxZoom` and `zoomFactor`. If `resolutions`
+ * is set, the other three options are ignored. See documentation for each
+ * option for more information. By default, the view only has a min/max
+ * restriction and allow intermediary zoom levels when pinch-zooming for
+ * example.
  *
- * The *rotation constraint* snaps to specific angles. It is determined
- * by the following options: `enableRotation` and `constrainRotation`.
- * By default rotation is allowed and its value is snapped to zero when approaching the
+ * The *rotation constraint* snaps to specific angles. It is determined by the
+ * following options: `enableRotation` and `constrainRotation`. By default
+ * rotation is allowed and its value is snapped to zero when approaching the
  * horizontal.
  *
- * The *center constraint* is determined by the `extent` option. By
- * default the view center is not constrained at all.
+ * The *center constraint* is determined by the `extent` option. By default the
+ * view center is not constrained at all.
  *
  * ### Changing the view state
  *
@@ -292,18 +658,18 @@ const DEFAULT_MIN_ZOOM: number = 0;
  * `getResolution()` will return `10`.
  *
  * A consequence of this is that, when applying a delta on the view state, one
- * should use `adjustCenter`, `adjustRotation`, `adjustZoom` and `adjustResolution`
- * rather than the corresponding setters. This will let view do its internal
- * computations. Besides, the `adjust*` methods also take an `anchor`
- * argument which allows specifying an origin for the transformation.
+ * should use `adjustCenter`, `adjustRotation`, `adjustZoom` and
+ * `adjustResolution` rather than the corresponding setters. This will let view
+ * do its internal computations. Besides, the `adjust*` methods also take an
+ * `anchor` argument which allows specifying an origin for the transformation.
  *
  * ### Interacting with the view
  *
- * View constraints are usually only applied when the view is *at rest*, meaning that
- * no interaction or animation is ongoing. As such, if the user puts the view in a
- * state that is not equivalent to a constrained one (e.g. rotating the view when
- * the snap angle is 0), an animation will be triggered at the interaction end to
- * put back the view to a stable state;
+ * View constraints are usually only applied when the view is *at rest*,
+ * meaning that no interaction or animation is ongoing. As such, if the user
+ * puts the view in a state that is not equivalent to a constrained one (e.g.
+ * rotating the view when the snap angle is 0), an animation will be triggered
+ * at the interaction end to put back the view to a stable state;
  *
  * @api
  */
@@ -324,94 +690,119 @@ export class View extends BaseObject {
     override un: ViewOnSignature<void>;
 
     /**
-     * @param {ViewOptions} [options] View options.
+     * 
      */
-    constructor(options: ViewOptions) {
+    private hints_: [ViewHint, ViewHint] = [0, 0];
+
+    /**
+     * 
+     */
+    private animations_: Animation[][] = [];
+
+    /**
+     * 
+     */
+    private updateAnimationKey_: number | undefined;
+
+    /**
+     * 
+     */
+    private projection_: Projection;
+
+    /**
+     * 
+     */
+    private viewportSize_: Size = [100, 100];
+
+    /**
+     * 
+     */
+    private targetCenter_: Coordinate | undefined = undefined;
+
+    /**
+     * 
+     */
+    private targetResolution_: number | undefined;
+
+    /**
+     * 
+     */
+    private targetRotation_: number | undefined;
+
+    /**
+     * 
+     */
+    private nextCenter_: Coordinate | null = null;
+
+    /**
+     * 
+     */
+    private nextResolution_: number | undefined;
+
+    /**
+     * 
+     */
+    private nextRotation_: number | undefined;
+
+    /**
+     * 
+     */
+    private cancelAnchor_: Coordinate | undefined = undefined;
+
+    /**
+     * 
+     */
+    private maxResolution_: number = undefined as unknown as number;
+
+    /**
+     * 
+     */
+    private minResolution_: number = undefined as unknown as number;
+
+    /**
+     * 
+     */
+    private zoomFactor_: number = undefined as unknown as number;
+
+    /**
+     * 
+     */
+    private resolutions_: number[] | undefined = undefined;
+
+    /**
+     * 
+     */
+    private padding_: [number, number, number, number] | undefined = undefined;
+
+    /**
+     * 
+     */
+    private minZoom_: number = undefined as unknown as number;
+
+    /**
+     * 
+     */
+    private constraints_: Constraints = undefined as unknown as Constraints;
+
+    /**
+     * @param options View options.
+     */
+    constructor(options?: ViewOptions) {
         super();
         this.on = this.onInternal as ViewOnSignature<EventsKey>;
         this.once = this.onceInternal as ViewOnSignature<EventsKey>;
         this.un = this.unInternal as ViewOnSignature<void>;
 
         options = Object.assign({}, options);
-
-        /**
-         * @private
-         * @type {number[]}
-         */
-        this.hints_ = [0, 0];
-
-        /**
-         * @private
-         * @type {Array<Array<Animation>>}
-         */
-        this.animations_ = [];
-
-        /**
-         * @private
-         * @type {number|undefined}
-         */
-        this.updateAnimationKey_;
-
-        /**
-         * @private
-         * @const
-         * @type {Projection}
-         */
-        this.projection_ = createProjection(options.projection, 'EPSG:3857');
-
-        /**
-         * @private
-         * @type {Size}
-         */
-        this.viewportSize_ = [100, 100];
-
-        /**
-         * @private
-         * @type {Coordinate|undefined}
-         */
-        this.targetCenter_ = null;
-
-        /**
-         * @private
-         * @type {number|undefined}
-         */
-        this.targetResolution_;
-
-        /**
-         * @private
-         * @type {number|undefined}
-         */
-        this.targetRotation_;
-
-        /**
-         * @private
-         * @type {Coordinate}
-         */
-        this.nextCenter_ = null;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.nextResolution_;
-
-        /**
-         * @private
-         * @type {number}
-         */
-        this.nextRotation_;
-
-        /**
-         * @private
-         * @type {Coordinate|undefined}
-         */
-        this.cancelAnchor_ = undefined;
+        this.projection_ = createProjection(options.projection, 'EPSG:3857')!;
 
         if (options.projection) {
             disableCoordinateWarning();
         }
         if (options.center) {
-            options.center = fromUserCoordinate(options.center, this.projection_);
+            options.center = fromUserCoordinate(
+                options.center, this.projection_
+            );
         }
         if (options.extent) {
             options.extent = fromUserExtent(options.extent, this.projection_);
@@ -422,51 +813,22 @@ export class View extends BaseObject {
 
     /**
      * Set up the view with the given options.
-     * @param {ViewOptions} options View options.
+     * 
+     * @param options View options.
      */
     applyOptions_(options: ViewOptions) {
         const properties = Object.assign({}, options);
-        for (const key in ViewProperty) {
-            delete properties[key];
+        for (const key in ViewProperties) {
+            delete properties[key as ViewProperty];
         }
         this.setProperties(properties, true);
 
         const resolutionConstraintInfo = createResolutionConstraint(options);
-
-        /**
-         * @private
-         * @type {number}
-         */
         this.maxResolution_ = resolutionConstraintInfo.maxResolution;
-
-        /**
-         * @private
-         * @type {number}
-         */
         this.minResolution_ = resolutionConstraintInfo.minResolution;
-
-        /**
-         * @private
-         * @type {number}
-         */
         this.zoomFactor_ = resolutionConstraintInfo.zoomFactor;
-
-        /**
-         * @private
-         * @type {number[]|undefined}
-         */
         this.resolutions_ = options.resolutions;
-
-        /**
-         * @type {number[]|undefined}
-         * @private
-         */
         this.padding_ = options.padding;
-
-        /**
-         * @private
-         * @type {number}
-         */
         this.minZoom_ = resolutionConstraintInfo.minZoom;
 
         const centerConstraint = createCenterConstraint(options);
@@ -496,14 +858,15 @@ export class View extends BaseObject {
 
     /**
      * Padding (in css pixels).
-     * If the map viewport is partially covered with other content (overlays) along
-     * its edges, this setting allows to shift the center of the viewport away from that
-     * content. The order of the values in the array is top, right, bottom, left.
-     * The default is no padding, which is equivalent to `[0, 0, 0, 0]`.
-     * @type {number[]|undefined}
+     *
+     * If the map viewport is partially covered with other content (overlays)
+     * along its edges, this setting allows to shift the center of the viewport
+     * away from that content. The order of the values in the array is top,
+     * right, bottom, left. The default is no padding, which is equivalent to
+     * `[0, 0, 0, 0]`.
      * @api
      */
-    get padding() {
+    get padding(): [number, number, number, number] | undefined {
         return this.padding_;
     }
     set padding(padding) {
@@ -514,6 +877,9 @@ export class View extends BaseObject {
             const newPadding = padding || [0, 0, 0, 0];
             oldPadding = oldPadding || [0, 0, 0, 0];
             const resolution = this.getResolution();
+            if (resolution === undefined) {
+                throw new Error('Resolution is not defined');
+            }
             const offsetX =
                 (resolution / 2) *
                 (newPadding[3] - oldPadding[3] + oldPadding[1] - newPadding[1]);
@@ -525,15 +891,19 @@ export class View extends BaseObject {
     }
 
     /**
-     * Get an updated version of the view options used to construct the view.  The
-     * current resolution (or zoom), center, and rotation are applied to any stored
-     * options.  The provided options can be used to apply new min/max zoom or
-     * resolution limits.
-     * @param {ViewOptions} newOptions New options to be applied.
-     * @return {ViewOptions} New options updated with the current view state.
+     * Get an updated version of the view options used to construct the view.
+     *
+     * The current resolution (or zoom), center, and rotation are applied to
+     * any stored options.
+     *
+     * The provided options can be used to apply new min/max zoom or resolution
+     * limits.
+     * 
+     * @param newOptions New options to be applied.
+     * @return New options updated with the current view state.
      */
     getUpdatedOptions_(newOptions: ViewOptions): ViewOptions {
-        const options = this.getProperties();
+        const options = this.getProperties<ViewOptions>();
 
         // preserve resolution (or zoom)
         if (options.resolution !== undefined) {
@@ -553,14 +923,14 @@ export class View extends BaseObject {
 
     /**
      * Animate the view.  The view's center, zoom (or resolution), and rotation
-     * can be animated for smooth transitions between view states.  For example,
-     * to animate the view to a new zoom level:
+     * can be animated for smooth transitions between view states.  For
+     * example, to animate the view to a new zoom level:
      *
      *     view.animate({zoom: view.getZoom() + 1});
      *
-     * By default, the animation lasts one second and uses in-and-out easing.  You
-     * can customize this behavior by including `duration` (in milliseconds) and
-     * `easing` options (see {@link module:ol/easing}).
+     * By default, the animation lasts one second and uses in-and-out easing.
+     * You can customize this behavior by including `duration` (in
+     * milliseconds) and `easing` options (see {@link easing}).
      *
      * To chain together multiple animations, call the method with multiple
      * animation objects.  For example, to first zoom and then pan:
@@ -569,19 +939,19 @@ export class View extends BaseObject {
      *
      * If you provide a function as the last argument to the animate method, it
      * will get called at the end of an animation series.  The callback will be
-     * called with `true` if the animation series completed on its own or `false`
-     * if it was cancelled.
+     * called with `true` if the animation series completed on its own or
+     * `false` if it was cancelled.
      *
-     * Animations are cancelled by user interactions (e.g. dragging the map) or by
-     * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation()`
-     * (or another method that calls one of these).
+     * Animations are cancelled by user interactions (e.g. dragging the map) or
+     * by calling `view.setCenter()`, `view.setResolution()`, or
+     * `view.setRotation()` (or another method that calls one of these).
      *
-     * @param {...(AnimationOptions|function(boolean): void)} var_args Animation
-     *     options.  Multiple animations can be run in series by passing multiple
-     *     options objects.  To run multiple animations in parallel, call the method
-     *     multiple times.  An optional callback can be provided as a final
-     *     argument.  The callback will be called with a boolean indicating whether
-     *     the animation completed without being cancelled.
+     * @param var_args Animation options.  Multiple animations can be run in
+     *     series by passing multiple options objects.  To run multiple
+     *     animations in parallel, call the method multiple times.  An optional
+     *     callback can be provided as a final argument.  The callback will be
+     *     called with a boolean indicating whether the animation completed
+     *     without being cancelled.
      * @api
      */
     animate(var_args: (AnimationOptions | ((arg0: boolean) => void))[]) {
@@ -611,9 +981,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {...(AnimationOptions|function(boolean): void)} var_args Animation options.
+     * @param var_args Animation options.
      */
-    animateInternal(var_args: (AnimationOptions | ((arg0: boolean) => void))[]) {
+    animateInternal(
+        var_args: (AnimationOptions | ((arg0: boolean) => void))[]
+    ) {
         let animationCount = arguments.length;
         let callback;
         if (
@@ -648,18 +1020,21 @@ export class View extends BaseObject {
         }
 
         let start = Date.now();
-        let center = this.targetCenter_.slice();
+        assert(this.targetCenter_, "targetCenter_ must be defined");
+        let center = this.targetCenter_!.slice();
         let resolution = this.targetResolution_;
         let rotation = this.targetRotation_;
         const series = [];
         for (; i < animationCount; ++i) {
-            const options = /** @type {AnimationOptions} */ (arguments[i]);
+            const options = arguments[i] as AnimationOptions;
 
-            const animation = {
+            const animation: Animation = {
                 start: start,
                 complete: false,
                 anchor: options.anchor,
-                duration: options.duration !== undefined ? options.duration : 1000,
+                duration: options.duration !== undefined
+                    ? options.duration
+                    : 1000,
                 easing: options.easing || inAndOut,
                 callback: callback,
             };
@@ -672,7 +1047,9 @@ export class View extends BaseObject {
 
             if (options.zoom !== undefined) {
                 animation.sourceResolution = resolution;
-                animation.targetResolution = this.getResolutionForZoom(options.zoom);
+                animation.targetResolution = this.getResolutionForZoom(
+                    options.zoom
+                );
                 resolution = animation.targetResolution;
             } else if (options.resolution) {
                 animation.sourceResolution = resolution;
@@ -681,10 +1058,12 @@ export class View extends BaseObject {
             }
 
             if (options.rotation !== undefined) {
+                assert(rotation !== undefined, "rotation must be defined");
                 animation.sourceRotation = rotation;
-                const delta =
-                    modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
-                animation.targetRotation = rotation + delta;
+                const delta = modulo(
+                    options.rotation - rotation! + Math.PI, 2 * Math.PI
+                ) - Math.PI;
+                animation.targetRotation = rotation! + delta;
                 rotation = animation.targetRotation;
             }
 
@@ -698,26 +1077,28 @@ export class View extends BaseObject {
             series.push(animation);
         }
         this.animations_.push(series);
-        this.setHint(ViewHint.ANIMATING, 1);
+        this.setHint(ViewHints.ANIMATING, 1);
         this.updateAnimations_();
     }
 
     /**
      * Determine if the view is being animated.
-     * @return {boolean} The view is being animated.
+     * @return The view is being animated.
      * @api
      */
     getAnimating(): boolean {
-        return this.hints_[ViewHint.ANIMATING] > 0;
+        return this.hints_[ViewHints.ANIMATING] > 0;
     }
 
     /**
-     * Determine if the user is interacting with the view, such as panning or zooming.
-     * @return {boolean} The view is being interacted with.
+     * Determine if the user is interacting with the view, such as panning or
+     * zooming.
+     * 
+     * @return The view is being interacted with.
      * @api
      */
     getInteracting(): boolean {
-        return this.hints_[ViewHint.INTERACTING] > 0;
+        return this.hints_[ViewHints.INTERACTING] > 0;
     }
 
     /**
@@ -725,11 +1106,11 @@ export class View extends BaseObject {
      * @api
      */
     cancelAnimations() {
-        this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
+        this.setHint(ViewHints.ANIMATING, -this.hints_[ViewHints.ANIMATING]);
         let anchor;
         for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
             const series = this.animations_[i];
-            if (series[0].callback) {
+            if (series[0].callback as any) {
                 animationCallback(series[0].callback, false);
             }
             if (!anchor) {
@@ -846,7 +1227,7 @@ export class View extends BaseObject {
             }
             if (seriesComplete) {
                 this.animations_[i] = null;
-                this.setHint(ViewHint.ANIMATING, -1);
+                this.setHint(ViewHints.ANIMATING, -1);
                 this.nextCenter_ = null;
                 this.nextResolution_ = NaN;
                 this.nextRotation_ = NaN;
@@ -866,9 +1247,9 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {number} rotation Target rotation.
-     * @param {Coordinate} anchor Rotation anchor.
-     * @return {Coordinate|undefined} Center for rotation and anchor.
+     * @param rotation Target rotation.
+     * @param anchor Rotation anchor.
+     * @return Center for rotation and anchor.
      */
     calculateCenterRotate(rotation: number, anchor: Coordinate): Coordinate | undefined {
         let center;
@@ -882,9 +1263,9 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {number} resolution Target resolution.
-     * @param {Coordinate} anchor Zoom anchor.
-     * @return {Coordinate|undefined} Center for resolution and anchor.
+     * @param resolution Target resolution.
+     * @param anchor Zoom anchor.
+     * @return Center for resolution and anchor.
      */
     calculateCenterZoom(resolution: number, anchor: Coordinate): Coordinate | undefined {
         let center;
@@ -904,32 +1285,45 @@ export class View extends BaseObject {
 
     /**
      * Returns the current viewport size.
-     * @private
-     * @param {number} [rotation] Take into account the rotation of the viewport when giving the size
-     * @return {Size} Viewport size or `[100, 100]` when no viewport is found.
+     *
+     * @param rotation Take into account the rotation of the viewport when
+     *      giving the size
+     * @return Viewport size or `[100, 100]` when no viewport is found.
      */
-    getViewportSize_(rotation: number): Size {
+    private getViewportSize_(rotation?: number): Size {
         const size = this.viewportSize_;
         if (rotation) {
             const w = size[0];
             const h = size[1];
             return [
-                Math.abs(w * Math.cos(rotation)) + Math.abs(h * Math.sin(rotation)),
-                Math.abs(w * Math.sin(rotation)) + Math.abs(h * Math.cos(rotation)),
+                (
+                    Math.abs(w * Math.cos(rotation)) +
+                    Math.abs(h * Math.sin(rotation))
+                ),
+                (
+                    Math.abs(w * Math.sin(rotation)) +
+                    Math.abs(h * Math.cos(rotation))
+                ),
             ];
         }
         return size;
     }
 
     /**
-     * Stores the viewport size on the view. The viewport size is not read every time from the DOM
-     * to avoid performance hit and layout reflow.
-     * This should be done on map size change.
-     * Note: the constraints are not resolved during an animation to avoid stopping it
-     * @param {Size} [size] Viewport size; if undefined, [100, 100] is assumed
+     * Stores the viewport size on the view.
+     *
+     * The viewport size is not read every time from the DOM to avoid
+     * performance hit and layout reflow. This should be done on map size
+     * change.
+     *
+     * Note: the constraints are not resolved during an animation to avoid
+     * stopping it
+     * @param size Viewport size; if undefined, [100, 100] is assumed
      */
-    setViewportSize(size: Size) {
-        this.viewportSize_ = Array.isArray(size) ? size.slice() : [100, 100];
+    setViewportSize(size?: Size) {
+        this.viewportSize_ = Array.isArray(size)
+            ? size.slice() as Size
+            : [100, 100];
         if (!this.getAnimating()) {
             this.resolveConstraints(0);
         }
@@ -937,7 +1331,8 @@ export class View extends BaseObject {
 
     /**
      * Get the view center.
-     * @return {Coordinate|undefined} The center of the view.
+     * 
+     * @return The center of the view.
      * @observable
      * @api
      */
@@ -951,33 +1346,31 @@ export class View extends BaseObject {
 
     /**
      * Get the view center without transforming to user projection.
-     * @return {Coordinate|undefined} The center of the view.
+     * @return The center of the view.
      */
     getCenterInternal(): Coordinate | undefined {
-        return /** @type {Coordinate|undefined} */ (
-            this.get(ViewProperty.CENTER)
-        );
+        return this.get(ViewProperties.CENTER);
     }
 
     /**
-     * @return {Constraints} Constraints.
+     * @return Constraints.
      */
     getConstraints(): Constraints {
         return this.constraints_;
     }
 
     /**
-     * @return {boolean} Resolution constraint is set
+     * @return Resolution constraint is set
      */
     getConstrainResolution(): boolean {
         return this.get('constrainResolution');
     }
 
     /**
-     * @param {number[]} [hints] Destination array.
-     * @return {number[]} Hint.
+     * @param hints Destination array.
+     * @return Hint.
      */
-    getHints(hints: number[]): number[] {
+    getHints(hints?: number[]): number[] {
         if (hints !== undefined) {
             hints[0] = this.hints_[0];
             hints[1] = this.hints_[1];
@@ -988,33 +1381,31 @@ export class View extends BaseObject {
 
     /**
      * Calculate the extent for the current view state and the passed box size.
-     * @param {Size} [size] The pixel dimensions of the box
-     * into which the calculated extent should fit. Defaults to the size of the
-     * map the view is associated with.
-     * If no map or multiple maps are connected to the view, provide the desired
-     * box size (e.g. `map.getSize()`).
-     * @return {Extent} Extent.
+     *
+     * @param size The pixel dimensions of the box into which the calculated
+     *      extent should fit. Defaults to the size of the map the view is
+     *      associated with. If no map or multiple maps are connected to the
+     *      view, provide the desired box size (e.g. `map.getSize()`).
+     * @return Extent.
      * @api
      */
-    calculateExtent(size: Size): Extent {
+    calculateExtent(size?: Size): Extent {
         const extent = this.calculateExtentInternal(size);
         return toUserExtent(extent, this.getProjection());
     }
 
     /**
-     * @param {Size} [size] Box pixel size. If not provided,
-     * the map's last known viewport size will be used.
-     * @return {Extent} Extent.
+     * @param size Box pixel size. If not provided, the map's last known
+     *      viewport size will be used.
+     * @return Extent.
      */
-    calculateExtentInternal(size: Size): Extent {
+    calculateExtentInternal(size?: Size): Extent {
         size = size || this.getViewportSizeMinusPadding_();
-        const center = /** @type {!Coordinate} */ (
-            this.getCenterInternal()
-        );
+        const center = this.getCenterInternal() as Coordinate;
         assert(center, 'The view center is not defined');
-        const resolution = /** @type {!number} */ (this.getResolution());
+        const resolution = this.getResolution() as number;
         assert(resolution !== undefined, 'The view resolution is not defined');
-        const rotation = /** @type {!number} */ (this.getRotation());
+        const rotation = this.getRotation() as number;
         assert(rotation !== undefined, 'The view rotation is not defined');
 
         return getForViewAndSize(center, resolution, rotation, size);
@@ -1022,7 +1413,8 @@ export class View extends BaseObject {
 
     /**
      * Get the maximum resolution of the view.
-     * @return {number} The maximum resolution of the view.
+     * 
+     * @return The maximum resolution of the view.
      * @api
      */
     getMaxResolution(): number {
@@ -1031,7 +1423,8 @@ export class View extends BaseObject {
 
     /**
      * Get the minimum resolution of the view.
-     * @return {number} The minimum resolution of the view.
+     * 
+     * @return The minimum resolution of the view.
      * @api
      */
     getMinResolution(): number {
@@ -1040,18 +1433,16 @@ export class View extends BaseObject {
 
     /**
      * Get the maximum zoom level for the view.
-     * @return {number} The maximum zoom level.
+     * @return The maximum zoom level.
      * @api
      */
     getMaxZoom(): number {
-        return /** @type {number} */ (
-            this.getZoomForResolution(this.minResolution_)
-        );
+        return this.getZoomForResolution(this.minResolution_)!;
     }
 
     /**
      * Set a new maximum zoom level for the view.
-     * @param {number} zoom The maximum zoom level.
+     * @param zoom The maximum zoom level.
      * @api
      */
     setMaxZoom(zoom: number) {
@@ -1060,18 +1451,16 @@ export class View extends BaseObject {
 
     /**
      * Get the minimum zoom level for the view.
-     * @return {number} The minimum zoom level.
+     * @return The minimum zoom level.
      * @api
      */
     getMinZoom(): number {
-        return /** @type {number} */ (
-            this.getZoomForResolution(this.maxResolution_)
-        );
+        return this.getZoomForResolution(this.maxResolution_)!;
     }
 
     /**
      * Set a new minimum zoom level for the view.
-     * @param {number} zoom The minimum zoom level.
+     * @param zoom The minimum zoom level.
      * @api
      */
     setMinZoom(zoom: number) {
@@ -1080,7 +1469,7 @@ export class View extends BaseObject {
 
     /**
      * Set whether the view should allow intermediary zoom levels.
-     * @param {boolean} enabled Whether the resolution is constrained.
+     * @param enabled Whether the resolution is constrained.
      * @api
      */
     setConstrainResolution(enabled: boolean) {
@@ -1089,7 +1478,7 @@ export class View extends BaseObject {
 
     /**
      * Get the view projection.
-     * @return {Projection} The projection of the view.
+     * @return The projection of the view.
      * @api
      */
     getProjection(): Projection {
@@ -1098,18 +1487,21 @@ export class View extends BaseObject {
 
     /**
      * Get the view resolution.
-     * @return {number|undefined} The resolution of the view.
+     * @return The resolution of the view.
      * @observable
      * @api
      */
     getResolution(): number | undefined {
-        return /** @type {number|undefined} */ (this.get(ViewProperty.RESOLUTION));
+        return this.get(ViewProperties.RESOLUTION);
     }
 
     /**
-     * Get the resolutions for the view. This returns the array of resolutions
-     * passed to the constructor of the View, or undefined if none were given.
-     * @return {number[]|undefined} The resolutions of the view.
+     * Get the resolutions for the view.
+     *
+     * This returns the array of resolutions passed to the constructor of the
+     * View, or undefined if none were given.
+     *
+     * @return The resolutions of the view.
      * @api
      */
     getResolutions(): number[] | undefined {
@@ -1118,13 +1510,13 @@ export class View extends BaseObject {
 
     /**
      * Get the resolution for a provided extent (in map units) and size (in pixels).
-     * @param {Extent} extent Extent.
-     * @param {Size} [size] Box pixel size.
-     * @return {number} The resolution at which the provided extent will render at
+     * @param extent Extent.
+     * @param size Box pixel size.
+     * @return The resolution at which the provided extent will render at
      *     the given size.
      * @api
      */
-    getResolutionForExtent(extent: Extent, size: Size): number {
+    getResolutionForExtent(extent: Extent, size?: Size): number {
         return this.getResolutionForExtentInternal(
             fromUserExtent(extent, this.getProjection()),
             size,
@@ -1133,12 +1525,12 @@ export class View extends BaseObject {
 
     /**
      * Get the resolution for a provided extent (in map units) and size (in pixels).
-     * @param {Extent} extent Extent.
-     * @param {Size} [size] Box pixel size.
-     * @return {number} The resolution at which the provided extent will render at
+     * @param extent Extent.
+     * @param size Box pixel size.
+     * @return The resolution at which the provided extent will render at
      *     the given size.
      */
-    getResolutionForExtentInternal(extent: Extent, size: Size): number {
+    getResolutionForExtentInternal(extent: Extent, size?: Size): number {
         size = size || this.getViewportSizeMinusPadding_();
         const xResolution = getWidth(extent) / size[0];
         const yResolution = getHeight(extent) / size[1];
@@ -1146,20 +1538,24 @@ export class View extends BaseObject {
     }
 
     /**
-     * Return a function that returns a value between 0 and 1 for a
-     * resolution. Exponential scaling is assumed.
-     * @param {number} [power] Power.
-     * @return {function(number): number} Resolution for value function.
+     * Return a function that returns a value between 0 and 1 for a resolution.
+     *
+     * Exponential scaling is assumed.
+     *
+     * @param power Power.
+     * @return Resolution for value function.
      */
-    getResolutionForValueFunction(power: number): (arg0: number) => number {
+    getResolutionForValueFunction(
+        power?: number
+    ): (resolution: number) => number {
         power = power || 2;
         const maxResolution = this.getConstrainedResolution(this.maxResolution_);
         const minResolution = this.minResolution_;
         const max = Math.log(maxResolution / minResolution) / Math.log(power);
         return (
             /**
-             * @param {number} value Value.
-             * @return {number} Resolution.
+             * @param value Value.
+             * @return Resolution.
              */
             function (value: number): number {
                 const resolution = maxResolution / Math.pow(power, value * max);
@@ -1170,29 +1566,35 @@ export class View extends BaseObject {
 
     /**
      * Get the view rotation.
-     * @return {number} The rotation of the view in radians.
+     * 
+     * @return The rotation of the view in radians.
      * @observable
      * @api
      */
     getRotation(): number {
-        return /** @type {number} */ (this.get(ViewProperty.ROTATION));
+        return this.get(ViewProperties.ROTATION);
     }
 
     /**
      * Return a function that returns a resolution for a value between
-     * 0 and 1. Exponential scaling is assumed.
-     * @param {number} [power] Power.
-     * @return {function(number): number} Value for resolution function.
+     * 0 and 1.
+     * 
+     * Exponential scaling is assumed.
+     * 
+     * @param power Power.
+     * @return Value for resolution function.
      */
-    getValueForResolutionFunction(power: number): (arg0: number) => number {
+    getValueForResolutionFunction(
+        power: number
+    ): (resolution: number) => number {
         const logPower = Math.log(power || 2);
         const maxResolution = this.getConstrainedResolution(this.maxResolution_);
         const minResolution = this.minResolution_;
         const max = Math.log(maxResolution / minResolution) / logPower;
         return (
             /**
-             * @param {number} resolution Resolution.
-             * @return {number} Value.
+             * @param resolution Resolution.
+             * @return Value.
              */
             function (resolution: number): number {
                 const value = Math.log(maxResolution / resolution) / logPower / max;
@@ -1203,11 +1605,12 @@ export class View extends BaseObject {
 
     /**
      * Returns the size of the viewport minus padding.
-     * @private
-     * @param {number} [rotation] Take into account the rotation of the viewport when giving the size
-     * @return {Size} Viewport size reduced by the padding.
+     *
+     * @param rotation Take into account the rotation of the viewport when
+     *      giving the size
+     * @return Viewport size reduced by the padding.
      */
-    getViewportSizeMinusPadding_(rotation: number): Size {
+    private getViewportSizeMinusPadding_(rotation?: number): Size {
         let size = this.getViewportSize_(rotation);
         const padding = this.padding_;
         if (padding) {
@@ -1220,15 +1623,13 @@ export class View extends BaseObject {
     }
 
     /**
-     * @return {State} View state.
+     * @return View state.
      */
     getState(): State {
         const projection = this.getProjection();
         const resolution = this.getResolution();
         const rotation = this.getRotation();
-        let center = /** @type {Coordinate} */ (
-            this.getCenterInternal()
-        );
+        let center = this.getCenterInternal();
         const padding = this.padding_;
         if (padding) {
             const reducedSize = this.getViewportSizeMinusPadding_();
@@ -1253,7 +1654,7 @@ export class View extends BaseObject {
     }
 
     /**
-     * @return {ViewStateLayerStateExtent} Like `FrameState`, but just `viewState` and `extent`.
+     * @return Like `FrameState`, but just `viewState` and `extent`.
      */
     getViewStateAndExtent(): ViewStateLayerStateExtent {
         return {
@@ -1263,10 +1664,12 @@ export class View extends BaseObject {
     }
 
     /**
-     * Get the current zoom level. This method may return non-integer zoom levels
-     * if the view does not constrain the resolution, or if an interaction or
-     * animation is underway.
-     * @return {number|undefined} Zoom.
+     * Get the current zoom level.
+     *
+     * This method may return non-integer zoom levels if the view does not
+     * constrain the resolution, or if an interaction or animation is underway.
+     *
+     * @return Zoom.
      * @api
      */
     getZoom(): number | undefined {
@@ -1280,8 +1683,9 @@ export class View extends BaseObject {
 
     /**
      * Get the zoom level for a resolution.
-     * @param {number} resolution The resolution.
-     * @return {number|undefined} The zoom level for the provided resolution.
+     * 
+     * @param resolution The resolution.
+     * @return The zoom level for the provided resolution.
      * @api
      */
     getZoomForResolution(resolution: number): number | undefined {
@@ -1305,8 +1709,9 @@ export class View extends BaseObject {
 
     /**
      * Get the resolution for a zoom level.
-     * @param {number} zoom Zoom level.
-     * @return {number} The view resolution for the provided zoom level.
+     * 
+     * @param zoom Zoom level.
+     * @return The view resolution for the provided zoom level.
      * @api
      */
     getResolutionForZoom(zoom: number): number {
@@ -1333,21 +1738,23 @@ export class View extends BaseObject {
 
     /**
      * Fit the given geometry or extent based on the given map size and border.
-     * The size is pixel dimensions of the box to fit the extent into.
-     * In most cases you will want to use the map size, that is `map.getSize()`.
-     * Takes care of the map angle.
-     * @param {SimpleGeometry|Extent} geometryOrExtent The geometry or
-     *     extent to fit the view to.
-     * @param {FitOptions} [options] Options.
+     *
+     * The size is pixel dimensions of the box to fit the extent into. In most
+     * cases you will want to use the map size, that is `map.getSize()`. Takes
+     * care of the map angle.
+     *
+     * @param geometryOrExtent The geometry or extent
+     *     to fit the view to.
+     * @param options Options.
      * @api
      */
-    fit(geometryOrExtent: SimpleGeometry | Extent, options: FitOptions) {
-        /** @type {SimpleGeometry} */
+    fit(geometryOrExtent: SimpleGeometry | Extent, options?: FitOptions) {
         let geometry: SimpleGeometry;
         assert(
             Array.isArray(geometryOrExtent) ||
-            typeof (/** @type {?} */ (geometryOrExtent).getSimplifiedGeometry) ===
-            'function',
+            typeof (
+                geometryOrExtent as any
+            ).getSimplifiedGeometry === 'function',
             'Invalid extent or geometry provided as `geometry`',
         );
         if (Array.isArray(geometryOrExtent)) {
@@ -1355,7 +1762,9 @@ export class View extends BaseObject {
                 !isEmpty(geometryOrExtent),
                 'Cannot fit empty extent provided as `geometry`',
             );
-            const extent = fromUserExtent(geometryOrExtent, this.getProjection());
+            const extent = fromUserExtent(
+                geometryOrExtent, this.getProjection()
+            );
             geometry = polygonFromExtent(extent);
         } else if (geometryOrExtent.getType() === 'Circle') {
             const extent = fromUserExtent(
@@ -1367,10 +1776,12 @@ export class View extends BaseObject {
         } else {
             const userProjection = getUserProjection();
             if (userProjection) {
-                geometry = /** @type {SimpleGeometry} */ (
+                geometry = (
                     geometryOrExtent
                         .clone()
-                        .transform(userProjection, this.getProjection())
+                        .transform(
+                            userProjection, this.getProjection()
+                        ) as SimpleGeometry
                 );
             } else {
                 geometry = geometryOrExtent;
@@ -1382,10 +1793,11 @@ export class View extends BaseObject {
 
     /**
      * Calculate rotated extent
-     * @param {SimpleGeometry} geometry The geometry.
-     * @return {import("./extent").Extent} The rotated extent for the geometry.
+     * 
+     * @param geometry The geometry.
+     * @return The rotated extent for the geometry.
      */
-    rotatedExtentForGeometry(geometry: SimpleGeometry): import("./extent").Extent {
+    rotatedExtentForGeometry(geometry: SimpleGeometry): Extent {
         const rotation = this.getRotation();
         const cosAngle = Math.cos(rotation);
         const sinAngle = Math.sin(-rotation);
@@ -1407,10 +1819,10 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {SimpleGeometry} geometry The geometry.
-     * @param {FitOptions} [options] Options.
+     * @param geometry The geometry.
+     * @param options Options.
      */
-    fitInternal(geometry: SimpleGeometry, options: FitOptions) {
+    fitInternal(geometry: SimpleGeometry, options?: FitOptions) {
         options = options || {};
         let size = options.size;
         if (!size) {
@@ -1472,12 +1884,13 @@ export class View extends BaseObject {
 
     /**
      * Center on coordinate and view position.
-     * @param {Coordinate} coordinate Coordinate.
-     * @param {Size} size Box pixel size.
-     * @param {import("./pixel").Pixel} position Position on the view to center on.
+     * 
+     * @param coordinate Coordinate.
+     * @param size Box pixel size.
+     * @param position Position on the view to center on.
      * @api
      */
-    centerOn(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel) {
+    centerOn(coordinate: Coordinate, size: Size, position: Pixel) {
         this.centerOnInternal(
             fromUserCoordinate(coordinate, this.getProjection()),
             size,
@@ -1486,11 +1899,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {Coordinate} coordinate Coordinate.
-     * @param {Size} size Box pixel size.
-     * @param {import("./pixel").Pixel} position Position on the view to center on.
+     * @param coordinate Coordinate.
+     * @param size Box pixel size.
+     * @param position Position on the view to center on.
      */
-    centerOnInternal(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel) {
+    centerOnInternal(coordinate: Coordinate, size: Size, position: Pixel) {
         this.setCenterInternal(
             calculateCenterOn(
                 coordinate,
@@ -1504,13 +1917,19 @@ export class View extends BaseObject {
 
     /**
      * Calculates the shift between map and viewport center.
-     * @param {Coordinate} center Center.
-     * @param {number} resolution Resolution.
-     * @param {number} rotation Rotation.
-     * @param {Size} size Size.
-     * @return {number[]|undefined} Center shift.
+     * 
+     * @param center Center.
+     * @param resolution Resolution.
+     * @param rotation Rotation.
+     * @param size Size.
+     * @return Center shift.
      */
-    calculateCenterShift(center: Coordinate, resolution: number, rotation: number, size: Size): number[] | undefined {
+    calculateCenterShift(
+        center: Coordinate,
+        resolution: number,
+        rotation: number,
+        size: Size
+    ): number[] | undefined {
         let centerShift;
         const padding = this.padding_;
         if (padding && center) {
@@ -1531,15 +1950,18 @@ export class View extends BaseObject {
     }
 
     /**
-     * @return {boolean} Is defined.
+     * @return Is defined.
      */
     isDef(): boolean {
         return !!this.getCenterInternal() && this.getResolution() !== undefined;
     }
 
     /**
-     * Adds relative coordinates to the center of the view. Any extent constraint will apply.
-     * @param {Coordinate} deltaCoordinates Relative value to add.
+     * Adds relative coordinates to the center of the view.
+     * 
+     * Any extent constraint will apply.
+     * 
+     * @param deltaCoordinates Relative value to add.
      * @api
      */
     adjustCenter(deltaCoordinates: Coordinate) {
@@ -1551,8 +1973,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * Adds relative coordinates to the center of the view. Any extent constraint will apply.
-     * @param {Coordinate} deltaCoordinates Relative value to add.
+     * Adds relative coordinates to the center of the view.
+     * 
+     * Any extent constraint will apply.
+     * 
+     * @param deltaCoordinates Relative value to add.
      */
     adjustCenterInternal(deltaCoordinates: Coordinate) {
         const center = this.targetCenter_;
@@ -1563,24 +1988,28 @@ export class View extends BaseObject {
     }
 
     /**
-     * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
-     * constraint will apply.
-     * @param {number} ratio The ratio to apply on the view resolution.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     * Multiply the view resolution by a ratio, optionally using an anchor.
+     *
+     * Any resolution constraint will apply.
+     *
+     * @param ratio The ratio to apply on the view resolution.
+     * @param anchor The origin of the transformation.
      * @api
      */
-    adjustResolution(ratio: number, anchor: Coordinate) {
+    adjustResolution(ratio: number, anchor?: Coordinate) {
         anchor = anchor && fromUserCoordinate(anchor, this.getProjection());
         this.adjustResolutionInternal(ratio, anchor);
     }
 
     /**
-     * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
-     * constraint will apply.
-     * @param {number} ratio The ratio to apply on the view resolution.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     * Multiply the view resolution by a ratio, optionally using an anchor.
+     *
+     * Any resolution constraint will apply.
+     *
+     * @param ratio The ratio to apply on the view resolution.
+     * @param anchor The origin of the transformation.
      */
-    adjustResolutionInternal(ratio: number, anchor: Coordinate) {
+    adjustResolutionInternal(ratio: number, anchor?: Coordinate) {
         const isMoving = this.getAnimating() || this.getInteracting();
         const size = this.getViewportSize_(this.getRotation());
         const newResolution = this.constraints_.resolution(
@@ -1601,22 +2030,22 @@ export class View extends BaseObject {
     /**
      * Adds a value to the view zoom level, optionally using an anchor. Any resolution
      * constraint will apply.
-     * @param {number} delta Relative value to add to the zoom level.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     * @param delta Relative value to add to the zoom level.
+     * @param anchor The origin of the transformation.
      * @api
      */
-    adjustZoom(delta: number, anchor: Coordinate) {
+    adjustZoom(delta: number, anchor?: Coordinate) {
         this.adjustResolution(Math.pow(this.zoomFactor_, -delta), anchor);
     }
 
     /**
      * Adds a value to the view rotation, optionally using an anchor. Any rotation
      * constraint will apply.
-     * @param {number} delta Relative value to add to the zoom rotation, in radians.
-     * @param {Coordinate} [anchor] The rotation center.
+     * @param delta Relative value to add to the zoom rotation, in radians.
+     * @param anchor The rotation center.
      * @api
      */
-    adjustRotation(delta: number, anchor: Coordinate) {
+    adjustRotation(delta: number, anchor?: Coordinate) {
         if (anchor) {
             anchor = fromUserCoordinate(anchor, this.getProjection());
         }
@@ -1624,10 +2053,10 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {number} delta Relative value to add to the zoom rotation, in radians.
-     * @param {Coordinate} [anchor] The rotation center.
+     * @param delta Relative value to add to the zoom rotation, in radians.
+     * @param anchor The rotation center.
      */
-    adjustRotationInternal(delta: number, anchor: Coordinate) {
+    adjustRotationInternal(delta: number, anchor?: Coordinate) {
         const isMoving = this.getAnimating() || this.getInteracting();
         const newRotation = this.constraints_.rotation(
             this.targetRotation_ + delta,
@@ -1642,7 +2071,8 @@ export class View extends BaseObject {
 
     /**
      * Set the center of the current view. Any extent constraint will apply.
-     * @param {Coordinate|undefined} center The center of the view.
+     * 
+     * @param center The center of the view.
      * @observable
      * @api
      */
@@ -1654,7 +2084,8 @@ export class View extends BaseObject {
 
     /**
      * Set the center using the view projection (not the user projection).
-     * @param {Coordinate|undefined} center The center of the view.
+     * 
+     * @param center The center of the view.
      */
     setCenterInternal(center: Coordinate | undefined) {
         this.targetCenter_ = center;
@@ -1662,19 +2093,22 @@ export class View extends BaseObject {
     }
 
     /**
-     * @param {import("./ViewHint").default} hint Hint.
-     * @param {number} delta Delta.
-     * @return {number} New value.
+     * @param hint Hint.
+     * @param delta Delta.
+     * @return New value.
      */
-    setHint(hint: import("./ViewHint").default, delta: number): number {
+    setHint(hint: ViewHint, delta: number): number {
         this.hints_[hint] += delta;
         this.changed();
         return this.hints_[hint];
     }
 
     /**
-     * Set the resolution for this view. Any resolution constraint will apply.
-     * @param {number|undefined} resolution The resolution of the view.
+     * Set the resolution for this view. 
+     *
+     * Any resolution constraint will apply.
+     *
+     * @param resolution The resolution of the view.
      * @observable
      * @api
      */
@@ -1684,8 +2118,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * Set the rotation for this view. Any rotation constraint will apply.
-     * @param {number} rotation The rotation of the view in radians.
+     * Set the rotation for this view.
+     *
+     *  Any rotation constraint will apply.
+     *
+     * @param rotation The rotation of the view in radians.
      * @observable
      * @api
      */
@@ -1695,8 +2132,11 @@ export class View extends BaseObject {
     }
 
     /**
-     * Zoom to a specific zoom level. Any resolution constrain will apply.
-     * @param {number} zoom Zoom level.
+     * Zoom to a specific zoom level.
+     *
+     * Any resolution constrain will apply.
+     *
+     * @param zoom Zoom level.
      * @api
      */
     setZoom(zoom: number) {
@@ -1705,15 +2145,21 @@ export class View extends BaseObject {
 
     /**
      * Recompute rotation/resolution/center based on target values.
-     * Note: we have to compute rotation first, then resolution and center considering that
-     * parameters can influence one another in case a view extent constraint is present.
-     * @param {boolean} [doNotCancelAnims] Do not cancel animations.
-     * @param {boolean} [forceMoving] Apply constraints as if the view is moving.
-     * @private
+     *
+     * Note: we have to compute rotation first, then resolution and center
+     * considering that parameters can influence one another in case a view
+     * extent constraint is present.
+     *
+     * @param doNotCancelAnims Do not cancel animations.
+     * @param forceMoving Apply constraints as if the view is moving.
      */
-    applyTargetState_(doNotCancelAnims: boolean, forceMoving: boolean) {
-        const isMoving =
-            this.getAnimating() || this.getInteracting() || forceMoving;
+    private applyTargetState_(
+        doNotCancelAnims?: boolean,
+        forceMoving?: boolean
+    ) {
+        const isMoving = (
+            this.getAnimating() || this.getInteracting() || forceMoving
+        );
 
         // compute rotation
         const newRotation = this.constraints_.rotation(
@@ -1740,19 +2186,19 @@ export class View extends BaseObject {
             ),
         );
 
-        if (this.get(ViewProperty.ROTATION) !== newRotation) {
-            this.set(ViewProperty.ROTATION, newRotation);
+        if (this.get(ViewProperties.ROTATION) !== newRotation) {
+            this.set(ViewProperties.ROTATION, newRotation);
         }
-        if (this.get(ViewProperty.RESOLUTION) !== newResolution) {
-            this.set(ViewProperty.RESOLUTION, newResolution);
+        if (this.get(ViewProperties.RESOLUTION) !== newResolution) {
+            this.set(ViewProperties.RESOLUTION, newResolution);
             this.set('zoom', this.getZoom(), true);
         }
         if (
             !newCenter ||
-            !this.get(ViewProperty.CENTER) ||
-            !equals(this.get(ViewProperty.CENTER), newCenter)
+            !this.get(ViewProperties.CENTER) ||
+            !equals(this.get(ViewProperties.CENTER), newCenter)
         ) {
-            this.set(ViewProperty.CENTER, newCenter);
+            this.set(ViewProperties.CENTER, newCenter);
         }
 
         if (this.getAnimating() && !doNotCancelAnims) {
@@ -1764,13 +2210,19 @@ export class View extends BaseObject {
     /**
      * If any constraints need to be applied, an animation will be triggered.
      * This is typically done on interaction end.
-     * Note: calling this with a duration of 0 will apply the constrained values straight away,
-     * without animation.
-     * @param {number} [duration] The animation duration in ms.
-     * @param {number} [resolutionDirection] Which direction to zoom.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     *
+     * Note: calling this with a duration of 0 will apply the constrained
+     * values straight away, without animation.
+     *
+     * @param duration The animation duration in ms.
+     * @param resolutionDirection Which direction to zoom.
+     * @param anchor The origin of the transformation.
      */
-    resolveConstraints(duration: number, resolutionDirection: number, anchor: Coordinate) {
+    resolveConstraints(
+        duration?: number,
+        resolutionDirection?: number,
+        anchor?: Coordinate
+    ) {
         duration = duration !== undefined ? duration : 200;
         const direction = resolutionDirection || 0;
 
@@ -1835,18 +2287,22 @@ export class View extends BaseObject {
     beginInteraction() {
         this.resolveConstraints(0);
 
-        this.setHint(ViewHint.INTERACTING, 1);
+        this.setHint(ViewHints.INTERACTING, 1);
     }
 
     /**
      * Notify the View that an interaction has ended. The view state will be resolved
      * to a stable one if needed (depending on its constraints).
-     * @param {number} [duration] Animation duration in ms.
-     * @param {number} [resolutionDirection] Which direction to zoom.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     * @param duration Animation duration in ms.
+     * @param resolutionDirection Which direction to zoom.
+     * @param anchor The origin of the transformation.
      * @api
      */
-    endInteraction(duration: number, resolutionDirection: number, anchor: Coordinate) {
+    endInteraction(
+        duration?: number,
+        resolutionDirection?: number,
+        anchor?: Coordinate
+    ) {
         anchor = anchor && fromUserCoordinate(anchor, this.getProjection());
         this.endInteractionInternal(duration, resolutionDirection, anchor);
     }
@@ -1854,26 +2310,36 @@ export class View extends BaseObject {
     /**
      * Notify the View that an interaction has ended. The view state will be resolved
      * to a stable one if needed (depending on its constraints).
-     * @param {number} [duration] Animation duration in ms.
-     * @param {number} [resolutionDirection] Which direction to zoom.
-     * @param {Coordinate} [anchor] The origin of the transformation.
+     * @param duration Animation duration in ms.
+     * @param resolutionDirection Which direction to zoom.
+     * @param anchor The origin of the transformation.
      */
-    endInteractionInternal(duration: number, resolutionDirection: number, anchor: Coordinate) {
+    endInteractionInternal(
+        duration?: number,
+        resolutionDirection?: number,
+        anchor?: Coordinate
+    ) {
         if (!this.getInteracting()) {
             return;
         }
-        this.setHint(ViewHint.INTERACTING, -1);
+        this.setHint(ViewHints.INTERACTING, -1);
         this.resolveConstraints(duration, resolutionDirection, anchor);
     }
 
     /**
-     * Get a valid position for the view center according to the current constraints.
-     * @param {Coordinate|undefined} targetCenter Target center position.
-     * @param {number} [targetResolution] Target resolution. If not supplied, the current one will be used.
-     * This is useful to guess a valid center position at a different zoom level.
-     * @return {Coordinate|undefined} Valid center position.
+     * Get a valid position for the view center according to the current
+     * constraints.
+     * 
+     * @param targetCenter Target center position.
+     * @param targetResolution Target resolution. If not supplied, the current
+     *      one will be used. This is useful to guess a valid center position
+     *      at a different zoom level.
+     * @return Valid center position.
      */
-    getConstrainedCenter(targetCenter: Coordinate | undefined, targetResolution: number): Coordinate | undefined {
+    getConstrainedCenter(
+        targetCenter?: Coordinate,
+        targetResolution?: number
+    ): Coordinate | undefined {
         const size = this.getViewportSize_(this.getRotation());
         return this.constraints_.center(
             targetCenter,
@@ -1884,14 +2350,19 @@ export class View extends BaseObject {
 
     /**
      * Get a valid zoom level according to the current view constraints.
-     * @param {number|undefined} targetZoom Target zoom.
-     * @param {number} [direction=0] Indicate which resolution should be used
-     * by a renderer if the view resolution does not match any resolution of the tile source.
-     * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
-     * will be used. If -1, the nearest higher resolution will be used.
-     * @return {number|undefined} Valid zoom level.
+     *
+     * @param targetZoom Target zoom.
+     * @param direction Indicate which resolution should be used by a renderer
+     *      if the view resolution does not match any resolution of the tile
+     *      source. If 0, the nearest resolution will be used. If 1, the
+     *      nearest lower resolution will be used. If -1, the nearest higher
+     *      resolution will be used.
+     * @return Valid zoom level.
      */
-    getConstrainedZoom(targetZoom: number | undefined, direction: number): number | undefined {
+    getConstrainedZoom(
+        targetZoom?: number,
+        direction: number = 0
+    ): number | undefined {
         const targetRes = this.getResolutionForZoom(targetZoom);
         return this.getZoomForResolution(
             this.getConstrainedResolution(targetRes, direction),
@@ -1900,36 +2371,48 @@ export class View extends BaseObject {
 
     /**
      * Get a valid resolution according to the current view constraints.
-     * @param {number|undefined} targetResolution Target resolution.
-     * @param {number} [direction=0] Indicate which resolution should be used
-     * by a renderer if the view resolution does not match any resolution of the tile source.
-     * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
-     * will be used. If -1, the nearest higher resolution will be used.
-     * @return {number|undefined} Valid resolution.
+     *
+     * @param targetResolution Target resolution.
+     * @param directionIndicate which resolution should be used by a renderer
+     *      if the view resolution does not match any resolution of the tile
+     *      source. If 0, the nearest resolution will be used. If 1, the
+     *      nearest lower resolution will be used. If -1, the nearest higher
+     *      resolution will be used.
+     * @return Valid resolution.
      */
-    getConstrainedResolution(targetResolution: number | undefined, direction: number): number | undefined {
+    getConstrainedResolution(
+        targetResolution?: number,
+        direction: number = 0
+    ): number | undefined {
         direction = direction || 0;
         const size = this.getViewportSize_(this.getRotation());
 
-        return this.constraints_.resolution(targetResolution, direction, size);
+        return this.constraints_.resolution(
+            targetResolution, direction, size
+        );
     }
 }
 
 /**
- * @param {Function} callback Callback.
- * @param {*} returnValue Return value.
+ * @param callback Callback.
+ * @param returnValue Return value.
  */
-function animationCallback(callback: Function, returnValue: any) {
+function animationCallback(
+    callback: (returnValue: any) => void, returnValue: any
+) {
     setTimeout(function () {
         callback(returnValue);
     }, 0);
 }
 
+
 /**
- * @param {ViewOptions} options View options.
- * @return {import("./centerconstraint").Type} The constraint.
+ * @param options View options.
+ * @return The constraint.
  */
-export function createCenterConstraint(options: ViewOptions): import("./center-constraint").Type {
+export function createCenterConstraint(
+    options: ViewOptions
+): CenterConstraintType {
     if (options.extent !== undefined) {
         const smooth =
             options.smoothExtentConstraint !== undefined
@@ -1949,14 +2432,17 @@ export function createCenterConstraint(options: ViewOptions): import("./center-c
     return centerNone;
 }
 
+
 /**
- * @param {ViewOptions} options View options.
- * @return {{constraint: import("./resolutionconstraint").Type, maxResolution: number,
- *     minResolution: number, minZoom: number, zoomFactor: number}} The constraint.
+ * @param options View options.
+ * @return The constraint.
  */
 export function createResolutionConstraint(options: ViewOptions): {
-    constraint: import("./resolutionconstraint").Type; maxResolution: number;
-    minResolution: number; minZoom: number; zoomFactor: number;
+    constraint: ResolutionConstraintType;
+    maxResolution: number;
+    minResolution: number;
+    minZoom: number;
+    zoomFactor: number;
 } {
     let resolutionConstraint;
     let maxResolution;
@@ -2092,11 +2578,14 @@ export function createResolutionConstraint(options: ViewOptions): {
     };
 }
 
+
 /**
- * @param {ViewOptions} options View options.
- * @return {import("./rotationconstraint").Type} Rotation constraint.
+ * @param options View options.
+ * @return Rotation constraint.
  */
-export function createRotationConstraint(options: ViewOptions): import("./rotationconstraint").Type {
+export function createRotationConstraint(
+    options: ViewOptions
+): RotationConstraintType {
     const enableRotation =
         options.enableRotation !== undefined ? options.enableRotation : true;
     if (enableRotation) {
@@ -2115,10 +2604,12 @@ export function createRotationConstraint(options: ViewOptions): import("./rotati
     return disable;
 }
 
+
 /**
  * Determine if an animation involves no view change.
- * @param {Animation} animation The animation.
- * @return {boolean} The animation involves no view change.
+ * 
+ * @param animation The animation.
+ * @return The animation involves no view change.
  */
 export function isNoopAnimation(animation: Animation): boolean {
     if (animation.sourceCenter && animation.targetCenter) {
@@ -2135,15 +2626,22 @@ export function isNoopAnimation(animation: Animation): boolean {
     return true;
 }
 
+
 /**
- * @param {Coordinate} coordinate Coordinate.
- * @param {Size} size Box pixel size.
- * @param {import("./pixel").Pixel} position Position on the view to center on.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @return {Coordinate} Shifted center.
+ * @param coordinate Coordinate.
+ * @param size Box pixel size.
+ * @param position Position on the view to center on.
+ * @param resolution Resolution.
+ * @param rotation Rotation.
+ * @return Shifted center.
  */
-function calculateCenterOn(coordinate: Coordinate, size: Size, position: import("./pixel").Pixel, resolution: number, rotation: number): Coordinate {
+function calculateCenterOn(
+    coordinate: Coordinate,
+    size: Size,
+    position: Pixel,
+    resolution: number,
+    rotation: number
+): Coordinate {
     // calculate rotated position
     const cosAngle = Math.cos(-rotation);
     let sinAngle = Math.sin(-rotation);
@@ -2159,5 +2657,6 @@ function calculateCenterOn(coordinate: Coordinate, size: Size, position: import(
 
     return [centerX, centerY];
 }
+
 
 export default View;

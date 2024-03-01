@@ -7,12 +7,12 @@ import {fromExtent as polygonFromExtent} from '@olts/geometry';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-zoom-extent'] Class name.
+ * @property [className='ol-zoom-extent'] Class name.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string|HTMLElement} [label='E'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
+ * @property [tipLabel='Fit to extent'] Text label to use for the button tip.
  * @property {Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
  */
@@ -55,7 +55,7 @@ export class ZoomToExtent extends Control {
     );
 
     button.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this),
       false,
     );

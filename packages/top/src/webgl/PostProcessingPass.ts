@@ -4,13 +4,13 @@ import {getUid} from '@olts/core/util';
 
 const DEFAULT_VERTEX_SHADER = `
   precision mediump float;
-  
+
   attribute vec2 a_position;
   varying vec2 v_texCoord;
   varying vec2 v_screenCoord;
-  
+
   uniform vec2 u_screenSize;
-   
+
   void main() {
     v_texCoord = a_position * 0.5 + 0.5;
     v_screenCoord = v_texCoord * u_screenSize;
@@ -20,12 +20,12 @@ const DEFAULT_VERTEX_SHADER = `
 
 const DEFAULT_FRAGMENT_SHADER = `
   precision mediump float;
-   
+
   uniform sampler2D u_image;
   uniform float u_opacity;
-   
+
   varying vec2 v_texCoord;
-   
+
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord) * u_opacity;
   }
@@ -34,10 +34,10 @@ const DEFAULT_FRAGMENT_SHADER = `
 /**
  * @typedef {Object} Options
  * @property {WebGLRenderingContext} webGlContext WebGL context; mandatory.
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * @property [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
+ * @property [vertexShader] Vertex shader source
+ * @property [fragmentShader] Fragment shader source
  * @property {Record<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
@@ -159,7 +159,7 @@ export class WebGLPostProcessingPass {
 
     /**
      * Holds info about custom uniforms used in the post processing pass
-     * @type {Array<UniformInternalDescription>}
+     * @type {UniformInternalDescription[]}
      * @private
      */
     this.uniforms_ = [];

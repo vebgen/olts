@@ -105,7 +105,7 @@ export function flatStylesToStyleFunction(flatStyles: Array<import('../../style/
   const length = flatStyles.length;
 
   /**
-   * @type {Array<StyleEvaluator>}
+   * @type {StyleEvaluator[]}
    */
   const evaluators:StyleEvaluator[] = new Array(length);
   for (let i = 0; i < length; ++i) {
@@ -114,7 +114,7 @@ export function flatStylesToStyleFunction(flatStyles: Array<import('../../style/
   const evaluationContext = newEvaluationContext();
 
   /**
-   * @type {Array<Style>}
+   * @type {Style[]}
    */
   const styles:Style[] = new Array(length);
 
@@ -143,13 +143,13 @@ export function flatStylesToStyleFunction(flatStyles: Array<import('../../style/
 }
 
 /**
- * @typedef {function(EvaluationContext):Array<Style>} RuleSetEvaluator
+ * @typedef {function(EvaluationContext):Style[]} RuleSetEvaluator
  */
 
 /**
  * @typedef {Object} CompiledRule
  * @property {ExpressionEvaluator} filter The compiled filter evaluator.
- * @property {Array<StyleEvaluator>} styles The list of compiled style evaluators.
+ * @property {StyleEvaluator[]} styles The list of compiled style evaluators.
  */
 
 /**
@@ -161,7 +161,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
   const length = rules.length;
 
   /**
-   * @type {Array<CompiledRule>}
+   * @type {CompiledRule[]}
    */
   const compiledRules:CompiledRule[] = new Array(length);
 
@@ -173,7 +173,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
         : always;
 
     /**
-     * @type {Array<StyleEvaluator>}
+     * @type {StyleEvaluator[]}
      */
     let styles:StyleEvaluator[];
     if (Array.isArray(rule.style)) {
@@ -191,7 +191,7 @@ export function buildRuleSet(rules: Array<import('../../style/flat').Rule>, cont
 
   return function (context) {
     /**
-     * @type {Array<Style>}
+     * @type {Style[]}
      */
     const styles:Style[] = [];
 
@@ -297,7 +297,7 @@ export function buildStyle(flatStyle: FlatStyle, context: ParsingContext): Style
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} prefix The property prefix.
+ * @param prefix The property prefix.
  * @param {ParsingContext} context The parsing context.
  * @return {FillEvaluator?} A function that evaluates to a fill.
  */
@@ -333,7 +333,7 @@ function buildFill(flatStyle: FlatStyle, prefix: string, context: ParsingContext
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} prefix The property prefix.
+ * @param prefix The property prefix.
  * @param {ParsingContext} context The parsing context.
  * @return {StrokeEvaluator?} A function the evaluates to a stroke.
  */
@@ -929,7 +929,7 @@ function buildCircle(flatStyle: FlatStyle, context: ParsingContext): ImageEvalua
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').NumberEvaluator|undefined} The expression evaluator or undefined.
  */
@@ -945,7 +945,7 @@ function numberEvaluator(flatStyle: FlatStyle, name: string, context: ParsingCon
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').StringEvaluator?} The expression evaluator.
  */
@@ -992,7 +992,7 @@ function patternEvaluator(flatStyle, prefix, context) {
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').BooleanEvaluator?} The expression evaluator.
  */
@@ -1012,7 +1012,7 @@ function booleanEvaluator(flatStyle: FlatStyle, name: string, context: ParsingCo
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').ColorLikeEvaluator?} The expression evaluator.
  */
@@ -1032,7 +1032,7 @@ function colorLikeEvaluator(flatStyle: FlatStyle, name: string, context: Parsing
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').NumberArrayEvaluator?} The expression evaluator.
  */
@@ -1048,7 +1048,7 @@ function numberArrayEvaluator(flatStyle: FlatStyle, name: string, context: Parsi
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').CoordinateEvaluator?} The expression evaluator.
  */
@@ -1068,7 +1068,7 @@ function coordinateEvaluator(flatStyle: FlatStyle, name: string, context: Parsin
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').SizeEvaluator?} The expression evaluator.
  */
@@ -1084,7 +1084,7 @@ function sizeEvaluator(flatStyle: FlatStyle, name: string, context: ParsingConte
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} name The property name.
+ * @param name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu').SizeLikeEvaluator?} The expression evaluator.
  */
@@ -1104,7 +1104,7 @@ function sizeLikeEvaluator(flatStyle: FlatStyle, name: string, context: ParsingC
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {number|undefined} A number or undefined.
  */
 function optionalNumber(flatStyle: FlatStyle, property: string): number | undefined {
@@ -1120,7 +1120,7 @@ function optionalNumber(flatStyle: FlatStyle, property: string): number | undefi
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {Size|undefined} A size or undefined.
  */
 function optionalSize(flatStyle: FlatStyle, property: string): Size | undefined {
@@ -1146,7 +1146,7 @@ function optionalSize(flatStyle: FlatStyle, property: string): Size | undefined 
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {string|undefined} A string or undefined.
  */
 function optionalString(flatStyle: FlatStyle, property: string): string | undefined {
@@ -1162,7 +1162,7 @@ function optionalString(flatStyle: FlatStyle, property: string): string | undefi
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {import("../../style/Icon").IconOrigin|undefined} An icon origin or undefined.
  */
 function optionalIconOrigin(flatStyle: FlatStyle, property: string): import("../../style/Icon").IconOrigin | undefined {
@@ -1185,7 +1185,7 @@ function optionalIconOrigin(flatStyle: FlatStyle, property: string): import("../
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {import("../../style/Icon").IconAnchorUnits|undefined} Icon anchor units or undefined.
  */
 function optionalIconAnchorUnits(flatStyle: FlatStyle, property: string): import("../../style/Icon").IconAnchorUnits | undefined {
@@ -1201,7 +1201,7 @@ function optionalIconAnchorUnits(flatStyle: FlatStyle, property: string): import
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {number[]|undefined} An array of numbers or undefined.
  */
 function optionalNumberArray(flatStyle: FlatStyle, property: string): number[] | undefined {
@@ -1214,7 +1214,7 @@ function optionalNumberArray(flatStyle: FlatStyle, property: string): number[] |
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {"declutter"|"obstacle"|"none"|undefined} Icon declutter mode.
  */
 function optionalDeclutterMode(flatStyle: FlatStyle, property: string): "declutter" | "obstacle" | "none" | undefined {
@@ -1233,7 +1233,7 @@ function optionalDeclutterMode(flatStyle: FlatStyle, property: string): "declutt
 
 /**
  * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
+ * @param property The symbolizer property.
  * @return {string|number[]|undefined} A string or an array of color values or undefined.
  */
 function optionalColorLike(flatStyle: FlatStyle, property: string): string | number[] | undefined {
@@ -1246,7 +1246,7 @@ function optionalColorLike(flatStyle: FlatStyle, property: string): string | num
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
+ * @param property The property.
  * @return {number[]} An array of numbers.
  */
 function requireNumberArray(value: any, property: string): number[] {
@@ -1264,8 +1264,8 @@ function requireNumberArray(value: any, property: string): number[] {
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
- * @return {string} A string.
+ * @param property The property.
+ * @return A string.
  */
 function requireString(value: any, property: string): string {
   if (typeof value !== 'string') {
@@ -1276,8 +1276,8 @@ function requireString(value: any, property: string): string {
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
- * @return {number} A number.
+ * @param property The property.
+ * @return A number.
  */
 function requireNumber(value: any, property: string): number {
   if (typeof value !== 'number') {
@@ -1288,7 +1288,7 @@ function requireNumber(value: any, property: string): number {
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
+ * @param property The property.
  * @return {number[]|string} A color.
  */
 function requireColorLike(value: any, property: string): number[] | string {
@@ -1305,7 +1305,7 @@ function requireColorLike(value: any, property: string): number[] | string {
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
+ * @param property The property.
  * @return {number[]} A number or an array of two numbers.
  */
 function requireSize(value: any, property: string): number[] {
@@ -1318,7 +1318,7 @@ function requireSize(value: any, property: string): number[] {
 
 /**
  * @param {any} value The value.
- * @param {string} property The property.
+ * @param property The property.
  * @return {number|number[]} A number or an array of two numbers.
  */
 function requireSizeLike(value: any, property: string): number | number[] {

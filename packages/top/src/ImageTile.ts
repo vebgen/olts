@@ -8,7 +8,7 @@ export class ImageTile extends Tile {
     /**
      * @param {TileCoord} tileCoord Tile coordinate.
      * @param {TileState} state State.
-     * @param {string} src Image source URI.
+     * @param src Image source URI.
      * @param {?string} crossOrigin Cross origin.
      * @param {import("./Tile").LoadFunction} tileLoadFunction Tile load function.
      * @param {import("./Tile").Options} [options] Tile options.

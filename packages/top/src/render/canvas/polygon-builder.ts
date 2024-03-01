@@ -16,10 +16,10 @@ import { Extent } from '@olts/core/extent';
 
 export class CanvasPolygonBuilder extends CanvasBuilder {
     /**
-     * @param {number} tolerance Tolerance.
+     * @param tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      */
     constructor(
         tolerance: number,
@@ -31,11 +31,11 @@ export class CanvasPolygonBuilder extends CanvasBuilder {
 
     /**
      * @param {number[]} flatCoordinates Flat coordinates.
-     * @param {number} offset Offset.
+     * @param offset Offset.
      * @param {number[]} ends Ends.
-     * @param {number} stride Stride.
+     * @param stride Stride.
      * @private
-     * @return {number} End.
+     * @return End.
      */
     drawFlatCoordinatess_(flatCoordinates: number[], offset: number, ends: number[], stride: number): number {
         const state = this.state;

@@ -25,7 +25,7 @@ import {transformGeometryWithOptions} from './Feature';
 /**
  * @typedef {Object} Options
  * @property {ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
- * @property {string} [layerName] Set the name of the TopoJSON topology
+ * @property [layerName] Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means
  * that when set to `'layer'`, a topology like
  * ```
@@ -41,7 +41,7 @@ import {transformGeometryWithOptions} from './Feature';
  * ```
  * will result in features that have a property `'layer'` set to `'example'`.
  * When not set, no property will be added to features.
- * @property {Array<string>} [layers] Names of the TopoJSON topology's
+ * @property {string[]} [layers] Names of the TopoJSON topology's
  * `objects`'s children to read features from.  If not provided, features will
  * be read from all children.
  */
@@ -68,7 +68,7 @@ export class TopoJSON extends JSONFeature {
 
     /**
      * @private
-     * @type {?Array<string>}
+     * @type {?string[]}
      */
     this.layers_ = options.layers ? options.layers : null;
 
@@ -84,7 +84,7 @@ export class TopoJSON extends JSONFeature {
    * @param {Object} object Object.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature>} Features.
+   * @return {Feature[]} Features.
    */
   readFeaturesFromObject(object, options) {
     if (object.type == 'Topology') {
@@ -101,7 +101,7 @@ export class TopoJSON extends JSONFeature {
       if (transform) {
         transformArcs(arcs, scale, translate);
       }
-      /** @type {Array<Feature>} */
+      /** @type {Feature[]} */
       const features = [];
       const topoJSONFeatures = topoJSONTopology['objects'];
       const property = this.layerName_;
@@ -175,12 +175,12 @@ const GEOMETRY_READERS = {
  * Concatenate arcs into a coordinate array.
  * @param {number[]} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs (already
+ * @param {Array<Coordinate[]>} arcs Array of arcs (already
  *     transformed).
- * @return {Array<Coordinate>} Coordinates array.
+ * @return {Coordinate[]} Coordinates array.
  */
 function concatenateArcs(indices, arcs) {
-  /** @type {Array<Coordinate>} */
+  /** @type {Coordinate[]} */
   const coordinates = [];
   let index;
   for (let i = 0, ii = indices.length; i < ii; ++i) {
@@ -244,7 +244,7 @@ function readMultiPointGeometry(object, scale, translate) {
  * Create a linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONLineString} object TopoJSON object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @return {LineString} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
@@ -256,7 +256,7 @@ function readLineStringGeometry(object, arcs) {
  * Create a multi-linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONMultiLineString} object TopoJSON object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @return {MultiLineString} Geometry.
  */
 function readMultiLineStringGeometry(object, arcs) {
@@ -271,7 +271,7 @@ function readMultiLineStringGeometry(object, arcs) {
  * Create a polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONPolygon} object TopoJSON object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @return {Polygon} Geometry.
  */
 function readPolygonGeometry(object, arcs) {
@@ -286,7 +286,7 @@ function readPolygonGeometry(object, arcs) {
  * Create a multi-polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONMultiPolygon} object TopoJSON object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @return {MultiPolygon} Geometry.
  */
 function readMultiPolygonGeometry(object, arcs) {
@@ -309,14 +309,14 @@ function readMultiPolygonGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
  *     object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @param {number[]} scale Scale for each dimension.
  * @param {number[]} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
- * @param {string} name Name of the `Topology`'s child object.
+ * @param name Name of the `Topology`'s child object.
  * @param {import("./Feature").ReadOptions} [options] Read options.
- * @return {Array<Feature>} Array of features.
+ * @return {Feature[]} Array of features.
  */
 function readFeaturesFromGeometryCollection(
   collection,
@@ -347,12 +347,12 @@ function readFeaturesFromGeometryCollection(
  * Create a feature from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @param {number[]} scale Scale for each dimension.
  * @param {number[]} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
- * @param {string} name Name of the `Topology`'s child object.
+ * @param name Name of the `Topology`'s child object.
  * @param {import("./Feature").ReadOptions} [options] Read options.
  * @return {Feature} Feature.
  */
@@ -397,7 +397,7 @@ function readFeatureFromGeometry(
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
- * @param {Array<Array<Coordinate>>} arcs Array of arcs.
+ * @param {Array<Coordinate[]>} arcs Array of arcs.
  * @param {number[]} scale Scale for each dimension.
  * @param {number[]} translate Translation for each dimension.
  */
@@ -410,7 +410,7 @@ function transformArcs(arcs, scale, translate) {
 /**
  * Apply a linear transform to an arc.  The provided arc is modified in place.
  *
- * @param {Array<Coordinate>} arc Arc.
+ * @param {Coordinate[]} arc Arc.
  * @param {number[]} scale Scale for each dimension.
  * @param {number[]} translate Translation for each dimension.
  */

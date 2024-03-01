@@ -6,7 +6,7 @@ import {FALSE} from '@olts/core/functions';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=400] Animation duration in milliseconds.
+ * @property [duration=400] Animation duration in milliseconds.
  */
 
 /**

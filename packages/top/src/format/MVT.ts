@@ -21,10 +21,10 @@ import {inflateEnds} from '@olts/geometry/flat';
  * {@link module:ol/format/MVT~MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
  * support at the cost of decreased rendering performance. The default is
  * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
- * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
- * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
- * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
- * @property {string} [idProperty] Optional property that will be assigned as the feature id and removed from the properties.
+ * @property [geometryName='geometry'] Geometry name to use when creating features.
+ * @property [layerName='layer'] Name of the feature attribute that holds the layer name.
+ * @property {string[]} [layers] Layers to read features from. If not provided, features will be read from all
+ * @property [idProperty] Optional property that will be assigned as the feature id and removed from the properties.
  * layers.
  */
 
@@ -74,7 +74,7 @@ export class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {Array<string>|null}
+     * @type {string[]|null}
      */
     this.layers_ = options.layers ? options.layers : null;
 
@@ -294,7 +294,7 @@ export class MVT extends FeatureFormat {
 
   /**
    * Sets the layers that features will be read from.
-   * @param {Array<string>} layers Layers.
+   * @param {string[]} layers Layers.
    * @api
    */
   setLayers(layers) {
@@ -304,7 +304,7 @@ export class MVT extends FeatureFormat {
 
 /**
  * Reader callback for parsing layers.
- * @param {number} tag The tag.
+ * @param tag The tag.
  * @param {Object} layers The layers object.
  * @param {PBF} pbf The PBF.
  */
@@ -326,7 +326,7 @@ function layersPBFReader(tag, layers, pbf) {
 
 /**
  * Reader callback for parsing layer.
- * @param {number} tag The tag.
+ * @param tag The tag.
  * @param {Object} layer The layer object.
  * @param {PBF} pbf The PBF.
  */
@@ -369,7 +369,7 @@ function layerPBFReader(tag, layer, pbf) {
 
 /**
  * Reader callback for parsing feature.
- * @param {number} tag The tag.
+ * @param tag The tag.
  * @param {Object} feature The feature object.
  * @param {PBF} pbf The PBF.
  */
@@ -394,7 +394,7 @@ function featurePBFReader(tag, feature, pbf) {
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
  * @param {PBF} pbf PBF.
  * @param {Object} layer Raw layer.
- * @param {number} i Index of the feature in the raw layer's `features` array.
+ * @param i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
  */
 function readRawFeature(pbf, layer, i) {
@@ -411,8 +411,8 @@ function readRawFeature(pbf, layer, i) {
 }
 
 /**
- * @param {number} type The raw feature's geometry type
- * @param {number} numEnds Number of ends of the flat coordinates of the
+ * @param type The raw feature's geometry type
+ * @param numEnds Number of ends of the flat coordinates of the
  * geometry.
  * @return {import("../render/Feature").Type} The geometry type.
  */

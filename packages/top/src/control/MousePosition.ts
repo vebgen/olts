@@ -33,7 +33,7 @@ const COORDINATE_FORMAT: string = 'coordinateFormat';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-mouse-position'] CSS class name.
+ * @property [className='ol-mouse-position'] CSS class name.
  * @property {CoordinateFormat} [coordinateFormat] Coordinate format.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {function(import("../MapEvent").default):void} [render] Function called when the
@@ -41,7 +41,7 @@ const COORDINATE_FORMAT: string = 'coordinateFormat';
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [placeholder] Markup to show when the mouse position is not
+ * @property [placeholder] Markup to show when the mouse position is not
  * available (e.g. when the pointer leaves the map viewport).  By default, a non-breaking space is rendered
  * initially and the last position is retained when the mouse leaves the viewport.
  * When a string is provided (e.g. `'no position'` or `''` for an empty string) it is used as a
@@ -63,17 +63,17 @@ const COORDINATE_FORMAT: string = 'coordinateFormat';
  */
 export class MousePosition extends Control {
     /**
-     * 
+     *
      */
     override on: MousePositionOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: MousePositionOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: MousePositionOnSignature<void>;
 
@@ -207,11 +207,11 @@ export class MousePosition extends Control {
         if (map) {
             const viewport = map.getViewport();
             this.listenerKeys.push(
-                listen(viewport, EventType.POINTERMOVE, this.handleMouseMove, this),
+                listen(viewport, EventTypes.POINTERMOVE, this.handleMouseMove, this),
             );
             if (this.renderOnMouseOut_) {
                 this.listenerKeys.push(
-                    listen(viewport, EventType.POINTEROUT, this.handleMouseOut, this),
+                    listen(viewport, EventTypes.POINTEROUT, this.handleMouseOut, this),
                 );
             }
             this.updateHTML_(null);
@@ -294,7 +294,7 @@ export class MousePosition extends Control {
      * @param {import("../MapEvent").default} mapEvent Map event.
      * @override
      */
-    render(mapEvent: import("../MapEvent").default) {
+    render(mapEvent: import("../Map/events").default) {
         const frameState = mapEvent.frameState;
         if (!frameState) {
             this.mapProjection_ = null;

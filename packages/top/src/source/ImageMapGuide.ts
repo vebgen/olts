@@ -6,17 +6,17 @@ import {decode} from '../Image';
 
 /**
  * @typedef {Object} Options
- * @property {string} [url] The mapagent url.
+ * @property [url] The mapagent url.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {number} [displayDpi=96] The display resolution.
- * @property {number} [metersPerUnit=1] The meters-per-unit value.
+ * @property [displayDpi=96] The display resolution.
+ * @property [metersPerUnit=1] The meters-per-unit value.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * @property [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {number[]} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
@@ -129,8 +129,8 @@ export class ImageMapGuide extends ImageSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {import("../Image").default} Single image.
    */

@@ -52,7 +52,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  * feature namespaces themselves. So for instance there might be a featureType
  * item `topp:states` in the `featureType` array and then there will be a key
  * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
- * @property {Array<string>|string} [featureType] Feature type(s) to parse.
+ * @property {string[]|string} [featureType] Feature type(s) to parse.
  * If multiple feature types need to be configured
  * which come from different feature namespaces, `featureNS` will be an object
  * with the keys being the prefixes used in the entries of featureType array.
@@ -60,7 +60,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  * So for instance there might be a featureType item `topp:states` and then
  * there will be a key named `topp` in the featureNS object with value
  * `http://www.openplans.org/topp`.
- * @property {string} [srsName] srsName to use when writing geometries.
+ * @property [srsName] srsName to use when writing geometries.
  * @property {boolean} [surface=false] Write gml:Surface instead of gml:Polygon
  * elements. This also affects the elements in multi-part geometries.
  * @property {boolean} [curve=false] Write gml:Curve instead of gml:LineString
@@ -69,7 +69,7 @@ const ONLY_WHITESPACE_RE = /^\s*$/;
  * Since the latter is deprecated in GML 3.
  * @property {boolean} [multiSurface=true] Write gml:multiSurface instead of
  * gml:MultiPolygon. Since the latter is deprecated in GML 3.
- * @property {string} [schemaLocation] Optional schemaLocation to use when
+ * @property [schemaLocation] Optional schemaLocation to use when
  * writing out the GML, this will override the default provided.
  * @property {boolean} [hasZ=false] If coordinates have a Z value.
  */
@@ -95,7 +95,7 @@ export class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {Array<string>|string|undefined}
+     * @type {string[]|string|undefined}
      */
     this.featureType = options.featureType;
 
@@ -132,7 +132,7 @@ export class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<Feature> | undefined} Features.
+   * @return {Feature[] | undefined} Features.
    */
   readFeaturesInternal(node, objectStack) {
     const localName = node.localName;
@@ -390,7 +390,7 @@ export class GMLBase extends XMLFeature {
    * @return {MultiLineString|undefined} MultiLineString.
    */
   readMultiLineString(node, objectStack) {
-    /** @type {Array<LineString>} */
+    /** @type {LineString[]} */
     const lineStrings = pushParseAndPop(
       [],
       this.MULTILINESTRING_PARSERS,
@@ -409,7 +409,7 @@ export class GMLBase extends XMLFeature {
    * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiPolygon(node, objectStack) {
-    /** @type {Array<Polygon>} */
+    /** @type {Polygon[]} */
     const polygons = pushParseAndPop(
       [],
       this.MULTIPOLYGON_PARSERS,

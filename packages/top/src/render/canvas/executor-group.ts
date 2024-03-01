@@ -23,12 +23,12 @@ export class ExecutorGroup {
    * `maxExtent` was set on the Builder for this executor group, the same `maxExtent`
    * should be set here, unless the target context does not exceed that extent (which
    * can be the case when rendering to tiles).
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {!Record<string, !Record<import("../canvas").BuilderType, import("../canvas").SerializableInstructions>>} allInstructions
    * The serializable instructions.
-   * @param {number} [renderBuffer] Optional rendering buffer.
+   * @param [renderBuffer] Optional rendering buffer.
    */
   constructor(
     maxExtent: Extent,
@@ -146,11 +146,11 @@ export class ExecutorGroup {
 
   /**
    * @param {import("../../coordinate").Coordinate} coordinate Coordinate.
-   * @param {number} resolution Resolution.
-   * @param {number} rotation Rotation.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param resolution Resolution.
+   * @param rotation Rotation.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {function(FeatureLike, SimpleGeometry, number): T} callback Feature callback.
-   * @param {Array<FeatureLike>} declutteredFeatures Decluttered features.
+   * @param {FeatureLike[]} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -303,9 +303,9 @@ export class ExecutorGroup {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {number} contextScale Scale of the context.
+   * @param contextScale Scale of the context.
    * @param {import("../../transform").Transform} transform Transform.
-   * @param {number} viewRotation View rotation.
+   * @param viewRotation View rotation.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<import("../canvas").BuilderType>} [builderTypes] Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
@@ -373,7 +373,7 @@ const circlePixelIndexArrayCache: { [n: number]: number[]; } = {};
  * This methods creates an array with indexes of all pixels within a circle,
  * ordered by how close they are to the center.
  * A cache is used to increase performance.
- * @param {number} radius Radius.
+ * @param radius Radius.
  * @return {number[]} An array with indexes within a circle.
  */
 export function getPixelIndexArray(radius: number): number[] {

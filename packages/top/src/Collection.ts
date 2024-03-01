@@ -3,7 +3,7 @@ import { BaseEvent as Event, BaseObject, OnSignature, EventTypes, ObjectEvent, C
 
 
 /**
- * 
+ *
  */
 const Property = {
     LENGTH: 'length',
@@ -11,7 +11,7 @@ const Property = {
 
 
 /**
- * 
+ *
  */
 export const CollectionEventTypes = {
     /**
@@ -64,7 +64,7 @@ export class CollectionEvent<T> extends Event {
 
 
 /***
- * 
+ *
  */
 export type CollectionOnSignature<T, Return> =
     & OnSignature<EventType, Event, Return>
@@ -81,15 +81,15 @@ export type CollectionOnSignature<T, Return> =
 
 
 /**
- * 
+ *
  */
 export interface Options {
     /**
      * Disallow the same item from being added to the collection twice.
-     * 
+     *
      * @default false
      */
-    unique: boolean;
+    unique?: boolean;
 }
 
 
@@ -108,35 +108,35 @@ export interface Options {
  */
 export class Collection<T> extends BaseObject {
     /**
-     * 
+     *
      */
     override on: CollectionOnSignature<T, EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: CollectionOnSignature<T, EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: CollectionOnSignature<T, void>;
 
     /**
-     * 
+     *
      */
     private unique_: boolean;
 
     /**
-     * 
+     *
      */
     private array_: T[];
 
     /**
-     * @param {Array<T>} [array] Array.
-     * @param {Options} [options] Collection options.
+     * @param array Array.
+     * @param options Collection options.
      */
-    constructor(array: T[], options: Options) {
+    constructor(array?: T[], options?: Options) {
         super();
         this.on = this.onInternal as CollectionOnSignature<T, EventsKey>;
         this.once = this.onceInternal as CollectionOnSignature<T, EventsKey>;
@@ -170,7 +170,7 @@ export class Collection<T> extends BaseObject {
      *
      * This pushes each item in the provided array to the end of the
      * collection.
-     * 
+     *
      * @param arr Array.
      * @return This collection.
      * @api
@@ -184,7 +184,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Iterate over each element, calling the provided callback.
-     * 
+     *
      * @param {function(T, number,T[]): *} f The function to call
      *     for every element. This function takes 3 arguments (the element, the
      *     index and the array). The return value is ignored.
@@ -203,7 +203,7 @@ export class Collection<T> extends BaseObject {
      * Warning: if the array is mutated, no events will be dispatched by the
      * collection, and the collection's "length" property won't be in sync with
      * the actual length of the array.
-     * 
+     *
      * @return Array.
      * @api
      */
@@ -213,7 +213,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Get the element at the provided index.
-     * 
+     *
      * @param index Index.
      * @return Element.
      * @api
@@ -224,7 +224,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Get the length of this collection.
-     * 
+     *
      * @return The length of the array.
      * @observable
      * @api
@@ -235,7 +235,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Insert an element at the provided index.
-     * 
+     *
      * @param index Index.
      * @param elem Element.
      * @api
@@ -256,7 +256,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Remove the last element of the collection and return it.
-     * 
+     *
      * @return Element or `undefined` if the collection is empty.
      * @api
      */
@@ -266,7 +266,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Insert the provided element at the end of the collection.
-     * 
+     *
      * @param elem Element.
      * @return New length of the collection.
      * @api
@@ -282,7 +282,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Remove the first occurrence of an element from the collection.
-     * 
+     *
      * @param elem Element.
      * @return The removed element or undefined if none found.
      * @api
@@ -299,9 +299,9 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Remove the element at the provided index and return it.
-     * 
+     *
      * Return `undefined` if the collection does not contain this index.
-     * 
+     *
      * @param index Index.
      * @return Value.
      * @api
@@ -323,7 +323,7 @@ export class Collection<T> extends BaseObject {
 
     /**
      * Set the element at the provided index.
-     * 
+     *
      * @param index Index.
      * @param elem Element.
      * @api
@@ -358,7 +358,7 @@ export class Collection<T> extends BaseObject {
     }
 
     /**
-     * 
+     *
      * @param elem Element.
      * @param except Optional index to ignore.
      */

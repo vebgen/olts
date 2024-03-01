@@ -6,7 +6,7 @@
 
 /**
  * @param {ResolutionLike} resolution Resolution.
- * @return {number} Resolution.
+ * @return Resolution.
  */
 export function fromResolutionLike(resolution: ResolutionLike): number {
     if (Array.isArray(resolution)) {

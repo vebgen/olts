@@ -47,7 +47,7 @@ export class CompositeMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {Array<HTMLElement>}
+     * @type {HTMLElement[]}
      */
     this.children_ = [];
 

@@ -20,7 +20,8 @@ export { Point } from './point';
 export {
     Polygon,
     fromCircle as polygonFromCircle,
-    makeRegular
+    makeRegular,
+    fromExtent as polygonFromExtent,
 } from './polygon';
 
 export { SimpleGeometry, transformGeom2D } from './simple-geometry';

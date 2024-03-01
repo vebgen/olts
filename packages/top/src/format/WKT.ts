@@ -31,9 +31,9 @@ const GeometryConstructor = {
 
 /**
  * @typedef {Object} Token
- * @property {number} type Type.
+ * @property type Type.
  * @property {number|string} [value] Value.
- * @property {number} position Position.
+ * @property position Position.
  */
 
 /**
@@ -93,7 +93,7 @@ const wktTypeLookup = {
  */
 export class Lexer {
   /**
-   * @param {string} wkt WKT string.
+   * @param wkt WKT string.
    */
   constructor(wkt) {
     /**
@@ -109,7 +109,7 @@ export class Lexer {
   }
 
   /**
-   * @param {string} c Character.
+   * @param c Character.
    * @return {boolean} Whether the character is alphabetic.
    * @private
    */
@@ -118,7 +118,7 @@ export class Lexer {
   }
 
   /**
-   * @param {string} c Character.
+   * @param c Character.
    * @param {boolean} [decimal] Whether the string number
    *     contains a dot, i.e. is a decimal number.
    * @return {boolean} Whether the character is numeric.
@@ -130,7 +130,7 @@ export class Lexer {
   }
 
   /**
-   * @param {string} c Character.
+   * @param c Character.
    * @return {boolean} Whether the character is whitespace.
    * @private
    */
@@ -139,7 +139,7 @@ export class Lexer {
   }
 
   /**
-   * @return {string} Next string character.
+   * @return Next string character.
    * @private
    */
   nextChar_() {
@@ -181,7 +181,7 @@ export class Lexer {
   }
 
   /**
-   * @return {number} Numeric token value.
+   * @return Numeric token value.
    * @private
    */
   readNumber_() {
@@ -209,7 +209,7 @@ export class Lexer {
   }
 
   /**
-   * @return {string} String token value.
+   * @return String token value.
    * @private
    */
   readText_() {
@@ -317,7 +317,7 @@ export class Parser {
   }
 
   /**
-   * @return {Array<Geometry>} A collection of geometries.
+   * @return {Geometry[]} A collection of geometries.
    * @private
    */
   parseGeometryCollectionText_() {
@@ -433,7 +433,7 @@ export class Parser {
     for (let i = 0; i < dimensions; ++i) {
       const token = this.token_;
       if (this.match(TokenType.NUMBER)) {
-        coordinates.push(/** @type {number} */ (token.value));
+        coordinates.push(/** @type */ (token.value));
       } else {
         break;
       }
@@ -507,7 +507,7 @@ export class Parser {
 
   /**
    * Create an error message for an unexpected token error.
-   * @return {string} Error message.
+   * @return Error message.
    * @private
    */
   formatErrorMessage_() {
@@ -529,7 +529,7 @@ export class Parser {
   parseGeometry_() {
     const token = this.token_;
     if (this.match(TokenType.TEXT)) {
-      const geomType = /** @type {string} */ (token.value);
+      const geomType = /** @type */ (token.value);
       this.layout_ = this.parseGeometryLayout_();
       const isEmpty = this.isEmptyGeometry_();
       if (geomType == 'GEOMETRYCOLLECTION') {
@@ -615,7 +615,7 @@ export class WKT extends TextFeature {
 
   /**
    * Parse a WKT string.
-   * @param {string} wkt WKT string.
+   * @param wkt WKT string.
    * @return {Geometry}
    *     The geometry created.
    * @private
@@ -628,7 +628,7 @@ export class WKT extends TextFeature {
 
   /**
    * @protected
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @return {import("../Feature").default} Feature.
    */
@@ -640,10 +640,10 @@ export class WKT extends TextFeature {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Array<Feature>} Features.
+   * @return {Feature[]} Features.
    */
   readFeaturesFromText(text, options) {
     let geometries = [];
@@ -665,7 +665,7 @@ export class WKT extends TextFeature {
   }
 
   /**
-   * @param {string} text Text.
+   * @param text Text.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
    * @return {Geometry} Geometry.
@@ -679,7 +679,7 @@ export class WKT extends TextFeature {
    * @param {import("../Feature").default} feature Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeatureText(feature, options) {
     const geometry = feature.getGeometry();
@@ -693,7 +693,7 @@ export class WKT extends TextFeature {
    * @param {Array<import("../Feature").default>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeFeaturesText(features, options) {
     if (features.length == 1) {
@@ -711,7 +711,7 @@ export class WKT extends TextFeature {
    * @param {Geometry} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
    * @protected
-   * @return {string} Text.
+   * @return Text.
    */
   writeGeometryText(geometry, options) {
     return encode(transformGeometryWithOptions(geometry, true, options));
@@ -720,7 +720,7 @@ export class WKT extends TextFeature {
 
 /**
  * @param {Point} geom Point geometry.
- * @return {string} Coordinates part of Point as WKT.
+ * @return Coordinates part of Point as WKT.
  */
 function encodePointGeometry(geom) {
   const coordinates = geom.getCoordinates();
@@ -732,7 +732,7 @@ function encodePointGeometry(geom) {
 
 /**
  * @param {MultiPoint} geom MultiPoint geometry.
- * @return {string} Coordinates part of MultiPoint as WKT.
+ * @return Coordinates part of MultiPoint as WKT.
  */
 function encodeMultiPointGeometry(geom) {
   const array = [];
@@ -745,7 +745,7 @@ function encodeMultiPointGeometry(geom) {
 
 /**
  * @param {GeometryCollection} geom GeometryCollection geometry.
- * @return {string} Coordinates part of GeometryCollection as WKT.
+ * @return Coordinates part of GeometryCollection as WKT.
  */
 function encodeGeometryCollectionGeometry(geom) {
   const array = [];
@@ -758,7 +758,7 @@ function encodeGeometryCollectionGeometry(geom) {
 
 /**
  * @param {LineString|LinearRing} geom LineString geometry.
- * @return {string} Coordinates part of LineString as WKT.
+ * @return Coordinates part of LineString as WKT.
  */
 function encodeLineStringGeometry(geom) {
   const coordinates = geom.getCoordinates();
@@ -771,7 +771,7 @@ function encodeLineStringGeometry(geom) {
 
 /**
  * @param {MultiLineString} geom MultiLineString geometry.
- * @return {string} Coordinates part of MultiLineString as WKT.
+ * @return Coordinates part of MultiLineString as WKT.
  */
 function encodeMultiLineStringGeometry(geom) {
   const array = [];
@@ -784,7 +784,7 @@ function encodeMultiLineStringGeometry(geom) {
 
 /**
  * @param {Polygon} geom Polygon geometry.
- * @return {string} Coordinates part of Polygon as WKT.
+ * @return Coordinates part of Polygon as WKT.
  */
 function encodePolygonGeometry(geom) {
   const array = [];
@@ -797,7 +797,7 @@ function encodePolygonGeometry(geom) {
 
 /**
  * @param {MultiPolygon} geom MultiPolygon geometry.
- * @return {string} Coordinates part of MultiPolygon as WKT.
+ * @return Coordinates part of MultiPolygon as WKT.
  */
 function encodeMultiPolygonGeometry(geom) {
   const array = [];
@@ -810,7 +810,7 @@ function encodeMultiPolygonGeometry(geom) {
 
 /**
  * @param {SimpleGeometry} geom SimpleGeometry geometry.
- * @return {string} Potential dimensional information for WKT type.
+ * @return Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {
   const layout = geom.getLayout();
@@ -841,7 +841,7 @@ const GeometryEncoder = {
 /**
  * Encode a geometry as WKT.
  * @param {Geometry} geom The geometry to encode.
- * @return {string} WKT string for the geometry.
+ * @return WKT string for the geometry.
  */
 function encode(geom) {
   const type = geom.getType();

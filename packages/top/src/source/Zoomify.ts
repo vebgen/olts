@@ -6,7 +6,7 @@ import TileGrid from '../tile-grid/TileGrid';
 import TileImage from './TileImage';
 import type { TileState} from '../tile';
 import {createCanvasContext2D} from '@olts/core/dom';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction';
+import {createFromTileUrlFunctions, expandUrl} from '../tile-url-function';
 import {getCenter} from '@olts/core/extent';
 import {toSize} from '../size';
 
@@ -19,7 +19,7 @@ export class CustomTile extends ImageTile {
    * @param {Size} tileSize Full tile size.
    * @param {TileCoord} tileCoord Tile coordinate.
    * @param {import("../TileState").default} state State.
-   * @param {string} src Image source URI.
+   * @param src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("../Tile").Options} [options] Tile options.
@@ -74,17 +74,17 @@ export class CustomTile extends ImageTile {
 /**
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {ProjectionLike} [projection] Projection.
- * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {string} url URL template or base URL of the Zoomify service.
+ * @property url URL template or base URL of the Zoomify service.
  * A base URL is the fixed part
  * of the URL, excluding the tile group, z, x, and y folder structure, e.g.
  * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
@@ -102,9 +102,9 @@ export class CustomTile extends ImageTile {
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
  * extent to the first quadrant (the default for OpenLayers 2) set the extent
  * as `[0, 0, width, height]`.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {number} [tileSize=256] Tile size. Same tile size is used for all zoom levels.
+ * @property [tileSize=256] Tile size. Same tile size is used for all zoom levels.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
@@ -194,14 +194,14 @@ export class Zoomify extends TileImage {
     let tileWidth = tileSize * tilePixelRatio;
 
     /**
-     * @param {string} template Template.
+     * @param template Template.
      * @return {import("../Tile").UrlFunction} Tile URL function.
      */
     function createFromTemplate(template) {
       return (
         /**
          * @param {TileCoord} tileCoord Tile Coordinate.
-         * @param {number} pixelRatio Pixel ratio.
+         * @param pixelRatio Pixel ratio.
          * @param {import("../proj/Projection").default} projection Projection.
          * @return {string|undefined} Tile URL.
          */

@@ -9,13 +9,13 @@ import {getRequestExtent} from './Image';
 import {round} from '@olts/core/math';
 
 /**
- * @param {string} baseUrl Base URL for the ArcGIS Rest service.
+ * @param baseUrl Base URL for the ArcGIS Rest service.
  * @param {Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
+ * @param resolution Resolution.
+ * @param pixelRatio Pixel ratio.
  * @param {import("../proj/Projection").default} projection Projection.
  * @param {Object} params Params.
- * @return {string} Request URL.
+ * @return Request URL.
  */
 export function getRequestUrl(
   baseUrl,
@@ -70,9 +70,9 @@ export function getRequestUrl(
  * @property {ProjectionLike} [projection] Projection. Default is 'EPSG:3857'.
  * The projection code must contain a numeric end portion separated by :
  * or the entire code must form a valid ArcGIS SpatialReference definition.
- * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
+ * @property [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
+ * @property [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
  * @property {function(HTMLImageElement, string): Promise<import('../DataTile').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and

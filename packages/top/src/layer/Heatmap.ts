@@ -7,27 +7,27 @@ import {createCanvasContext2D} from '@olts/core/dom';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {Array<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
+ * @property {string[]} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
  * of the heatmap, specified as an array of CSS color strings.
- * @property {number} [radius=8] Radius size in pixels.
- * @property {number} [blur=15] Blur size in pixels.
+ * @property [radius=8] Radius size in pixels.
+ * @property [blur=15] Blur size in pixels.
  * @property {string|function(import("../Feature").default):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
@@ -47,7 +47,7 @@ const Property = {
 
 /**
  * @const
- * @type {Array<string>}
+ * @type {string[]}
  */
 const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
@@ -106,32 +106,32 @@ export class Heatmap extends BaseVector {
 
   /**
    * Return the blur size in pixels.
-   * @return {number} Blur size in pixels.
+   * @return Blur size in pixels.
    * @api
    * @observable
    */
   getBlur() {
-    return /** @type {number} */ (this.get(Property.BLUR));
+    return /** @type */ (this.get(Property.BLUR));
   }
 
   /**
    * Return the gradient colors as array of strings.
-   * @return {Array<string>} Colors.
+   * @return {string[]} Colors.
    * @api
    * @observable
    */
   getGradient() {
-    return /** @type {Array<string>} */ (this.get(Property.GRADIENT));
+    return /** @type {string[]} */ (this.get(Property.GRADIENT));
   }
 
   /**
    * Return the size of the radius in pixels.
-   * @return {number} Radius size in pixel.
+   * @return Radius size in pixel.
    * @api
    * @observable
    */
   getRadius() {
-    return /** @type {number} */ (this.get(Property.RADIUS));
+    return /** @type */ (this.get(Property.RADIUS));
   }
 
   /**
@@ -143,7 +143,7 @@ export class Heatmap extends BaseVector {
 
   /**
    * Set the blur size in pixels.
-   * @param {number} blur Blur size in pixels.
+   * @param blur Blur size in pixels.
    * @api
    * @observable
    */
@@ -153,7 +153,7 @@ export class Heatmap extends BaseVector {
 
   /**
    * Set the gradient colors as array of strings.
-   * @param {Array<string>} colors Gradient.
+   * @param {string[]} colors Gradient.
    * @api
    * @observable
    */
@@ -163,7 +163,7 @@ export class Heatmap extends BaseVector {
 
   /**
    * Set the size of the radius in pixels.
-   * @param {number} radius Radius size in pixel.
+   * @param radius Radius size in pixel.
    * @api
    * @observable
    */
@@ -236,7 +236,7 @@ export class Heatmap extends BaseVector {
 }
 
 /**
- * @param {Array<string>} colors A list of colored.
+ * @param {string[]} colors A list of colored.
  * @return {HTMLCanvasElement} canvas with gradient texture.
  */
 function createGradient(colors) {

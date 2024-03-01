@@ -2,7 +2,7 @@
 import TileEventType from './TileEventType';
 import TileSource, {TileSourceEvent} from './Tile';
 import type { TileState} from '../tile';
-import {createFromTemplates, expandUrl} from '../tileurlfunction';
+import {createFromTemplates, expandUrl} from '../tile-url-function';
 import {getKeyZXY} from '../tile-coord';
 import {getUid} from '@olts/core/util';
 
@@ -10,19 +10,19 @@ import {getUid} from '@olts/core/util';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Cache size.
+ * @property [cacheSize] Cache size.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {ProjectionLike} [projection] Projection.
  * @property {import("./Source").State} [state] State.
  * @property {import("../tilegrid/TileGrid").default} [tileGrid] TileGrid.
  * @property {import("../Tile").LoadFunction} tileLoadFunction TileLoadFunction.
- * @property {number} [tilePixelRatio] TilePixelRatio.
+ * @property [tilePixelRatio] TilePixelRatio.
  * @property {import("../Tile").UrlFunction} [tileUrlFunction] TileUrlFunction.
- * @property {string} [url] Url.
- * @property {Array<string>} [urls] Urls.
+ * @property [url] Url.
+ * @property {string[]} [urls] Urls.
  * @property {boolean} [wrapX=true] WrapX.
- * @property {number} [transition] Transition.
- * @property {string} [key] Key.
+ * @property [transition] Transition.
+ * @property [key] Key.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0] ZDirection.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
@@ -73,7 +73,7 @@ export class UrlTile extends TileSource {
 
     /**
      * @protected
-     * @type {!Array<string>|null}
+     * @type {!string[]|null}
      */
     this.urls = null;
 
@@ -114,7 +114,7 @@ export class UrlTile extends TileSource {
    * Return the URLs used for this source.
    * When a tileUrlFunction is used instead of url or urls,
    * null will be returned.
-   * @return {!Array<string>|null} URLs.
+   * @return {!string[]|null} URLs.
    * @api
    */
   getUrls() {
@@ -162,7 +162,7 @@ export class UrlTile extends TileSource {
   /**
    * Set the tile URL function of the source.
    * @param {import("../Tile").UrlFunction} tileUrlFunction Tile URL function.
-   * @param {string} [key] Optional new tile key for the source.
+   * @param [key] Optional new tile key for the source.
    * @api
    */
   setTileUrlFunction(tileUrlFunction, key) {
@@ -177,7 +177,7 @@ export class UrlTile extends TileSource {
 
   /**
    * Set the URL to use for requests.
-   * @param {string} url URL.
+   * @param url URL.
    * @api
    */
   setUrl(url) {
@@ -188,7 +188,7 @@ export class UrlTile extends TileSource {
 
   /**
    * Set the URLs to use for requests.
-   * @param {Array<string>} urls URLs.
+   * @param {string[]} urls URLs.
    * @api
    */
   setUrls(urls) {
@@ -203,7 +203,7 @@ export class UrlTile extends TileSource {
 
   /**
    * @param {TileCoord} tileCoord Tile coordinate.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {string|undefined} Tile URL.
    */
@@ -213,9 +213,9 @@ export class UrlTile extends TileSource {
 
   /**
    * Marks a tile coord as being used, without triggering a load.
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
    */
   useTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);

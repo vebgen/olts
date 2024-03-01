@@ -54,24 +54,24 @@ export interface GeometryBatchItem {
  * @typedef {Object} PolygonGeometryBatch A geometry batch specific to polygons
  * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
- * @property {number} geometriesCount Amount of geometries in the batch.
- * @property {number} verticesCount Amount of vertices from geometries in the batch.
- * @property {number} ringsCount How many outer and inner rings in this batch.
+ * @property geometriesCount Amount of geometries in the batch.
+ * @property verticesCount Amount of vertices from geometries in the batch.
+ * @property ringsCount How many outer and inner rings in this batch.
  */
 
 /**
  * @typedef {Object} LineStringGeometryBatch A geometry batch specific to lines
  * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
- * @property {number} geometriesCount Amount of geometries in the batch.
- * @property {number} verticesCount Amount of vertices from geometries in the batch.
+ * @property geometriesCount Amount of geometries in the batch.
+ * @property verticesCount Amount of vertices from geometries in the batch.
  */
 
 /**
  * @typedef {Object} PointGeometryBatch A geometry batch specific to points
  * @property {Record<string, GeometryBatchItem>} entries Dictionary of all entries in the batch with associated computed values.
  * One entry corresponds to one feature. Key is feature uid.
- * @property {number} geometriesCount Amount of geometries in the batch.
+ * @property geometriesCount Amount of geometries in the batch.
  */
 
 /** This class is used to group several geometries of various types together for faster rendering.
@@ -334,12 +334,12 @@ export class MixedGeometryBatch {
    * @param {number[]} flatCoords Flat coordinates
    * @param {number[] | Array<number[]> | null} ends Coordinate ends
    * @param {Feature|RenderFeature} feature Feature
-   * @param {string} featureUid Feature uid
-   * @param {number} stride Stride
+   * @param featureUid Feature uid
+   * @param stride Stride
    * @private
    */
   addCoordinates_(type: GeometryType, flatCoords: number[], ends: number[] | Array<number[]> | null, feature: Feature | RenderFeature, featureUid: string, stride: number) {
-    /** @type {number} */
+    /** @type */
     let verticesCount: number;
     switch (type) {
       case 'MultiPolygon': {
@@ -489,7 +489,7 @@ export class MixedGeometryBatch {
   }
 
   /**
-   * @param {string} featureUid Feature uid
+   * @param featureUid Feature uid
    * @param {GeometryBatchItem} entry The entry to add
    * @return {GeometryBatchItem} the added entry
    * @private
@@ -510,8 +510,8 @@ export class MixedGeometryBatch {
 
   /**
    * Return a ref to the pool of available refs.
-   * @param {number} ref the ref to return
-   * @param {string} featureUid the feature uid
+   * @param ref the ref to return
+   * @param featureUid the feature uid
    * @private
    */
   returnRef_(ref: number, featureUid: string) {
@@ -566,7 +566,7 @@ export class MixedGeometryBatch {
 
   /**
    * Resolve the feature associated to a ref.
-   * @param {number} ref Hit detected ref
+   * @param ref Hit detected ref
    * @return {Feature|RenderFeature} feature
    */
   getFeatureFromRef(ref: number): Feature | RenderFeature {
@@ -576,7 +576,7 @@ export class MixedGeometryBatch {
 
 /**
  * @param {number[]} flatCoords Flat coords
- * @param {number} stride Stride
+ * @param stride Stride
  * @return {number[]} Flat coords with only XY components
  */
 function getFlatCoordinatesXY(flatCoords: number[], stride: number): number[] {

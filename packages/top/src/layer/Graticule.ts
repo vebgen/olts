@@ -72,29 +72,29 @@ const INTERVALS = [
 /**
  * @typedef {Object} GraticuleLabelDataType
  * @property {Point} geom Geometry.
- * @property {string} text Text.
+ * @property text Text.
  */
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
- * @property {number} [maxLines=100] The maximum number of meridians and
+ * @property [maxLines=100] The maximum number of meridians and
  * parallels from the center of the map. The default value of 100 means that at
  * most 200 meridians and 200 parallels will be displayed. The default value is
  * appropriate for conformal projections like Spherical Mercator. If you
@@ -107,7 +107,7 @@ const INTERVALS = [
  *   color: 'rgba(0, 0, 0, 0.2)' // a not fully opaque black
  * });
  * ```
- * @property {number} [targetSize=100] The target size of the graticule cells,
+ * @property [targetSize=100] The target size of the graticule cells,
  * in pixels.
  * @property {boolean} [showLabels=false] Render a label with the respective
  * latitude/longitude for each graticule line.
@@ -119,10 +119,10 @@ const INTERVALS = [
  * latitudes. This function is called with the latitude as argument, and
  * should return a formatted string representing the latitude. By default,
  * labels are formatted as degrees, minutes, seconds and hemisphere.
- * @property {number} [lonLabelPosition=0] Longitude label position in fractions
+ * @property [lonLabelPosition=0] Longitude label position in fractions
  * (0..1) of view extent. 0 means at the bottom of the viewport, 1 means at the
  * top.
- * @property {number} [latLabelPosition=1] Latitude label position in fractions
+ * @property [latLabelPosition=1] Latitude label position in fractions
  * (0..1) of view extent. 0 means at the left of the viewport, 1 means at the
  * right.
  * @property {Text} [lonLabelStyle] Longitude label text
@@ -274,13 +274,13 @@ export class Graticule extends VectorLayer {
     this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
     /**
-     * @type {Array<LineString>}
+     * @type {LineString[]}
      * @private
      */
     this.meridians_ = [];
 
     /**
-     * @type {Array<LineString>}
+     * @type {LineString[]}
      * @private
      */
     this.parallels_ = [];
@@ -337,13 +337,13 @@ export class Graticule extends VectorLayer {
     this.topRight_ = null;
 
     /**
-     * @type {Array<GraticuleLabelDataType>}
+     * @type {GraticuleLabelDataType[]}
      * @private
      */
     this.meridiansLabels_ = null;
 
     /**
-     * @type {Array<GraticuleLabelDataType>}
+     * @type {GraticuleLabelDataType[]}
      * @private
      */
     this.parallelsLabels_ = null;
@@ -452,7 +452,7 @@ export class Graticule extends VectorLayer {
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
 
-      this.addEventListener(EventType.POSTRENDER, this.drawLabels_.bind(this));
+      this.addEventListener(EventTypes.POSTRENDER, this.drawLabels_.bind(this));
     }
 
     /**
@@ -476,7 +476,7 @@ export class Graticule extends VectorLayer {
 
     /**
      * feature pool to use when updating graticule
-     * @type {Array<Feature>}
+     * @type {Feature[]}
      * @private
      */
     this.featurePool_ = [];
@@ -514,8 +514,8 @@ export class Graticule extends VectorLayer {
    * Strategy function for loading features based on the view's extent and
    * resolution.
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @return {Array<Extent>} Extents.
+   * @param resolution Resolution.
+   * @return {Extent[]} Extents.
    */
   strategyFunction(extent, resolution) {
     // extents may be passed in different worlds, to avoid endless loop we use only one
@@ -540,7 +540,7 @@ export class Graticule extends VectorLayer {
   /**
    * Update geometries in the source based on current view
    * @param {import("../extent").Extent} extent Extent
-   * @param {number} resolution Resolution
+   * @param resolution Resolution
    * @param {import("../proj/Projection").default} projection Projection
    */
   loaderFunction(extent, resolution, projection) {
@@ -620,13 +620,13 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {number} lon Longitude.
-   * @param {number} minLat Minimal latitude.
-   * @param {number} maxLat Maximal latitude.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param lon Longitude.
+   * @param minLat Minimal latitude.
+   * @param maxLat Maximal latitude.
+   * @param squaredTolerance Squared tolerance.
    * @param {Extent} extent Extent.
-   * @param {number} index Index.
-   * @return {number} Index.
+   * @param index Index.
+   * @return Index.
    * @private
    */
   addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, index) {
@@ -655,13 +655,13 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {number} lat Latitude.
-   * @param {number} minLon Minimal longitude.
-   * @param {number} maxLon Maximal longitude.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param lat Latitude.
+   * @param minLon Minimal longitude.
+   * @param maxLon Maximal longitude.
+   * @param squaredTolerance Squared tolerance.
    * @param {Extent} extent Extent.
-   * @param {number} index Index.
-   * @return {number} Index.
+   * @param index Index.
+   * @return Index.
    * @private
    */
   addParallel_(lat, minLon, maxLon, squaredTolerance, extent, index) {
@@ -779,8 +779,8 @@ export class Graticule extends VectorLayer {
   /**
    * @param {Extent} extent Extent.
    * @param {Coordinate} center Center.
-   * @param {number} resolution Resolution.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param resolution Resolution.
+   * @param squaredTolerance Squared tolerance.
    * @private
    */
   createGraticule_(extent, center, resolution, squaredTolerance) {
@@ -1000,8 +1000,8 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {number} resolution Resolution.
-   * @return {number} The interval in degrees.
+   * @param resolution Resolution.
+   * @return The interval in degrees.
    * @private
    */
   getInterval_(resolution) {
@@ -1033,12 +1033,12 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {number} lon Longitude.
-   * @param {number} minLat Minimal latitude.
-   * @param {number} maxLat Maximal latitude.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param lon Longitude.
+   * @param minLat Minimal latitude.
+   * @param maxLat Maximal latitude.
+   * @param squaredTolerance Squared tolerance.
    * @return {LineString} The meridian line string.
-   * @param {number} index Index.
+   * @param index Index.
    * @private
    */
   getMeridian_(lon, minLat, maxLat, squaredTolerance, index) {
@@ -1063,7 +1063,7 @@ export class Graticule extends VectorLayer {
   /**
    * @param {LineString} lineString Meridian
    * @param {Extent} extent Extent.
-   * @param {number} index Index.
+   * @param index Index.
    * @return {Point} Meridian point.
    * @private
    */
@@ -1095,7 +1095,7 @@ export class Graticule extends VectorLayer {
 
   /**
    * Get the list of meridians.  Meridians are lines of equal longitude.
-   * @return {Array<LineString>} The meridians.
+   * @return {LineString[]} The meridians.
    * @api
    */
   getMeridians() {
@@ -1103,12 +1103,12 @@ export class Graticule extends VectorLayer {
   }
 
   /**
-   * @param {number} lat Latitude.
-   * @param {number} minLon Minimal longitude.
-   * @param {number} maxLon Maximal longitude.
-   * @param {number} squaredTolerance Squared tolerance.
+   * @param lat Latitude.
+   * @param minLon Minimal longitude.
+   * @param maxLon Maximal longitude.
+   * @param squaredTolerance Squared tolerance.
    * @return {LineString} The parallel line string.
-   * @param {number} index Index.
+   * @param index Index.
    * @private
    */
   getParallel_(lat, minLon, maxLon, squaredTolerance, index) {
@@ -1132,7 +1132,7 @@ export class Graticule extends VectorLayer {
   /**
    * @param {LineString} lineString Parallels.
    * @param {Extent} extent Extent.
-   * @param {number} index Index.
+   * @param index Index.
    * @return {Point} Parallel point.
    * @private
    */
@@ -1164,7 +1164,7 @@ export class Graticule extends VectorLayer {
 
   /**
    * Get the list of parallels.  Parallels are lines of equal latitude.
-   * @return {Array<LineString>} The parallels.
+   * @return {LineString[]} The parallels.
    * @api
    */
   getParallels() {

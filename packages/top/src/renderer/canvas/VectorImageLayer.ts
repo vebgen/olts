@@ -5,7 +5,7 @@ import type { EventType } from '@olts/events';
 import ImageCanvas from '../../ImageCanvas';
 import ImageState from '../../ImageState';
 import RBush from 'rbush';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import {apply, compose, create} from '../../transform';
 import {fromResolutionLike} from '../../resolution';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '@olts/core/extent';
@@ -141,7 +141,7 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         },
       );
 
-      image.addEventListener(EventType.CHANGE, () => {
+      image.addEventListener(EventTypes.CHANGE, () => {
         if (image.getState() !== ImageState.LOADED) {
           return;
         }
@@ -188,7 +188,7 @@ export class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.

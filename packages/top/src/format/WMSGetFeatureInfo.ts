@@ -6,7 +6,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml';
 
 /**
  * @typedef {Object} Options
- * @property {Array<string>} [layers] If set, only features of the given layers will be returned by the format when read.
+ * @property {string[]} [layers] If set, only features of the given layers will be returned by the format when read.
  */
 
 /**
@@ -50,20 +50,20 @@ export class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {Array<string>|null}
+     * @type {string[]|null}
      */
     this.layers_ = options.layers ? options.layers : null;
   }
 
   /**
-   * @return {Array<string>|null} layers
+   * @return {string[]|null} layers
    */
   getLayers() {
     return this.layers_;
   }
 
   /**
-   * @param {Array<string>|null} layers Layers to parse.
+   * @param {string[]|null} layers Layers to parse.
    */
   setLayers(layers) {
     this.layers_ = layers;

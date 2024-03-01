@@ -57,7 +57,7 @@ const TranslateEventType = {
  * that takes an {@link module:ol/Feature~Feature} and an
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * translated or `false` otherwise. Not used if `features` is provided.
- * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
+ * @property [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features.
  */
 
@@ -73,7 +73,7 @@ export class TranslateEvent extends Event {
      * @param {Coordinate} startCoordinate The original coordinates before.translation started
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      */
-    constructor(type: TranslateEventType, features: Collection<Feature>, coordinate: Coordinate, startCoordinate: Coordinate, mapBrowserEvent: import("../MapBrowserEvent").default) {
+    constructor(type: TranslateEventType, features: Collection<Feature>, coordinate: Coordinate, startCoordinate: Coordinate, mapBrowserEvent: import("../Map/browser-event").default) {
         super(type);
 
         /**
@@ -130,17 +130,17 @@ export class TranslateEvent extends Event {
 export class Translate extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: TranslateOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: TranslateOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: TranslateOnSignature<void>;
 
@@ -231,7 +231,7 @@ export class Translate extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(event: import("../MapBrowserEvent").default): boolean {
+    handleDownEvent(event: import("../Map/browser-event").default): boolean {
         if (!event.originalEvent || !this.condition_(event)) {
             return false;
         }
@@ -262,7 +262,7 @@ export class Translate extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} event Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(event: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(event: import("../Map/browser-event").default): boolean {
         if (this.lastCoordinate_) {
             this.lastCoordinate_ = null;
             this.handleMoveEvent(event);
@@ -289,7 +289,7 @@ export class Translate extends PointerInteraction {
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent").default} event Event.
      */
-    handleDragEvent(event: import("../MapBrowserEvent").default) {
+    handleDragEvent(event: import("../Map/browser-event").default) {
         if (this.lastCoordinate_) {
             const newCoordinate = event.coordinate;
             const projection = event.map.getView().getProjection();
@@ -335,7 +335,7 @@ export class Translate extends PointerInteraction {
      * Handle pointer move events.
      * @param {import("../MapBrowserEvent").default} event Event.
      */
-    handleMoveEvent(event: import("../MapBrowserEvent").default) {
+    handleMoveEvent(event: import("../Map/browser-event").default) {
         const elem = event.map.getViewport();
 
         // Change the cursor to grab/grabbing if hovering any of the features managed
@@ -378,7 +378,7 @@ export class Translate extends PointerInteraction {
 
     /**
      * Returns the Hit-detection tolerance.
-     * @return {number} Hit tolerance in pixels.
+     * @return Hit tolerance in pixels.
      * @api
      */
     getHitTolerance(): number {
@@ -388,7 +388,7 @@ export class Translate extends PointerInteraction {
     /**
      * Hit-detection tolerance. Pixels inside the radius around the given position
      * will be checked for features.
-     * @param {number} hitTolerance Hit tolerance in pixels.
+     * @param hitTolerance Hit tolerance in pixels.
      * @api
      */
     setHitTolerance(hitTolerance: number) {

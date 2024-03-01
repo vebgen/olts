@@ -76,7 +76,7 @@ export class LayerRenderer extends Observable {
 
   /**
    * @param {Record<number, Record<string, import("../Tile").default>>} tiles Lookup of loaded tiles by zoom level.
-   * @param {number} zoom Zoom level.
+   * @param zoom Zoom level.
    * @param {import("../Tile").default} tile Tile.
    * @return {boolean|void} If `false`, the tile will not be considered loaded.
    */
@@ -100,7 +100,7 @@ export class LayerRenderer extends Observable {
   createLoadedTileFinder(source, projection, tiles) {
     return (
       /**
-       * @param {number} zoom Zoom level.
+       * @param zoom Zoom level.
        * @param {import("../TileRange").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
        */
@@ -114,7 +114,7 @@ export class LayerRenderer extends Observable {
    * @abstract
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("./vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("./Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
@@ -168,7 +168,7 @@ export class LayerRenderer extends Observable {
   loadImage(image) {
     let imageState = image.getState();
     if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
-      image.addEventListener(EventType.CHANGE, this.boundHandleImageChange_);
+      image.addEventListener(EventTypes.CHANGE, this.boundHandleImageChange_);
     }
     if (imageState == ImageState.IDLE) {
       image.load();

@@ -37,7 +37,7 @@ import {
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
+ * @property [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
  * width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {number[]} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
@@ -90,8 +90,8 @@ export class ImageCanvasSource extends ImageSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {import("../ImageCanvas").default} Single image.
    */

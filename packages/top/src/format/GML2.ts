@@ -166,7 +166,7 @@ export class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Element|undefined} Node.
    * @private
    */
@@ -200,7 +200,7 @@ export class GML2 extends GMLBase {
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', /** @type {string} */ (fid));
+      node.setAttribute('fid', /** @type */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -351,7 +351,7 @@ export class GML2 extends GMLBase {
   }
 
   /**
-   * @param {string} namespaceURI XML namespace.
+   * @param namespaceURI XML namespace.
    * @return {Element} coordinates node.
    * @private
    */
@@ -430,7 +430,7 @@ export class GML2 extends GMLBase {
   /**
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Node} Node.
    * @private
    */
@@ -472,9 +472,9 @@ export class GML2 extends GMLBase {
 
   /**
    * @param {number[]} point Point geometry.
-   * @param {string} [srsName] Optional srsName
+   * @param [srsName] Optional srsName
    * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
-   * @return {string} The coords string.
+   * @return The coords string.
    * @private
    */
   getCoords_(point, srsName, hasZ) {
@@ -632,7 +632,7 @@ export class GML2 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Node|undefined} Node.
    * @private
    */

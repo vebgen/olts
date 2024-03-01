@@ -32,7 +32,7 @@ export type KeyFunction<T> = (item: T) => string;
  * @see https://github.com/google/closure-library/blob/master/closure/goog/structs/heap
  * and https://hg.python.org/cpython/file/2.7/Lib/heapq.py.
  */
-export class PriorityQueue<T> {
+export class PriorityQueue<T = any> {
 
     private priorityFunction_: PriorityFunction<T>;
     private keyFunction_: KeyFunction<T>;
@@ -211,8 +211,8 @@ export class PriorityQueue<T> {
     }
 
     /**
-     * @param {number} startIndex The index of the root.
-     * @param {number} index The index of the node to move up.
+     * @param startIndex The index of the root.
+     * @param index The index of the node to move up.
      */
     private siftDown_(startIndex: number, index: number) {
         const elements = this.elements_;
@@ -259,5 +259,6 @@ export class PriorityQueue<T> {
         this.heapify_();
     }
 }
+
 
 export default PriorityQueue;

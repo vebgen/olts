@@ -11,8 +11,8 @@ import {rotate as rotateCoordinate} from '../coordinate';
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition.noModifierKeys} and
  * {@link module:ol/events/condition.targetNotEditable}.
- * @property {number} [duration=100] Animation duration in milliseconds.
- * @property {number} [pixelDelta=128] The amount of pixels to pan on each key
+ * @property [duration=100] Animation duration in milliseconds.
+ * @property [pixelDelta=128] The amount of pixels to pan on each key
  * press.
  */
 
@@ -80,7 +80,7 @@ export class KeyboardPan extends Interaction {
    */
   handleEvent(mapBrowserEvent) {
     let stopEvent = false;
-    if (mapBrowserEvent.type == EventType.KEYDOWN) {
+    if (mapBrowserEvent.type == EventTypes.KEYDOWN) {
       const keyEvent = /** @type {KeyboardEvent} */ (
         mapBrowserEvent.originalEvent
       );

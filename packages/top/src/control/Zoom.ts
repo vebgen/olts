@@ -6,17 +6,17 @@ import {easeOut} from '../easing';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=250] Animation duration in milliseconds.
- * @property {string} [className='ol-zoom'] CSS class name.
- * @property {string} [zoomInClassName=className + '-in'] CSS class name for the zoom-in button.
- * @property {string} [zoomOutClassName=className + '-out'] CSS class name for the zoom-out button.
+ * @property [duration=250] Animation duration in milliseconds.
+ * @property [className='ol-zoom'] CSS class name.
+ * @property [zoomInClassName=className + '-in'] CSS class name for the zoom-in button.
+ * @property [zoomOutClassName=className + '-out'] CSS class name for the zoom-out button.
  * @property {string|HTMLElement} [zoomInLabel='+'] Text label to use for the zoom-in
  * button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|HTMLElement} [zoomOutLabel='–'] Text label to use for the zoom-out button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [zoomInTipLabel='Zoom in'] Text label to use for the button tip.
- * @property {string} [zoomOutTipLabel='Zoom out'] Text label to use for the button tip.
- * @property {number} [delta=1] The zoom delta applied on each click.
+ * @property [zoomInTipLabel='Zoom in'] Text label to use for the button tip.
+ * @property [zoomOutTipLabel='Zoom out'] Text label to use for the button tip.
+ * @property [delta=1] The zoom delta applied on each click.
  * @property {HTMLElement|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
  */
@@ -78,7 +78,7 @@ export class Zoom extends Control {
     );
 
     inElement.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this, delta),
       false,
     );
@@ -94,7 +94,7 @@ export class Zoom extends Control {
     );
 
     outElement.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this, -delta),
       false,
     );
@@ -114,7 +114,7 @@ export class Zoom extends Control {
   }
 
   /**
-   * @param {number} delta Zoom delta.
+   * @param delta Zoom delta.
    * @param {MouseEvent} event The event to handle
    * @private
    */
@@ -124,7 +124,7 @@ export class Zoom extends Control {
   }
 
   /**
-   * @param {number} delta Zoom delta.
+   * @param delta Zoom delta.
    * @private
    */
   zoomByDelta_(delta) {

@@ -19,9 +19,9 @@ import {Uniforms} from '../renderer/webgl/TileLayer';
 import {asArray} from '@olts/core/color';
 
 /**
- * @param {string} operator Operator
+ * @param operator Operator
  * @param {CompilationContext} context Compilation context
- * @return {string} A function name based on the operator, unique in the given context
+ * @return A function name based on the operator, unique in the given context
  */
 function computeOperatorFunctionName(operator, context) {
   return `operator_${operator}_${Object.keys(context.functions).length}`;
@@ -29,8 +29,8 @@ function computeOperatorFunctionName(operator, context) {
 
 /**
  * Will return the number as a float with a dot separator, which is required by GLSL.
- * @param {number} v Numerical value.
- * @return {string} The value as string.
+ * @param v Numerical value.
+ * @return The value as string.
  */
 export function numberToGlsl(v) {
   const s = v.toString();
@@ -40,7 +40,7 @@ export function numberToGlsl(v) {
 /**
  * Will return the number array as a float with a dot separator, concatenated with ', '.
  * @param {number[]} array Numerical values array.
- * @return {string} The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
+ * @return The array as a vector, e. g.: `vec3(1.0, 2.0, 3.0)`.
  */
 export function arrayToGlsl(array) {
   if (array.length < 2 || array.length > 4) {
@@ -56,7 +56,7 @@ export function arrayToGlsl(array) {
  * @param {string|import("../color").Color} color Color either in string format or [r, g, b, a] array format,
  * with RGB components in the 0..255 range and the alpha component in the 0..1 range.
  * Note that the final array will always have 4 components.
- * @return {string} The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
+ * @return The color expressed in the `vec4(1.0, 1.0, 1.0, 1.0)` form.
  */
 export function colorToGlsl(color) {
   const array = asArray(color);
@@ -76,8 +76,8 @@ let stringToFloatCounter = 0;
 
 /**
  * Returns a stable equivalent number for the string literal.
- * @param {string} string String literal value
- * @return {number} Number equivalent
+ * @param string String literal value
+ * @return Number equivalent
  */
 export function getStringNumberEquivalent(string) {
   if (!(string in stringToFloatMap)) {
@@ -90,8 +90,8 @@ export function getStringNumberEquivalent(string) {
  * Returns a stable equivalent number for the string literal, for use in shaders. This number is then
  * converted to be a GLSL-compatible string.
  * Note: with a float precision of `mediump`, the amount of unique strings supported is 16,777,216
- * @param {string} string String literal value
- * @return {string} GLSL-compatible string containing a number
+ * @param string String literal value
+ * @return GLSL-compatible string containing a number
  */
 export function stringToGlsl(string) {
   return numberToGlsl(getStringNumberEquivalent(string));
@@ -99,8 +99,8 @@ export function stringToGlsl(string) {
 
 /**
  * Get the uniform name given a variable name.
- * @param {string} variableName The variable name.
- * @return {string} The uniform name.
+ * @param variableName The variable name.
+ * @return The uniform name.
  */
 export function uniformNameForVariable(variableName) {
   return 'u_var_' + variableName;
@@ -120,15 +120,15 @@ export function uniformNameForVariable(variableName) {
 
 /**
  * @typedef {Object} CompilationContextProperty
- * @property {string} name Name
- * @property {number} type Resolved property type
+ * @property name Name
+ * @property type Resolved property type
  * @property {function(import("../Feature").FeatureLike): *} [evaluator] Function used for evaluating the value;
  */
 
 /**
  * @typedef {Object} CompilationContextVariable
- * @property {string} name Name
- * @property {number} type Resolved variable type
+ * @property name Name
+ * @property type Resolved variable type
  * @property {function(Object): *} [evaluator] Function used for evaluating the value; argument is the style variables object
  */
 
@@ -138,8 +138,8 @@ export function uniformNameForVariable(variableName) {
  * @property {Record<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
  * @property {Record<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
  * @property {Record<string, string>} functions Lookup of functions used by the style.
- * @property {number} [bandCount] Number of bands per pixel.
- * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
+ * @property [bandCount] Number of bands per pixel.
+ * @property {PaletteTexture[]} [paletteTextures] List of palettes used by the style.
  * @property {import("../style/webgl").WebGLStyle} style Literal style.
  */
 
@@ -162,7 +162,7 @@ const GET_BAND_VALUE_FUNC = 'getBandValue';
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
 /**
- * @typedef {string} CompiledExpression
+ * @typedef CompiledExpression
  */
 
 /**
@@ -172,7 +172,7 @@ export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
 /**
  * @param {import('./expression').EncodedExpression} encoded The encoded expression.
- * @param {number} type The expected type.
+ * @param type The expected type.
  * @param {import('./expression').ParsingContext} parsingContext The parsing context.
  * @param {CompilationContext} compilationContext An existing compilation context
  * @return {CompiledExpression} The compiled expression.
@@ -198,7 +198,7 @@ export function buildExpression(
 }
 
 /**
- * @param {function(Array<CompiledExpression>, CompilationContext): string} output Function that takes in parsed arguments and returns a string
+ * @param {function(CompiledExpression[], CompilationContext): string} output Function that takes in parsed arguments and returns a string
  * @return {function(CompilationContext, import("./expression").CallExpression, number): string} Compiler for the call expression
  */
 function createCompiler(output) {
@@ -218,7 +218,7 @@ function createCompiler(output) {
 const compilers = {
   [Ops.Get]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
+    const propName = /** @type */ (firstArg.value);
     const isExisting = propName in context.properties;
     if (!isExisting) {
       context.properties[propName] = {
@@ -246,7 +246,7 @@ const compilers = {
   },
   [Ops.Var]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const varName = /** @type {string} */ (firstArg.value);
+    const varName = /** @type */ (firstArg.value);
     const isExisting = varName in context.variables;
     if (!isExisting) {
       context.variables[varName] = {
@@ -442,7 +442,7 @@ ${ifBlocks}
 
 /**
  * @param {Expression} expression The expression.
- * @param {number} returnType The expected return type.
+ * @param returnType The expected return type.
  * @param {CompilationContext} context The compilation context.
  * @return {CompiledExpression} The compiled expression
  */
@@ -461,7 +461,7 @@ function compile(expression, returnType, context) {
   }
 
   if ((expression.type & NumberType) > 0) {
-    return numberToGlsl(/** @type {number} */ (expression.value));
+    return numberToGlsl(/** @type */ (expression.value));
   }
 
   if ((expression.type & BooleanType) > 0) {

@@ -13,7 +13,7 @@ import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @const
- * @type {Array<null>}
+ * @type {null[]}
  */
 const NAMESPACE_URIS = [null];
 

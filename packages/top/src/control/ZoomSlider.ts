@@ -21,8 +21,8 @@ const Direction = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-zoomslider'] CSS class name.
- * @property {number} [duration=200] Animation duration in milliseconds.
+ * @property [className='ol-zoomslider'] CSS class name.
+ * @property [duration=200] Animation duration in milliseconds.
  * @property {function(import("../MapEvent").default):void} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control to be
@@ -152,11 +152,11 @@ export class ZoomSlider extends Control {
     );
 
     containerElement.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleContainerClick_.bind(this),
       false,
     );
-    thumbElement.addEventListener(EventType.CLICK, stopPropagation, false);
+    thumbElement.addEventListener(EventTypes.CLICK, stopPropagation, false);
   }
 
   /**
@@ -306,7 +306,7 @@ export class ZoomSlider extends Control {
   /**
    * Positions the thumb inside its container according to the given resolution.
    *
-   * @param {number} res The res.
+   * @param res The res.
    * @private
    */
   setThumbPosition_(res) {
@@ -325,9 +325,9 @@ export class ZoomSlider extends Control {
    * relative position scales from 0 to 1.  The x and y offsets are assumed to be
    * in pixel units within the dragger limits.
    *
-   * @param {number} x Pixel position relative to the left of the slider.
-   * @param {number} y Pixel position relative to the top of the slider.
-   * @return {number} The relative position of the thumb.
+   * @param x Pixel position relative to the left of the slider.
+   * @param y Pixel position relative to the top of the slider.
+   * @return The relative position of the thumb.
    * @private
    */
   getRelativePosition_(x, y) {
@@ -344,8 +344,8 @@ export class ZoomSlider extends Control {
    * Calculates the corresponding resolution of the thumb given its relative
    * position (where 0 is the minimum and 1 is the maximum).
    *
-   * @param {number} position The relative position of the thumb.
-   * @return {number} The corresponding resolution.
+   * @param position The relative position of the thumb.
+   * @return The corresponding resolution.
    * @private
    */
   getResolutionForPosition_(position) {
@@ -358,8 +358,8 @@ export class ZoomSlider extends Control {
    * relative position of 0 corresponds to the minimum view resolution.  A
    * relative position of 1 corresponds to the maximum view resolution.
    *
-   * @param {number} res The resolution.
-   * @return {number} The relative position value (between 0 and 1).
+   * @param res The resolution.
+   * @return The relative position value (between 0 and 1).
    * @private
    */
   getPositionForResolution_(res) {

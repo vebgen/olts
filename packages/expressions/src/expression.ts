@@ -1246,9 +1246,9 @@ function parseArgsOfType(argType: number): ArgValidator {
 
 
 /**
- * @param {number|function(Array<Expression>):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
+ * @param {number|function(Expression[]):number} returnType The return type of the operator; can be a fixed value or a callback taking the parsed
  * arguments
- * @param {Array<ArgValidator>} argValidators A chain of argument validators; the return value of the last validator
+ * @param {ArgValidator[]} argValidators A chain of argument validators; the return value of the last validator
  * will be used as parsed arguments
  * @return The parser.
  */

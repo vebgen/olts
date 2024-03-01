@@ -25,11 +25,11 @@ import {decode} from '../Image';
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
  * The projection code must contain a numeric end portion separated by :
  * or the entire code must form a valid ArcGIS SpatialReference definition.
- * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
+ * @property [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
  * @property {number[]} [resolutions] Resolutions. If specified, requests will be made for
  * these resolutions only.
- * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
+ * @property [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
  */
 
@@ -129,8 +129,8 @@ export class ImageArcGISRest extends ImageSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param resolution Resolution.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {import("../Image").default} Single image.
    */

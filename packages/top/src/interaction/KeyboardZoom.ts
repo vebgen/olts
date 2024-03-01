@@ -4,14 +4,14 @@ import {platformModifierKey, targetNotEditable} from '../events/condition';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=100] Animation duration in milliseconds.
+ * @property [duration=100] Animation duration in milliseconds.
  * @property {import("../events/condition").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. The default condition is
  * that {@link module:ol/events/condition.targetNotEditable} is fulfilled and that
  * the platform modifier key isn't pressed
  * (!{@link module:ol/events/condition.platformModifierKey}).
- * @property {number} [delta=1] The zoom level delta on each key press.
+ * @property [delta=1] The zoom level delta on each key press.
  */
 
 /**
@@ -71,8 +71,8 @@ export class KeyboardZoom extends Interaction {
   handleEvent(mapBrowserEvent) {
     let stopEvent = false;
     if (
-      mapBrowserEvent.type == EventType.KEYDOWN ||
-      mapBrowserEvent.type == EventType.KEYPRESS
+      mapBrowserEvent.type == EventTypes.KEYDOWN ||
+      mapBrowserEvent.type == EventTypes.KEYPRESS
     ) {
       const keyEvent = /** @type {KeyboardEvent} */ (
         mapBrowserEvent.originalEvent

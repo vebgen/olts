@@ -16,19 +16,19 @@ import { solveLinearSystem } from '@olts/core/math';
 let brokenDiagonalRendering_;
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {HTMLCanvasElement[]}
  */
-export const canvasPool: Array<HTMLCanvasElement> = [];
+export const canvasPool: HTMLCanvasElement[] = [];
 
 /**
  * This draws a small triangle into a canvas by setting the triangle as the clip region
  * and then drawing a (too large) rectangle
  *
  * @param {CanvasRenderingContext2D} ctx The context in which to draw the triangle
- * @param {number} u1 The x-coordinate of the second point. The first point is 0,0.
- * @param {number} v1 The y-coordinate of the second point.
- * @param {number} u2 The x-coordinate of the third point.
- * @param {number} v2 The y-coordinate of the third point.
+ * @param u1 The x-coordinate of the second point. The first point is 0,0.
+ * @param v1 The y-coordinate of the second point.
+ * @param u2 The x-coordinate of the third point.
+ * @param v2 The y-coordinate of the third point.
  */
 function drawTestTriangle(ctx: CanvasRenderingContext2D, u1: number, v1: number, u2: number, v2: number) {
     ctx.beginPath();
@@ -47,7 +47,7 @@ function drawTestTriangle(ctx: CanvasRenderingContext2D, u1: number, v1: number,
  * Returns true if either the color or transparency is off
  *
  * @param {Uint8ClampedArray} data The data returned from getImageData
- * @param {number} offset The pixel offset from the start of data.
+ * @param offset The pixel offset from the start of data.
  * @return {boolean} true if the diagonal rendering is broken
  */
 function verifyBrokenDiagonalRendering(data: Uint8ClampedArray, offset: number): boolean {
@@ -96,8 +96,8 @@ function isBrokenDiagonalRendering(): boolean {
  * @param {Projection} sourceProj Source projection.
  * @param {Projection} targetProj Target projection.
  * @param {Coordinate} targetCenter Target center.
- * @param {number} targetResolution Target resolution.
- * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
+ * @param targetResolution Target resolution.
+ * @return The best resolution to use. Can be +-Infinity, NaN or 0.
  */
 export function calculateSourceResolution(
     sourceProj: Projection,
@@ -149,8 +149,8 @@ export function calculateSourceResolution(
  * @param {Projection} sourceProj Source projection.
  * @param {Projection} targetProj Target projection.
  * @param {Extent} targetExtent Target extent
- * @param {number} targetResolution Target resolution.
- * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
+ * @param targetResolution Target resolution.
+ * @return The best resolution to use. Can be +-Infinity, NaN or 0.
  */
 export function calculateSourceExtentResolution(
     sourceProj: Projection,
@@ -190,16 +190,16 @@ export function calculateSourceExtentResolution(
 /**
  * Renders the source data into new canvas based on the triangulation.
  *
- * @param {number} width Width of the canvas.
- * @param {number} height Height of the canvas.
- * @param {number} pixelRatio Pixel ratio.
- * @param {number} sourceResolution Source resolution.
+ * @param width Width of the canvas.
+ * @param height Height of the canvas.
+ * @param pixelRatio Pixel ratio.
+ * @param sourceResolution Source resolution.
  * @param {Extent} sourceExtent Extent of the data source.
- * @param {number} targetResolution Target resolution.
+ * @param targetResolution Target resolution.
  * @param {Extent} targetExtent Target extent.
  * @param {import("./reproj/Triangulation").default} triangulation Calculated triangulation.
- * @param {Array<ImageExtent>} sources Array of sources.
- * @param {number} gutter Gutter of the sources.
+ * @param {ImageExtent[]} sources Array of sources.
+ * @param gutter Gutter of the sources.
  * @param {boolean} [renderEdges] Render reprojection edges.
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
@@ -215,7 +215,7 @@ export function render(
     targetResolution: number,
     targetExtent: Extent,
     triangulation: import("./reproj/Triangulation").default,
-    sources: Array<ImageExtent>,
+    sources: ImageExtent[],
     gutter: number,
     renderEdges: boolean,
     interpolate: boolean,

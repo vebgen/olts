@@ -7,7 +7,7 @@ import {removeChildren, replaceNode} from '@olts/core/dom';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-attribution'] CSS class name.
+ * @property [className='ol-attribution'] CSS class name.
  * @property {HTMLElement|string} [target] Specify a target if you
  * want the control to be rendered outside of the map's
  * viewport.
@@ -16,16 +16,16 @@ import {removeChildren, replaceNode} from '@olts/core/dom';
  * `attributionsCollapsible` setting.
  * @property {boolean} [collapsed=true] Specify if attributions should
  * be collapsed at startup.
- * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
+ * @property [tipLabel='Attributions'] Text label to use for the button tip.
  * @property {string|HTMLElement} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [expandClassName=className + '-expand'] CSS class name for the
+ * @property [expandClassName=className + '-expand'] CSS class name for the
  * collapsed attributions button.
  * @property {string|HTMLElement} [collapseLabel='›'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [collapseClassName=className + '-collapse'] CSS class name for the
+ * @property [collapseClassName=className + '-collapse'] CSS class name for the
  * expanded attributions button.
  * @property {function(import("../MapEvent").default):void} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
@@ -148,7 +148,7 @@ export class Attribution extends Control {
     this.toggleButton_.appendChild(activeLabel);
 
     this.toggleButton_.addEventListener(
-      EventType.CLICK,
+      EventTypes.CLICK,
       this.handleClick_.bind(this),
       false,
     );
@@ -168,7 +168,7 @@ export class Attribution extends Control {
 
     /**
      * A list of currently rendered resolutions.
-     * @type {Array<string>}
+     * @type {string[]}
      * @private
      */
     this.renderedAttributions_ = [];
@@ -183,7 +183,7 @@ export class Attribution extends Control {
   /**
    * Collect a list of visible attributions and set the collapsible state.
    * @param {import("../Map").FrameState} frameState Frame state.
-   * @return {Array<string>} Attributions.
+   * @return {string[]} Attributions.
    * @private
    */
   collectSourceAttributions_(frameState) {

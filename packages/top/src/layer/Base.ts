@@ -26,8 +26,8 @@ import { clamp } from '@olts/core/math';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
@@ -35,13 +35,13 @@ import { clamp } from '@olts/core/math';
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
@@ -60,17 +60,17 @@ import { clamp } from '@olts/core/math';
 export class BaseLayer extends BaseObject {
 
     /**
-     * 
+     *
      */
     override on: BaseLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: BaseLayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: BaseLayerOnSignature<void>;
 
@@ -143,7 +143,7 @@ export class BaseLayer extends BaseObject {
     }
 
     /**
-     * @return {string} CSS class name.
+     * @return CSS class name.
      */
     getClassName(): string {
         return this.className_;
@@ -214,55 +214,55 @@ export class BaseLayer extends BaseObject {
     /**
      * Return the maximum resolution of the layer. Returns Infinity if
      * the layer has no maximum resolution set.
-     * @return {number} The maximum resolution of the layer.
+     * @return The maximum resolution of the layer.
      * @observable
      * @api
      */
     getMaxResolution(): number {
-        return /** @type {number} */ (this.get(LayerProperty.MAX_RESOLUTION));
+        return /** @type */ (this.get(LayerProperty.MAX_RESOLUTION));
     }
 
     /**
      * Return the minimum resolution of the layer. Returns 0 if
      * the layer has no minimum resolution set.
-     * @return {number} The minimum resolution of the layer.
+     * @return The minimum resolution of the layer.
      * @observable
      * @api
      */
     getMinResolution(): number {
-        return /** @type {number} */ (this.get(LayerProperty.MIN_RESOLUTION));
+        return /** @type */ (this.get(LayerProperty.MIN_RESOLUTION));
     }
 
     /**
      * Return the minimum zoom level of the layer. Returns -Infinity if
      * the layer has no minimum zoom set.
-     * @return {number} The minimum zoom level of the layer.
+     * @return The minimum zoom level of the layer.
      * @observable
      * @api
      */
     getMinZoom(): number {
-        return /** @type {number} */ (this.get(LayerProperty.MIN_ZOOM));
+        return /** @type */ (this.get(LayerProperty.MIN_ZOOM));
     }
 
     /**
      * Return the maximum zoom level of the layer. Returns Infinity if
      * the layer has no maximum zoom set.
-     * @return {number} The maximum zoom level of the layer.
+     * @return The maximum zoom level of the layer.
      * @observable
      * @api
      */
     getMaxZoom(): number {
-        return /** @type {number} */ (this.get(LayerProperty.MAX_ZOOM));
+        return /** @type */ (this.get(LayerProperty.MAX_ZOOM));
     }
 
     /**
      * Return the opacity of the layer (between 0 and 1).
-     * @return {number} The opacity of the layer.
+     * @return The opacity of the layer.
      * @observable
      * @api
      */
     getOpacity(): number {
-        return /** @type {number} */ (this.get(LayerProperty.OPACITY));
+        return /** @type */ (this.get(LayerProperty.OPACITY));
     }
 
     /**
@@ -317,7 +317,7 @@ export class BaseLayer extends BaseObject {
 
     /**
      * Set the maximum resolution at which the layer is visible.
-     * @param {number} maxResolution The maximum resolution of the layer.
+     * @param maxResolution The maximum resolution of the layer.
      * @observable
      * @api
      */
@@ -327,7 +327,7 @@ export class BaseLayer extends BaseObject {
 
     /**
      * Set the minimum resolution at which the layer is visible.
-     * @param {number} minResolution The minimum resolution of the layer.
+     * @param minResolution The minimum resolution of the layer.
      * @observable
      * @api
      */
@@ -339,7 +339,7 @@ export class BaseLayer extends BaseObject {
      * Set the maximum zoom (exclusive) at which the layer is visible.
      * Note that the zoom levels for layer visibility are based on the
      * view zoom level, which may be different from a tile source zoom level.
-     * @param {number} maxZoom The maximum zoom of the layer.
+     * @param maxZoom The maximum zoom of the layer.
      * @observable
      * @api
      */
@@ -351,7 +351,7 @@ export class BaseLayer extends BaseObject {
      * Set the minimum zoom (inclusive) at which the layer is visible.
      * Note that the zoom levels for layer visibility are based on the
      * view zoom level, which may be different from a tile source zoom level.
-     * @param {number} minZoom The minimum zoom of the layer.
+     * @param minZoom The minimum zoom of the layer.
      * @observable
      * @api
      */
@@ -361,7 +361,7 @@ export class BaseLayer extends BaseObject {
 
     /**
      * Set the opacity of the layer, allowed values range from 0 to 1.
-     * @param {number} opacity The opacity of the layer.
+     * @param opacity The opacity of the layer.
      * @observable
      * @api
      */
@@ -383,7 +383,7 @@ export class BaseLayer extends BaseObject {
     /**
      * Set Z-index of the layer, which is used to order layers before rendering.
      * The default Z-index is 0.
-     * @param {number} zindex The z-index of the layer.
+     * @param zindex The z-index of the layer.
      * @observable
      * @api
      */

@@ -16,15 +16,15 @@ export const ATTRIBUTION =
 /**
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {number} [maxZoom=19] Max zoom.
+ * @property [maxZoom=19] Max zoom.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
@@ -32,9 +32,9 @@ export const ATTRIBUTION =
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * @property [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
- * @property {string} [url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'] URL template.
+ * @property [url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'] URL template.
  * Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]

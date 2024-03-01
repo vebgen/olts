@@ -1,7 +1,7 @@
 
 import CanvasLayerRenderer from './Layer';
 import ImageState from '../../ImageState';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import {
   apply as applyTransform,
   compose as composeTransform,

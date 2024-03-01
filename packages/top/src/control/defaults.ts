@@ -2,6 +2,7 @@ import Attribution from './Attribution';
 import Collection from '../Collection';
 import Rotate from './Rotate';
 import Zoom from './Zoom';
+import { Control } from './Control';
 
 /**
  * @typedef {Object} DefaultsOptions
@@ -17,6 +18,15 @@ import Zoom from './Zoom';
  * @property {import("./Zoom").Options} [zoomOptions] Options for
  * {@link module:ol/control/Zoom~Zoom}.
  */
+export interface DefaultsOptions {
+    attribution?: boolean;
+    attributionOptions?: AttributionOptions;
+    rotate?: boolean;
+    rotateOptions?: RotateOptions;
+    zoom?: boolean;
+    zoomOptions?: ZoomOptions;
+}
+
 
 /**
  * Set of controls included in maps by default. Unless configured otherwise,
@@ -31,27 +41,27 @@ import Zoom from './Zoom';
  * to be used with the {@link module:ol/Map~Map} constructor's `controls` option.
  * @api
  */
-export function defaults(options) {
-  options = options ? options : {};
+export function defaults(options?: DefaultsOptions): Collection<Control> {
+    options = options ? options : {};
 
-  /** @type {Collection<import("./Control").default>} */
-  const controls = new Collection();
+    /** @type {Collection<import("./Control").default>} */
+    const controls: Collection<import("./Control").default> = new Collection();
 
-  const zoomControl = options.zoom !== undefined ? options.zoom : true;
-  if (zoomControl) {
-    controls.push(new Zoom(options.zoomOptions));
-  }
+    const zoomControl = options.zoom !== undefined ? options.zoom : true;
+    if (zoomControl) {
+        controls.push(new Zoom(options.zoomOptions));
+    }
 
-  const rotateControl = options.rotate !== undefined ? options.rotate : true;
-  if (rotateControl) {
-    controls.push(new Rotate(options.rotateOptions));
-  }
+    const rotateControl = options.rotate !== undefined ? options.rotate : true;
+    if (rotateControl) {
+        controls.push(new Rotate(options.rotateOptions));
+    }
 
-  const attributionControl =
-    options.attribution !== undefined ? options.attribution : true;
-  if (attributionControl) {
-    controls.push(new Attribution(options.attributionOptions));
-  }
+    const attributionControl =
+        options.attribution !== undefined ? options.attribution : true;
+    if (attributionControl) {
+        controls.push(new Attribution(options.attributionOptions));
+    }
 
-  return controls;
+    return controls;
 }

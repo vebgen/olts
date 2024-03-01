@@ -55,7 +55,7 @@ export const ImageSourceEventType = {
  */
 export class ImageSourceEvent extends Event {
     /**
-     * @param {string} type Type.
+     * @param type Type.
      * @param {import("../Image").default} image The image.
      */
     constructor(type: string, image: import("../Image").default) {
@@ -101,17 +101,17 @@ export class ImageSourceEvent extends Event {
 export class ImageSource extends Source {
 
     /**
-     * 
+     *
      */
     override on: ImageSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: ImageSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: ImageSourceOnSignature<void>;
 
@@ -202,8 +202,8 @@ export class ImageSource extends Source {
 
     /**
      * @protected
-     * @param {number} resolution Resolution.
-     * @return {number} Resolution.
+     * @param resolution Resolution.
+     * @return Resolution.
      */
     findNearestResolution(resolution: number): number {
         const resolutions = this.getResolutions();
@@ -216,8 +216,8 @@ export class ImageSource extends Source {
 
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      * @param {import("../proj/Projection").default} projection Projection.
      * @return {import("../Image").default} Single image.
      */
@@ -265,8 +265,8 @@ export class ImageSource extends Source {
     /**
      * @abstract
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      * @param {import("../proj/Projection").default} projection Projection.
      * @return {import("../Image").default} Single image.
      * @protected
@@ -300,7 +300,7 @@ export class ImageSource extends Source {
                 this.loader,
             );
             this.image.addEventListener(
-                EventType.CHANGE,
+                EventTypes.CHANGE,
                 this.handleImageChange.bind(this),
             );
         }
@@ -341,7 +341,7 @@ export class ImageSource extends Source {
  * Default image load function for image sources that use import("../Image").Image image
  * instances.
  * @param {import("../Image").default} image Image.
- * @param {string} src Source.
+ * @param src Source.
  */
 export function defaultImageLoadFunction(image: import("../Image").default, src: string) {
   /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
@@ -350,9 +350,9 @@ export function defaultImageLoadFunction(image: import("../Image").default, src:
 /**
  * Adjusts the extent so it aligns with pixel boundaries.
  * @param {Extent} extent Extent.
- * @param {number} resolution Reolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {number} ratio Ratio between request size and view size.
+ * @param resolution Reolution.
+ * @param pixelRatio Pixel ratio.
+ * @param ratio Ratio between request size and view size.
  * @return {Extent} Request extent.
  */
 export function getRequestExtent(extent: Extent, resolution: number, pixelRatio: number, ratio: number): Extent {

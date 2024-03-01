@@ -111,7 +111,7 @@ export class GML3 extends GMLBase {
    * @return {MultiLineString|undefined} MultiLineString.
    */
   readMultiCurve(node, objectStack) {
-    /** @type {Array<LineString>} */
+    /** @type {LineString[]} */
     const lineStrings = pushParseAndPop(
       [],
       this.MULTICURVE_PARSERS,
@@ -132,7 +132,7 @@ export class GML3 extends GMLBase {
    * @return {number[]|undefined} Polygon.
    */
   readFlatCurveRing(node, objectStack) {
-    /** @type {Array<LineString>} */
+    /** @type {LineString[]} */
     const lineStrings = pushParseAndPop(
       [],
       this.MULTICURVE_PARSERS,
@@ -153,7 +153,7 @@ export class GML3 extends GMLBase {
    * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiSurface(node, objectStack) {
-    /** @type {Array<Polygon>} */
+    /** @type {Polygon[]} */
     const polygons = pushParseAndPop(
       [],
       this.MULTISURFACE_PARSERS,
@@ -472,9 +472,9 @@ export class GML3 extends GMLBase {
 
   /**
    * @param {number[]} point Point geometry.
-   * @param {string} [srsName] Optional srsName
+   * @param [srsName] Optional srsName
    * @param {boolean} [hasZ] whether the geometry has a Z coordinate (is 3D) or not.
-   * @return {string} The coords string.
+   * @return The coords string.
    * @private
    */
   getCoords_(point, srsName, hasZ) {
@@ -579,7 +579,7 @@ export class GML3 extends GMLBase {
   /**
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Node} Node.
    * @private
    */
@@ -841,7 +841,7 @@ export class GML3 extends GMLBase {
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', /** @type {string} */ (fid));
+      node.setAttribute('fid', /** @type */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -925,7 +925,7 @@ export class GML3 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Node|undefined} Node.
    * @private
    */
@@ -941,7 +941,7 @@ export class GML3 extends GMLBase {
    * @const
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
-   * @param {string} [nodeName] Node name.
+   * @param [nodeName] Node name.
    * @return {Element|undefined} Node.
    * @private
    */
@@ -1189,7 +1189,7 @@ GMLBase.prototype.RING_PARSERS = {
  * @function
  * @param {Array<import("../Feature").default>} features Features.
  * @param {import("./Feature").WriteOptions} [options] Options.
- * @return {string} Result.
+ * @return Result.
  * @api
  */
 GML3.prototype.writeFeatures;

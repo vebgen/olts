@@ -4,7 +4,7 @@ import CollectionEventType from '../CollectionEventType';
 import { BaseEvent as Event } from '@olts/events';
 import type { EventType } from '@olts/events';
 import Feature from '../Feature';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 import { Point } from '@olts/geometry';
 import PointerInteraction from './Pointer';
 import RBush from '../structs/RBush';
@@ -81,9 +81,9 @@ const ModifyEventType = {
  * @property {number[]} [depth] Depth.
  * @property {Feature} feature Feature.
  * @property {SimpleGeometry} geometry Geometry.
- * @property {number} [index] Index.
+ * @property [index] Index.
  * @property {Array<number[]>} segment Segment.
- * @property {Array<SegmentData>} [featureSegments] FeatureSegments.
+ * @property {SegmentData[]} [featureSegments] FeatureSegments.
  */
 
 /**
@@ -102,7 +102,7 @@ const ModifyEventType = {
  * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
  * features. Default is {@link module:ol/events/condition.always}.
- * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
+ * @property [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style").StyleLike|import("../style/flat").FlatStyleLike} [style]
  * Style used for the modification point or vertex. For linestrings and polygons, this will
@@ -141,7 +141,7 @@ export class ModifyEvent extends Event {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent
      * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      */
-    constructor(type: ModifyEventType, features: Collection<Feature>, mapBrowserEvent: import("../MapBrowserEvent").default) {
+    constructor(type: ModifyEventType, features: Collection<Feature>, mapBrowserEvent: import("../Map/browser-event").default) {
         super(type);
 
         /**
@@ -193,17 +193,17 @@ export class ModifyEvent extends Event {
 export class Modify extends PointerInteraction {
 
     /**
-     * 
+     *
      */
     override on: ModifyOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: ModifyOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: ModifyOnSignature<void>;
 
@@ -230,7 +230,7 @@ export class Modify extends PointerInteraction {
          * @param {import("../MapBrowserEvent").default} mapBrowserEvent Browser event.
          * @return {boolean} Combined condition result.
          */
-        this.defaultDeleteCondition_ = function (mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+        this.defaultDeleteCondition_ = function (mapBrowserEvent: import("../Map/browser-event").default): boolean {
             return altKeyOnly(mapBrowserEvent) && singleClick(mapBrowserEvent);
         };
 
@@ -439,15 +439,15 @@ export class Modify extends PointerInteraction {
         if (map && map.isRendered() && this.getActive()) {
             this.handlePointerAtPixel_(this.lastPixel_, map);
         }
-        feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
+        feature.addEventListener(EventTypes.CHANGE, this.boundHandleFeatureChange_);
     }
 
     /**
      * @param {import("../MapBrowserEvent").default} evt Map browser event.
-     * @param {Array<Array<SegmentData>>} segments The segments subject to modification.
+     * @param {Array<SegmentData[]>} segments The segments subject to modification.
      * @private
      */
-    willModifyFeatures_(evt: import("../MapBrowserEvent").default, segments: Array<Array<SegmentData>>) {
+    willModifyFeatures_(evt: import("../Map/browser-event").default, segments: Array<SegmentData[]>) {
         if (!this.featuresBeingModified_) {
             this.featuresBeingModified_ = new Collection();
             const features = this.featuresBeingModified_.getArray();
@@ -486,7 +486,7 @@ export class Modify extends PointerInteraction {
             this.vertexFeature_ = null;
         }
         feature.removeEventListener(
-            EventType.CHANGE,
+            EventTypes.CHANGE,
             this.boundHandleFeatureChange_,
         );
     }
@@ -497,7 +497,7 @@ export class Modify extends PointerInteraction {
      */
     removeFeatureSegmentData_(feature: Feature) {
         const rBush = this.rBush_;
-        /** @type {Array<SegmentData>} */
+        /** @type {SegmentData[]} */
         const nodesToRemove:SegmentData[] = [];
         rBush.forEach(
             /**
@@ -812,8 +812,8 @@ export class Modify extends PointerInteraction {
 
     /**
      * @param {Coordinate} coordinates Coordinates.
-     * @param {Array<Feature>} features The features being modified.
-     * @param {Array<SimpleGeometry>} geometries The geometries being modified.
+     * @param {Feature[]} features The features being modified.
+     * @param {SimpleGeometry[]} geometries The geometries being modified.
      * @return {Feature} Vertex feature.
      * @private
      */
@@ -837,7 +837,7 @@ export class Modify extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         if (!mapBrowserEvent.originalEvent) {
             return true;
         }
@@ -873,7 +873,7 @@ export class Modify extends PointerInteraction {
      * Handle pointer drag events.
      * @param {import("../MapBrowserEvent").default} evt Event.
      */
-    handleDragEvent(evt: import("../MapBrowserEvent").default) {
+    handleDragEvent(evt: import("../Map/browser-event").default) {
         this.ignoreNextSingleClick_ = false;
         this.willModifyFeatures_(evt, this.dragSegments_);
 
@@ -980,7 +980,7 @@ export class Modify extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleDownEvent(evt: import("../MapBrowserEvent").default): boolean {
+    handleDownEvent(evt: import("../Map/browser-event").default): boolean {
         if (!this.condition_(evt)) {
             return false;
         }
@@ -1100,7 +1100,7 @@ export class Modify extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} evt Event.
      * @return {boolean} If the event was consumed.
      */
-    handleUpEvent(evt: import("../MapBrowserEvent").default): boolean {
+    handleUpEvent(evt: import("../Map/browser-event").default): boolean {
         for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
             const segmentData = this.dragSegments_[i][0];
             const geometry = segmentData.geometry;
@@ -1151,7 +1151,7 @@ export class Modify extends PointerInteraction {
      * @param {import("../MapBrowserEvent").default} evt Event.
      * @private
      */
-    handlePointerMove_(evt: import("../MapBrowserEvent").default) {
+    handlePointerMove_(evt: import("../Map/browser-event").default) {
         this.lastPixel_ = evt.pixel;
         this.handlePointerAtPixel_(evt.pixel, evt.map, evt.coordinate);
     }
@@ -1172,7 +1172,7 @@ export class Modify extends PointerInteraction {
             );
         };
 
-        /** @type {Array<SegmentData>|undefined} */
+        /** @type {SegmentData[]|undefined} */
         let nodes:SegmentData[] | undefined;
         /** @type {Point|undefined} */
         let hitPointGeometry: Point | undefined;
@@ -1529,9 +1529,9 @@ export class Modify extends PointerInteraction {
 
     /**
      * @param {SimpleGeometry} geometry Geometry.
-     * @param {number} index Index.
+     * @param index Index.
      * @param {number[]|undefined} depth Depth.
-     * @param {number} delta Delta (1 or -1).
+     * @param delta Delta (1 or -1).
      * @private
      */
     updateSegmentIndices_(geometry: SimpleGeometry, index: number, depth: number[] | undefined, delta: number) {
@@ -1555,7 +1555,7 @@ export class Modify extends PointerInteraction {
 /**
  * @param {SegmentData} a The first segment data.
  * @param {SegmentData} b The second segment data.
- * @return {number} The difference in indexes.
+ * @return The difference in indexes.
  */
 function compareIndexes(a: SegmentData, b: SegmentData): number {
     return a.index - b.index;
@@ -1569,7 +1569,7 @@ function compareIndexes(a: SegmentData, b: SegmentData): number {
  * @param {SegmentData} segmentData The object describing the line
  *        segment we are calculating the distance to.
  * @param {import("../proj/Projection").default} projection The view projection.
- * @return {number} The square of the distance between a point and a line segment.
+ * @return The square of the distance between a point and a line segment.
  */
 function projectedDistanceToSegmentDataSquared(
     pointCoordinates: Coordinate,

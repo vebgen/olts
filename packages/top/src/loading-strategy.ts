@@ -5,11 +5,11 @@ import { fromUserExtent, fromUserResolution, toUserExtent } from './proj';
 /**
  * Strategy function for loading all features with a single request.
  * @param {Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @return {Array<Extent>} Extents.
+ * @param resolution Resolution.
+ * @return {Extent[]} Extents.
  * @api
  */
-export function all(extent: Extent, resolution: number): Array<Extent> {
+export function all(extent: Extent, resolution: number): Extent[] {
     return [[-Infinity, -Infinity, Infinity, Infinity]];
 }
 
@@ -17,11 +17,11 @@ export function all(extent: Extent, resolution: number): Array<Extent> {
  * Strategy function for loading features based on the view's extent and
  * resolution.
  * @param {Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @return {Array<Extent>} Extents.
+ * @param resolution Resolution.
+ * @return {Extent[]} Extents.
  * @api
  */
-export function bbox(extent: Extent, resolution: number): Array<Extent> {
+export function bbox(extent: Extent, resolution: number): Extent[] {
     return [extent];
 }
 
@@ -35,11 +35,11 @@ export function tile(tileGrid: TileGrid): (arg0: Extent, arg1: number, arg2: imp
     return (
         /**
          * @param {Extent} extent Extent.
-         * @param {number} resolution Resolution.
+         * @param resolution Resolution.
          * @param {import("./proj").Projection} projection Projection.
-         * @return {Array<Extent>} Extents.
+         * @return {Extent[]} Extents.
          */
-        function (extent: Extent, resolution: number, projection: import("./proj").Projection): Array<Extent> {
+        function (extent: Extent, resolution: number, projection: import("./proj").Projection): Extent[] {
             const z = tileGrid.getZForResolution(
                 fromUserResolution(resolution, projection),
             );
@@ -47,8 +47,8 @@ export function tile(tileGrid: TileGrid): (arg0: Extent, arg1: number, arg2: imp
                 fromUserExtent(extent, projection),
                 z,
             );
-            /** @type {Array<Extent>} */
-            const extents: Array<Extent> = [];
+            /** @type {Extent[]} */
+            const extents: Extent[] = [];
             /** @type {TileCoord} */
             const tileCoord: TileCoord = [z, 0, 0];
             for (

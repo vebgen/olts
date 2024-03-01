@@ -39,10 +39,10 @@ export const Attributes = {
 
 /**
  * @typedef {Object} Options
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property {VectorStyle|VectorStyle[]} style Vector style as literal style or shaders; can also accept an array of styles
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
- * @property {number} [cacheSize=512] The vector tile cache size.
+ * @property [cacheSize=512] The vector tile cache size.
  */
 
 /**
@@ -74,13 +74,13 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.hitDetectionEnabled_ = !options.disableHitDetection;
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {VectorStyle[]}
      * @private
      */
     this.styles_ = [];
 
     /**
-     * @type {Array<VectorStyleRenderer>}
+     * @type {VectorStyleRenderer[]}
      * @private
      */
     this.styleRenderers_ = [];
@@ -228,10 +228,10 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     const listener = () => {
       if (tileRep.ready) {
         this.getLayer().changed();
-        tileRep.removeEventListener(EventType.CHANGE, listener);
+        tileRep.removeEventListener(EventTypes.CHANGE, listener);
       }
     };
-    tileRep.addEventListener(EventType.CHANGE, listener);
+    tileRep.addEventListener(EventTypes.CHANGE, listener);
     return tileRep;
   }
 
@@ -289,11 +289,11 @@ export class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   /**
-   * @param {number} alpha Alpha value of the tile
+   * @param alpha Alpha value of the tile
    * @param {Extent} renderExtent Which extent to restrict drawing to
    * @param {import("../../transform").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
-   * @param {number} tileZ Tile zoom level
-   * @param {number} depth Depth of the tile
+   * @param tileZ Tile zoom level
+   * @param depth Depth of the tile
    * @private
    */
   applyUniforms_(alpha, renderExtent, batchInvertTransform, tileZ, depth) {

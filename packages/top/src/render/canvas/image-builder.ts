@@ -5,10 +5,10 @@ import CanvasInstruction from './Instruction';
 
 export class CanvasImageBuilder extends CanvasBuilder {
     /**
-     * @param {number} tolerance Tolerance.
+     * @param tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      */
     constructor(tolerance: number, maxExtent: Extent, resolution: number, pixelRatio: number) {
         super(tolerance, maxExtent, resolution, pixelRatio);

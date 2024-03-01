@@ -7,7 +7,7 @@ import {mouseOnly, shiftKeyOnly} from '../events/condition';
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.shiftKeyOnly}.
- * @property {number} [duration=400] Animation duration in milliseconds.
+ * @property [duration=400] Animation duration in milliseconds.
  */
 
 /**

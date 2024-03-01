@@ -54,7 +54,7 @@ export class GeometryCollection extends Geometry {
         const geometries = this.geometries_;
         for (let i = 0, ii = geometries.length; i < ii; ++i) {
             this.changeEventsKeys_.push(
-                listen(geometries[i], EventType.CHANGE, this.changed, this),
+                listen(geometries[i], EventTypes.CHANGE, this.changed, this),
             );
         }
     }

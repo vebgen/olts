@@ -40,6 +40,7 @@
             "@olts/core/proj": ["packages/core/src/proj/index.ts"],
             "@olts/core/size": ["packages/core/src/size.ts"],
             "@olts/core/string": ["packages/core/src/string.ts"],
+            "@olts/core/structs": ["packages/core/src/structs/index.ts"],
             "@olts/core/transform": ["packages/core/src/transform.ts"],
             "@olts/core/uri": ["packages/core/src/uri.ts"],
             "@olts/core/util": ["packages/core/src/util.ts"],

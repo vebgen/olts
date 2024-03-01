@@ -25,7 +25,7 @@ export type MakeArrayExtender<T> = (
     this: T,
     node: Node,
     objectStack:any[]
-) => (Array<T> | undefined);
+) => (T[] | undefined);
 
 
 /**

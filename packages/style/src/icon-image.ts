@@ -136,7 +136,7 @@ export class IconImage extends EventTarget {
      *
      */
     private dispatchChangeEvent_() {
-        this.dispatchEvent(EventType.CHANGE);
+        this.dispatchEvent(EventTypes.CHANGE);
     }
 
     /**
@@ -310,12 +310,12 @@ export class IconImage extends EventTarget {
                     resolve();
                 } else {
                     const self = this;
-                    this.addEventListener(EventType.CHANGE, function onChange() {
+                    this.addEventListener(EventTypes.CHANGE, function onChange() {
                         if (
                             self.imageState_ === ImageState.LOADED ||
                             self.imageState_ === ImageState.ERROR
                         ) {
-                            self.removeEventListener(EventType.CHANGE, onChange);
+                            self.removeEventListener(EventTypes.CHANGE, onChange);
                             resolve();
                         }
                     });

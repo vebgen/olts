@@ -96,7 +96,7 @@ export class WkbReader {
   }
 
   /**
-   * @return {number} value
+   * @return value
    */
   readUint8() {
     return this.view_.getUint8(this.pos_++);
@@ -104,7 +104,7 @@ export class WkbReader {
 
   /**
    * @param {boolean} [isLittleEndian] Whether read value as little endian
-   * @return {number} value
+   * @return value
    */
   readUint32(isLittleEndian) {
     return this.view_.getUint32(
@@ -115,7 +115,7 @@ export class WkbReader {
 
   /**
    * @param {boolean} [isLittleEndian] Whether read value as little endian
-   * @return {number} value
+   * @return value
    */
   readDouble(isLittleEndian) {
     return this.view_.getFloat64(
@@ -174,8 +174,8 @@ export class WkbReader {
   }
 
   /**
-   * @param {number} [expectedTypeId] Expected WKB Type ID
-   * @return {number} WKB Type ID
+   * @param [expectedTypeId] Expected WKB Type ID
+   * @return WKB Type ID
    */
   readWkbHeader(expectedTypeId) {
     const byteOrder = this.readUint8();
@@ -227,7 +227,7 @@ export class WkbReader {
   }
 
   /**
-   * @param {number} typeId WKB Type ID
+   * @param typeId WKB Type ID
    * @return {any} values read
    */
   readWkbPayload(typeId) {
@@ -264,7 +264,7 @@ export class WkbReader {
   }
 
   /**
-   * @param {number} expectedTypeId Expected WKB Type ID
+   * @param expectedTypeId Expected WKB Type ID
    * @return {any} values read
    */
   readWkbBlock(expectedTypeId) {
@@ -273,7 +273,7 @@ export class WkbReader {
 
   /**
    * @param {Function} reader reader function for each item
-   * @param {number} [expectedTypeId] Expected WKB Type ID
+   * @param [expectedTypeId] Expected WKB Type ID
    * @return {any} values read
    */
   readWkbCollection(reader, expectedTypeId) {
@@ -315,7 +315,7 @@ export class WkbReader {
   }
 
   /**
-   * @return {Array<Geometry>} array of geometries
+   * @return {Geometry[]} array of geometries
    */
   readGeometryCollection() {
     return this.readWkbCollection(this.readGeometry);
@@ -376,7 +376,7 @@ export class WkbReader {
 
       case WKBGeometryType.GEOMETRY_COLLECTION:
         return new GeometryCollection(
-          /** @type {Array<Geometry>} */ (result),
+          /** @type {Geometry[]} */ (result),
         );
 
       default:
@@ -395,7 +395,7 @@ export class WkbReader {
 export class WkbWriter {
   /**
    * @type {Object}
-   * @property {string} [layout] geometryLayout
+   * @property [layout] geometryLayout
    * @property {boolean} [littleEndian=true] littleEndian
    * @property {boolean} [ewkb=true] Whether writes in EWKB format
    * @property {Object} [nodata] NoData value for each axes
@@ -404,7 +404,7 @@ export class WkbWriter {
   constructor(opts) {
     opts = opts || {};
 
-    /** @type {string} */
+    /** @type */
     this.layout_ = opts.layout;
     this.isLittleEndian_ = opts.littleEndian !== false;
 
@@ -415,30 +415,30 @@ export class WkbWriter {
 
     /**
      * @type {Object}
-     * @property {number} X NoData value for X
-     * @property {number} Y NoData value for Y
-     * @property {number} Z NoData value for Z
-     * @property {number} M NoData value for M
+     * @property X NoData value for X
+     * @property Y NoData value for Y
+     * @property Z NoData value for Z
+     * @property M NoData value for M
      */
     this.nodata_ = Object.assign({X: 0, Y: 0, Z: 0, M: 0}, opts.nodata);
   }
 
   /**
-   * @param {number} value value
+   * @param value value
    */
   writeUint8(value) {
     this.writeQueue_.push([1, value]);
   }
 
   /**
-   * @param {number} value value
+   * @param value value
    */
   writeUint32(value) {
     this.writeQueue_.push([4, value]);
   }
 
   /**
-   * @param {number} value value
+   * @param value value
    */
   writeDouble(value) {
     this.writeQueue_.push([8, value]);
@@ -451,10 +451,10 @@ export class WkbWriter {
   writePoint(coords, layout) {
     /**
      * @type {Object}
-     * @property {number} X NoData value for X
-     * @property {number} Y NoData value for Y
-     * @property {number} [Z] NoData value for Z
-     * @property {number} [M] NoData value for M
+     * @property X NoData value for X
+     * @property Y NoData value for Y
+     * @property [Z] NoData value for Z
+     * @property [M] NoData value for M
      */
     const coordsObj = Object.assign.apply(
       null,
@@ -491,8 +491,8 @@ export class WkbWriter {
   }
 
   /**
-   * @param {number} wkbType WKB Type ID
-   * @param {number} [srid] SRID
+   * @param wkbType WKB Type ID
+   * @param [srid] SRID
    */
   writeWkbHeader(wkbType, srid) {
     wkbType %= 1000; // Assume 1000 is an upper limit for type ID
@@ -550,7 +550,7 @@ export class WkbWriter {
   }
 
   /**
-   * @param {Array<Geometry>} geometries geometries
+   * @param {Geometry[]} geometries geometries
    */
   writeGeometryCollection(geometries) {
     this.writeUint32(geometries.length); // numItems
@@ -605,7 +605,7 @@ export class WkbWriter {
 
   /**
    * @param {Geometry} geom geometry
-   * @param {number} [srid] SRID
+   * @param [srid] SRID
    */
   writeGeometry(geom, srid) {
     /**
@@ -684,8 +684,8 @@ export class WkbWriter {
  * @property {boolean} [littleEndian=true] Use littleEndian for output.
  * @property {boolean} [ewkb=true] Use EWKB format for output.
  * @property {GeometryLayout} [geometryLayout=null] Use specific coordinate layout for output features (null: auto detect)
- * @property {number} [nodataZ=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of Z.
- * @property {number} [nodataM=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of M.
+ * @property [nodataZ=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of Z.
+ * @property [nodataM=0] If the `geometryLayout` doesn't match with geometry to be output, this value is used to fill missing coordinate value of M.
  * @property {number|boolean} [srid=true] SRID for output. Specify integer value to enforce the value as a SRID. Specify `true` to extract from `dataProjection`. `false` to suppress the output. This option only takes effect when `ewkb` is `true`.
  */
 
@@ -879,7 +879,7 @@ export class WKB extends FeatureFormat {
 
 /**
  * @param {ArrayBuffer} buffer source buffer
- * @return {string} encoded hex string
+ * @return encoded hex string
  */
 function encodeHexString(buffer) {
   const view = new Uint8Array(buffer);
@@ -889,7 +889,7 @@ function encodeHexString(buffer) {
 }
 
 /**
- * @param {string} text source text
+ * @param text source text
  * @return {DataView} decoded binary buffer
  */
 function decodeHexString(text) {

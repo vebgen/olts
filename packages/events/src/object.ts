@@ -163,8 +163,8 @@ export class BaseObject extends Observable {
      * @return Object.
      * @api
      */
-    getProperties(): Values {
-        return (this.values_ && Object.assign({}, this.values_)) || {};
+    getProperties<T = Values>(): T {
+        return ((this.values_ && Object.assign({}, this.values_)) || {}) as T;
     }
 
     /**

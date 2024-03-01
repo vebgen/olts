@@ -4,7 +4,7 @@ import TileImage from './TileImage';
 import {appendParams} from '../uri';
 import {containsExtent} from '@olts/core/extent';
 import {createFromCapabilitiesMatrixSet} from '../tile-grid/WMTS';
-import {createFromTileUrlFunctions, expandUrl} from '../tileurlfunction';
+import {createFromTileUrlFunctions, expandUrl} from '../tile-url-function';
 import {equivalent, get as getProjection, transformExtent} from '../proj';
 
 /**
@@ -16,7 +16,7 @@ import {equivalent, get as getProjection, transformExtent} from '../proj';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least the number of tiles in the viewport.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
@@ -24,22 +24,22 @@ import {equivalent, get as getProjection, transformExtent} from '../proj';
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../tilegrid/WMTS").default} tileGrid Tile grid.
  * @property {ProjectionLike} [projection] Projection. Default is the view projection.
- * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {RequestEncoding} [requestEncoding='KVP'] Request encoding.
- * @property {string} layer Layer name as advertised in the WMTS capabilities.
- * @property {string} style Style name as advertised in the WMTS capabilities.
+ * @property layer Layer name as advertised in the WMTS capabilities.
+ * @property style Style name as advertised in the WMTS capabilities.
  * @property {typeof import("../ImageTile").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
- * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
+ * @property [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {string} [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
- * @property {string} [version='1.0.0'] WMTS version.
- * @property {string} matrixSet Matrix set.
+ * @property [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
+ * @property [version='1.0.0'] WMTS version.
+ * @property matrixSet Matrix set.
  * @property {!Object} [dimensions] Additional "dimensions" for tile requests.
  * This is an object with properties named like the advertised WMTS dimensions.
- * @property {string} [url]  A URL for the service.
+ * @property [url]  A URL for the service.
  * For the RESTful request encoding, this is a URL
  * template.  For KVP encoding, it is normal URL. A `{?-?}` template pattern,
  * for example `subdomain{a-f}.domain.com`, may be used instead of defining
@@ -50,10 +50,10 @@ import {equivalent, get as getProjection, transformExtent} from '../proj';
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {Array<string>} [urls] An array of URLs.
+ * @property {string[]} [urls] An array of URLs.
  * Requests will be distributed among the URLs in this array.
  * @property {boolean} [wrapX=false] Whether to wrap the world horizontally.
- * @property {number} [transition] Duration of the opacity transition for rendering.
+ * @property [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -159,7 +159,7 @@ export class WMTS extends TileImage {
   /**
    * Set the URLs to use for requests.
    * URLs may contain OGC conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
-   * @param {Array<string>} urls URLs.
+   * @param {string[]} urls URLs.
    */
   setUrls(urls) {
     this.urls = urls;
@@ -185,7 +185,7 @@ export class WMTS extends TileImage {
 
   /**
    * Return the image format of the WMTS source.
-   * @return {string} Format.
+   * @return Format.
    * @api
    */
   getFormat() {
@@ -194,7 +194,7 @@ export class WMTS extends TileImage {
 
   /**
    * Return the layer of the WMTS source.
-   * @return {string} Layer.
+   * @return Layer.
    * @api
    */
   getLayer() {
@@ -203,7 +203,7 @@ export class WMTS extends TileImage {
 
   /**
    * Return the matrix set of the WMTS source.
-   * @return {string} MatrixSet.
+   * @return MatrixSet.
    * @api
    */
   getMatrixSet() {
@@ -221,7 +221,7 @@ export class WMTS extends TileImage {
 
   /**
    * Return the style of the WMTS source.
-   * @return {string} Style.
+   * @return Style.
    * @api
    */
   getStyle() {
@@ -230,7 +230,7 @@ export class WMTS extends TileImage {
 
   /**
    * Return the version of the WMTS source.
-   * @return {string} Version.
+   * @return Version.
    * @api
    */
   getVersion() {
@@ -239,7 +239,7 @@ export class WMTS extends TileImage {
 
   /**
    * @private
-   * @return {string} The key for the current dimensions.
+   * @return The key for the current dimensions.
    */
   getKeyForDimensions_() {
     const res = this.urls ? this.urls.slice(0) : [];
@@ -260,7 +260,7 @@ export class WMTS extends TileImage {
   }
 
   /**
-   * @param {string} template Template.
+   * @param template Template.
    * @return {import("../Tile").UrlFunction} Tile URL function.
    */
   createFromWMTSTemplate(template) {
@@ -302,7 +302,7 @@ export class WMTS extends TileImage {
     return (
       /**
        * @param {TileCoord} tileCoord Tile coordinate.
-       * @param {number} pixelRatio Pixel ratio.
+       * @param pixelRatio Pixel ratio.
        * @param {import("../proj/Projection").default} projection Projection.
        * @return {string|undefined} Tile URL.
        */
@@ -339,18 +339,18 @@ export default WMTS;
  *                  the layer will apply if not provided.
  *
  * Required config properties:
- *  - layer - {string} The layer identifier.
+ *  - layer - The layer identifier.
  *
  * Optional config properties:
- *  - matrixSet - {string} The matrix set identifier, required if there is
+ *  - matrixSet - The matrix set identifier, required if there is
  *       more than one matrix set in the layer capabilities.
- *  - projection - {string} The desired CRS when no matrixSet is specified.
+ *  - projection - The desired CRS when no matrixSet is specified.
  *       eg: "EPSG:3857". If the desired projection is not available,
  *       an error is thrown.
- *  - requestEncoding - {string} url encoding format for the layer. Default is
+ *  - requestEncoding - url encoding format for the layer. Default is
  *       the first tile url format found in the GetCapabilities response.
- *  - style - {string} The name of the style
- *  - format - {string} Image format for the layer. Default is the first
+ *  - style - The name of the style
+ *  - format - Image format for the layer. Default is the first
  *       format returned in the GetCapabilities response.
  *  - crossOrigin - {string|null|undefined} Cross origin. Default is `undefined`.
  * @return {Options|null} WMTS source options object or `null` if the layer was not found.
@@ -392,13 +392,13 @@ export function optionsFromCapabilities(wmtsCap, config) {
     idx = 0;
   }
   const matrixSet =
-    /** @type {string} */
+    /** @type */
     (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
   const matrixLimits =
-    /** @type {Array<Object>} */
+    /** @type {Object[]} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
-  let format = /** @type {string} */ (l['Format'][0]);
+  let format = /** @type */ (l['Format'][0]);
   if ('format' in config) {
     format = config['format'];
   }
@@ -411,7 +411,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   if (idx < 0) {
     idx = 0;
   }
-  const style = /** @type {string} */ (l['Style'][idx]['Identifier']);
+  const style = /** @type */ (l['Style'][idx]['Identifier']);
 
   const dimensions = {};
   if ('Dimension' in l) {
@@ -526,7 +526,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     matrixLimits,
   );
 
-  /** @type {!Array<string>} */
+  /** @type {!string[]} */
   const urls = [];
   let requestEncoding = config['requestEncoding'];
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
@@ -550,14 +550,14 @@ export function optionsFromCapabilities(wmtsCap, config) {
         }
         if (requestEncoding === 'KVP') {
           if (encodings.includes('KVP')) {
-            urls.push(/** @type {string} */ (gets[i]['href']));
+            urls.push(/** @type */ (gets[i]['href']));
           }
         } else {
           break;
         }
       } else if (gets[i]['href']) {
         requestEncoding = 'KVP';
-        urls.push(/** @type {string} */ (gets[i]['href']));
+        urls.push(/** @type */ (gets[i]['href']));
       }
     }
   }
@@ -566,7 +566,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     l['ResourceURL'].forEach(function (element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];
-        urls.push(/** @type {string} */ (element['template']));
+        urls.push(/** @type */ (element['template']));
       }
     });
   }

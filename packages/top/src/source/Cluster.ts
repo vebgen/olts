@@ -17,9 +17,9 @@ import {getUid} from '@olts/core/util';
 /**
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
- * @property {number} [distance=20] Distance in pixels within which features will
+ * @property [distance=20] Distance in pixels within which features will
  * be clustered together.
- * @property {number} [minDistance=0] Minimum distance in pixels between clusters.
+ * @property [minDistance=0] Minimum distance in pixels between clusters.
  * Will be capped at the configured distance.
  * By default no minimum distance is guaranteed. This config can be used to avoid
  * overlapping icons. As a tradoff, the cluster feature's position will no longer be
@@ -98,7 +98,7 @@ export class Cluster extends VectorSource {
     this.interpolationRatio = 0;
 
     /**
-     * @type {Array<Feature>}
+     * @type {Feature[]}
      * @protected
      */
     this.features = [];
@@ -152,7 +152,7 @@ export class Cluster extends VectorSource {
 
   /**
    * Get the distance in pixels between clusters.
-   * @return {number} Distance.
+   * @return Distance.
    * @api
    */
   getDistance() {
@@ -170,7 +170,7 @@ export class Cluster extends VectorSource {
 
   /**
    * @param {Extent} extent Extent.
-   * @param {number} resolution Resolution.
+   * @param resolution Resolution.
    * @param {import("../proj/Projection").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
@@ -183,7 +183,7 @@ export class Cluster extends VectorSource {
 
   /**
    * Set the distance within which features will be clusterd together.
-   * @param {number} distance The distance in pixels.
+   * @param distance The distance in pixels.
    * @api
    */
   setDistance(distance) {
@@ -193,7 +193,7 @@ export class Cluster extends VectorSource {
   /**
    * Set the minimum distance between clusters. Will be capped at the
    * configured distance.
-   * @param {number} minDistance The minimum distance in pixels.
+   * @param minDistance The minimum distance in pixels.
    * @api
    */
   setMinDistance(minDistance) {
@@ -202,7 +202,7 @@ export class Cluster extends VectorSource {
 
   /**
    * The configured minimum distance between clusters.
-   * @return {number} The minimum distance in pixels.
+   * @return The minimum distance in pixels.
    * @api
    */
   getMinDistance() {
@@ -216,11 +216,11 @@ export class Cluster extends VectorSource {
    */
   setSource(source) {
     if (this.source) {
-      this.source.removeEventListener(EventType.CHANGE, this.boundRefresh_);
+      this.source.removeEventListener(EventTypes.CHANGE, this.boundRefresh_);
     }
     this.source = source;
     if (source) {
-      source.addEventListener(EventType.CHANGE, this.boundRefresh_);
+      source.addEventListener(EventTypes.CHANGE, this.boundRefresh_);
     }
     this.refresh();
   }
@@ -236,8 +236,8 @@ export class Cluster extends VectorSource {
 
   /**
    * Update the distances and refresh the source if necessary.
-   * @param {number} distance The new distance.
-   * @param {number} minDistance The new minimum distance.
+   * @param distance The new distance.
+   * @param minDistance The new minimum distance.
    */
   updateDistance(distance, minDistance) {
     const ratio =
@@ -292,7 +292,7 @@ export class Cluster extends VectorSource {
   }
 
   /**
-   * @param {Array<Feature>} features Features
+   * @param {Feature[]} features Features
    * @param {Extent} extent The searched extent for these features.
    * @return {Feature} The cluster feature.
    * @protected

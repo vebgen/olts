@@ -1,7 +1,7 @@
 
 import Control from './Control';
 import type { EventType } from '@olts/events';
-import MapProperty from '../MapProperty';
+import MapProperty from '../Map/property';
 import { CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED } from '@olts/core/css';
 import { listen, unlistenByKey } from '../events';
 import { replaceNode } from '@olts/core/dom';
@@ -42,17 +42,17 @@ const FullScreenEventType = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-full-screen'] CSS class name.
+ * @property [className='ol-full-screen'] CSS class name.
  * @property {string|Text|HTMLElement} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|Text|HTMLElement} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [activeClassName=className + '-true'] CSS class name for the button
+ * @property [activeClassName=className + '-true'] CSS class name for the button
  * when full-screen is active.
- * @property {string} [inactiveClassName=className + '-false'] CSS class name for the button
+ * @property [inactiveClassName=className + '-false'] CSS class name for the button
  * when full-screen is inactive.
- * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
+ * @property [tipLabel='Toggle full-screen'] Text label to use for the button tip.
  * @property {boolean} [keys=false] Full keyboard access.
  * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
@@ -77,17 +77,17 @@ const FullScreenEventType = {
  */
 export class FullScreen extends Control {
     /**
-     * 
+     *
      */
     override on: FullScreenOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: FullScreenOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: FullScreenOnSignature<void>;
 
@@ -144,7 +144,7 @@ export class FullScreen extends Control {
 
         /**
          * @private
-         * @type {Array<string>}
+         * @type {string[]}
          */
         this.activeClassName_ =
             options.activeClassName !== undefined
@@ -153,7 +153,7 @@ export class FullScreen extends Control {
 
         /**
          * @private
-         * @type {Array<string>}
+         * @type {string[]}
          */
         this.inactiveClassName_ =
             options.inactiveClassName !== undefined
@@ -192,7 +192,7 @@ export class FullScreen extends Control {
         this.button_.setAttribute('type', 'button');
         this.button_.appendChild(this.labelNode_);
         this.button_.addEventListener(
-            EventType.CLICK,
+            EventTypes.CLICK,
             this.handleClick_.bind(this),
             false,
         );
@@ -293,7 +293,7 @@ export class FullScreen extends Control {
         const oldMap = this.getMap();
         if (oldMap) {
             oldMap.removeChangeListener(
-                MapProperty.TARGET,
+                MapProperties.TARGET,
                 this.boundHandleMapTargetChange_,
             );
         }
@@ -303,7 +303,7 @@ export class FullScreen extends Control {
         this.handleMapTargetChange_();
         if (map) {
             map.addChangeListener(
-                MapProperty.TARGET,
+                MapProperties.TARGET,
                 this.boundHandleMapTargetChange_,
             );
         }

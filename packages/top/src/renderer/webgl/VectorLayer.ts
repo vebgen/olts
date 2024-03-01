@@ -3,7 +3,7 @@ import BaseVector from '../../layer/BaseVector';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch';
 import VectorEventType from '../../source/VectorEventType';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import WebGLLayerRenderer from './Layer';
 import WebGLRenderTarget from '../../webgl/RenderTarget';
 import {DefaultUniform} from '../../webgl/Helper';
@@ -44,8 +44,8 @@ export const Uniforms = {
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {VectorStyle|Array<VectorStyle>} style Vector style as literal style or shaders; can also accept an array of styles
+ * @property [className='ol-layer'] A CSS class name to set to the canvas element.
+ * @property {VectorStyle|VectorStyle[]} style Vector style as literal style or shaders; can also accept an array of styles
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
  * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
@@ -121,13 +121,13 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.currentFrameStateTransform_ = createTransform();
 
     /**
-     * @type {Array<VectorStyle>}
+     * @type {VectorStyle[]}
      * @private
      */
     this.styles_ = [];
 
     /**
-     * @type {Array<VectorStyleRenderer>}
+     * @type {VectorStyleRenderer[]}
      * @private
      */
     this.styleRenderers_ = [];
@@ -406,9 +406,9 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * Render the world, either to the main framebuffer or to the hit framebuffer
    * @param {import("../../Map").FrameState} frameState current frame state
    * @param {boolean} forHitDetection whether the rendering is for hit detection
-   * @param {number} startWorld the world to render in the first iteration
-   * @param {number} endWorld the last world to render
-   * @param {number} worldWidth the width of the worlds being rendered
+   * @param startWorld the world to render in the first iteration
+   * @param endWorld the last world to render
+   * @param worldWidth the width of the worlds being rendered
    */
   renderWorlds(frameState, forHitDetection, startWorld, endWorld, worldWidth) {
     let world = startWorld;
@@ -449,7 +449,7 @@ export class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.

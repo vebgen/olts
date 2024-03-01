@@ -61,7 +61,7 @@ export function not(condition) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!Extent} extent Extent.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Bbox} `<BBOX>` operator.
  * @api
@@ -76,7 +76,7 @@ export function bbox(geometryName, extent, srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!Geometry} geometry Geometry.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Contains} `<Contains>` operator.
  * @api
@@ -91,7 +91,7 @@ export function contains(geometryName, geometry, srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!Geometry} geometry Geometry.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Intersects} `<Intersects>` operator.
  * @api
@@ -106,7 +106,7 @@ export function intersects(geometryName, geometry, srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!Geometry} geometry Geometry.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Disjoint} `<Disjoint>` operator.
  * @api
@@ -121,7 +121,7 @@ export function disjoint(geometryName, geometry, srsName) {
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!Geometry} geometry Geometry.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!Within} `<Within>` operator.
  * @api
@@ -138,7 +138,7 @@ export function within(geometryName, geometry, srsName) {
  * @param {!Geometry} geometry Geometry.
  * @param {!number} distance Distance.
  * @param {!string} unit Unit.
- * @param {string} [srsName] SRS name. No srsName attribute will be
+ * @param [srsName] SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @return {!DWithin} `<DWithin>` operator.
  * @api
@@ -253,11 +253,11 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} pattern Text pattern.
- * @param {string} [wildCard] Pattern character which matches any sequence of
+ * @param [wildCard] Pattern character which matches any sequence of
  *    zero or more string characters. Default is '*'.
- * @param {string} [singleChar] pattern character which matches any single
+ * @param [singleChar] pattern character which matches any single
  *    string character. Default is '.'.
- * @param {string} [escapeChar] Escape character which can be used to escape
+ * @param [escapeChar] Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
  * @param {boolean} [matchCase] Case-sensitive?
  * @return {!IsLike} `<PropertyIsLike>` operator.

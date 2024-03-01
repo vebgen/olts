@@ -25,9 +25,9 @@ export type FeatureLike = Feature | RenderFeature;
  *
  */
 export type FeatureOnSignature<Return> =
-    & OnSignature<EventTypes, BaseEvent, Return>
+    & OnSignature<EventType, BaseEvent, Return>
     & OnSignature<ObjectEventType | 'change:geometry', ObjectEvent, Return>
-    & CombinedOnSignature<EventTypes | ObjectEventType | 'change:geometry', Return>;
+    & CombinedOnSignature<EventType | ObjectEventType | 'change:geometry', Return>;
 
 
 /***
@@ -252,7 +252,7 @@ export class Feature<G extends Geometry = Geometry> extends BaseObject {
         if (geometry) {
             this.geometryChangeKey_ = listen(
                 geometry,
-                EventType.CHANGE,
+                EventTypes.CHANGE,
                 this.handleGeometryChange_,
                 this,
             );
@@ -316,7 +316,7 @@ export class Feature<G extends Geometry = Geometry> extends BaseObject {
      * When calling {@link Feature#getGeometry}, the value of the property with
      * this name will be returned.
      *
-     * @param {string} name The property name of the default geometry.
+     * @param name The property name of the default geometry.
      * @api
      */
     setGeometryName(name: string) {

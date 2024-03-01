@@ -13,7 +13,7 @@ import {toSize} from '../size';
  * Set to `1` when debugging `VectorTile` sources with a default configuration.
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
- * @property {string} [template='z:{z} x:{x} y:{y}'] Template for labeling the tiles.
+ * @property [template='z:{z} x:{x} y:{y}'] Template for labeling the tiles.
  * Should include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  */
 

@@ -38,16 +38,16 @@ const GEOMETRY_RENDERERS = {
 /**
  * @param {import("../Feature").FeatureLike} feature1 Feature 1.
  * @param {import("../Feature").FeatureLike} feature2 Feature 2.
- * @return {number} Order.
+ * @return Order.
  */
 export function defaultOrder(feature1, feature2) {
   return parseInt(getUid(feature1), 10) - parseInt(getUid(feature2), 10);
 }
 
 /**
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @return {number} Squared pixel tolerance.
+ * @param resolution Resolution.
+ * @param pixelRatio Pixel ratio.
+ * @return Squared pixel tolerance.
  */
 export function getSquaredTolerance(resolution, pixelRatio) {
   const tolerance = getTolerance(resolution, pixelRatio);
@@ -55,9 +55,9 @@ export function getSquaredTolerance(resolution, pixelRatio) {
 }
 
 /**
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @return {number} Pixel tolerance.
+ * @param resolution Resolution.
+ * @param pixelRatio Pixel ratio.
+ * @return Pixel tolerance.
  */
 export function getTolerance(resolution, pixelRatio) {
   return (SIMPLIFY_TOLERANCE * resolution) / pixelRatio;
@@ -99,7 +99,7 @@ function renderCircleGeometry(
  * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
  * @param {import("../Feature").FeatureLike} feature Feature.
  * @param {import("../style/Style").default} style Style.
- * @param {number} squaredTolerance Squared tolerance.
+ * @param squaredTolerance Squared tolerance.
  * @param {function(import("../events/Event").default): void} listener Listener function.
  * @param {import("../proj").TransformFunction} [transform] Transform from user to view projection.
  * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
@@ -154,7 +154,7 @@ export function renderFeature(
  * @param {import("../render/canvas/BuilderGroup").default} replayGroup Replay group.
  * @param {import("../Feature").FeatureLike} feature Feature.
  * @param {import("../style/Style").default} style Style.
- * @param {number} squaredTolerance Squared tolerance.
+ * @param squaredTolerance Squared tolerance.
  * @param {import("../proj").TransformFunction} [transform] Optional transform function.
  * @param {import("../render/canvas/BuilderGroup").default} [declutterBuilderGroup] Builder for decluttering.
  */

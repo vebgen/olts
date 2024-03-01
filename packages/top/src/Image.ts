@@ -29,7 +29,7 @@ import { toPromise } from '@olts/core/functions';
  * @property {Extent} [extent] Extent, if different from the requested one.
  * @property {import("./resolution").ResolutionLike} [resolution] Resolution, if different from the requested one.
  * When x and y resolution are different, use the array type (`[xResolution, yResolution]`).
- * @property {number} [pixelRatio] Pixel ratio, if different from the requested one.
+ * @property [pixelRatio] Pixel ratio, if different from the requested one.
  * @property {import('./DataTile').ImageLike} image Image.
  */
 
@@ -59,7 +59,7 @@ export class ImageWrapper extends EventTarget {
      * @param {Extent} extent Extent.
      * @param {number|number[]|undefined} resolution Resolution. If provided as array, x and y
      * resolution will be assumed.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param pixelRatio Pixel ratio.
      * @param {import("./ImageState").default|import("./Image").Loader} stateOrLoader State.
      */
     constructor(extent: Extent, resolution: number | number[] | undefined, pixelRatio: number, stateOrLoader: import("./ImageState").default | import("./Image").Loader) {
@@ -107,7 +107,7 @@ export class ImageWrapper extends EventTarget {
      * @protected
      */
     changed() {
-        this.dispatchEvent(EventType.CHANGE);
+        this.dispatchEvent(EventTypes.CHANGE);
     }
 
     /**
@@ -125,7 +125,7 @@ export class ImageWrapper extends EventTarget {
     }
 
     /**
-     * @return {number} PixelRatio.
+     * @return PixelRatio.
      */
     getPixelRatio(): number {
         return this.pixelRatio_;
@@ -135,7 +135,7 @@ export class ImageWrapper extends EventTarget {
      * @return {number|number[]} Resolution.
      */
     getResolution(): number | number[] {
-        return /** @type {number} */ (this.resolution);
+        return /** @type */ (this.resolution);
     }
 
     /**
@@ -224,7 +224,7 @@ export function listenImage(image: import('./DataTile').ImageLike, loadHandler: 
     let loaded = false;
 
     const listenerKeys = [
-        listenOnce(img, EventType.LOAD, function () {
+        listenOnce(img, EventTypes.LOAD, function () {
             loaded = true;
             if (!decoding) {
                 loadHandler();
@@ -251,7 +251,7 @@ export function listenImage(image: import('./DataTile').ImageLike, loadHandler: 
                 }
             });
     } else {
-        listenerKeys.push(listenOnce(img, EventType.ERROR, errorHandler));
+        listenerKeys.push(listenOnce(img, EventTypes.ERROR, errorHandler));
     }
 
     return function unlisten() {
@@ -263,7 +263,7 @@ export function listenImage(image: import('./DataTile').ImageLike, loadHandler: 
 /**
  * Loads an image.
  * @param {HTMLImageElement} image Image, not yet loaded.
- * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
+ * @param [src] `src` attribute of the image. Optional, not required if already present.
  * @return {Promise<HTMLImageElement>} Promise resolving to an `HTMLImageElement`.
  * @api
  */
@@ -291,7 +291,7 @@ export function load(image: HTMLImageElement, src: string): Promise<HTMLImageEle
 
 /**
  * @param {HTMLImageElement} image Image, not yet loaded.
- * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
+ * @param [src] `src` attribute of the image. Optional, not required if already present.
  * @return {Promise<HTMLImageElement>} Promise resolving to an `HTMLImageElement`.
  */
 export function decodeFallback(image: HTMLImageElement, src: string): Promise<HTMLImageElement> {
@@ -314,7 +314,7 @@ export function decodeFallback(image: HTMLImageElement, src: string): Promise<HT
  * Loads an image and decodes it to an `ImageBitmap` if `createImageBitmap()` is supported. Returns
  * the loaded image otherwise.
  * @param {HTMLImageElement} image Image, not yet loaded.
- * @param {string} [src] `src` attribute of the image. Optional, not required if already present.
+ * @param [src] `src` attribute of the image. Optional, not required if already present.
  * @return {Promise<ImageBitmap|HTMLImageElement>} Promise resolving to an `ImageBitmap` or an
  * `HTMLImageElement` if `createImageBitmap()` is not supported.
  * @api

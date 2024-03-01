@@ -661,8 +661,11 @@ export function getEnlargedArea(extent1: Extent, extent2: Extent): number {
  * @return The result.
  */
 export function getForViewAndSize(
-    center: Coordinate, resolution: number, rotation: number,
-    size: Size, dest?: Extent
+    center: Coordinate,
+    resolution: number,
+    rotation: number,
+    size: Size,
+    dest?: Extent
 ): Extent {
     const [
         x0, y0, x1, y1, x2, y2, x3, y3

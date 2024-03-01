@@ -11,7 +11,7 @@ export class Bbox extends Filter {
   /**
    * @param {!string} geometryName Geometry name to use.
    * @param {!Extent} extent Extent.
-   * @param {string} [srsName] SRS name. No srsName attribute will be set
+   * @param [srsName] SRS name. No srsName attribute will be set
    * on geometries when this is not provided.
    */
   constructor(geometryName, extent, srsName) {

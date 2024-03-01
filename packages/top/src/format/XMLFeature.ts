@@ -220,7 +220,7 @@ export class XMLFeature extends FeatureFormat {
    *
    * @param {import("../Feature").default} feature Feature.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded feature.
+   * @return Encoded feature.
    */
   writeFeature(feature, options) {
     const node = this.writeFeatureNode(feature, options);
@@ -242,7 +242,7 @@ export class XMLFeature extends FeatureFormat {
    *
    * @param {Array<import("../Feature").default>} features Features.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Result.
+   * @return Result.
    * @api
    */
   writeFeatures(features, options) {
@@ -264,7 +264,7 @@ export class XMLFeature extends FeatureFormat {
    *
    * @param {Geometry} geometry Geometry.
    * @param {import("./Feature").WriteOptions} [options] Write options.
-   * @return {string} Encoded geometry.
+   * @return Encoded geometry.
    */
   writeGeometry(geometry, options) {
     const node = this.writeGeometryNode(geometry, options);

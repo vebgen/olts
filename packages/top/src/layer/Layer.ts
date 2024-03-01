@@ -5,9 +5,11 @@ import LayerProperty from './Property';
 import RenderEventType from '../render/EventType';
 import View from '../View';
 import { assert } from '@olts/core/asserts';
-import { intersects } from '@olts/core/extent';
+import { Extent, intersects } from '@olts/core/extent';
 import { listen, unlistenByKey } from '../events';
 import { EventsKey } from '@olts/events';
+import { LayerRenderer } from '../renderer/Layer';
+import type { Source as DefaultSource } from '../source/Source';
 
 /**
  * @typedef {function(import("../Map").FrameState):HTMLElement} RenderFunction
@@ -30,22 +32,22 @@ import { EventsKey } from '@olts/events';
 /**
  * @template {import("../source/Source").default} [SourceType=import("../source/Source").default]
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
- * @property {number} [opacity=1] Opacity (0, 1).
+ * @property [className='ol-layer'] A CSS class name to set to the layer element.
+ * @property [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * @property [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
  * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
  * method was used.
- * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * @property [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * @property [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property [minZoom] The minimum view zoom level (exclusive) above which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property [maxZoom] The maximum view zoom level (inclusive) at which this layer will
  * be visible.
  * @property {SourceType} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link module:ol/layer/Layer~Layer#setSource layer.setSource(source)} after
@@ -59,16 +61,30 @@ import { EventsKey } from '@olts/events';
 /**
  * @typedef {Object} State
  * @property {import("./Layer").default} layer Layer.
- * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
+ * @property opacity Opacity, the value is rounded to two digits to appear after the decimal point.
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
  * @property {Extent} [extent] Extent.
  * @property {number | undefined} zIndex ZIndex.
- * @property {number} maxResolution Maximum resolution.
- * @property {number} minResolution Minimum resolution.
- * @property {number} minZoom Minimum zoom.
- * @property {number} maxZoom Maximum zoom.
+ * @property maxResolution Maximum resolution.
+ * @property minResolution Minimum resolution.
+ * @property minZoom Minimum zoom.
+ * @property maxZoom Maximum zoom.
  */
+export type State = {
+    layer: import("./Layer").default;
+    opacity: number;
+    visible: boolean;
+    managed: boolean;
+    extent?: Extent;
+    zIndex: number | undefined;
+    maxResolution: number;
+    minResolution: number;
+    minZoom: number;
+    maxZoom: number;
+};
+
+
 
 /**
  * Base class from which all layer types are derived. This should only be instantiated
@@ -95,20 +111,23 @@ import { EventsKey } from '@olts/events';
  * @template {import("../renderer/Layer").default} [RendererType=import("../renderer/Layer").default]
  * @api
  */
-export class Layer extends BaseLayer {
+export class Layer<
+    Source = DefaultSource,
+    RendererType = LayerRenderer
+> extends BaseLayer {
 
     /**
-     * 
+     *
      */
     override on: LayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: LayerOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: LayerOnSignature<void>;
 
@@ -250,7 +269,7 @@ export class Layer extends BaseLayer {
         if (source) {
             this.sourceChangeKey_ = listen(
                 source,
-                EventType.CHANGE,
+                EventTypes.CHANGE,
                 this.handleSourceChange_,
                 this,
             );
@@ -334,10 +353,10 @@ export class Layer extends BaseLayer {
      * Get the attributions of the source of this layer for the given view.
      * @param {View|import("../View").ViewStateLayerStateExtent} [view] View or {@link import("../Map").FrameState}.
      * Only required when the layer is not added to a map.
-     * @return {Array<string>} Attributions for this layer at the given view.
+     * @return {string[]} Attributions for this layer at the given view.
      * @api
      */
-    getAttributions(view: View | import("../View").ViewStateLayerStateExtent):string[] {
+    getAttributions(view: View | import("../View").ViewStateLayerStateExtent): string[] {
         if (!this.isVisible(view)) {
             return [];
         }
@@ -444,7 +463,7 @@ export class Layer extends BaseLayer {
                 },
                 this,
             );
-            this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
+            this.mapRenderKey_ = listen(this, EventTypes.CHANGE, map.render, map);
             this.changed();
         }
     }

@@ -1,13 +1,21 @@
 
 import { toRadians } from '@olts/core/math';
 
-/**
- * @typedef {function((number|undefined), boolean=): (number|undefined)} Type
- */
 
 /**
- * @param {number|undefined} rotation Rotation.
- * @return {number|undefined} Rotation.
+ * @param rotation Rotation.
+ * @param isMoving True if an interaction or animation is in progress.
+ * @return Rotation.
+ */
+export type Type = (
+    rotation: (number | undefined),
+    isMoving?: boolean
+) => (number | undefined);
+
+
+/**
+ * @param rotation Rotation.
+ * @return Rotation.
  */
 export function disable(rotation: number | undefined): number | undefined {
     if (rotation !== undefined) {
@@ -16,9 +24,10 @@ export function disable(rotation: number | undefined): number | undefined {
     return undefined;
 }
 
+
 /**
- * @param {number|undefined} rotation Rotation.
- * @return {number|undefined} Rotation.
+ * @param rotation Rotation.
+ * @return Rotation.
  */
 export function none(rotation: number | undefined): number | undefined {
     if (rotation !== undefined) {
@@ -27,19 +36,22 @@ export function none(rotation: number | undefined): number | undefined {
     return undefined;
 }
 
+
 /**
- * @param {number} n N.
- * @return {Type} Rotation constraint.
+ * @param n N.
+ * @return Rotation constraint.
  */
 export function createSnapToN(n: number): Type {
     const theta = (2 * Math.PI) / n;
     return (
         /**
-         * @param {number|undefined} rotation Rotation.
-         * @param {boolean} [isMoving] True if an interaction or animation is in progress.
-         * @return {number|undefined} Rotation.
+         * @param rotation Rotation.
+         * @param isMoving True if an interaction or animation is in progress.
+         * @return Rotation.
          */
-        function (rotation: number | undefined, isMoving: boolean): number | undefined {
+        function (
+            rotation: number | undefined, isMoving?: boolean
+        ): number | undefined {
             if (isMoving) {
                 return rotation;
             }
@@ -53,19 +65,18 @@ export function createSnapToN(n: number): Type {
     );
 }
 
+
 /**
- * @param {number} [tolerance] Tolerance.
- * @return {Type} Rotation constraint.
+ * @param tolerance Tolerance.
+ * @return Rotation constraint.
  */
-export function createSnapToZero(tolerance: number): Type {
+export function createSnapToZero(tolerance?: number): Type {
     const t = tolerance === undefined ? toRadians(5) : tolerance;
     return (
-        /**
-         * @param {number|undefined} rotation Rotation.
-         * @param {boolean} [isMoving] True if an interaction or animation is in progress.
-         * @return {number|undefined} Rotation.
-         */
-        function (rotation: number | undefined, isMoving: boolean): number | undefined {
+        function (
+            rotation: number | undefined,
+            isMoving?: boolean
+        ): number | undefined {
             if (isMoving || rotation === undefined) {
                 return rotation;
             }

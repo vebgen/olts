@@ -1,7 +1,7 @@
 
 import BaseVector from '../../layer/BaseVector';
 import VectorEventType from '../../source/VectorEventType';
-import ViewHint from '../../ViewHint';
+import type { ViewHint } from '../../view';
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import WebGLLayerRenderer from './Layer';
 import WebGLRenderTarget from '../../webgl/RenderTarget';
@@ -27,7 +27,7 @@ import {listen, unlistenByKey} from '../../events';
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
  * for each feature.
- * @property {string} name Attribute name.
+ * @property name Attribute name.
  * @property {function(import("../../Feature").default, Record<string, *>):number} callback This callback computes the numerical value of the
  * attribute for a given feature (properties are available as 2nd arg for quicker access).
  */
@@ -42,14 +42,14 @@ import {listen, unlistenByKey} from '../../events';
 
 /**
  * @typedef {Object} Options
- * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
+ * @property [className='ol-layer'] A CSS class name to set to the canvas element.
+ * @property {CustomAttribute[]} [attributes] These attributes will be read from the features in the source and then
  * passed to the GPU. The `name` property of each attribute will serve as its identifier:
  *  * In the vertex shader as an `attribute` by prefixing it with `a_`
  *  * In the fragment shader as a `varying` by prefixing it with `v_`
  * Please note that these can only be numerical values.
- * @property {string} vertexShader Vertex shader source, mandatory.
- * @property {string} fragmentShader Fragment shader source, mandatory.
+ * @property vertexShader Vertex shader source, mandatory.
+ * @property fragmentShader Fragment shader source, mandatory.
  * @property {boolean} [hitDetectionEnabled] Whether shader is hit detection aware.
  * @property {Record<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot and `u_opacity` is reserved for the layer opacity.
@@ -558,7 +558,7 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {Coordinate} coordinate Coordinate.
    * @param {import("../../Map").FrameState} frameState Frame state.
-   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param hitTolerance Hit tolerance in pixels.
    * @param {import("../vector").FeatureCallback<T>} callback Feature callback.
    * @param {Array<import("../Map").HitMatch<T>>} matches The hit detected matches with tolerance.
    * @return {T|undefined} Callback result.
@@ -602,9 +602,9 @@ export class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    * Render the world, either to the main framebuffer or to the hit framebuffer
    * @param {import("../../Map").FrameState} frameState current frame state
    * @param {boolean} forHitDetection whether the rendering is for hit detection
-   * @param {number} startWorld the world to render in the first iteration
-   * @param {number} endWorld the last world to render
-   * @param {number} worldWidth the width of the worlds being rendered
+   * @param startWorld the world to render in the first iteration
+   * @param endWorld the last world to render
+   * @param worldWidth the width of the worlds being rendered
    */
   renderWorlds(frameState, forHitDetection, startWorld, endWorld, worldWidth) {
     let world = startWorld;

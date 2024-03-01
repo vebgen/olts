@@ -20,45 +20,45 @@ import {getIntersection as intersectExtents} from '@olts/core/extent';
 /**
  * @typedef {Object} TileSet
  * @property {TileType} dataType Type of data represented in the tileset.
- * @property {string} [tileMatrixSetDefinition] Reference to a tile matrix set definition.
+ * @property [tileMatrixSetDefinition] Reference to a tile matrix set definition.
  * @property {TileMatrixSet} [tileMatrixSet] Tile matrix set definition.
- * @property {Array<TileMatrixSetLimit>} [tileMatrixSetLimits] Tile matrix set limits.
- * @property {Array<Link>} links Tileset links.
+ * @property {TileMatrixSetLimit[]} [tileMatrixSetLimits] Tile matrix set limits.
+ * @property {Link[]} links Tileset links.
  */
 
 /**
  * @typedef {Object} Link
- * @property {string} rel The link rel attribute.
- * @property {string} href The link URL.
- * @property {string} type The link type.
+ * @property rel The link rel attribute.
+ * @property href The link URL.
+ * @property type The link type.
  */
 
 /**
  * @typedef {Object} TileMatrixSetLimit
- * @property {string} tileMatrix The tile matrix id.
- * @property {number} minTileRow The minimum tile row.
- * @property {number} maxTileRow The maximum tile row.
- * @property {number} minTileCol The minimum tile column.
- * @property {number} maxTileCol The maximum tile column.
+ * @property tileMatrix The tile matrix id.
+ * @property minTileRow The minimum tile row.
+ * @property maxTileRow The maximum tile row.
+ * @property minTileCol The minimum tile column.
+ * @property maxTileCol The maximum tile column.
  */
 
 /**
  * @typedef {Object} TileMatrixSet
- * @property {string} id The tile matrix set identifier.
- * @property {string} crs The coordinate reference system.
- * @property {Array<TileMatrix>} tileMatrices Array of tile matrices.
+ * @property id The tile matrix set identifier.
+ * @property crs The coordinate reference system.
+ * @property {TileMatrix[]} tileMatrices Array of tile matrices.
  */
 
 /**
  * @typedef {Object} TileMatrix
- * @property {string} id The tile matrix identifier.
- * @property {number} cellSize The pixel resolution (map units per pixel).
+ * @property id The tile matrix identifier.
+ * @property cellSize The pixel resolution (map units per pixel).
  * @property {number[]} pointOfOrigin The map location of the matrix origin.
  * @property {CornerOfOrigin} [cornerOfOrigin='topLeft'] The corner of the matrix that represents the origin ('topLeft' or 'bottomLeft').
- * @property {number} matrixWidth The number of columns.
- * @property {number} matrixHeight The number of rows.
- * @property {number} tileWidth The pixel width of a tile.
- * @property {number} tileHeight The pixel height of a tile.
+ * @property matrixWidth The number of columns.
+ * @property matrixHeight The number of rows.
+ * @property tileWidth The pixel width of a tile.
+ * @property tileHeight The pixel height of a tile.
  */
 
 /**
@@ -81,24 +81,24 @@ const knownVectorMediaTypes = {
 
 /**
  * @typedef {Object} TileSetInfo
- * @property {string} urlTemplate The tile URL template.
+ * @property urlTemplate The tile URL template.
  * @property {import("../tilegrid/TileGrid").default} grid The tile grid.
  * @property {import("../Tile").UrlFunction} urlFunction The tile URL function.
  */
 
 /**
  * @typedef {Object} SourceInfo
- * @property {string} url The tile set URL.
- * @property {string} mediaType The preferred tile media type.
- * @property {Array<string>} [supportedMediaTypes] The supported media types.
+ * @property url The tile set URL.
+ * @property mediaType The preferred tile media type.
+ * @property {string[]} [supportedMediaTypes] The supported media types.
  * @property {import("../proj/Projection").default} projection The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  */
 
 /**
- * @param {Array<Link>} links Tileset links.
- * @param {string} [mediaType] The preferred media type.
- * @return {string} The tile URL template.
+ * @param {Link[]} links Tileset links.
+ * @param [mediaType] The preferred media type.
+ * @return The tile URL template.
  */
 export function getMapTileUrlTemplate(links, mediaType) {
   let tileUrlTemplate;
@@ -130,10 +130,10 @@ export function getMapTileUrlTemplate(links, mediaType) {
 }
 
 /**
- * @param {Array<Link>} links Tileset links.
- * @param {string} [mediaType] The preferred media type.
- * @param {Array<string>} [supportedMediaTypes] The media types supported by the parser.
- * @return {string} The tile URL template.
+ * @param {Link[]} links Tileset links.
+ * @param [mediaType] The preferred media type.
+ * @param {string[]} [supportedMediaTypes] The media types supported by the parser.
+ * @return The tile URL template.
  */
 export function getVectorTileUrlTemplate(
   links,
@@ -187,8 +187,8 @@ export function getVectorTileUrlTemplate(
 /**
  * @param {SourceInfo} sourceInfo The source info.
  * @param {TileMatrixSet} tileMatrixSet Tile matrix set.
- * @param {string} tileUrlTemplate Tile URL template.
- * @param {Array<TileMatrixSetLimit>} [tileMatrixSetLimits] Tile matrix set limits.
+ * @param tileUrlTemplate Tile URL template.
+ * @param {TileMatrixSetLimit[]} [tileMatrixSetLimits] Tile matrix set limits.
  * @return {TileSetInfo} Tile set info.
  */
 function parseTileMatrixSet(
@@ -223,7 +223,7 @@ function parseTileMatrixSet(
   const limitLookup = {};
 
   /**
-   * @type {Array<string>}
+   * @type {string[]}
    */
   const matrixIds = [];
 
@@ -345,7 +345,7 @@ function parseTileMatrixSet(
  */
 function parseTileSetMetadata(sourceInfo, tileSet) {
   const tileMatrixSetLimits = tileSet.tileMatrixSetLimits;
-  /** @type {string} */
+  /** @type */
   let tileUrlTemplate;
 
   if (tileSet.dataType === 'map') {

@@ -12,7 +12,7 @@ import {get as getProjection} from '../proj';
  * @property {Coordinate} [origin] The tile grid origin, i.e.
  * where the `x` and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left
  * to right and downwards. If not specified, `extent` or `origins` must be provided.
- * @property {Array<Coordinate>} [origins] Tile grid origins,
+ * @property {Coordinate[]} [origins] Tile grid origins,
  * i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If
  * given, the array length should match the length of the `resolutions` array, i.e.
  * each resolution can have a different origin. Tile coordinates increase left to
@@ -20,9 +20,9 @@ import {get as getProjection} from '../proj';
  * @property {!number[]} resolutions Resolutions. The array index of each
  * resolution needs to match the zoom level. This means that even if a `minZoom`
  * is configured, the resolutions array will have a length of `maxZoom + 1`
- * @property {!Array<string>} matrixIds matrix IDs. The length of this array needs
+ * @property {!string[]} matrixIds matrix IDs. The length of this array needs
  * to match the length of the `resolutions` array.
- * @property {Array<Size>} [sizes] Number of tile rows and columns
+ * @property {Size[]} [sizes] Number of tile rows and columns
  * of the grid for each zoom level. The values here are the `TileMatrixWidth` and
  * `TileMatrixHeight` advertised in the GetCapabilities response of the WMTS, and
  * define each zoom level's extent together with the `origin` or `origins`.
@@ -56,14 +56,14 @@ export class WMTSTileGrid extends TileGrid {
 
     /**
      * @private
-     * @type {!Array<string>}
+     * @type {!string[]}
      */
     this.matrixIds_ = options.matrixIds;
   }
 
   /**
-   * @param {number} z Z.
-   * @return {string} MatrixId..
+   * @param z Z.
+   * @return MatrixId..
    */
   getMatrixId(z) {
     return this.matrixIds_[z];
@@ -71,7 +71,7 @@ export class WMTSTileGrid extends TileGrid {
 
   /**
    * Get the list of matrix identifiers.
-   * @return {Array<string>} MatrixIds.
+   * @return {string[]} MatrixIds.
    * @api
    */
   getMatrixIds() {
@@ -88,7 +88,7 @@ export default WMTSTileGrid;
  *     capabilities document.
  * @param {Extent} [extent] An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array<Object>} [matrixLimits] An optional object representing
+ * @param {Object[]} [matrixLimits] An optional object representing
  *     the available matrices for tileGrid.
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
@@ -100,13 +100,13 @@ export function createFromCapabilitiesMatrixSet(
 ) {
   /** @type {!number[]} */
   const resolutions = [];
-  /** @type {!Array<string>} */
+  /** @type {!string[]} */
   const matrixIds = [];
-  /** @type {!Array<Coordinate>} */
+  /** @type {!Coordinate[]} */
   const origins = [];
   /** @type {!Array<number|Size>} */
   const tileSizes = [];
-  /** @type {!Array<Size>} */
+  /** @type {!Size[]} */
   const sizes = [];
 
   matrixLimits = matrixLimits !== undefined ? matrixLimits : [];

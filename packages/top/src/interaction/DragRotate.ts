@@ -5,7 +5,7 @@ import {
   mouseActionButton,
   mouseOnly,
 } from '../events/condition';
-import {disable} from '../rotationconstraint';
+import {disable} from '../rotation-constraint';
 
 /**
  * @typedef {Object} Options
@@ -13,7 +13,7 @@ import {disable} from '../rotationconstraint';
  * {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.altShiftKeysOnly}.
- * @property {number} [duration=250] Animation duration in milliseconds.
+ * @property [duration=250] Animation duration in milliseconds.
  */
 
 /**

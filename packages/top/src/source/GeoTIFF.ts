@@ -58,18 +58,18 @@ function readRGB(preference, image) {
 
 /**
  * @typedef {Object} SourceInfo
- * @property {string} [url] URL for the source GeoTIFF.
- * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given.
+ * @property [url] URL for the source GeoTIFF.
+ * @property {string[]} [overviews] List of any overview URLs, only applies if the url parameter is given.
  * @property {Blob} [blob] Blob containing the source GeoTIFF. `blob` and `url` are mutually exclusive.
- * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
+ * @property [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
  * If neither are available, the minimum for the data type will be used.  To disable this behavior, set
  * the `normalize` option to `false` in the constructor.
- * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
+ * @property [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
  * If neither are available, the maximum for the data type will be used.  To disable this behavior, set
  * the `normalize` option to `false` in the constructor.
- * @property {number} [nodata] Values to discard (overriding any nodata values in the metadata).
+ * @property [nodata] Values to discard (overriding any nodata values in the metadata).
  * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
  * will include information about nodata values, so you should only need to set this property if
  * you find that it is not already extracted from the metadata.
@@ -80,14 +80,14 @@ function readRGB(preference, image) {
 
 /**
  * @typedef {Object} GeoKeys
- * @property {number} GTModelTypeGeoKey Model type.
- * @property {number} GTRasterTypeGeoKey Raster type.
- * @property {number} GeogAngularUnitsGeoKey Angular units.
- * @property {number} GeogInvFlatteningGeoKey Inverse flattening.
- * @property {number} GeogSemiMajorAxisGeoKey Semi-major axis.
- * @property {number} GeographicTypeGeoKey Geographic coordinate system code.
- * @property {number} ProjLinearUnitsGeoKey Projected linear unit code.
- * @property {number} ProjectedCSTypeGeoKey Projected coordinate system code.
+ * @property GTModelTypeGeoKey Model type.
+ * @property GTRasterTypeGeoKey Raster type.
+ * @property GeogAngularUnitsGeoKey Angular units.
+ * @property GeogInvFlatteningGeoKey Inverse flattening.
+ * @property GeogSemiMajorAxisGeoKey Semi-major axis.
+ * @property GeographicTypeGeoKey Geographic coordinate system code.
+ * @property ProjLinearUnitsGeoKey Projected linear unit code.
+ * @property ProjectedCSTypeGeoKey Projected coordinate system code.
  */
 
 /**
@@ -100,8 +100,8 @@ function readRGB(preference, image) {
 
 /**
  * @typedef {Object} GDALMetadata
- * @property {string} STATISTICS_MINIMUM The minimum value (as a string).
- * @property {string} STATISTICS_MAXIMUM The maximum value (as a string).
+ * @property STATISTICS_MINIMUM The minimum value (as a string).
+ * @property STATISTICS_MAXIMUM The maximum value (as a string).
  */
 
 const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
@@ -215,7 +215,7 @@ function getProjection(image) {
 
 /**
  * @param {GeoTIFF|MultiGeoTIFF} tiff A GeoTIFF.
- * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
+ * @return {Promise<GeoTIFFImage[]>} Resolves to a list of images.
  */
 function getImagesForTIFF(tiff) {
   return tiff.getImageCount().then(function (count) {
@@ -230,7 +230,7 @@ function getImagesForTIFF(tiff) {
 /**
  * @param {SourceInfo} source The GeoTIFF source.
  * @param {Object} options Options for the GeoTIFF source.
- * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
+ * @return {Promise<GeoTIFFImage[]>} Resolves to a list of images.
  */
 function getImagesForSource(source, options) {
   let request;
@@ -247,8 +247,8 @@ function getImagesForSource(source, options) {
 /**
  * @param {number|number[]|Array<number[]>} expected Expected value.
  * @param {number|number[]|Array<number[]>} got Actual value.
- * @param {number} tolerance Accepted tolerance in fraction of expected between expected and got.
- * @param {string} message The error message.
+ * @param tolerance Accepted tolerance in fraction of expected between expected and got.
+ * @param message The error message.
  * @param {function(Error):void} rejector A function to be called with any error.
  */
 function assertEqual(expected, got, tolerance, message, rejector) {
@@ -265,7 +265,7 @@ function assertEqual(expected, got, tolerance, message, rejector) {
     return;
   }
 
-  got = /** @type {number} */ (got);
+  got = /** @type */ (got);
   if (Math.abs(expected - got) > tolerance * expected) {
     throw new Error(message);
   }
@@ -273,7 +273,7 @@ function assertEqual(expected, got, tolerance, message, rejector) {
 
 /**
  * @param {Array} array The data array.
- * @return {number} The minimum value.
+ * @return The minimum value.
  */
 function getMinForDataType(array) {
   if (array instanceof Int8Array) {
@@ -293,7 +293,7 @@ function getMinForDataType(array) {
 
 /**
  * @param {Array} array The data array.
- * @return {number} The maximum value.
+ * @return The maximum value.
  */
 function getMaxForDataType(array) {
   if (array instanceof Int8Array) {
@@ -327,19 +327,19 @@ function getMaxForDataType(array) {
  * @typedef {Object} GeoTIFFSourceOptions
  * @property {boolean} [forceXHR=false] Whether to force the usage of the browsers XMLHttpRequest API.
  * @property {Record<string, string>} [headers] additional key-value pairs of headers to be passed with each request. Key is the header name, value the header value.
- * @property {string} [credentials] How credentials shall be handled. See
+ * @property [credentials] How credentials shall be handled. See
  * https://developer.mozilla.org/en-US/docs/Web/API/fetch for reference and possible values
- * @property {number} [maxRanges] The maximum amount of ranges to request in a single multi-range request.
+ * @property [maxRanges] The maximum amount of ranges to request in a single multi-range request.
  * By default only a single range is used.
  * @property {boolean} [allowFullFile=false] Whether or not a full file is accepted when only a portion is
  * requested. Only use this when you know the source image to be small enough to fit in memory.
- * @property {number} [blockSize=65536] The block size to use.
- * @property {number} [cacheSize=100] The number of blocks that shall be held in a LRU cache.
+ * @property [blockSize=65536] The block size to use.
+ * @property [cacheSize=100] The number of blocks that shall be held in a LRU cache.
  */
 
 /**
  * @typedef {Object} Options
- * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
+ * @property {SourceInfo[]} sources List of information about GeoTIFF sources.
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
  * The list of sources defines a mapping between input bands as they are read from each GeoTIFF and
  * the output bands that are provided by data tiles. To control which bands to read from each GeoTIFF,
@@ -359,7 +359,7 @@ function getMaxForDataType(array) {
  * @property {boolean} [opaque=false] Whether the layer is opaque.
  * @property {ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
  * will be read for projection information.
- * @property {number} [transition=250] Duration of the opacity transition for rendering.
+ * @property [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
@@ -389,7 +389,7 @@ export class GeoTIFFSource extends DataTile {
     });
 
     /**
-     * @type {Array<SourceInfo>}
+     * @type {SourceInfo[]}
      * @private
      */
     this.sourceInfo_ = options.sources;
@@ -403,13 +403,13 @@ export class GeoTIFFSource extends DataTile {
     this.sourceOptions_ = options.sourceOptions;
 
     /**
-     * @type {Array<Array<GeoTIFFImage>>}
+     * @type {Array<GeoTIFFImage[]>}
      * @private
      */
     this.sourceImagery_ = new Array(numSources);
 
     /**
-     * @type {Array<Array<GeoTIFFImage>>}
+     * @type {Array<GeoTIFFImage[]>}
      * @private
      */
     this.sourceMasks_ = new Array(numSources);
@@ -433,7 +433,7 @@ export class GeoTIFFSource extends DataTile {
     this.nodataValues_;
 
     /**
-     * @type {Array<Array<GDALMetadata>>}
+     * @type {Array<GDALMetadata[]>}
      * @private
      */
     this.metadata_;
@@ -504,7 +504,7 @@ export class GeoTIFFSource extends DataTile {
    * of each image in turn.
    * You can override this method in a subclass to support more projections.
    *
-   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
+   * @param {Array<GeoTIFFImage[]>} sources Each source is a list of images
    * from a single GeoTIFF.
    */
   determineProjection(sources) {
@@ -522,7 +522,7 @@ export class GeoTIFFSource extends DataTile {
   /**
    * Configure the tile grid based on images within the source GeoTIFFs.  Each GeoTIFF
    * must have the same internal tiled structure.
-   * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
+   * @param {Array<GeoTIFFImage[]>} sources Each source is a list of images
    * from a single GeoTIFF.
    * @private
    */
@@ -761,9 +761,9 @@ export class GeoTIFFSource extends DataTile {
   }
 
   /**
-   * @param {number} z The z tile index.
-   * @param {number} x The x tile index.
-   * @param {number} y The y tile index.
+   * @param z The z tile index.
+   * @param x The x tile index.
+   * @param y The y tile index.
    * @return {Promise} The composed tile data.
    * @private
    */

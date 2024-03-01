@@ -12,7 +12,7 @@ export class Spatial extends Filter {
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} geometryName Geometry name to use.
    * @param {!Geometry} geometry Geometry.
-   * @param {string} [srsName] SRS name. No srsName attribute will be
+   * @param [srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */
   constructor(tagName, geometryName, geometry, srsName) {

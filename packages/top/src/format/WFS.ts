@@ -115,38 +115,38 @@ const TRANSACTION_SERIALIZERS = {
 /**
  * @typedef {Object} Options
  * @property {Record<string, string>|string} [featureNS] The namespace URI used for features.
- * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
+ * @property {string[]|string} [featureType] The feature type to parse. Only used for read operations.
  * @property {GMLBase} [gmlFormat] The GML format to use to parse the response.
  * Default is `ol/format/GML2` for WFS 1.0.0, `ol/format/GML3` for WFS 1.1.0 and `ol/format/GML32` for WFS 2.0.0.
- * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
- * @property {string} [version='1.1.0'] WFS version to use. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
+ * @property [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
+ * @property [version='1.1.0'] WFS version to use. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
  */
 
 /**
  * @typedef {Object} WriteGetFeatureOptions
- * @property {string} featureNS The namespace URI used for features.
- * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property featureNS The namespace URI used for features.
+ * @property featurePrefix The prefix for the feature namespace.
  * @property {Array<string|FeatureType>} featureTypes The feature type names or FeatureType objects to
  * define a unique bbox filter per feature type name (in this case, options `bbox` and `geometryName` are
  * ignored.).
- * @property {string} [srsName] SRS name. No srsName attribute will be set on
+ * @property [srsName] SRS name. No srsName attribute will be set on
  * geometries when this is not provided.
- * @property {string} [handle] Handle.
- * @property {string} [outputFormat] Output format.
- * @property {number} [maxFeatures] Maximum number of features to fetch.
- * @property {string} [geometryName] Geometry name to use in a BBOX filter.
- * @property {Array<string>} [propertyNames] Optional list of property names to serialize.
- * @property {string} [viewParams] viewParams GeoServer vendor parameter.
- * @property {number} [startIndex] Start index to use for WFS paging. This is a
+ * @property [handle] Handle.
+ * @property [outputFormat] Output format.
+ * @property [maxFeatures] Maximum number of features to fetch.
+ * @property [geometryName] Geometry name to use in a BBOX filter.
+ * @property {string[]} [propertyNames] Optional list of property names to serialize.
+ * @property [viewParams] viewParams GeoServer vendor parameter.
+ * @property [startIndex] Start index to use for WFS paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
- * @property {number} [count] Number of features to retrieve when paging. This is a
+ * @property [count] Number of features to retrieve when paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
  * @property {Extent} [bbox] Extent to use for the BBOX filter. The `geometryName`
  * option must be set.
  * @property {import("./filter/Filter").default} [filter] Filter condition. See
  * {@link module:ol/format/filter} for more information.
- * @property {string} [resultType] Indicates what response should be returned,
+ * @property [resultType] Indicates what response should be returned,
  * e.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
  */
 
@@ -159,38 +159,38 @@ const TRANSACTION_SERIALIZERS = {
 
 /**
  * @typedef {Object} WriteTransactionOptions
- * @property {string} featureNS The namespace URI used for features.
- * @property {string} featurePrefix The prefix for the feature namespace.
- * @property {string} featureType The feature type name.
- * @property {string} [srsName] SRS name. No srsName attribute will be set on
+ * @property featureNS The namespace URI used for features.
+ * @property featurePrefix The prefix for the feature namespace.
+ * @property featureType The feature type name.
+ * @property [srsName] SRS name. No srsName attribute will be set on
  * geometries when this is not provided.
- * @property {string} [handle] Handle.
+ * @property [handle] Handle.
  * @property {boolean} [hasZ] Must be set to true if the transaction is for
  * a 3D layer. This will allow the Z coordinate to be included in the transaction.
- * @property {Array<Object>} nativeElements Native elements. Currently not supported.
+ * @property {Object[]} nativeElements Native elements. Currently not supported.
  * @property {import("./GMLBase").Options} [gmlOptions] GML options for the WFS transaction writer.
- * @property {string} [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
+ * @property [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0`, `1.1.0` or `2.0.0`.
  */
 
 /**
  * Number of features; bounds/extent.
  * @typedef {Object} FeatureCollectionMetadata
- * @property {number} numberOfFeatures NumberOfFeatures.
+ * @property numberOfFeatures NumberOfFeatures.
  * @property {Extent} bounds Bounds.
  */
 
 /**
  * @typedef {Object} TransactionSummary
- * @property {number} totalDeleted TotalDeleted.
- * @property {number} totalInserted TotalInserted.
- * @property {number} totalUpdated TotalUpdated.
+ * @property totalDeleted TotalDeleted.
+ * @property totalInserted TotalInserted.
+ * @property totalUpdated TotalUpdated.
  */
 
 /**
  * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {Object} TransactionResponse
  * @property {TransactionSummary} transactionSummary Transaction summary.
- * @property {Array<string>} insertIds InsertIds.
+ * @property {string[]} insertIds InsertIds.
  */
 
 /**
@@ -282,7 +282,7 @@ export class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {Array<string>|string|undefined}
+     * @type {string[]|string|undefined}
      */
     this.featureType_ = options.featureType;
 
@@ -310,14 +310,14 @@ export class WFS extends XMLFeature {
   }
 
   /**
-   * @return {Array<string>|string|undefined} featureType
+   * @return {string[]|string|undefined} featureType
    */
   getFeatureType() {
     return this.featureType_;
   }
 
   /**
-   * @param {Array<string>|string|undefined} featureType Feature type(s) to parse.
+   * @param {string[]|string|undefined} featureType Feature type(s) to parse.
    */
   setFeatureType(featureType) {
     this.featureType_ = featureType;
@@ -545,7 +545,7 @@ export class WFS extends XMLFeature {
       });
       writeGetFeature(
         node,
-        /** @type {!Array<string>} */ (options.featureTypes),
+        /** @type {!string[]} */ (options.featureTypes),
         [context],
       );
     } else {
@@ -572,7 +572,7 @@ export class WFS extends XMLFeature {
    *
    * @param {!string} geometryName Geometry name to use.
    * @param {!Extent} extent Extent.
-   * @param {string} [srsName] SRS name. No srsName attribute will be
+   * @param [srsName] SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    * @param {import("./filter/Filter").default} [filter] Filter condition.
    * @return {import("./filter/Filter").default} The filter.
@@ -679,7 +679,7 @@ export class WFS extends XMLFeature {
 /**
  * @param {Element} node Node.
  * @param {*} baseObj Base object.
- * @param {string} version Version.
+ * @param version Version.
  * @param {WriteTransactionOptions} options Options.
  * @return {Object} Request object.
  */
@@ -712,7 +712,7 @@ function createTransactionRequest(node, baseObj, version, options) {
 }
 
 /**
- * @param {string} type Request type.
+ * @param type Request type.
  * @param {Array<import("../Feature").default>} features Features.
  * @param {Array<*>} objectStack Object stack.
  * @param {Element} request Transaction Request.
@@ -777,7 +777,7 @@ const INSERT_RESULTS_PARSERS = {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<string>|undefined} Insert results.
+ * @return {string[]|undefined} Insert results.
  */
 function readInsertResults(node, objectStack) {
   return pushParseAndPop([], INSERT_RESULTS_PARSERS, node, objectStack);
@@ -816,14 +816,14 @@ function writeOgcFidFilter(node, fid, objectStack) {
   const filter = createElementNS(ns, 'Filter');
   const child = createElementNS(ns, 'FeatureId');
   filter.appendChild(child);
-  child.setAttribute('fid', /** @type {string} */ (fid));
+  child.setAttribute('fid', /** @type */ (fid));
   node.appendChild(filter);
 }
 
 /**
  * @param {string|undefined} featurePrefix The prefix of the feature.
- * @param {string} featureType The type of the feature.
- * @return {string} The value of the typeName property.
+ * @param featureType The type of the feature.
+ * @return The value of the typeName property.
  */
 function getTypeName(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix : FEATURE_PREFIX;
@@ -1013,7 +1013,7 @@ const GETFEATURE_SERIALIZERS = {
 
 /**
  * @param {Element} node Node.
- * @param {string} featureType Feature type.
+ * @param featureType Feature type.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeQuery(node, featureType, objectStack) {
@@ -1103,7 +1103,7 @@ function writeBboxFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeResourceIdFilter(node, filter, objectStack) {
-  node.setAttribute('rid', /** @type {string} */ (filter.rid));
+  node.setAttribute('rid', /** @type */ (filter.rid));
 }
 
 /**
@@ -1281,10 +1281,10 @@ function writeIsLikeFilter(node, filter, objectStack) {
 }
 
 /**
- * @param {string} ns Namespace.
- * @param {string} tagName Tag name.
+ * @param ns Namespace.
+ * @param tagName Tag name.
  * @param {Node} node Node.
- * @param {string} value Value.
+ * @param value Value.
  */
 function writeExpression(ns, tagName, node, value) {
   const property = createElementNS(ns, tagName);
@@ -1293,18 +1293,18 @@ function writeExpression(ns, tagName, node, value) {
 }
 
 /**
- * @param {string} version Version.
+ * @param version Version.
  * @param {Node} node Node.
- * @param {string} value PropertyName value.
+ * @param value PropertyName value.
  */
 function writeLiteral(version, node, value) {
   writeExpression(getFilterNS(version), 'Literal', node, value);
 }
 
 /**
- * @param {string} version Version.
+ * @param version Version.
  * @param {Node} node Node.
- * @param {string} value PropertyName value.
+ * @param value PropertyName value.
  */
 function writePropertyName(version, node, value) {
   if (version === '2.0.0') {
@@ -1316,7 +1316,7 @@ function writePropertyName(version, node, value) {
 
 /**
  * @param {Node} node Node.
- * @param {string} time PropertyName value.
+ * @param time PropertyName value.
  */
 function writeTimeInstant(node, time) {
   const timeInstant = createElementNS(GMLNS, 'TimeInstant');
@@ -1331,7 +1331,7 @@ function writeTimeInstant(node, time) {
  * Encode filter as WFS `Filter` and return the Node.
  *
  * @param {import("./filter/Filter").default} filter Filter.
- * @param {string} version WFS version. If not provided defaults to '1.1.0'
+ * @param version WFS version. If not provided defaults to '1.1.0'
  * @return {Node} Result.
  * @api
  */
@@ -1351,7 +1351,7 @@ export function writeFilter(filter, version) {
 
 /**
  * @param {Element} node Node.
- * @param {Array<string>} featureTypes Feature types.
+ * @param {string[]} featureTypes Feature types.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeGetFeature(node, featureTypes, objectStack) {

@@ -28,10 +28,10 @@ import { Extent } from '@olts/core/extent';
 
 export class CanvasBuilder extends VectorContext {
     /**
-     * @param {number} tolerance Tolerance.
+     * @param tolerance Tolerance.
      * @param {Extent} maxExtent Maximum extent.
-     * @param {number} resolution Resolution.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param resolution Resolution.
+     * @param pixelRatio Pixel ratio.
      */
     constructor(tolerance: number, maxExtent: Extent, resolution: number, pixelRatio: number) {
         super();
@@ -133,9 +133,9 @@ export class CanvasBuilder extends VectorContext {
 
     /**
      * @param {number[]} flatCoordinates Flat coordinates.
-     * @param {number} stride Stride.
+     * @param stride Stride.
      * @protected
-     * @return {number} My end
+     * @return My end
      */
     appendFlatPointCoordinates(flatCoordinates: number[], stride: number): number {
         const extent = this.getBufferedMaxExtent();
@@ -155,13 +155,13 @@ export class CanvasBuilder extends VectorContext {
 
     /**
      * @param {number[]} flatCoordinates Flat coordinates.
-     * @param {number} offset Offset.
-     * @param {number} end End.
-     * @param {number} stride Stride.
+     * @param offset Offset.
+     * @param end End.
+     * @param stride Stride.
      * @param {boolean} closed Last input coordinate equals first.
      * @param {boolean} skipFirst Skip first coordinate.
      * @protected
-     * @return {number} My end.
+     * @return My end.
      */
     appendFlatLineCoordinates(
         flatCoordinates: number[],
@@ -217,11 +217,11 @@ export class CanvasBuilder extends VectorContext {
 
     /**
      * @param {number[]} flatCoordinates Flat coordinates.
-     * @param {number} offset Offset.
+     * @param offset Offset.
      * @param {number[]} ends Ends.
-     * @param {number} stride Stride.
+     * @param stride Stride.
      * @param {number[]} builderEnds Builder ends.
-     * @return {number} Offset.
+     * @return Offset.
      */
     drawCustomCoordinates_(flatCoordinates: number[], offset: number, ends: number[], stride: number, builderEnds: number[]): number {
         for (let i = 0, ii = ends.length; i < ii; ++i) {

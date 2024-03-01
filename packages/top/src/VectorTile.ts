@@ -6,7 +6,7 @@ export class VectorTile extends Tile {
     /**
      * @param {TileCoord} tileCoord Tile coordinate.
      * @param {TileState} state State.
-     * @param {string} src Data source url.
+     * @param src Data source url.
      * @param {import("./format/Feature").default<typeof import("./Feature").default|typeof import("./render/Feature").default>} format Feature format.
      * @param {import("./Tile").LoadFunction} tileLoadFunction Tile load function.
      * @param {import("./Tile").Options} [options] Tile options.

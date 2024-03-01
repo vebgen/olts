@@ -21,7 +21,7 @@ export type ForEach<T> = (arg0: T, arg1: string, arg2: LRUCache<T>) => any;
  *
  * Expiring items from the cache is the responsibility of the user.
  *
- * @fires import("../events/Event").default
+ * @fires BaseEvent
  * @template T
  */
 export class LRUCache<T> {

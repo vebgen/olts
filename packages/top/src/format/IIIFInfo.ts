@@ -4,36 +4,36 @@ import {assert} from '@olts/core/asserts';
 
 /**
  * @typedef {Object} PreferredOptions
- * @property {string} [format] Preferred image format. Will be used if the image information
+ * @property [format] Preferred image format. Will be used if the image information
  * indicates support for that format.
- * @property {string} [quality] IIIF image qualitiy.  Will be used if the image information
+ * @property [quality] IIIF image qualitiy.  Will be used if the image information
  * indicates support for that quality.
  */
 
 /**
  * @typedef {Object} SupportedFeatures
- * @property {Array<string>} [supports] Supported IIIF image size and region
+ * @property {string[]} [supports] Supported IIIF image size and region
  * calculation features.
- * @property {Array<string>} [formats] Supported image formats.
- * @property {Array<string>} [qualities] Supported IIIF image qualities.
+ * @property {string[]} [formats] Supported image formats.
+ * @property {string[]} [qualities] Supported IIIF image qualities.
  */
 
 /**
  * @typedef {Object} TileInfo
  * @property {number[]} scaleFactors Supported resolution scaling factors.
- * @property {number} width Tile width in pixels.
- * @property {number} [height] Tile height in pixels. Same as tile width if height is
+ * @property width Tile width in pixels.
+ * @property [height] Tile height in pixels. Same as tile width if height is
  * not given.
  */
 
 /**
  * @typedef {Object} IiifProfile
- * @property {Array<string>} [formats] Supported image formats for the image service.
- * @property {Array<string>} [qualities] Supported IIIF image qualities.
- * @property {Array<string>} [supports] Supported features.
- * @property {number} [maxArea] Maximum area (pixels) available for this image service.
- * @property {number} [maxHeight] Maximum height.
- * @property {number} [maxWidth] Maximum width.
+ * @property {string[]} [formats] Supported image formats for the image service.
+ * @property {string[]} [qualities] Supported IIIF image qualities.
+ * @property {string[]} [supports] Supported features.
+ * @property [maxArea] Maximum area (pixels) available for this image service.
+ * @property [maxHeight] Maximum height.
+ * @property [maxWidth] Maximum width.
  */
 
 /**
@@ -410,7 +410,7 @@ export class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @return {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
+   * @return Compliance level, on of 'level0', 'level1' or 'level2' or undefined
    */
   getComplianceLevelFromProfile(version) {
     const complianceLevel = this.getComplianceLevelEntryFromProfile(version);

@@ -64,8 +64,8 @@ export const AttributeType = {
 /**
  * Description of an attribute in a buffer
  * @typedef {Object} AttributeDescription
- * @property {string} name Attribute name to use in shaders
- * @property {number} size Number of components per attributes
+ * @property name Attribute name to use in shaders
+ * @property size Number of components per attributes
  * @property {AttributeType} [type] Attribute type, i.e. number of bytes used to store the value. This is
  * determined by the class of typed array which the buffer uses (eg. `Float32Array` for a `FLOAT` attribute).
  * Default is `FLOAT`.
@@ -83,10 +83,10 @@ export const AttributeType = {
 
 /**
  * @typedef {Object} PostProcessesOptions
- * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * @property [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas which will then be sampled up (useful for saving resource on blur steps).
- * @property {string} [vertexShader] Vertex shader source
- * @property {string} [fragmentShader] Fragment shader source
+ * @property [vertexShader] Vertex shader source
+ * @property [fragmentShader] Fragment shader source
  * @property {Record<string,UniformValue>} [uniforms] Uniform definitions for the post process step
  */
 
@@ -94,13 +94,13 @@ export const AttributeType = {
  * @typedef {Object} Options
  * @property {Record<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
- * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
- * @property {string} [canvasCacheKey] The cache key for the canvas.
+ * @property {PostProcessesOptions[]} [postProcesses] Post-processes definitions
+ * @property [canvasCacheKey] The cache key for the canvas.
  */
 
 /**
  * @typedef {Object} UniformInternalDescription
- * @property {string} name Name
+ * @property name Name
  * @property {UniformValue} [value] Value
  * @property {UniformValue} [prevValue] The previous value.
  * @property {WebGLTexture} [texture] Texture
@@ -110,7 +110,7 @@ export const AttributeType = {
 /**
  * @typedef {Object} CanvasCacheItem
  * @property {WebGLRenderingContext} context The context of this canvas.
- * @property {number} users The count of users of this canvas.
+ * @property users The count of users of this canvas.
  */
 
 /**
@@ -119,8 +119,8 @@ export const AttributeType = {
 const canvasCache = {};
 
 /**
- * @param {string} key The cache key for the canvas.
- * @return {string} The shared cache key.
+ * @param key The cache key for the canvas.
+ * @return The shared cache key.
  */
 function getSharedCanvasCacheKey(key) {
   return 'shared/' + key;
@@ -129,7 +129,7 @@ function getSharedCanvasCacheKey(key) {
 let uniqueCanvasCacheKeyCount = 0;
 
 /**
- * @return {string} The unique cache key.
+ * @return The unique cache key.
  */
 function getUniqueCanvasCacheKey() {
   const key = 'unique/' + uniqueCanvasCacheKeyCount;
@@ -138,7 +138,7 @@ function getUniqueCanvasCacheKey() {
 }
 
 /**
- * @param {string} key The cache key for the canvas.
+ * @param key The cache key for the canvas.
  * @return {WebGLRenderingContext} The canvas.
  */
 function getOrCreateContext(key) {
@@ -159,7 +159,7 @@ function getOrCreateContext(key) {
 }
 
 /**
- * @param {string} key The cache key for the canvas.
+ * @param key The cache key for the canvas.
  */
 function releaseCanvas(key) {
   const cacheItem = canvasCache[key];
@@ -404,7 +404,7 @@ export class WebGLHelper extends Disposable {
     /**
      * Holds info about custom uniforms used in the post processing pass.
      * If the uniform is a texture, the WebGL Texture object will be stored here.
-     * @type {Array<UniformInternalDescription>}
+     * @type {UniformInternalDescription[]}
      * @private
      */
     this.uniforms_ = [];
@@ -416,7 +416,7 @@ export class WebGLHelper extends Disposable {
      * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
      * options. If no post process was given, a default one is used (so as not to have to make an exception to
      * the frame buffer logic).
-     * @type {Array<WebGLPostProcessingPass>}
+     * @type {WebGLPostProcessingPass[]}
      * @private
      */
     this.postProcessPasses_ = options.postProcesses
@@ -466,7 +466,7 @@ export class WebGLHelper extends Disposable {
   }
 
   /**
-   * @param {string} canvasCacheKey The canvas cache key.
+   * @param canvasCacheKey The canvas cache key.
    * @return {boolean} The provided key matches the one this helper was constructed with.
    */
   canvasCacheKeyMatches(canvasCacheKey) {
@@ -476,7 +476,7 @@ export class WebGLHelper extends Disposable {
   /**
    * Get a WebGL extension.  If the extension is not supported, null is returned.
    * Extensions are cached after they are enabled for the first time.
-   * @param {string} name The extension name.
+   * @param name The extension name.
    * @return {Object|null} The extension or null if not supported.
    */
   getExtension(name) {
@@ -601,8 +601,8 @@ export class WebGLHelper extends Disposable {
   /**
    * Prepare a program to use a texture.
    * @param {WebGLTexture} texture The texture.
-   * @param {number} slot The texture slot.
-   * @param {string} uniformName The corresponding uniform name.
+   * @param slot The texture slot.
+   * @param uniformName The corresponding uniform name.
    */
   bindTexture(texture, slot, uniformName) {
     const gl = this.gl_;
@@ -649,8 +649,8 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Execute a draw call based on the currently bound program, texture, buffers, attributes.
-   * @param {number} start Start index.
-   * @param {number} end End index.
+   * @param start Start index.
+   * @param end End index.
    */
   drawElements(start, end) {
     const gl = this.gl_;
@@ -857,7 +857,7 @@ export class WebGLHelper extends Disposable {
    * On error, the shader will be returned but
    * `gl.getShaderParameter(shader, gl.COMPILE_STATUS)` will return `true`
    * Use `gl.getShaderInfoLog(shader)` to have details
-   * @param {string} source Shader source
+   * @param source Shader source
    * @param {ShaderType} type VERTEX_SHADER or FRAGMENT_SHADER
    * @return {WebGLShader} Shader object
    */
@@ -871,8 +871,8 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Create a program for a vertex and fragment shader.  Throws if shader compilation fails.
-   * @param {string} fragmentShaderSource Fragment shader source.
-   * @param {string} vertexShaderSource Vertex shader source.
+   * @param fragmentShaderSource Fragment shader source.
+   * @param vertexShaderSource Vertex shader source.
    * @return {WebGLProgram} Program
    */
   getProgram(fragmentShaderSource, vertexShaderSource) {
@@ -921,7 +921,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Will get the location from the shader or the cache
-   * @param {string} name Uniform name
+   * @param name Uniform name
    * @return {WebGLUniformLocation} uniformLocation
    */
   getUniformLocation(name) {
@@ -938,8 +938,8 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Will get the location from the shader or the cache
-   * @param {string} name Attribute name
-   * @return {number} attribLocation
+   * @param name Attribute name
+   * @return attribLocation
    */
   getAttributeLocation(name) {
     const programUid = getUid(this.currentProgram_);
@@ -980,8 +980,8 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Give a value for a standard float uniform
-   * @param {string} uniform Uniform name
-   * @param {number} value Value
+   * @param uniform Uniform name
+   * @param value Value
    */
   setUniformFloatValue(uniform, value) {
     this.gl_.uniform1f(this.getUniformLocation(uniform), value);
@@ -989,7 +989,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Give a value for a vec2 uniform
-   * @param {string} uniform Uniform name
+   * @param uniform Uniform name
    * @param {number[]} value Array of length 4.
    */
   setUniformFloatVec2(uniform, value) {
@@ -998,7 +998,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Give a value for a vec4 uniform
-   * @param {string} uniform Uniform name
+   * @param uniform Uniform name
    * @param {number[]} value Array of length 4.
    */
   setUniformFloatVec4(uniform, value) {
@@ -1007,7 +1007,7 @@ export class WebGLHelper extends Disposable {
 
   /**
    * Give a value for a standard matrix4 uniform
-   * @param {string} uniform Uniform name
+   * @param uniform Uniform name
    * @param {number[]} value Matrix value
    */
   setUniformMatrixValue(uniform, value) {
@@ -1017,11 +1017,11 @@ export class WebGLHelper extends Disposable {
   /**
    * Will set the currently bound buffer to an attribute of the shader program. Used by `#enableAttributes`
    * internally.
-   * @param {string} attribName Attribute name
-   * @param {number} size Number of components per attributes
-   * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
-   * @param {number} stride Stride in bytes (0 means attribs are packed)
-   * @param {number} offset Offset in bytes
+   * @param attribName Attribute name
+   * @param size Number of components per attributes
+   * @param type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
+   * @param stride Stride in bytes (0 means attribs are packed)
+   * @param offset Offset in bytes
    * @private
    */
   enableAttributeArray_(attribName, size, type, stride, offset) {
@@ -1038,7 +1038,7 @@ export class WebGLHelper extends Disposable {
    * Will enable the following attributes to be read from the currently bound buffer,
    * i.e. tell the GPU where to read the different attributes in the buffer. An error in the
    * size/type/order of attributes will most likely break the rendering and throw a WebGL exception.
-   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   * @param {AttributeDescription[]} attributes Ordered list of attributes to read from the buffer
    */
   enableAttributes(attributes) {
     const stride = computeAttributesStride(attributes);
@@ -1130,8 +1130,8 @@ export class WebGLHelper extends Disposable {
 
 /**
  * Compute a stride in bytes based on a list of attributes
- * @param {Array<AttributeDescription>} attributes Ordered list of attributes
- * @return {number} Stride, ie amount of values for each vertex in the vertex buffer
+ * @param {AttributeDescription[]} attributes Ordered list of attributes
+ * @return Stride, ie amount of values for each vertex in the vertex buffer
  */
 export function computeAttributesStride(attributes) {
   let stride = 0;
@@ -1145,7 +1145,7 @@ export function computeAttributesStride(attributes) {
 /**
  * Computes the size in byte of an attribute type.
  * @param {AttributeType} type Attribute type
- * @return {number} The size in bytes
+ * @return The size in bytes
  */
 function getByteSizeFromType(type) {
   switch (type) {

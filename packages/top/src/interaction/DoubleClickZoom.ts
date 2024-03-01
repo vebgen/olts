@@ -1,10 +1,10 @@
 import Interaction, {zoomByDelta} from './Interaction';
-import MapBrowserEventType from '../MapBrowserEventType';
+import MapBrowserEventType from '../Map/browser-event-types';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=250] Animation duration in milliseconds.
- * @property {number} [delta=1] The zoom delta applied on each double click.
+ * @property [duration=250] Animation duration in milliseconds.
+ * @property [delta=1] The zoom delta applied on each double click.
  */
 
 /**

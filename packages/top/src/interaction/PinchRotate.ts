@@ -3,13 +3,13 @@ import PointerInteraction, {
   centroid as centroidFromPointers,
 } from './Pointer';
 import {FALSE} from '@olts/core/functions';
-import {disable} from '../rotationconstraint';
+import {disable} from '../rotation-constraint';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration=250] The duration of the animation in
+ * @property [duration=250] The duration of the animation in
  * milliseconds.
- * @property {number} [threshold=0.3] Minimal angle in radians to start a rotation.
+ * @property [threshold=0.3] Minimal angle in radians to start a rotation.
  */
 
 /**

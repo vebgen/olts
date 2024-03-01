@@ -24,7 +24,7 @@ import {toSize} from '../size';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
+ * @property [cacheSize] Initial tile cache size. Will auto-grow to hold at least twice the number of tiles in the viewport.
  * @property {Extent} [extent] Extent.
  * @property {import("../format/Feature").default<import("../format/Feature").FeatureToFeatureClass<FeatureType>>} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
@@ -35,10 +35,10 @@ import {toSize} from '../size';
  * @property {import("./Source").State} [state] Source state.
  * @property {typeof import("../VectorTile").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile~VectorTile}.
- * @property {number} [maxZoom=22] Optional max zoom level. Not used if `tileGrid` is provided.
- * @property {number} [minZoom] Optional min zoom level. Not used if `tileGrid` is provided.
+ * @property [maxZoom=22] Optional max zoom level. Not used if `tileGrid` is provided.
+ * @property [minZoom] Optional min zoom level. Not used if `tileGrid` is provided.
  * @property {number|Size} [tileSize=512] Optional tile size. Not used if `tileGrid` is provided.
- * @property {number} [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
+ * @property [maxResolution] Optional tile grid resolution at level zero. Not used if `tileGrid` is provided.
  * @property {import("../tilegrid/TileGrid").default} [tileGrid] Tile grid.
  * @property {import("../Tile").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. Could look like this for pbf tiles:
@@ -70,12 +70,12 @@ import {toSize} from '../size';
  * }
  * ```
  * @property {import("../Tile").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
- * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @property [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
- * @property {number} [transition] A duration for tile opacity
+ * @property [transition] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
- * @property {Array<string>} [urls] An array of URL templates.
+ * @property {string[]} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world
  * will be rendered. When set to `true`, tiles will be wrapped horizontally to
@@ -251,7 +251,7 @@ export class VectorTile extends UrlTile {
   }
 
   /**
-   * @param {number} pixelRatio Pixel ratio.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {VectorRenderTile} tile Vector image tile.
    * @return {Array<import("../VectorTile").default>} Tile keys.
@@ -309,7 +309,7 @@ export class VectorTile extends UrlTile {
               if (state === TileStates.ERROR) {
                 tile.errorTileKeys[sourceTileKey] = true;
               } else {
-                sourceTile.removeEventListener(EventType.CHANGE, listenChange);
+                sourceTile.removeEventListener(EventTypes.CHANGE, listenChange);
               }
               if (tile.loadingSourceTiles === 0) {
                 tile.setState(
@@ -320,7 +320,7 @@ export class VectorTile extends UrlTile {
               }
             }
           };
-          sourceTile.addEventListener(EventType.CHANGE, listenChange);
+          sourceTile.addEventListener(EventTypes.CHANGE, listenChange);
           tile.loadingSourceTiles++;
         }
         if (sourceTileState === TileStates.IDLE) {
@@ -349,10 +349,10 @@ export class VectorTile extends UrlTile {
   }
 
   /**
-   * @param {number} z Tile coordinate z.
-   * @param {number} x Tile coordinate x.
-   * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Tile coordinate z.
+   * @param x Tile coordinate x.
+   * @param y Tile coordinate y.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {!VectorRenderTile} Tile.
    */
@@ -450,16 +450,16 @@ export class VectorTile extends UrlTile {
 
   /**
    * Get the tile pixel ratio for this source.
-   * @param {number} pixelRatio Pixel ratio.
-   * @return {number} Tile pixel ratio.
+   * @param pixelRatio Pixel ratio.
+   * @return Tile pixel ratio.
    */
   getTilePixelRatio(pixelRatio) {
     return pixelRatio;
   }
 
   /**
-   * @param {number} z Z.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param z Z.
+   * @param pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @return {Size} Tile size.
    */
@@ -474,7 +474,7 @@ export class VectorTile extends UrlTile {
 
   /**
    * Increases the cache size if needed
-   * @param {number} tileCount Minimum number of tiles needed.
+   * @param tileCount Minimum number of tiles needed.
    * @param {import("../proj/Projection").default} projection Projection.
    */
   updateCacheSize(tileCount, projection) {
@@ -489,13 +489,13 @@ export default VectorTile;
 /**
  * Sets the loader for a tile.
  * @param {import("../VectorTile").default} tile Vector tile.
- * @param {string} url URL.
+ * @param url URL.
  */
 export function defaultLoadFunction(tile, url) {
   tile.setLoader(
     /**
      * @param {Extent} extent Extent.
-     * @param {number} resolution Resolution.
+     * @param resolution Resolution.
      * @param {import("../proj/Projection").default} projection Projection.
      */
     function (extent, resolution, projection) {

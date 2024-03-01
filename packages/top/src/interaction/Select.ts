@@ -82,7 +82,7 @@ const SelectEventType = {
  * that takes an {@link module:ol/Feature~Feature} and an
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside
+ * @property [hitTolerance=0] Hit-detection tolerance. Pixels inside
  * the radius around the given position will be checked for features.
  */
 
@@ -98,7 +98,7 @@ export class SelectEvent extends Event {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Associated
      *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
      */
-    constructor(type: SelectEventType, selected: Array<import("../Feature").default>, deselected: Array<import("../Feature").default>, mapBrowserEvent: import("../MapBrowserEvent").default) {
+    constructor(type: SelectEventType, selected: Array<import("../Feature").default>, deselected: Array<import("../Feature").default>, mapBrowserEvent: import("../Map/browser-event").default) {
         super(type);
 
         /**
@@ -155,17 +155,17 @@ const originalFeatureStyles: { [n: number]: import("../style/Style").default | A
 export class Select extends Interaction {
 
     /**
-     * 
+     *
      */
     override on: SelectOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: SelectOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: SelectOnSignature<void>;
 
@@ -299,7 +299,7 @@ export class Select extends Interaction {
 
     /**
      * Returns the Hit-detection tolerance.
-     * @return {number} Hit tolerance in pixels.
+     * @return Hit tolerance in pixels.
      * @api
      */
     getHitTolerance(): number {
@@ -322,7 +322,7 @@ export class Select extends Interaction {
     /**
      * Hit-detection tolerance. Pixels inside the radius around the given position
      * will be checked for features.
-     * @param {number} hitTolerance Hit tolerance in pixels.
+     * @param hitTolerance Hit tolerance in pixels.
      * @api
      */
     setHitTolerance(hitTolerance: number) {
@@ -462,7 +462,7 @@ export class Select extends Interaction {
      * @param {import("../MapBrowserEvent").default} mapBrowserEvent Map browser event.
      * @return {boolean} `false` to stop event propagation.
      */
-    handleEvent(mapBrowserEvent: import("../MapBrowserEvent").default): boolean {
+    handleEvent(mapBrowserEvent: import("../Map/browser-event").default): boolean {
         if (!this.condition_(mapBrowserEvent)) {
             return true;
         }
@@ -474,12 +474,12 @@ export class Select extends Interaction {
         const features = this.getFeatures();
 
         /**
-         * @type {Array<Feature>}
+         * @type {Feature[]}
          */
         const deselected:Feature[] = [];
 
         /**
-         * @type {Array<Feature>}
+         * @type {Feature[]}
          */
         const selected:Feature[] = [];
 

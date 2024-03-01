@@ -12,7 +12,7 @@ export class RenderBox extends Disposable {
     private endPixel_: Pixel | null = null;
 
     /**
-     * @param {string} className CSS class name.
+     * @param className CSS class name.
      */
     constructor(className: string) {
         super();

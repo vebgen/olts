@@ -28,9 +28,9 @@ import {
  * @typedef {Object} EvaluationContext
  * @property {Object} properties The values for properties used in 'get' expressions.
  * @property {Object} variables The values for variables used in 'var' expressions.
- * @property {number} resolution The map resolution.
+ * @property resolution The map resolution.
  * @property {string|number|null} featureId The feature id.
- * @property {string} geometryType Geometry type of the current object.
+ * @property geometryType Geometry type of the current object.
  */
 
 /**
@@ -84,7 +84,7 @@ export function newEvaluationContext() {
 
 /**
  * @param {import('./expression').EncodedExpression} encoded The encoded expression.
- * @param {number} type The expected type.
+ * @param type The expected type.
  * @param {import('./expression').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The expression evaluator.
  */
@@ -247,7 +247,7 @@ function compileAssertionExpression(expression, context) {
  */
 function compileAccessorExpression(expression, context) {
   const nameExpression = /** @type {LiteralExpression} */ (expression.args[0]);
-  const name = /** @type {string} */ (nameExpression.value);
+  const name = /** @type */ (nameExpression.value);
   switch (expression.operator) {
     case Ops.Get: {
       return (context) => context.properties[name];
@@ -528,13 +528,13 @@ function compileInterpolateExpression(expression, context) {
 }
 
 /**
- * @param {number} base The base.
- * @param {number} value The value.
- * @param {number} input1 The first input value.
- * @param {number} output1 The first output value.
- * @param {number} input2 The second input value.
- * @param {number} output2 The second output value.
- * @return {number} The interpolated value.
+ * @param base The base.
+ * @param value The value.
+ * @param input1 The first input value.
+ * @param output1 The first output value.
+ * @param input2 The second input value.
+ * @param output2 The second output value.
+ * @return The interpolated value.
  */
 function interpolateNumber(base, value, input1, output1, input2, output2) {
   const delta = input2 - input1;
@@ -550,11 +550,11 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
 }
 
 /**
- * @param {number} base The base.
- * @param {number} value The value.
- * @param {number} input1 The first input value.
+ * @param base The base.
+ * @param value The value.
+ * @param input1 The first input value.
  * @param {import('../color').Color} rgba1 The first output value.
- * @param {number} input2 The second input value.
+ * @param input2 The second input value.
  * @param {import('../color').Color} rgba2 The second output value.
  * @return {import('../color').Color} The interpolated color.
  */

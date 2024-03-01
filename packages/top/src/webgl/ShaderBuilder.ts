@@ -39,9 +39,9 @@ const DEFAULT_STYLE = createDefaultStyle();
 
 /**
  * @typedef {Object} VaryingDescription
- * @property {string} name Varying name, as will be declared in the header.
- * @property {string} type Varying type, either `float`, `vec2`, `vec4`...
- * @property {string} expression Expression which will be assigned to the varying in the vertex shader, and
+ * @property name Varying name, as will be declared in the header.
+ * @property type Varying type, either `float`, `vec2`, `vec4`...
+ * @property expression Expression which will be assigned to the varying in the vertex shader, and
  * passed on to the fragment shader.
  */
 
@@ -62,21 +62,21 @@ export class ShaderBuilder {
   constructor() {
     /**
      * Uniforms; these will be declared in the header (should include the type).
-     * @type {Array<string>}
+     * @type {string[]}
      * @private
      */
     this.uniforms_ = [];
 
     /**
      * Attributes; these will be declared in the header (should include the type).
-     * @type {Array<string>}
+     * @type {string[]}
      * @private
      */
     this.attributes_ = [];
 
     /**
      * Varyings with a name, a type and an expression.
-     * @type {Array<VaryingDescription>}
+     * @type {VaryingDescription[]}
      * @private
      */
     this.varyings_ = [];
@@ -112,7 +112,7 @@ export class ShaderBuilder {
      * @private
      */
     this.symbolColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['circle-fill-color']),
+      /** @type */ (DEFAULT_STYLE['circle-fill-color']),
     );
 
     /**
@@ -150,7 +150,7 @@ export class ShaderBuilder {
      * @private
      */
     this.strokeColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['stroke-color']),
+      /** @type */ (DEFAULT_STYLE['stroke-color']),
     );
 
     /**
@@ -189,17 +189,17 @@ export class ShaderBuilder {
      * @private
      */
     this.fillColorExpression_ = colorToGlsl(
-      /** @type {string} */ (DEFAULT_STYLE['fill-color']),
+      /** @type */ (DEFAULT_STYLE['fill-color']),
     );
 
     /**
-     * @type {Array<string>}
+     * @type {string[]}
      * @private
      */
     this.vertexShaderFunctions_ = [];
 
     /**
-     * @type {Array<string>}
+     * @type {string[]}
      * @private
      */
     this.fragmentShaderFunctions_ = [];
@@ -208,7 +208,7 @@ export class ShaderBuilder {
   /**
    * Adds a uniform accessible in both fragment and vertex shaders.
    * The given name should include a type, such as `sampler2D u_texture`.
-   * @param {string} name Uniform name
+   * @param name Uniform name
    * @return {ShaderBuilder} the builder object
    */
   addUniform(name) {
@@ -219,7 +219,7 @@ export class ShaderBuilder {
   /**
    * Adds an attribute accessible in the vertex shader, read from the geometry buffer.
    * The given name should include a type, such as `vec2 a_position`.
-   * @param {string} name Attribute name
+   * @param name Attribute name
    * @return {ShaderBuilder} the builder object
    */
   addAttribute(name) {
@@ -230,9 +230,9 @@ export class ShaderBuilder {
   /**
    * Adds a varying defined in the vertex shader and accessible from the fragment shader.
    * The type and expression of the varying have to be specified separately.
-   * @param {string} name Varying name
+   * @param name Varying name
    * @param {'float'|'vec2'|'vec3'|'vec4'} type Type
-   * @param {string} expression Expression used to assign a value to the varying.
+   * @param expression Expression used to assign a value to the varying.
    * @return {ShaderBuilder} the builder object
    */
   addVarying(name, type, expression) {
@@ -248,7 +248,7 @@ export class ShaderBuilder {
    * Sets an expression to compute the size of the shape.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `vec2` value.
-   * @param {string} expression Size expression
+   * @param expression Size expression
    * @return {ShaderBuilder} the builder object
    */
   setSymbolSizeExpression(expression) {
@@ -258,7 +258,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current symbol size expression
+   * @return The current symbol size expression
    */
   getSymbolSizeExpression() {
     return this.symbolSizeExpression_;
@@ -268,7 +268,7 @@ export class ShaderBuilder {
    * Sets an expression to compute the rotation of the shape.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `float` value in radians.
-   * @param {string} expression Size expression
+   * @param expression Size expression
    * @return {ShaderBuilder} the builder object
    */
   setSymbolRotationExpression(expression) {
@@ -280,7 +280,7 @@ export class ShaderBuilder {
    * Sets an expression to compute the offset of the symbol from the point center.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `vec2` value.
-   * @param {string} expression Offset expression
+   * @param expression Offset expression
    * @return {ShaderBuilder} the builder object
    */
   setSymbolOffsetExpression(expression) {
@@ -289,7 +289,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current symbol offset expression
+   * @return The current symbol offset expression
    */
   getSymbolOffsetExpression() {
     return this.symbolOffsetExpression_;
@@ -299,7 +299,7 @@ export class ShaderBuilder {
    * Sets an expression to compute the color of the shape.
    * This expression can use all the uniforms, varyings and attributes available
    * in the fragment shader, and should evaluate to a `vec4` value.
-   * @param {string} expression Color expression
+   * @param expression Color expression
    * @return {ShaderBuilder} the builder object
    */
   setSymbolColorExpression(expression) {
@@ -309,7 +309,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current symbol color expression
+   * @return The current symbol color expression
    */
   getSymbolColorExpression() {
     return this.symbolColorExpression_;
@@ -319,7 +319,7 @@ export class ShaderBuilder {
    * Sets an expression to compute the texture coordinates of the vertices.
    * This expression can use all the uniforms and attributes available
    * in the vertex shader, and should evaluate to a `vec4` value.
-   * @param {string} expression Texture coordinate expression
+   * @param expression Texture coordinate expression
    * @return {ShaderBuilder} the builder object
    */
   setTextureCoordinateExpression(expression) {
@@ -333,7 +333,7 @@ export class ShaderBuilder {
    * This expression can use all the uniforms, varyings and attributes available
    * in the fragment shader, and should evaluate to a `bool` value (it will be
    * used in an `if` statement)
-   * @param {string} expression Fragment discard expression
+   * @param expression Fragment discard expression
    * @return {ShaderBuilder} the builder object
    */
   setFragmentDiscardExpression(expression) {
@@ -342,7 +342,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current fragment discard expression
+   * @return The current fragment discard expression
    */
   getFragmentDiscardExpression() {
     return this.discardExpression_;
@@ -360,7 +360,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke width expression, returning value in pixels
+   * @param expression Stroke width expression, returning value in pixels
    * @return {ShaderBuilder} the builder object
    */
   setStrokeWidthExpression(expression) {
@@ -370,7 +370,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke color expression, evaluate to `vec4`: can rely on currentLengthPx and currentRadiusPx
+   * @param expression Stroke color expression, evaluate to `vec4`: can rely on currentLengthPx and currentRadiusPx
    * @return {ShaderBuilder} the builder object
    */
   setStrokeColorExpression(expression) {
@@ -380,14 +380,14 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current stroke color expression
+   * @return The current stroke color expression
    */
   getStrokeColorExpression() {
     return this.strokeColorExpression_;
   }
 
   /**
-   * @param {string} expression Stroke color expression, evaluate to `float`
+   * @param expression Stroke color expression, evaluate to `float`
    * @return {ShaderBuilder} the builder object
    */
   setStrokeOffsetExpression(expression) {
@@ -396,7 +396,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke line cap expression, evaluate to `float`
+   * @param expression Stroke line cap expression, evaluate to `float`
    * @return {ShaderBuilder} the builder object
    */
   setStrokeCapExpression(expression) {
@@ -405,7 +405,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke line join expression, evaluate to `float`
+   * @param expression Stroke line join expression, evaluate to `float`
    * @return {ShaderBuilder} the builder object
    */
   setStrokeJoinExpression(expression) {
@@ -414,7 +414,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke miter limit expression, evaluate to `float`
+   * @param expression Stroke miter limit expression, evaluate to `float`
    * @return {ShaderBuilder} the builder object
    */
   setStrokeMiterLimitExpression(expression) {
@@ -423,7 +423,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Stroke distance field expression, evaluate to `float`
+   * @param expression Stroke distance field expression, evaluate to `float`
    * This can override the default distance field; can rely on currentLengthPx and currentRadiusPx
    * @return {ShaderBuilder} the builder object
    */
@@ -433,7 +433,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @param {string} expression Fill color expression, evaluate to `vec4`
+   * @param expression Fill color expression, evaluate to `vec4`
    * @return {ShaderBuilder} the builder object
    */
   setFillColorExpression(expression) {
@@ -443,7 +443,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current fill color expression
+   * @return The current fill color expression
    */
   getFillColorExpression() {
     return this.fillColorExpression_;
@@ -535,7 +535,7 @@ void main(void) {
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 ${this.varyings_
   .map(function (varying) {
@@ -676,7 +676,7 @@ void main(void) {
   vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
   segmentStartPx = getOffsetPoint(segmentStartPx, normalPx, v_angleStart, lineOffsetPx),
   segmentEndPx = getOffsetPoint(segmentEndPx, normalPx, v_angleEnd, lineOffsetPx);
-  
+
   // compute current vertex position
   float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
   float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
@@ -839,7 +839,7 @@ void main(void) {
   vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
-  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx; 
+  float currentLengthPx = max(0., min(dot(segmentTangent, startToPoint), segmentLength)) + v_distanceOffsetPx;
   float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
   vec4 color = ${this.strokeColorExpression_} * u_globalAlpha;

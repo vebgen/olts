@@ -37,7 +37,7 @@ import {isEmpty} from '../obj';
  * @property {ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {ProjectionLike} [featureProjection] Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
- * @property {string} [geometryName] Geometry name to use when creating features.
+ * @property [geometryName] Geometry name to use when creating features.
  * @property {boolean} [extractGeometryName=false] Certain GeoJSON providers include
  * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
  * will look for that field to set the geometry name. If both this field is set to `true`
@@ -106,7 +106,7 @@ export class GeoJSON extends JSONFeature {
    * @param {Object} object Object.
    * @param {import("./Feature").ReadOptions} [options] Read options.
    * @protected
-   * @return {Feature|RenderFeature|Array<RenderFeature>}.default} Feature.
+   * @return {Feature|RenderFeature|RenderFeature[]}.default} Feature.
    */
   readFeatureFromObject(object, options) {
     /**
@@ -161,7 +161,7 @@ export class GeoJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    /** @type {Array<Feature|RenderFeature|Array<RenderFeature>>} */
+    /** @type {Array<Feature|RenderFeature|RenderFeature[]>} */
     let features = null;
     if (geoJSONObject['type'] === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (

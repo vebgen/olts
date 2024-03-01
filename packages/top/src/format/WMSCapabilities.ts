@@ -392,7 +392,7 @@ function readContactAddress(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<string>|undefined} Format array.
+ * @return {string[]|undefined} Format array.
  */
 function readException(node, objectStack) {
   return pushParseAndPop([], EXCEPTION_PARSERS, node, objectStack);
@@ -613,7 +613,7 @@ function readStyle(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<string>|undefined} Keyword list.
+ * @return {string[]|undefined} Keyword list.
  */
 function readKeywordList(node, objectStack) {
   return pushParseAndPop([], KEYWORDLIST_PARSERS, node, objectStack);

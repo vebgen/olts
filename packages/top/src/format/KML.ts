@@ -50,9 +50,9 @@ import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @typedef {Object} Vec2
- * @property {number} x X coordinate.
+ * @property x X coordinate.
  * @property {import("../style/Icon").IconAnchorUnits} xunits Units of x.
- * @property {number} y Y coordinate.
+ * @property y Y coordinate.
  * @property {import("../style/Icon").IconAnchorUnits} yunits Units of Y.
  * @property {import("../style/Icon").IconOrigin} [origin] Origin.
  */
@@ -65,7 +65,7 @@ import {transformGeometryWithOptions} from './Feature';
 
 /**
  * @const
- * @type {Array<string>}
+ * @type {string[]}
  */
 const GX_NAMESPACE_URIS = ['http://www.google.com/kml/ext/2.2'];
 
@@ -303,13 +303,13 @@ export function getDefaultStyle() {
 }
 
 /**
- * @type {Array<Style>|null}
+ * @type {Style[]|null}
  */
 let DEFAULT_STYLE_ARRAY = null;
 
 /**
  * Get the default style array (or null if not yet set).
- * @return {Array<Style>|null} The default style.
+ * @return {Style[]|null} The default style.
  */
 export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
@@ -318,7 +318,7 @@ export function getDefaultStyleArray() {
 /**
  * Function that returns the scale needed to normalize an icon image to 32 pixels.
  * @param {Size} size Image size.
- * @return {number} Scale.
+ * @return Scale.
  */
 function scaleForSize(size) {
   return 32 / Math.min(size[0], size[1]);
@@ -400,8 +400,8 @@ let TEXTAREA;
 
 /**
  * Function that returns a url unchanged.
- * @param {string} href Input url.
- * @return {string} Output url.
+ * @param href Input url.
+ * @return Output url.
  */
 function defaultIconUrlFunction(href) {
   return href;
@@ -411,7 +411,7 @@ function defaultIconUrlFunction(href) {
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
- * @property {Array<Style>} [defaultStyle] Default style. The
+ * @property {Style[]} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
@@ -452,7 +452,7 @@ export class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {Array<Style>}
+     * @type {Style[]}
      */
     this.defaultStyle_ = options.defaultStyle
       ? options.defaultStyle
@@ -473,7 +473,7 @@ export class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {!Record<string, (Array<Style>|string)>}
+     * @type {!Record<string, (Style[]|string)>}
      */
     this.sharedStyles_ = {};
 
@@ -504,7 +504,7 @@ export class KML extends XMLFeature {
    * @param {Node} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {Array<Feature>|undefined} Features.
+   * @return {Feature[]|undefined} Features.
    */
   readDocumentOrFolder_(node, objectStack) {
     // FIXME use scope somehow
@@ -515,7 +515,7 @@ export class KML extends XMLFeature {
       'Style': this.readSharedStyle_.bind(this),
       'StyleMap': this.readSharedStyleMap_.bind(this),
     });
-    /** @type {Array<Feature>} */
+    /** @type {Feature[]} */
     // @ts-ignore
     const features = pushParseAndPop([], parsersNS, node, objectStack, this);
     if (features) {
@@ -762,7 +762,7 @@ export class KML extends XMLFeature {
    * Read the network links of the KML.
    *
    * @param {Document|Element|string} source Source.
-   * @return {Array<Object>} Network links.
+   * @return {Object[]} Network links.
    * @api
    */
   readNetworkLinks(source) {
@@ -786,7 +786,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Document} doc Document.
-   * @return {Array<Object>} Network links.
+   * @return {Object[]} Network links.
    */
   readNetworkLinksFromDocument(doc) {
     const networkLinks = [];
@@ -803,7 +803,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @return {Array<Object>} Network links.
+   * @return {Object[]} Network links.
    */
   readNetworkLinksFromNode(node) {
     const networkLinks = [];
@@ -832,7 +832,7 @@ export class KML extends XMLFeature {
    * Read the regions of the KML.
    *
    * @param {Document|Element|string} source Source.
-   * @return {Array<Object>} Regions.
+   * @return {Object[]} Regions.
    * @api
    */
   readRegion(source) {
@@ -853,7 +853,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Document} doc Document.
-   * @return {Array<Object>} Region.
+   * @return {Object[]} Region.
    */
   readRegionFromDocument(doc) {
     const regions = [];
@@ -867,7 +867,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @return {Array<Object>} Region.
+   * @return {Object[]} Region.
    * @api
    */
   readRegionFromNode(node) {
@@ -892,20 +892,20 @@ export class KML extends XMLFeature {
 
   /**
    * @typedef {Object} KMLCamera Specifies the observer's viewpoint and associated view parameters.
-   * @property {number} [Latitude] Latitude of the camera.
-   * @property {number} [Longitude] Longitude of the camera.
-   * @property {number} [Altitude] Altitude of the camera.
-   * @property {string} [AltitudeMode] Floor-related altitude mode.
-   * @property {number} [Heading] Horizontal camera rotation.
-   * @property {number} [Tilt] Lateral camera rotation.
-   * @property {number} [Roll] Vertical camera rotation.
+   * @property [Latitude] Latitude of the camera.
+   * @property [Longitude] Longitude of the camera.
+   * @property [Altitude] Altitude of the camera.
+   * @property [AltitudeMode] Floor-related altitude mode.
+   * @property [Heading] Horizontal camera rotation.
+   * @property [Tilt] Lateral camera rotation.
+   * @property [Roll] Vertical camera rotation.
    */
 
   /**
    * Read the cameras of the KML.
    *
    * @param {Document|Element|string} source Source.
-   * @return {Array<KMLCamera>} Cameras.
+   * @return {KMLCamera[]} Cameras.
    * @api
    */
   readCamera(source) {
@@ -926,7 +926,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Document} doc Document.
-   * @return {Array<KMLCamera>} Cameras.
+   * @return {KMLCamera[]} Cameras.
    */
   readCameraFromDocument(doc) {
     const cameras = [];
@@ -940,7 +940,7 @@ export class KML extends XMLFeature {
 
   /**
    * @param {Element} node Node.
-   * @return {Array<KMLCamera>} Cameras.
+   * @return {KMLCamera[]} Cameras.
    * @api
    */
   readCameraFromNode(node) {
@@ -970,7 +970,7 @@ export class KML extends XMLFeature {
    * Encode an array of features in the KML format as an XML node. GeometryCollections,
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
-   * @param {Array<Feature>} features Features.
+   * @param {Feature[]} features Features.
    * @param {import("./Feature").WriteOptions} [options] Options.
    * @return {Node} Node.
    * @api
@@ -990,7 +990,7 @@ export class KML extends XMLFeature {
     const /** @type {import("../xml").NodeStackItem} */ context = {
         node: kml,
       };
-    /** @type {!Record<string, (Array<Feature>|Feature|undefined)>} */
+    /** @type {!Record<string, (Feature[]|Feature|undefined)>} */
     const properties = {};
     if (features.length > 1) {
       properties['Document'] = features;
@@ -1014,7 +1014,7 @@ export class KML extends XMLFeature {
 
 /**
  * @param {Style|undefined} foundStyle Style.
- * @param {string} name Name.
+ * @param name Name.
  * @return {Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
@@ -1059,10 +1059,10 @@ function createNameStyleFunction(foundStyle, name) {
 }
 
 /**
- * @param {Array<Style>|undefined} style Style.
- * @param {string} styleUrl Style URL.
- * @param {Array<Style>} defaultStyle Default style.
- * @param {!Record<string, (Array<Style>|string)>} sharedStyles Shared styles.
+ * @param {Style[]|undefined} style Style.
+ * @param styleUrl Style URL.
+ * @param {Style[]} defaultStyle Default style.
+ * @param {!Record<string, (Style[]|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {import("../style/Style").StyleFunction} Feature style function.
  */
@@ -1076,8 +1076,8 @@ function createFeatureStyleFunction(
   return (
     /**
      * @param {Feature} feature feature.
-     * @param {number} resolution Resolution.
-     * @return {Array<Style>|Style} Style.
+     * @param resolution Resolution.
+     * @return {Style[]|Style} Style.
      */
     function (feature, resolution) {
       let drawName = showPointNames;
@@ -1102,7 +1102,7 @@ function createFeatureStyleFunction(
       }
 
       if (drawName) {
-        name = /** @type {string} */ (feature.get('name'));
+        name = /** @type */ (feature.get('name'));
         drawName = drawName && !!name;
         // convert any html character codes
         if (drawName && /&[^&]+;/.test(name)) {
@@ -1144,11 +1144,11 @@ function createFeatureStyleFunction(
 }
 
 /**
- * @param {Array<Style>|string|undefined} styleValue Style value.
- * @param {Array<Style>} defaultStyle Default style.
- * @param {!Record<string, (Array<Style>|string)>} sharedStyles
+ * @param {Style[]|string|undefined} styleValue Style value.
+ * @param {Style[]} defaultStyle Default style.
+ * @param {!Record<string, (Style[]|string)>} sharedStyles
  * Shared styles.
- * @return {Array<Style>} Style.
+ * @return {Style[]} Style.
  */
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
@@ -1209,7 +1209,7 @@ export function readFlatCoordinates(node) {
 
 /**
  * @param {Node} node Node.
- * @return {string} URI.
+ * @return URI.
  */
 function readURI(node) {
   const s = getAllTextContent(node, false).trim();
@@ -1226,7 +1226,7 @@ function readURI(node) {
 
 /**
  * @param {Node} node Node.
- * @return {string} URI.
+ * @return URI.
  */
 function readStyleURL(node) {
   // KML files in the wild occasionally forget the leading
@@ -1297,7 +1297,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<Style>|string|undefined} StyleMap.
+ * @return {Style[]|string|undefined} StyleMap.
  */
 function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined, STYLE_MAP_PARSERS, node, objectStack, this);
@@ -1385,7 +1385,7 @@ function iconStyleParser(node, objectStack) {
   }
 
   let rotation;
-  const heading = /** @type {number} */ (object['heading']);
+  const heading = /** @type */ (object['heading']);
   if (heading !== undefined) {
     rotation = toRadians(heading);
   }
@@ -1512,7 +1512,7 @@ function lineStyleParser(node, objectStack) {
     color:
       /** @type {import("../color").Color} */
       ('color' in object ? object['color'] : DEFAULT_COLOR),
-    width: /** @type {number} */ ('width' in object ? object['width'] : 1),
+    width: /** @type */ ('width' in object ? object['width'] : 1),
   });
   styleObject['strokeStyle'] = strokeStyle;
 }
@@ -1936,7 +1936,7 @@ const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
  * @this {KML}
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<Style>} Style.
+ * @return {Style[]} Style.
  */
 function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
@@ -2057,7 +2057,7 @@ function readStyle(node, objectStack) {
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
  * @param {MultiPoint|MultiLineString|MultiPolygon} multiGeometry A multi-geometry.
- * @param {Array<Geometry>} geometries List of geometries.
+ * @param {Geometry[]} geometries List of geometries.
  */
 function setCommonGeometryProperties(multiGeometry, geometries) {
   const ii = geometries.length;
@@ -2398,7 +2398,7 @@ function writeColorTextNode(node, color) {
   /** @type {Array<string|number>} */
   const abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
   for (let i = 0; i < 4; ++i) {
-    const hex = Math.floor(/** @type {number} */ (abgr[i])).toString(16);
+    const hex = Math.floor(/** @type */ (abgr[i])).toString(16);
     abgr[i] = hex.length == 1 ? '0' + hex : hex;
   }
   writeStringTextNode(node, abgr.join(''));
@@ -2498,7 +2498,7 @@ function writeDataNode(node, pair, objectStack) {
 
 /**
  * @param {Node} node Node to append a TextNode with the name to.
- * @param {string} name DisplayName.
+ * @param name DisplayName.
  */
 function writeDataNodeName(node, name) {
   writeCDATASection(node, name);
@@ -2506,7 +2506,7 @@ function writeDataNodeName(node, name) {
 
 /**
  * @param {Node} node Node to append a CDATA Section with the value to.
- * @param {string} value Value.
+ * @param value Value.
  */
 function writeDataNodeValue(node, value) {
   writeStringTextNode(node, value);
@@ -2525,7 +2525,7 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(NAMESPACE_URIS, {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [nodeName] Node name.
+ * @param [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const DOCUMENT_NODE_FACTORY = function (value, objectStack, nodeName) {
@@ -2535,7 +2535,7 @@ const DOCUMENT_NODE_FACTORY = function (value, objectStack, nodeName) {
 
 /**
  * @param {Element} node Node.
- * @param {Array<Feature>} features Features.
+ * @param {Feature[]} features Features.
  * @param {Array<*>} objectStack Object stack.
  * @this {KML}
  */
@@ -2614,7 +2614,7 @@ const ICON_SERIALIZERS = makeStructureNS(
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [nodeName] Node name.
+ * @param [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GX_NODE_FACTORY = function (value, objectStack, nodeName) {
@@ -2861,7 +2861,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @const
  * @param {*} value Value.
  * @param {Array<*>} objectStack Object stack.
- * @param {string} [nodeName] Node name.
+ * @param [nodeName] Node name.
  * @return {Node|undefined} Node.
  */
 const GEOMETRY_NODE_FACTORY = function (value, objectStack, nodeName) {
@@ -2925,7 +2925,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
   /** @type {import("../xml").NodeStackItem} */
   const context = {node: node};
   const type = geometry.getType();
-  /** @type {Array<Geometry>} */
+  /** @type {Geometry[]} */
   let geometries = [];
   /** @type {function(*, Array<*>, string=): (Node|undefined)} */
   let factory;
@@ -3061,7 +3061,7 @@ function writePlacemark(node, feature, objectStack) {
 
   // set id
   if (feature.getId()) {
-    node.setAttribute('id', /** @type {string} */ (feature.getId()));
+    node.setAttribute('id', /** @type */ (feature.getId()));
   }
 
   // serialize properties (properties unknown to KML are not serialized)

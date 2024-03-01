@@ -17,9 +17,9 @@ import {clamp} from '@olts/core/math';
  * {@link module:ol/events/condition.always}.
  * @property {boolean} [onFocusOnly=false] When the map's target has a `tabindex` attribute set,
  * the interaction will only handle events when the map has the focus.
- * @property {number} [maxDelta=1] Maximum mouse wheel delta.
- * @property {number} [duration=250] Animation duration in milliseconds.
- * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
+ * @property [maxDelta=1] Maximum mouse wheel delta.
+ * @property [duration=250] Animation duration in milliseconds.
+ * @property [timeout=80] Mouse wheel timeout duration in milliseconds.
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
  * location as the anchor. When set to `false`, zooming in and out will zoom to
  * the center of the screen instead of zooming on the mouse's location.
@@ -173,7 +173,7 @@ export class MouseWheelZoom extends Interaction {
       return true;
     }
     const type = mapBrowserEvent.type;
-    if (type !== EventType.WHEEL) {
+    if (type !== EventTypes.WHEEL) {
       return true;
     }
 
@@ -190,7 +190,7 @@ export class MouseWheelZoom extends Interaction {
     // Delta normalisation inspired by
     // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
     let delta;
-    if (mapBrowserEvent.type == EventType.WHEEL) {
+    if (mapBrowserEvent.type == EventTypes.WHEEL) {
       delta = wheelEvent.deltaY;
       if (FIREFOX && wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
         delta /= DEVICE_PIXEL_RATIO;

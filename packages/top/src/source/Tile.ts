@@ -27,15 +27,15 @@ import { Size } from '@olts/core/size';
  * @typedef {Object} Options
  * @property {import("./Source").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {number} [cacheSize] CacheSize.
+ * @property [cacheSize] CacheSize.
  * @property {boolean} [opaque=false] Whether the layer is opaque.
- * @property {number} [tilePixelRatio] TilePixelRatio.
+ * @property [tilePixelRatio] TilePixelRatio.
  * @property {ProjectionLike} [projection] Projection.
  * @property {import("./Source").State} [state] State.
  * @property {import("../tilegrid/TileGrid").default} [tileGrid] TileGrid.
  * @property {boolean} [wrapX=false] WrapX.
- * @property {number} [transition] Transition.
- * @property {string} [key] Key.
+ * @property [transition] Transition.
+ * @property [key] Key.
  * @property {number|import("../array").NearestDirectionFunction} [zDirection=0] ZDirection.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
@@ -51,17 +51,17 @@ import { Size } from '@olts/core/size';
 export class TileSource extends Source {
 
     /**
-     * 
+     *
      */
     override on: TileSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override once: TileSourceOnSignature<EventsKey>;
 
     /**
-     * 
+     *
      */
     override un: TileSourceOnSignature<void>;
 
@@ -161,7 +161,7 @@ export class TileSource extends Source {
 
     /**
      * @param {import("../proj/Projection").default} projection Projection.
-     * @param {number} z Zoom level.
+     * @param z Zoom level.
      * @param {import("../TileRange").default} tileRange Tile range.
      * @param {function(import("../Tile").default):(boolean|void)} callback Called with each
      *     loaded tile.  If the callback returns `false`, the tile will not be
@@ -199,7 +199,7 @@ export class TileSource extends Source {
 
     /**
      * @param {import("../proj/Projection").default} projection Projection.
-     * @return {number} Gutter.
+     * @return Gutter.
      */
     getGutterForProjection(projection: import("../proj/Projection").default): number {
         return 0;
@@ -207,7 +207,7 @@ export class TileSource extends Source {
 
     /**
      * Return the key to be used for all tiles in the source.
-     * @return {string} The key for all tiles.
+     * @return The key for all tiles.
      */
     getKey(): string {
         return this.key_;
@@ -215,7 +215,7 @@ export class TileSource extends Source {
 
     /**
      * Set the value to be used as the key for all tiles in the source.
-     * @param {string} key The key for tiles.
+     * @param key The key for tiles.
      * @protected
      */
     setKey(key: string) {
@@ -249,10 +249,10 @@ export class TileSource extends Source {
 
     /**
      * @abstract
-     * @param {number} z Tile coordinate z.
-     * @param {number} x Tile coordinate x.
-     * @param {number} y Tile coordinate y.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param z Tile coordinate z.
+     * @param x Tile coordinate x.
+     * @param y Tile coordinate y.
+     * @param pixelRatio Pixel ratio.
      * @param {import("../proj/Projection").default} projection Projection.
      * @return {!import("../Tile").default} Tile.
      */
@@ -298,16 +298,16 @@ export class TileSource extends Source {
      * Get the tile pixel ratio for this source. Subclasses may override this
      * method, which is meant to return a supported pixel ratio that matches the
      * provided `pixelRatio` as close as possible.
-     * @param {number} pixelRatio Pixel ratio.
-     * @return {number} Tile pixel ratio.
+     * @param pixelRatio Pixel ratio.
+     * @return Tile pixel ratio.
      */
     getTilePixelRatio(pixelRatio: number): number {
         return this.tilePixelRatio_;
     }
 
     /**
-     * @param {number} z Z.
-     * @param {number} pixelRatio Pixel ratio.
+     * @param z Z.
+     * @param pixelRatio Pixel ratio.
      * @param {import("../proj/Projection").default} projection Projection.
      * @return {Size} Tile size.
      */
@@ -354,7 +354,7 @@ export class TileSource extends Source {
 
     /**
      * Increases the cache size if needed
-     * @param {number} tileCount Minimum number of tiles needed.
+     * @param tileCount Minimum number of tiles needed.
      * @param {import("../proj/Projection").default} projection Projection.
      */
     updateCacheSize(tileCount: number, projection: import("../proj/Projection").default) {
@@ -367,9 +367,9 @@ export class TileSource extends Source {
     /**
      * Marks a tile coord as being used, without triggering a load.
      * @abstract
-     * @param {number} z Tile coordinate z.
-     * @param {number} x Tile coordinate x.
-     * @param {number} y Tile coordinate y.
+     * @param z Tile coordinate z.
+     * @param x Tile coordinate x.
+     * @param y Tile coordinate y.
      * @param {import("../proj/Projection").default} projection Projection.
      */
     useTile(z: number, x: number, y: number, projection: import("../proj/Projection").default) { }
@@ -381,7 +381,7 @@ export class TileSource extends Source {
  */
 export class TileSourceEvent extends Event {
     /**
-     * @param {string} type Type.
+     * @param type Type.
      * @param {import("../Tile").default} tile The tile.
      */
     constructor(type: string, tile: import("../tile").default) {
